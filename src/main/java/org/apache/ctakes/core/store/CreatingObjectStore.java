@@ -1,14 +1,18 @@
-package org.healthnlp.deepphe.node;
+package org.apache.ctakes.core.store;
+
 
 /**
  * @author SPF , chip-nlp
  * @version %I%
- * @since 9/17/2020
+ * @since 10/28/2020
  */
-public interface NodeStore<T> {
+public interface CreatingObjectStore<T> extends ObjectStore<T>, ObjectCreator<T> {
 
-   T get( String id );
-
+   /**
+    *
+    * @param id unique object id.
+    * @return a stored object with the id or a new object created with the id.
+    */
    default T getOrCreate( String id ) {
       final T stored = get( id );
       if ( stored != null ) {
@@ -21,16 +25,5 @@ public interface NodeStore<T> {
       add( id, newObject );
       return newObject;
    }
-
-   boolean add( String id, T object );
-
-   default boolean add( T object ) {
-      return false;
-   }
-
-   default T create( String id ) {
-      return null;
-   }
-
 
 }

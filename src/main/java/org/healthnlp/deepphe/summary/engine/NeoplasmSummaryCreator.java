@@ -66,7 +66,7 @@ final public class NeoplasmSummaryCreator {
    }
 
    static private String getMajorSite( final Collection<String> sites ) {
-      LOGGER.info( "Major site according to shortest root uris for sites " + String.join( ",",sites ) );
+      LOGGER.info( "Major site according to best uris for sites " + String.join( ",",sites ) );
       return UriScoreUtil.getBestUri( sites );
 //      return UriUtil.getShortestRootUri( sites );
    }

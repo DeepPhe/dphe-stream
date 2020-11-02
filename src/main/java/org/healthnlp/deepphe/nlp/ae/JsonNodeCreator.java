@@ -37,13 +37,13 @@ final public class JsonNodeCreator extends JCasAnnotator_ImplBase {
    public void process( final JCas jCas ) throws AnalysisEngineProcessException {
       LOGGER.info( "Adding Information to NodeStores ..." );
       final Note note = JsonNoteWriter.createNote( jCas );
-      NoteNodeStore.getInstance().add( note );
+      NoteNodeStore.getInstance().add( note.getId(), note );
       final Patient patient
             = PatientNodeStore.getInstance().getOrCreate( SourceMetadataUtil.getPatientIdentifier( jCas ) );
       final List<Note> notes = new ArrayList<>( patient.getNotes() );
       notes.add( note );
       patient.setNotes( notes );
-      PatientNodeStore.getInstance().add( patient );
+      PatientNodeStore.getInstance().add( patient.getId(), patient );
    }
 
 

@@ -1,17 +1,23 @@
 package org.healthnlp.deepphe.node;
 
 
+import org.apache.ctakes.core.store.DefaultObjectStore;
+import org.apache.ctakes.core.store.ObjectStore;
+import org.apache.ctakes.core.store.SelfCleaningStore;
 import org.healthnlp.deepphe.neo4j.node.Note;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
+ * Stores Note Nodes.
+ * The Note node cache is cleaned up every 15 minutes,
+ * with all nodes not accessed within the last hour removed.
+ *
  * @author SPF , chip-nlp
  * @version %I%
  * @since 9/4/2020
  */
-public enum NoteNodeStore implements NodeStore<Note> {
+public enum NoteNodeStore implements ObjectStore<Note> {
    INSTANCE;
 
    public static NoteNodeStore getInstance() {
@@ -19,27 +25,26 @@ public enum NoteNodeStore implements NodeStore<Note> {
    }
 
 
-   private final Map<String, Note> _notes;
+   private final ObjectStore<Note> _delegate;
 
    NoteNodeStore() {
-      _notes = new HashMap<>();
+      _delegate = new SelfCleaningStore<>( new DefaultObjectStore<>() );
+   }
+
+   public void close() {
+      _delegate.close();
+   }
+
+   public List<String> getStoredIds() {
+      return _delegate.getStoredIds();
    }
 
    public Note get( final String noteId ) {
-      return _notes.get( noteId );
-   }
-
-   public boolean add( final Note note ) {
-      final String noteId = note.getId();
-      if ( noteId == null ) {
-         return false;
-      }
-      return add( noteId, note );
+      return _delegate.get( noteId );
    }
 
    public boolean add( final String noteId, final Note note ) {
-      _notes.put( noteId, note );
-      return true;
+      return _delegate.add( noteId, note );
    }
 
 }
