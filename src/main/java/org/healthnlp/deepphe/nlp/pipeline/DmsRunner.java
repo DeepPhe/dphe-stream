@@ -94,21 +94,8 @@ public enum DmsRunner implements Closeable {
     * @param text -
     * @return -
     */
-   public String summarizeLoneDoc( final String docId, final String text ) {
-      synchronized ( NLP_PIPER_PATH ) {
-         try {
-            final Note note = runNlp( docId, docId, text );
-            if ( note == null ) {
-               return "{}";
-            }
-
-            return summarizeNoteAsPatient( docId, note );
-         } catch ( CASRuntimeException multE ) {
-//            LOGGER.error( "Error processing text." );
-//            throw new AnalysisEngineProcessException( multE );
-            return multE.getMessage();
-         }
-      }
+   public String summarizeDoc( final String docId, final String text ) {
+      return summarizeDoc( docId, docId, text );
    }
 
 
