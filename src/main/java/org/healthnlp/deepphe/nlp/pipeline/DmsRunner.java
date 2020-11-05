@@ -94,7 +94,7 @@ public enum DmsRunner implements Closeable {
     * @param text -
     * @return -
     */
-   public String summarizeDoc( final String docId, final String text ) {
+   public String summarizeLoneDoc( final String docId, final String text ) {
       synchronized ( NLP_PIPER_PATH ) {
          try {
             final Note note = runNlp( docId, docId, text );

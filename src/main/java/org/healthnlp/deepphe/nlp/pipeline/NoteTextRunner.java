@@ -36,7 +36,7 @@ public enum NoteTextRunner {
 
 
    // Use a constant piper name.
-   static private final String NLP_PIPER_PATH = "pipeline/NoteNlp.piper";
+   static private final String NLP_PIPER_PATH = "pipeline/DmsNoteNlp.piper";
 
    private final AnalysisEngine _engine;
    private final JCasPool _pool;

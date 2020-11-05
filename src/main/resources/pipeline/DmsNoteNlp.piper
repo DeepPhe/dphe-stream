@@ -46,9 +46,6 @@ add DefaultJCasTermAnnotator
 //  Filter various concepts using context.
 add MassFilter
 
-//  Filter Anatomic Sites using part of speech context.  This is a terrible ae that should never ever be used.
-//add FilterPrepositionalObjectSites
-
 //  Assign such as negation and uncertainty using machine-learning models.
 load AttributeCleartkSubPipe
 
@@ -58,7 +55,6 @@ load NeContextsSubPipe
 
 //  Find modifiers for disease attributes such as negation and uncertainty and make appropriate assignments.
 add DiseaseAttributeFinder
-
 
 // Adjust attributes by text
 add CancerAttributeAdjuster
@@ -92,10 +88,3 @@ add InDocUriRelationFinder
 //  Find relations not declared in the ontology by special means.
 //  Modified this to make "v5" faster.
 add NonGraphedRelationFinder
-
-//add org.healthnlp.deepphe.nlp.writer.AllConceptsWriter
-
-//add html.HtmlTextWriter SubDirectory=HTML
-
-//package org.apache.ctakes.core.util.log
-//addLast FinishedLogger
