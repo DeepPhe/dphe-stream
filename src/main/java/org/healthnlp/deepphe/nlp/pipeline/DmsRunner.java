@@ -53,21 +53,23 @@ public enum DmsRunner implements Closeable {
 
 
    DmsRunner() throws ExceptionInInitializerError {
-      try {
-         final PiperFileReader reader = new PiperFileReader( NLP_PIPER_PATH );
-         final PipelineBuilder builder = reader.getBuilder();
+      synchronized ( NLP_PIPER_PATH ) {
+         try {
+            final PiperFileReader reader = new PiperFileReader( NLP_PIPER_PATH );
+            final PipelineBuilder builder = reader.getBuilder();
 
-         final AnalysisEngineDescription pipeline = builder.getAnalysisEngineDesc();
-         _engine = UIMAFramework.produceAnalysisEngine( pipeline );
-         _pool = new JCasPool( 2, _engine );
-      } catch ( IOException | UIMAException multE ) {
-         Logger.getLogger( "DmsRunner" ).error( multE.getMessage() );
-         throw new ExceptionInInitializerError( multE );
+            final AnalysisEngineDescription pipeline = builder.getAnalysisEngineDesc();
+            _engine = UIMAFramework.produceAnalysisEngine( pipeline );
+            _pool = new JCasPool( 2, _engine );
+         } catch ( IOException | UIMAException multE ) {
+            Logger.getLogger( "DmsRunner" ).error( multE.getMessage() );
+            throw new ExceptionInInitializerError( multE );
+         }
+
+         _textRunner = new TextRunner();
+         final ExecutorService executor = Executors.newSingleThreadExecutor();
+         executor.execute( _textRunner );
       }
-
-      _textRunner = new TextRunner();
-      final ExecutorService executor = Executors.newSingleThreadExecutor();
-      executor.execute( _textRunner );
    }
 
    /**
@@ -90,8 +92,9 @@ public enum DmsRunner implements Closeable {
    /**
     * Summarize the note and return a patient summary in json as if the note represents the entire patient.
     * This is not the preferred call.  It is preferred that a patient Id is provided, even if fake.
+    *
     * @param docId -
-    * @param text -
+    * @param text  -
     * @return -
     */
    public String summarizeDoc( final String docId, final String text ) {
@@ -102,9 +105,10 @@ public enum DmsRunner implements Closeable {
    /**
     * Summarize the note and return a patient summary in json as if the note represents the entire patient.
     * This is the preferred call.
+    *
     * @param patientId -
-    * @param docId -
-    * @param text -
+    * @param docId     -
+    * @param text      -
     * @return -
     */
    public String summarizeDoc( final String patientId, final String docId, final String text ) {
@@ -127,9 +131,10 @@ public enum DmsRunner implements Closeable {
    /**
     * Summarize and return a patient summary in json as if the note represents the entire patient.
     * Extracted NLP Information will be stored for future full- patient summary.
+    *
     * @param patientId -
-    * @param docId -
-    * @param text -
+    * @param docId     -
+    * @param text      -
     * @return -
     */
    public String summarizeAndStoreDoc( final String patientId, final String docId, final String text ) {
@@ -152,9 +157,10 @@ public enum DmsRunner implements Closeable {
    /**
     * Queue the document, running it at some later time and storing the result.
     * Extracted NLP Information will be stored for future full- patient summary.
+    *
     * @param patientId -
-    * @param docId -
-    * @param text -
+    * @param docId     -
+    * @param text      -
     * @return -
     */
    public String queueAndStoreDoc( final String patientId, final String docId, final String text ) {
@@ -164,6 +170,7 @@ public enum DmsRunner implements Closeable {
 
    /**
     * Summarize the patient from previously stored NLP-extracted information and return a patient summary in json.
+    *
     * @param patientId -
     * @return -
     */
@@ -185,9 +192,10 @@ public enum DmsRunner implements Closeable {
 
    /**
     * runs a cas through the pipeline.
+    *
     * @param patientId -
-    * @param docId -
-    * @param text -
+    * @param docId     -
+    * @param text      -
     */
    private Note runNlp( final String patientId, final String docId, final String text ) {
       synchronized ( NLP_PIPER_PATH ) {
@@ -216,6 +224,7 @@ public enum DmsRunner implements Closeable {
 
    /**
     * runs a cas through the pipeline.
+    *
     * @param jCas The cas should already be populated with text, patientId, docId, etc.
     */
    private void runNlp( final JCas jCas ) {
@@ -272,6 +281,7 @@ public enum DmsRunner implements Closeable {
 
 
    private class TextRunner implements Runnable, Closeable {
+
       static private final String STOP_TEXT = "STOP_PROCESSING_NOW";
       private final SimpleDoc STOP_DOC = new SimpleDoc( STOP_TEXT, STOP_TEXT, STOP_TEXT );
       private final BlockingQueue<SimpleDoc> _textQueue = new ArrayBlockingQueue<>( 100 );
@@ -309,15 +319,19 @@ public enum DmsRunner implements Closeable {
       }
 
       private final class SimpleDoc {
+
          private final String _patientID;
          private final String _docID;
          private final String _text;
+
          private SimpleDoc( final String patientID, final String docID, final String text ) {
             _patientID = patientID;
             _docID = docID;
             _text = text;
          }
+
       }
+
    }
 
 
