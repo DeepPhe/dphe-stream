@@ -43,10 +43,12 @@ final public class SummaryEngine {
 
       }
 
-      return createPatientSummary( patientId,
+      final PatientSummary patientSummary = createPatientSummary( patientId,
             patientNotes,
             patientMentionNoteIds,
             patientRelations );
+      patientSummary.setPatient( patient );
+      return patientSummary;
    }
 
 
