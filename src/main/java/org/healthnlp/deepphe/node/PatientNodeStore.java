@@ -3,11 +3,11 @@ package org.healthnlp.deepphe.node;
 
 import org.apache.ctakes.core.store.CreatingCleaningStore;
 import org.apache.ctakes.core.store.CreatingObjectStore;
-import org.apache.ctakes.core.store.DefaultCreatingStore;
+import org.apache.ctakes.core.store.DefaultObjectStore;
 import org.apache.ctakes.core.store.ObjectCreator;
 import org.healthnlp.deepphe.neo4j.node.Patient;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,13 +27,11 @@ public enum PatientNodeStore implements CreatingObjectStore<Patient> {
    }
 
 
-   private final CreatingObjectStore<Patient> _delegate;
+   private final CreatingCleaningStore<Patient> _delegate;
 
 
    PatientNodeStore() {
-      _delegate = new CreatingCleaningStore<>(
-            new DefaultCreatingStore<>(
-                  new PatientCreator() ) );
+      _delegate = new CreatingCleaningStore<>( new DefaultObjectStore<>(), new PatientCreator() );
    }
 
    public void close() {
@@ -60,7 +58,11 @@ public enum PatientNodeStore implements CreatingObjectStore<Patient> {
       public Patient create( final String patientId ) {
          final Patient patient = new Patient();
          patient.setId( patientId );
-         patient.setNotes( Collections.emptyList() );
+         patient.setBirth( "" );
+         patient.setDeath( "" );
+         patient.setGender( "" );
+         patient.setName( "" );
+         patient.setNotes( new ArrayList<>() );
          return patient;
       }
    }

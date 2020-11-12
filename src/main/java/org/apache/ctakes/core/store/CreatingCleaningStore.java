@@ -8,8 +8,14 @@ package org.apache.ctakes.core.store;
  */
 public class CreatingCleaningStore<T> extends SelfCleaningStore<T> implements CreatingObjectStore<T> {
 
-   public CreatingCleaningStore( final ObjectStore<T> delegate ) {
-      super( delegate );
+   private final ObjectCreator<T> _creator;
+   public CreatingCleaningStore( final ObjectStore<T> delegateStore, final ObjectCreator<T> creator ) {
+      super( delegateStore );
+      _creator = creator;
+   }
+
+   public T create( final String id ) {
+      return _creator.create( id );
    }
 
 }

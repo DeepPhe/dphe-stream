@@ -12,8 +12,6 @@ public interface ObjectCreator<T> {
     * @param id unique object id.
     * @return an object created with the id.
     */
-   default T create( String id ) {
-      return null;
-   }
+   T create( String id );
 
 }
