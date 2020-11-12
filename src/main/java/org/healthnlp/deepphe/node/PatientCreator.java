@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.node;
 
 import org.apache.ctakes.core.store.ObjectCreator;
+import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.neo4j.node.Patient;
 
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class PatientCreator implements ObjectCreator<Patient> {
+
+   static public final Logger LOGGER = Logger.getLogger( "PatientCreator" );
 
    public Patient create( final String patientId ) {
       final Patient patient = new Patient();
@@ -29,7 +32,10 @@ public final class PatientCreator implements ObjectCreator<Patient> {
             = notes.stream()
                    .filter( n -> n.getId().equals( noteId ) )
                    .collect( Collectors.toSet() );
-      notes.removeAll( removalNotes );
+      if ( !removalNotes.isEmpty() ) {
+         LOGGER.warn( "New Note with ID " + noteId + " is replacing older note with the same ID" );
+         notes.removeAll( removalNotes );
+      }
       notes.add( note );
       patient.setNotes( notes );
    }
