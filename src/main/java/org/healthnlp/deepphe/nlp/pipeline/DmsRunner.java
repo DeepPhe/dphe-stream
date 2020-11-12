@@ -20,13 +20,13 @@ import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.neo4j.node.Patient;
 import org.healthnlp.deepphe.neo4j.node.PatientSummary;
 import org.healthnlp.deepphe.node.NoteNodeCreator;
+import org.healthnlp.deepphe.node.PatientCreator;
 import org.healthnlp.deepphe.node.PatientNodeStore;
 import org.healthnlp.deepphe.summary.engine.SummaryEngine;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -248,9 +248,7 @@ public enum DmsRunner implements Closeable {
 
    private void storeDoc( final String patientId, final Note note ) {
       final Patient storedPatient = PatientNodeStore.getInstance().getOrCreate( patientId );
-      final List<Note> notes = storedPatient.getNotes();
-      notes.add( note );
-      storedPatient.setNotes( notes );
+      PatientCreator.addNote( storedPatient, note );
    }
 
 

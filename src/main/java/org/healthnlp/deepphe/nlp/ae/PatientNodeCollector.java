@@ -9,12 +9,8 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.neo4j.node.Patient;
-import org.healthnlp.deepphe.node.NoteNodeCreator;
-import org.healthnlp.deepphe.node.NoteNodeStore;
-import org.healthnlp.deepphe.node.PatientNodeStore;
-import org.healthnlp.deepphe.node.StorageChoices;
+import org.healthnlp.deepphe.node.*;
 
-import java.util.List;
 
 /**
  * @author SPF , chip-nlp
@@ -54,9 +50,7 @@ final public class PatientNodeCollector extends JCasAnnotator_ImplBase {
          }
       }
       final Patient patient = PatientNodeStore.getInstance().getOrCreate( patientId );
-      final List<Note> notes = patient.getNotes();
-      notes.add( note );
-      patient.setNotes( notes );
+      PatientCreator.addNote( patient, note );
    }
 
 

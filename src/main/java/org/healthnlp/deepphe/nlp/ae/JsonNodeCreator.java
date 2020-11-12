@@ -10,10 +10,8 @@ import org.healthnlp.deepphe.core.json.JsonNoteWriter;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.neo4j.node.Patient;
 import org.healthnlp.deepphe.node.NoteNodeStore;
+import org.healthnlp.deepphe.node.PatientCreator;
 import org.healthnlp.deepphe.node.PatientNodeStore;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author SPF , chip-nlp
@@ -40,9 +38,7 @@ final public class JsonNodeCreator extends JCasAnnotator_ImplBase {
       NoteNodeStore.getInstance().add( note.getId(), note );
       final Patient patient
             = PatientNodeStore.getInstance().getOrCreate( SourceMetadataUtil.getPatientIdentifier( jCas ) );
-      final List<Note> notes = new ArrayList<>( patient.getNotes() );
-      notes.add( note );
-      patient.setNotes( notes );
+      PatientCreator.addNote( patient, note );
       PatientNodeStore.getInstance().add( patient.getId(), patient );
    }
 
