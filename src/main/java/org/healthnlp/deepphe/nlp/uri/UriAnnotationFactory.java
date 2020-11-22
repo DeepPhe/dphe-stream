@@ -42,7 +42,7 @@ public class UriAnnotationFactory {
                                                                                final int endOffset, final String uri,
                                                                                final SemanticGroup semanticGroup,
                                                                                final String tui ) {
-      final Iterable<Label> labels;
+//      final Iterable<Label> labels;
       final String cui;
       final String prefText;
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
@@ -52,7 +52,7 @@ public class UriAnnotationFactory {
             LOGGER.error( "No Class exists for URI " + uri );
             return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri ) );
          }
-         labels = graphNode.getLabels();
+//         labels = graphNode.getLabels();
          cui = (String)graphNode.getProperty( CUI_KEY );
          prefText = (String)graphNode.getProperty( PREF_TEXT_KEY );
          tx.success();

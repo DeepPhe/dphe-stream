@@ -29,35 +29,36 @@ final public class UriScoreUtil {
    }
 
 
-   static public String getBestUri( final Collection<String> uris,
-                                    final Map<String,Collection<String>> uriRootsMap ) {
-      return getBestUriScore( uris, uriRootsMap ).getKey();
-   }
+//   static public String getBestUri( final Collection<String> uris,
+//                                    final Map<String,Collection<String>> uriRootsMap ) {
+//      return getBestUriScore( uris, uriRootsMap ).getKey();
+//   }
 
    static public KeyValue<String,Double> getBestUriScore( final Collection<String> uris,
                                                           final Map<String,Collection<String>> uriRootsMap ) {
       final List<KeyValue<String,Double>> uriQuotients = mapUriQuotients( uris, uriRootsMap );
-      final Map<String,Integer> loggerClassLevelMap
-            = uriQuotients.stream()
-                          .map( KeyValue::getKey )
-                          .collect( Collectors.toMap( Function.identity(),
-                                Neo4jOntologyConceptUtil::getClassLevel ) );
+//      final Map<String,Integer> loggerClassLevelMap
+//            = uriQuotients.stream()
+//                          .map( KeyValue::getKey )
+//                          .collect( Collectors.toMap( Function.identity(),
+//                                Neo4jOntologyConceptUtil::getClassLevel ) );
 
-      uriQuotients.stream().map( kv -> "URI " + kv.getKey()
-                                       + "   quotient score " + kv.getValue()
-                                       + "   class level " + loggerClassLevelMap.get( kv.getKey() )
-                                       + "   root count " + uriRootsMap.get( kv.getKey() ).size()
-                                       + "   quotient level score " + (kv.getValue()*loggerClassLevelMap.get( kv.getKey() ))
-                                       + "   rooted " + (kv.getValue()*loggerClassLevelMap.get( kv.getKey() )*uriRootsMap.get( kv.getKey() ).size()) )
-                  .forEach( LOGGER::info );
+//      LOGGER.info( "!!!    UriScoreUtil.getBestUriScore");
+//      uriQuotients.stream().map( kv -> "URI " + kv.getKey()
+//                                       + "   quotient score " + kv.getValue()
+//                                       + "   class level " + loggerClassLevelMap.get( kv.getKey() )
+//                                       + "   root count " + uriRootsMap.get( kv.getKey() ).size()
+//                                       + "   quotient level score " + (kv.getValue()*loggerClassLevelMap.get( kv.getKey() ))
+//                                       + "   rooted " + (kv.getValue()*loggerClassLevelMap.get( kv.getKey() )*uriRootsMap.get( kv.getKey() ).size()) )
+//                  .forEach( LOGGER::info );
 
       if ( uriQuotients.size() == 1 ) {
-         LOGGER.info( "Only one URI for concept " + uriQuotients.get( 0 ).getKey() + " score = 1.0"  );
+//         LOGGER.info( "Only one URI for concept " + uriQuotients.get( 0 ).getKey() + " score = 1.0"  );
          return uriQuotients.get( 0 );
       }
       final List<KeyValue<String,Double>> bestKeyValues = getBestUriScores( uriQuotients );
       if ( bestKeyValues.size() == 1 ) {
-         LOGGER.info( "Only one best URI score for concept " + bestKeyValues.get( 0 ).getKey() + " score = " +  bestKeyValues.get( 0 ).getValue() );
+//         LOGGER.info( "Only one best URI score for concept " + bestKeyValues.get( 0 ).getKey() + " score = " +  bestKeyValues.get( 0 ).getValue() );
          return bestKeyValues.get( 0 );
       }
       final Map<String,Integer> classLevelMap
@@ -69,13 +70,13 @@ final public class UriScoreUtil {
       final ToIntFunction<KeyValue<String,Double>> getClassLevel = kv -> classLevelMap.get( kv.getKey() );
       final ToIntFunction<KeyValue<String,Double>> getRootCount = kv -> uriRootsMap.get( kv.getKey() ).size();
 
-      LOGGER.info( "The best URI is the one with the highest quotient score and the highest class level " +
-                   "(furthest from root by the shortest path) with ties broken by total number of nodes (all routes) to root.\n" +
-                   "This is all about high representation and high precision.\n" +
-                   "The highest quotient is a measure of fully and exactly representing the most mentions.\n" +
-                   "The class level is a measure of specificity - the furthest the shortest path is from root the more specific the concept.\n" +
-                   "Breaking a tie with the most nodes between a concept and root is sort of a measure of both\n" +
-                   "specificity and high representation, but a much less exact measure of each." );
+//      LOGGER.info( "The best URI is the one with the highest quotient score and the highest class level " +
+//                   "(furthest from root by the shortest path) with ties broken by total number of nodes (all routes) to root.\n" +
+//                   "This is all about high representation and high precision.\n" +
+//                   "The highest quotient is a measure of fully and exactly representing the most mentions.\n" +
+//                   "The class level is a measure of specificity - the furthest the shortest path is from root the more specific the concept.\n" +
+//                   "Breaking a tie with the most nodes between a concept and root is sort of a measure of both\n" +
+//                   "specificity and high representation, but a much less exact measure of each." );
 
 
       return bestKeyValues.stream()
@@ -97,23 +98,23 @@ final public class UriScoreUtil {
                                                                 final Map<String, Collection<String>> uriRootsMap ) {
       if ( uris.size() == 1 ) {
          final String uri = new ArrayList<>( uris ).get( 0 );
-         LOGGER.info( "Only one URI for concept " + uri + " quotient score = 1.0"  );
+//         LOGGER.info( "Only one URI for concept " + uri + " quotient score = 1.0"  );
          return Collections.singletonList( new KeyValue<>( uri, 1d ) );
       }
 
       uris.remove( UriConstants.NEOPLASM );
       if ( uris.size() == 1 ) {
          final String uri = new ArrayList<>( uris ).get( 0 );
-         LOGGER.info( "Only one URI under root for concept " + uri + " quotient score = 1.0"  );
+//         LOGGER.info( "Only one URI under root for concept " + uri + " quotient score = 1.0"  );
          return Collections.singletonList( new KeyValue<>( uri, 1d ) );
       }
 
       final Map<String,Long> uriCountsMap = mapUriCounts( uris );
 
 
-      LOGGER.info( "Determining best URI for concept." );
-      uriCountsMap.keySet().stream().filter( k -> !uriRootsMap.containsKey( k ) ).forEach( k -> LOGGER.info( "No uriRoots entry for " + k ) );
-      uriCountsMap.forEach( (k,v) -> LOGGER.info( "Uri Mentions: " + k + " : " + v ) );
+//      LOGGER.info( "!!!    UriScoreUtil.mapUriQuotients" );
+//      uriCountsMap.keySet().stream().filter( k -> !uriRootsMap.containsKey( k ) ).forEach( k -> LOGGER.info( "No uriRoots entry for " + k ) );
+//      uriCountsMap.forEach( (k,v) -> LOGGER.info( "Uri Mentions: " + k + " : " + v ) );
 
       return mapUriQuotients( uris, uriCountsMap, uriRootsMap )
             .entrySet()
@@ -160,15 +161,15 @@ final public class UriScoreUtil {
                                       .sum();
 //                                     .reduce( 1, (a, b) -> a * b );
          uriProducts.put( uri, product );
-         LOGGER.info( "URI " + uri + " has " + product
-                      + " nodes in its path to root that are also distinct URIs for mentions in this ConceptAggregate." );
+//         LOGGER.info( "URI " + uri + " has " + product
+//                      + " nodes in its path to root that are also distinct URIs for mentions in this ConceptAggregate." );
       }
       final long productSum = uriCountsMap.values().stream().mapToLong( l -> l ).sum();
 
-      LOGGER.info( "Why we are using this number:  Each node is scored +1 for each Mention that it represents.\n" +
-                   "For instance, assume BrCa has the path to root [root,Ca,BrCa].\n" +
-                   "If we have mentions BrCa and Ca, node BrCa represents both of them with but with high specificity.\n" +
-                   "Ca, while applicable to both mentions, is not as specific." );
+//      LOGGER.info( "Why we are using this number:  Each node is scored +1 for each Mention that it represents.\n" +
+//                   "For instance, assume BrCa has the path to root [root,Ca,BrCa].\n" +
+//                   "If we have mentions BrCa and Ca, node BrCa represents both of them with but with high specificity.\n" +
+//                   "Ca, while applicable to both mentions, is not as specific." );
 
       return uriProducts.keySet().stream()
                         .collect( Collectors.toMap( Function.identity(),
@@ -206,7 +207,7 @@ final public class UriScoreUtil {
          return 1d;
       }
 
-      LOGGER.info( "Representation Quotient for " + uri + " : " + uriProducts.get( uri ) + " / " + productsSum + " = " + Double.valueOf( uriProducts.get( uri ) ) / productsSum );
+//      LOGGER.info( "Representation Quotient for " + uri + " : " + uriProducts.get( uri ) + " / " + productsSum + " = " + Double.valueOf( uriProducts.get( uri ) ) / productsSum );
 
       return Double.valueOf( uriProducts.get( uri ) ) / productsSum;
    }
@@ -217,7 +218,7 @@ final public class UriScoreUtil {
          return 1d;
       }
 
-      LOGGER.info( "Quotient for " + uri + " : " + uriProducts.get( uri ) + " / " + sumAllExcept( uri, uriProducts ) + " = " + Double.valueOf( uriProducts.get( uri ) ) / sumAllExcept( uri, uriProducts ) );
+//      LOGGER.info( "Quotient for " + uri + " : " + uriProducts.get( uri ) + " / " + sumAllExcept( uri, uriProducts ) + " = " + Double.valueOf( uriProducts.get( uri ) ) / sumAllExcept( uri, uriProducts ) );
 
       return Double.valueOf( uriProducts.get( uri ) ) / sumAllExcept( uri, uriProducts );
    }

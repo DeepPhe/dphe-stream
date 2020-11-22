@@ -6,6 +6,7 @@ import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.uri.UriUtil;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+import org.healthnlp.deepphe.util.TopoMorphValidator;
 import org.healthnlp.deepphe.util.UriScoreUtil;
 
 import java.util.*;
@@ -34,10 +35,19 @@ final public class NeoplasmSummaryCreator {
       final Collection<String> sites = getSites( neoplasm );
       summary.setSite_major( getMajorSite( sites ) );
       summary.setSite_minor( getMinorSite( sites ) );
-      summary.setTopography_major( getMajorTopo( sites ) );
-      summary.setTopography_minor( getMinorTopo( sites ) );
+
+      final Collection<String> topos = sites.stream()
+                                            .map( Neo4jOntologyConceptUtil::getIcdoTopoCode )
+                                            .filter( t -> !t.isEmpty() )
+                                            .collect( Collectors.toSet() );
+//      LOGGER.info( "Major topography according to ICDO codes for sites " + String.join( ",", sites ) + " " + String.join( ",", topos ) );
+      final String majorTopo = getMajorTopo( topos );
+      final String minorTopo = getMinorTopo( topos );
+      summary.setTopography_major( majorTopo );
+      summary.setTopography_minor( minorTopo );
       summary.setSite_related( getSiteRelated( neoplasm ) );
-      final Collection<String> morphs = getMorphology( neoplasm );
+      final Collection<String> morphs = getMorphology( neoplasm, majorTopo+minorTopo );
+//      getBestHistology( morphs, majorTopo+minorTopo );       // Doesn't really help.
       summary.setHistology( getBestHistology( morphs ) );
       summary.setBehavior( getBestBehavior( morphs ) );
       final Collection<String> sides = getLateralities( neoplasm );
@@ -66,61 +76,52 @@ final public class NeoplasmSummaryCreator {
    }
 
    static private String getMajorSite( final Collection<String> sites ) {
-      LOGGER.info( "Major site according to best uris for sites " + String.join( ",",sites ) );
+//      LOGGER.info( "Major site according to best uris for sites " + String.join( ",", sites ) );
       return UriScoreUtil.getBestUri( sites );
 //      return UriUtil.getShortestRootUri( sites );
    }
 
    static private String getMinorSite( final Collection<String> sites ) {
-      LOGGER.info( "Minor site according to most specific uri for sites " + String.join( ",",sites ) );
+//      LOGGER.info( "Minor site according to most specific uri for sites " + String.join( ",", sites ) );
       return UriUtil.getMostSpecificUri( sites );
    }
 
-   static private String getMajorTopo( final Collection<String> sites ) {
-      LOGGER.info( "Major topography according to ICDO codes for sites " + String.join( ",", sites ) );
-      if ( sites.isEmpty() ) {
-         LOGGER.info( "No sites, using C80." );
+   static private String getMajorTopo( final Collection<String> topos ) {
+      if ( topos.isEmpty() ) {
+//         LOGGER.info( "No sites, using C80." );
          return "C80";
       }
       final Function<String, String> getMajor = t -> {
          final int dot = t.indexOf( '.' );
          return dot > 0 ? t.substring( 0, dot ) : t;
       };
-      final Collection<String> topos = sites.stream()
-                                           .map( Neo4jOntologyConceptUtil::getIcdoTopoCode )
-                                           .collect( Collectors.toSet() );
       return topos.stream()
                   .map( getMajor )
                   .distinct()
-                  .filter( t -> !t.isEmpty() )
                   .sorted()
                   .collect( Collectors.joining( ";" ) );
    }
 
-   static private String getMinorTopo( final Collection<String> sites ) {
-      LOGGER.info( "Major topography according to ICDO codes for sites " + String.join( ",", sites ) );
-      if ( sites.isEmpty() ) {
+   static private String getMinorTopo( final Collection<String> topos ) {
+      if ( topos.isEmpty() ) {
          return "9";
       }
       final Function<String, String> getMinor = t -> {
          final int dot = t.indexOf( '.' );
          return dot > 0 ? t.substring( dot + 1 ) : "";
       };
-      final Collection<String> topos = sites.stream()
-                                           .map( Neo4jOntologyConceptUtil::getIcdoTopoCode )
-                                           .collect( Collectors.toSet() );
       final Collection<String> allMinors = topos.stream()
-                  .map( getMinor )
-                  .distinct()
-                  .filter( t -> !t.isEmpty() )
-                  .sorted()
-                  .collect( Collectors.toList() );
+                                                .map( getMinor )
+                                                .filter( t -> !t.isEmpty() )
+                                                .distinct()
+                                                .sorted()
+                                                .collect( Collectors.toList() );
       if ( allMinors.size() > 1 ) {
          allMinors.remove( "9" );
       }
       String minors = String.join( ";", allMinors );
       if ( minors.isEmpty() ) {
-         LOGGER.info( "No specific site codes, using 9." );
+//         LOGGER.info( "No specific site codes, using 9." );
          return "9";
       }
       return minors;
@@ -173,17 +174,52 @@ final public class NeoplasmSummaryCreator {
 //   }
 
 
-   static private Collection<String> getMorphology( final ConceptAggregate conceptAggregate ) {
-      LOGGER.info( "Morphology seems to have a little bit of human favoritism involved ..." );
+   static private Collection<String> getMorphology( final ConceptAggregate conceptAggregate, final String topo ) {
+//      LOGGER.info( "Morphology seems to have a little bit of human favoritism involved ..." );
 
+//      conceptAggregate.getUriRootsMap()
+//                      .entrySet()
+//                      .stream()
+//                      .map( e -> e.getKey() + "=" + String.join( ",", e.getValue() ) )
+//                      .forEach( LOGGER::info );
       final Collection<String> morphs
             = conceptAggregate.getAllUris()
                               .stream()
                               .map( NeoplasmSummaryCreator::getIcdoMorphCodes )
                               .flatMap( Collection::stream )
                               .collect( Collectors.toSet() );
-      LOGGER.info( "All Ontology Morphology codes for " + conceptAggregate.getUri() + ": " + String.join( ",", morphs ) );
-
+      morphs.remove( "" );
+//      LOGGER.info( "Morphologies from the ontology graph: " + String.join( ", ", morphs ) );
+      if ( morphs.isEmpty() ) {
+         conceptAggregate.getAllUris()
+                         .stream()
+                         .map( TopoMorphValidator.getInstance()::getMorphCode )
+                         .forEach( morphs::add );
+//         LOGGER.info( "No morphologies from the ontology graph.  From the lookupTable got " + String.join( ", ", morphs ) );
+         morphs.remove( "" );
+         if ( morphs.isEmpty() ) {
+            conceptAggregate.getUriRootsMap()
+                            .values()
+                            .stream()
+                            .flatMap( Collection::stream )
+                            .map( TopoMorphValidator.getInstance()::getMorphCode )
+                            .forEach( morphs::add );
+            morphs.remove( "" );
+//            LOGGER.info( "No morphologies from the ontology graph or lookup table.  Path to root morphologies from "
+//                         + "the lookup table: " + String.join( ", ", morphs ) );
+         }
+         if ( morphs.size() > 1 ) {
+            final Collection<String> validTopoMorphs = TopoMorphValidator.getInstance().getValidTopoMorphs( topo );
+            morphs.retainAll( validTopoMorphs );
+//            LOGGER.info( "Valid lookup table morphologies from the lookupTable topography " + topo + " : "
+//                         + String.join( ", ", morphs ) );
+         }
+      }
+      if ( morphs.isEmpty() ) {
+//         LOGGER.info( "No Morphology codes for " + conceptAggregate.getUri() + " defaulting to 8000/3 " );
+         return Collections.singletonList( "8000/3" );
+      }
+//      LOGGER.info( "All Ontology Morphology codes for " + conceptAggregate.getUri() + ": " + String.join( ",", morphs ) );
 //      if ( uris.contains( "Invasive_Breast_Carcinoma" ) && uris.contains( "Ductal_Carcinoma" ) ) {
 //      if ( uri.equals( "Ductal_Carcinoma" ) ) {
 //         // Kludge for invasive ductal
@@ -227,25 +263,46 @@ final public class NeoplasmSummaryCreator {
 
 
    static private String getBestHistology( final Collection<String> morphs ) {
-      LOGGER.info( "Getting Best Histology from Morphology codes " + String.join( ",", morphs ) );
+//      LOGGER.info( "Getting Best Histology from Morphology codes " + String.join( ",", morphs ) );
       final HistoComparator comparator = new HistoComparator();
 
-      LOGGER.info( "The preferred histology is the first of the following OR the first in numerically sorted order:" );
-      LOGGER.info( "8071 8070 8520 8575 8500 8503 8260 8250 8140 8480 8046 8041 8240 8012 8000 8010" );
-      LOGGER.info( "This ordering came from the best overall fit to gold annotations." );
+//      LOGGER.info( "The preferred histology is the first of the following OR the first in numerically sorted order:" );
+//      LOGGER.info( "8071 8070 8520 8575 8500 8503 8260 8250 8140 8480 8046 8041 8240 8012 8000 8010" );
+//      LOGGER.info( "This ordering came from the best overall fit to gold annotations." );
 
       return morphs.stream()
                    .map( getHisto )
                    .filter( h -> !h.isEmpty() )
 //                   .max( String.CASE_INSENSITIVE_ORDER )
                    .max( comparator )
-                   .orElse( "" );
+                   .orElse( "8000" );
    }
 
+//   static private String getBestHistology( final Collection<String> morphs, final String topo ) {
+//      LOGGER.info( "Getting Best Histology from Morphology codes " + String.join( ",", morphs )
+//                   + " and topography " + topo );
+//      final List<String> topoMorphs = TopoMorphValidator.getInstance().getRankedTopoHistos( topo );
+//      LOGGER.info( "Ranked Major Histologies from topography " + topo + " : " + String.join( "; ", topoMorphs ) );
+//
+//      final HistoComparator comparator = new HistoComparator();
+//
+//      LOGGER.info( "The preferred histology is the first of the following OR the first in numerically sorted order:" );
+//      LOGGER.info( "8071 8070 8520 8575 8500 8503 8260 8250 8140 8480 8046 8041 8240 8012 8000 8010" );
+//      LOGGER.info( "This ordering came from the best overall fit to gold annotations." );
+//
+//
+//      return morphs.stream()
+//                   .map( getHisto )
+//                   .filter( h -> !h.isEmpty() )
+////                   .max( String.CASE_INSENSITIVE_ORDER )
+//                   .max( comparator )
+//                   .orElse( "" );
+//   }
+//
 
    // Should be 3 (instead of 2) : 2
    static private String getBestBehavior( final Collection<String> morphs ) {
-      LOGGER.info( "Behavior comes from Histology." );
+//      LOGGER.info( "Behavior comes from Histology." );
       final String histo = getBestHistology( morphs );
       if ( histo.isEmpty() ) {
          return "";
@@ -261,14 +318,14 @@ final public class NeoplasmSummaryCreator {
          return "";
       }
       if ( behaves.size() == 1 ) {
-         LOGGER.info( "Only one possible behavior." );
+//         LOGGER.info( "Only one possible behavior." );
          return behaves.get( 0 );
       }
       if ( behaves.size() == 2 && behaves.contains( "2" ) && behaves.contains( "3" ) ) {
-         LOGGER.info( "Only Behaviors 2 and 3, and Behavior of 3 trumps a behavior of 2." );
+//         LOGGER.info( "Only Behaviors 2 and 3, and Behavior of 3 trumps a behavior of 2." );
          return "3";
       }
-      LOGGER.info( "Removing Behavior 3 (if present) in favor of other highest value." );
+//      LOGGER.info( "Removing Behavior 3 (if present) in favor of other highest value." );
       behaves.remove( "3" );
       return behaves.get( behaves.size() - 1 );
    }
@@ -312,7 +369,7 @@ final public class NeoplasmSummaryCreator {
    //    https://seer.cancer.gov/tools/grade/
    //    https://apps.who.int/iris/bitstream/handle/10665/96612/9789241548496_eng.pdf
    static private String getGrade( final ConceptAggregate summary ) {
-      LOGGER.info( "Getting Grade ..." );
+//      LOGGER.info( "Getting Grade ..." );
       // TODO Remove from ontology (class or synonyms)
 //      gleasons.remove( "Gleason_Grade" );
 //      gleasons.remove( "Total_Gleason_Score" );
@@ -321,12 +378,12 @@ final public class NeoplasmSummaryCreator {
       // TODO add Nottingham lookup for BrCa, Bloom-Richardson for BrCa.
       final Collection<String> grades
             = getRelatedUris( summary, HAS_GLEASON_SCORE, DISEASE_IS_GRADE, DISEASE_HAS_FINDING );
-      LOGGER.info( "Grade is derived from the related HAS_GLEASON_SCORE, DISEASE_IS_GRADE, DISEASE_HAS_FINDING" );
+//      LOGGER.info( "Grade is derived from the related HAS_GLEASON_SCORE, DISEASE_IS_GRADE, DISEASE_HAS_FINDING" );
       final Collection<String> icdos = new HashSet<>();
       final Collection<String> goodGrades = new HashSet<>();
       for ( String grade : grades ) {
          if ( grade.startsWith( "Gleason_Score_" ) ) {
-            LOGGER.info( "Have a Gleason Score, adding its Grade Equivalent to possible ICDO Grades." );
+//            LOGGER.info( "Have a Gleason Score, adding its Grade Equivalent to possible ICDO Grades." );
             if ( grade.endsWith( "7" ) ) {
                icdos.add( "2" );
             } else if ( grade.endsWith( "8" )
@@ -344,26 +401,26 @@ final public class NeoplasmSummaryCreator {
                      || grade.equals( "Low_Grade_Malignant_Neoplasm" )
                      || grade.equals( "Well_Differentiated" ) ) {
             icdos.add( "1" );
-            LOGGER.info( "Have a Low_Grade or Well_differentiated, adding its Grade Equivalent (1) to possible ICDO Grades." );
+//            LOGGER.info( "Have a Low_Grade or Well_differentiated, adding its Grade Equivalent (1) to possible ICDO Grades." );
             goodGrades.add( grade );
          } else if ( grade.equals( "Grade_2" )
                      || grade.equals( "Intermediate_Grade" )
                      || grade.equals( "Intermediate_Grade_Malignant_Neoplasm" )
                      || grade.equals( "Moderately_Differentiated" ) ) {
-            LOGGER.info( "Have a Intermediate_Grade or Moderately_Differentiated, adding its Grade Equivalent (2) to possible ICDO Grades." );
+//            LOGGER.info( "Have a Intermediate_Grade or Moderately_Differentiated, adding its Grade Equivalent (2) to possible ICDO Grades." );
             icdos.add( "2" );
             goodGrades.add( grade );
          } else if ( grade.equals( "Grade_3" )
                      || grade.equals( "High_Grade" )
                      || grade.equals( "High_Grade_Malignant_Neoplasm" )
                      || grade.equals( "Poorly_Differentiated" ) ) {
-            LOGGER.info( "Have a High_Grade or Poorly_Differentiated, adding its Grade Equivalent (3) to possible ICDO Grades." );
+//            LOGGER.info( "Have a High_Grade or Poorly_Differentiated, adding its Grade Equivalent (3) to possible ICDO Grades." );
             icdos.add( "3" );
             goodGrades.add( grade );
          } else if ( grade.equals( "Grade_4" )
                      || grade.equals( "Undifferentiated" ) ) {
             // todo add "anaplastic"
-            LOGGER.info( "Have an Undifferentiated, adding its Grade Equivalent (4) to possible ICDO Grades." );
+//            LOGGER.info( "Have an Undifferentiated, adding its Grade Equivalent (4) to possible ICDO Grades." );
             icdos.add( "4" );
             goodGrades.add( grade );
          } else if ( grade.equals( "Grade_5" ) ) {
@@ -372,10 +429,10 @@ final public class NeoplasmSummaryCreator {
          }
       }
       if ( goodGrades.isEmpty() ) {
-         LOGGER.info( "No Grades." );
+//         LOGGER.info( "No Grades." );
          return "9";
       }
-      LOGGER.info( "Highest grade (or 9) of " + String.join( ",", icdos ) );
+//      LOGGER.info( "Highest grade (or 9) of " + String.join( ",", icdos ) );
       return icdos.stream().max( String.CASE_INSENSITIVE_ORDER ).orElse( "9" );
    }
 
@@ -517,12 +574,12 @@ final public class NeoplasmSummaryCreator {
 
    static private Collection<String> getFirstRelatedUris( final ConceptAggregate conceptAggregate,
                                                           final String... relations ) {
-      LOGGER.info( "Choosing best site for neoplasm based upon relation hierarchy." );
+//      LOGGER.info( "Choosing best site for neoplasm based upon relation hierarchy." );
       for ( String relation : relations ) {
-         LOGGER.info( "   " + relation );
+//         LOGGER.info( "   " + relation );
          final Collection<String> relatedUris = conceptAggregate.getRelatedUris( relation );
          if ( relatedUris != null && !relatedUris.isEmpty() ) {
-            LOGGER.info( "      " + String.join( ",", relatedUris ) );
+//            LOGGER.info( "      " + String.join( ",", relatedUris ) );
             return relatedUris;
          }
       }

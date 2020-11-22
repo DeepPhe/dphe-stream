@@ -136,12 +136,12 @@ public class TumorContainer extends AbstractNeoplasmContainer {
       merge.setRelated( allRelated );
       updateAllInstances( allInstances, _neoplasms, merge );
 
-      LOGGER.info( "\nRecomputed best URI " + merge.getUri() + " for tumor " + merge.getId()  + " scored: " + merge.getUriScore() + ":" );
-      _neoplasms.forEach( ca -> LOGGER.info( ca.getUri() + " (" + ca.getMentions()
-                                                                                  .stream()
-                                                                                  .map( Mention::getClassUri )
-                                                                                  .collect( Collectors.joining( "," ) ) + ")" ) );
-      LOGGER.info( " and added a new ConceptAggregate replacing all constituent Tumor Container ConceptAggregates " );
+//      LOGGER.info( "\nRecomputed best URI " + merge.getUri() + " for tumor " + merge.getId()  + " scored: " + merge.getUriScore() + ":" );
+//      _neoplasms.forEach( ca -> LOGGER.info( ca.getUri() + " (" + ca.getMentions()
+//                                                                                  .stream()
+//                                                                                  .map( Mention::getClassUri )
+//                                                                                  .collect( Collectors.joining( "," ) ) + ")" ) );
+//      LOGGER.info( " and added a new ConceptAggregate replacing all constituent Tumor Container ConceptAggregates " );
 
 
       return merge;

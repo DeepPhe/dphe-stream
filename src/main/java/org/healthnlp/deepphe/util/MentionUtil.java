@@ -7,7 +7,6 @@ import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.MentionRelation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.UriConstants.LYMPH_NODE;
 
@@ -29,14 +28,14 @@ final public class MentionUtil {
          final Map<Mention, Collection<String>> locationUris,
          final Map<Mention, Collection<String>> lateralityUris ) {
 
-      LOGGER.info( "\nCollating Coreferences, First by Loose Assertion." );
+//      LOGGER.info( "\nCollating Coreferences, First by Loose Assertion." );
 
       final Map<String, List<Mention>> assertionMap = new HashMap<>();
       for ( Mention mention : coref ) {
          final String assertion = getLooseAssertion( mention );
 
 
-         LOGGER.info( assertion + " " + mention.getClassUri() + " " + mention.getId() );
+//         LOGGER.info( assertion + " " + mention.getClassUri() + " " + mention.getId() );
 
 
          assertionMap.computeIfAbsent( assertion, a -> new ArrayList<>() ).add( mention );
@@ -80,7 +79,7 @@ final public class MentionUtil {
       final Map<String, Collection<Mention>> lymphNodes = siteCollatedChains.get( LYMPH_NODE );
       if ( lymphNodes != null ) {
 
-         LOGGER.info( "\nRemoving Lymph Node chains and handling specially ..." );
+//         LOGGER.info( "\nRemoving Lymph Node chains and handling specially ..." );
 
          siteCollatedChains.remove( LYMPH_NODE );
          if ( siteCollatedChains.size() == 1 ) {
@@ -95,17 +94,17 @@ final public class MentionUtil {
       }
       if ( siteNeutrals != null ) {
 
-         LOGGER.info( "\nAdding site-neutral chains" );
+//         LOGGER.info( "\nAdding site-neutral chains" );
 
-         siteNeutrals.forEach( (k,v) -> LOGGER.info( k + " (" + v.stream().map( Mention::getClassUri ).collect( Collectors
-               .joining("," ) ) + ")" ) );
+//         siteNeutrals.forEach( (k,v) -> LOGGER.info( k + " (" + v.stream().map( Mention::getClassUri ).collect( Collectors
+//               .joining("," ) ) + ")" ) );
          siteCollatedChains.put( SITE_NEUTRAL, siteNeutrals );
       }
       if ( lymphNodes != null ) {
 
-         LOGGER.info( "\nAdding lymph node chains" );
+//         LOGGER.info( "\nAdding lymph node chains" );
 
-         lymphNodes.forEach( (k,v) -> LOGGER.info( k + " (" + v.stream().map( Mention::getClassUri ).collect( Collectors.joining("," ) ) + ")" ) );
+//         lymphNodes.forEach( (k,v) -> LOGGER.info( k + " (" + v.stream().map( Mention::getClassUri ).collect( Collectors.joining("," ) ) + ")" ) );
          siteCollatedChains.put( LYMPH_NODE, lymphNodes );
       }
       // At this point we have:
@@ -144,7 +143,7 @@ final public class MentionUtil {
       }
 
 
-      LOGGER.info( "Now Have full map of Site : Laterality : Mention @ site,laterality" );
+//      LOGGER.info( "Now Have full map of Site : Laterality : Mention @ site,laterality" );
 
 
       return lateralSiteMentions;
@@ -166,17 +165,17 @@ final public class MentionUtil {
       final Map<String, List<Mention>> uriBodySites = getUriBodySites( mentions, locationUris );
 
 
-      LOGGER.info( "Collected Body Sites for Mentions:" );
-      uriBodySites.forEach( (k,v) -> LOGGER.info( "Site: " + k
-                                                  + " (" + v.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining( ",") ) + ")" ) );
+//      LOGGER.info( "Collected Body Sites for Mentions:" );
+//      uriBodySites.forEach( (k,v) -> LOGGER.info( "Site: " + k
+//                                                  + " (" + v.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining( ",") ) + ")" ) );
 
 
       // collate site uris
       final Map<String, Collection<String>> associatedSiteUriMap = getAssociatedSiteUriMap( uriBodySites );
 
 
-      LOGGER.info( "Associated Body Sites:" );
-      associatedSiteUriMap.forEach( (k,v) -> LOGGER.info( "Best Site: " + k + " (" + String.join( ",", v ) + ")" ) );
+//      LOGGER.info( "Associated Body Sites:" );
+//      associatedSiteUriMap.forEach( (k,v) -> LOGGER.info( "Best Site: " + k + " (" + String.join( ",", v ) + ")" ) );
 
 
       final Map<String, Collection<Mention>> associatedBodySites
@@ -193,9 +192,9 @@ final public class MentionUtil {
       }
 
 
-      LOGGER.info( "Refined Body Sites for Mentions:" );
-      associatedBodySites.forEach( (k,v) -> LOGGER.info( "Site: " + k + " ("
-                                                         + v.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining(",") ) + ")" ) );
+//      LOGGER.info( "Refined Body Sites for Mentions:" );
+//      associatedBodySites.forEach( (k,v) -> LOGGER.info( "Site: " + k + " ("
+//                                                         + v.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining(",") ) + ")" ) );
 
 
       return associatedBodySites;
@@ -239,8 +238,8 @@ final public class MentionUtil {
       final Map<String, String> bestRoots = UriUtil.getBestRoots( uris );
 
 
-      LOGGER.info( "Best Root URIs for Site URIs: " );
-      bestRoots.forEach( (k,v) -> LOGGER.info( k + " " + v ) );
+//      LOGGER.info( "Best Root URIs for Site URIs: " );
+//      bestRoots.forEach( (k,v) -> LOGGER.info( k + " " + v ) );
 
 
       final Map<String, Collection<String>> rootChildrenMap = new HashMap<>();
@@ -292,9 +291,9 @@ final public class MentionUtil {
       }
 
 
-      LOGGER.info( "Associated Lateralities:" );
-      lateralityMap.forEach( (k,v) -> LOGGER.info( k + " ("
-                                                   + v.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining( "," ) ) + ")" ) );
+//      LOGGER.info( "Associated Lateralities:" );
+//      lateralityMap.forEach( (k,v) -> LOGGER.info( k + " ("
+//                                                   + v.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining( "," ) ) + ")" ) );
 
 
       return lateralityMap;
@@ -311,8 +310,8 @@ final public class MentionUtil {
          map.values().stream()
             .filter( Objects::nonNull )
             .filter( c -> c.size() > 1 )
-            .peek( c -> LOGGER.info( "Adding site-based Coreference Chain ("
-                                     + c.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining(",") ) + ")" ) )
+//            .peek( c -> LOGGER.info( "Adding site-based Coreference Chain ("
+//                                     + c.stream().map( m -> m.getClassUri() + " " + m.getId() ).collect( Collectors.joining(",") ) + ")" ) )
             .forEach( c -> chains.add( new ArrayList<>( c ) ) );
       }
    }
@@ -333,7 +332,7 @@ final public class MentionUtil {
             }
          }
       }
-      LOGGER.info( "\nMerging Chains ..." );
+//      LOGGER.info( "\nMerging Chains ..." );
       addToChains( chains, siteLateralChains );
    }
 

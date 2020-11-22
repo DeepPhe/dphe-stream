@@ -2,7 +2,6 @@ package org.healthnlp.deepphe.summary.concept;
 
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
@@ -66,7 +65,21 @@ public interface ConceptAggregate {
    /**
     * @return all represented Identified Annotations
     */
-   Collection<Mention> getMentions();
+   default Collection<Mention> getMentions() {
+      return getNoteIdMap().keySet();
+//                           .stream()
+//                           .sorted( Comparator.comparing( Mention::getBegin ).thenComparing( Mention::getEnd ) )
+//                           .collect( Collectors.toList() );
+   }
+
+   /**
+    *
+    * @return a map of class uris and mentions with those uris
+    */
+   default Map<String,List<Mention>> getUriMentions() {
+      return getMentions().stream()
+                          .collect( Collectors.groupingBy( Mention::getClassUri ) );
+   }
 
    /**
     * @return preferred text
@@ -92,24 +105,44 @@ public interface ConceptAggregate {
     *
     * @return document identifiers as single text string.
     */
-   String getJoinedNoteId();
+   default String getJoinedNoteId() {
+      return getNoteIdMap().values()
+                           .stream()
+                           .distinct()
+                           .collect( Collectors.joining( "_") );
+   }
 
    /**
     * @return document identifiers for all annotations.
     */
-   Collection<String> getNoteIds();
+   default Collection<String> getNoteIds() {
+      return getNoteIdMap().values();
+   }
 
    /**
     * @param mention annotation within Concept
     * @return id of the document with annotation
     */
-   String getNoteId( Mention mention );
+   default String getNoteId( final Mention mention ) {
+      return getNoteIdMap().getOrDefault( mention, "No_Mention_No_Doc" );
+   }
 
    /**
     *
     * @return map of documentId to collection of annotations in document
     */
-   Map<String,Collection<Mention>> getNoteMentions();
+   default Map<String,Collection<Mention>> getNoteMentions() {
+      final Map<Mention, String> noteIdMap = getNoteIdMap();
+      if ( noteIdMap == null ) {
+         return Collections.emptyMap();
+      }
+      final Map<String,Collection<Mention>> docMentions = new HashMap<>();
+      for ( Map.Entry<Mention,String> mentionDoc : noteIdMap.entrySet() ) {
+         docMentions.computeIfAbsent( mentionDoc.getValue(), d -> new ArrayList<>() )
+                    .add( mentionDoc.getKey() );
+      }
+      return docMentions;
+   }
 
    /**
     * @param mention -
@@ -248,6 +281,12 @@ public interface ConceptAggregate {
     */
    void clearRelations();
 
+   /**
+    *
+    * @return map of mentions and their note ids
+    */
+   Map<Mention, String> getNoteIdMap();
+
 
    /**
     * As much as I hated to do it, I removed the standard of immutable CIs in order to better create ci relations
@@ -311,17 +350,17 @@ public interface ConceptAggregate {
     * @return Secondary : metastasis uri or Invasive_Lesion; Primary : not INVASIVE_LESION, Cancer : no tumor extent
     */
    default ConceptAggregate.NeoplasmType getNeoplasmType() {
-      final Logger LOGGER = Logger.getLogger( "ConceptAggregate" );
+//      final Logger LOGGER = Logger.getLogger( "ConceptAggregate" );
       if ( getUri().contains( "In_Situ" ) ) {
          // An in situ has to be primary.
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by \"in_situ\" in URI." );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by \"in_situ\" in URI." );
          return PRIMARY;
       }
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
       final Collection<String> stages = UriConstants.getCancerStages( graphDb );
       if ( getRelatedUris( HAS_STAGE ).stream().anyMatch( stages::contains ) ) {
-         LOGGER.info( "neoplasm " + getUri() + " "  + getId() + " is Primary by having a Stage." );
+//         LOGGER.info( "neoplasm " + getUri() + " "  + getId() + " is Primary by having a Stage." );
          return PRIMARY;
       }
 
@@ -333,7 +372,7 @@ public interface ConceptAggregate {
            || relations.contains( HAS_PATHOLOGIC_N )
            || relations.contains( HAS_PATHOLOGIC_M )
       ) {
-         LOGGER.info( "neoplasm " + getUri() + " "+ getId() + " is Primary by having a TNM." );
+//         LOGGER.info( "neoplasm " + getUri() + " "+ getId() + " is Primary by having a TNM." );
          return PRIMARY;
       }
       final Collection<String> diagnoses = new ArrayList<>();
@@ -344,35 +383,35 @@ public interface ConceptAggregate {
       final boolean benignUri = UriConstants.getBenignTumorUris( graphDb ).stream()
                                             .anyMatch( diagnoses::contains );
       if ( benignUri ) {
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Not a Cancer by being or having a Benign Tumor URI according to Ontology in a Diagnosis" );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Not a Cancer by being or having a Benign Tumor URI according to Ontology in a Diagnosis" );
          return ConceptAggregate.NeoplasmType.NON_CANCER;
       }
       // Check metastases first so that we don't get something like historic In_Situ in a lymph node
       final boolean metastasisUri = UriConstants.getMetastasisUris( graphDb ).stream()
                                                 .anyMatch( diagnoses::contains );
       if ( metastasisUri ) {
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() +  " is Secondary by being or having a Secondary Tumor URI according to Ontology in a Diagnosis." );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() +  " is Secondary by being or having a Secondary Tumor URI according to Ontology in a Diagnosis." );
          return SECONDARY;
       }
       // TODO - check for no diagnosis ?  diagnoses size > 1.  If no diagnosis maybe hold off on being primary?
       final boolean primaryUri = UriConstants.getPrimaryUris( graphDb ).stream()
                                              .anyMatch( diagnoses::contains );
       if ( primaryUri ) {
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by being or having a Primary URI according to Ontology in a Diagnosis." );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by being or having a Primary URI according to Ontology in a Diagnosis." );
          return PRIMARY;
       }
       final Collection<String> extentUris = getRelatedUris( HAS_TUMOR_EXTENT );
       if ( extentUris.contains( "In_Situ_Lesion" ) ) {
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by having an in situ lesion as an extent." );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by having an in situ lesion as an extent." );
          return PRIMARY;
       } else if ( extentUris.contains( "Invasive_Lesion" )
                   || extentUris.contains( "Metastatic_Lesion" ) ) {
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having an invasive or metastatic lesion as an extent." );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having an invasive or metastatic lesion as an extent." );
          return SECONDARY;
       }
       final Collection<ConceptAggregate> metastasesOf = getRelated( METASTASIS_OF );
       if ( !metastasesOf.isEmpty() ) {
-         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having a metastasis_of relation." );
+//         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having a metastasis_of relation." );
          return SECONDARY;
       }
       final Collection<String> primarySiteUris = getRelatedSiteUris();
@@ -380,7 +419,7 @@ public interface ConceptAggregate {
          // This won't work for lymphoma
          final Collection<String> lymphSiteUris = Neo4jOntologyConceptUtil.getBranchUris( LYMPH_NODE );
          if ( primarySiteUris.stream().anyMatch( lymphSiteUris::contains ) ) {
-            LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having a lymph node site." );
+//            LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having a lymph node site." );
             return SECONDARY;
          }
       }
@@ -402,30 +441,44 @@ public interface ConceptAggregate {
     */
    default String toText() {
       final StringBuilder sb = new StringBuilder();
-      sb.append( getClass().getSimpleName() ).append( ": " )
-        .append( getPatientId() ).append( "  " )
-        .append( getMentions().stream()
-                              .map( this::getNoteId )
-                              .distinct()
-                              .collect( Collectors.joining( "_") ) ).append( "\n" )
-        .append( getPreferredText() ).append( "\n" )
+      sb.append( "\n" )
+//            .append( getClass().getSimpleName() ).append( ": " )
+//        .append( getPatientId() ).append( "  " )
+//        .append( getMentions().stream()
+//                              .map( this::getNoteId )
+//                              .distinct()
+//                              .collect( Collectors.joining( "_") ) ).append( "\n" )
+//        .append( getPreferredText() ).append( "\n" )
         .append( getUri() ).append( "  " )
-        .append( getId() ).append( "\n" )
-        .append( getCoveredText() )
-        .append( " " )
-        .append( isNegated() ? "\tnegated" : "" )
-        .append( isUncertain() ? "\tuncertain" : "" )
-        .append( isConditional() ? "\tconditional" : "" )
-        .append( isGeneric() ? "\thypothetical" : "" )
-//        .append( isPermanent() ? "\tpermanent" : "" )
-//        .append( isIntermittent() ? "\tintermittent" : "" )
-        .append( inPatientHistory() ? "\tpatient history" : "" )
-        .append( getSubject().isEmpty() ? "" : "\t" + getSubject() )
-        .append( getDocTimeRel().isEmpty() ? "" : "\t" + getDocTimeRel() );
-//        .append( getModality().isEmpty() ? "" : "\t" + getModality() );
+        .append( getId() ).append( " : " );
+//        .append( getMentions().size() ).append( " mentions,   all uris: " );
+      getUriMentions().forEach( (k,v) -> sb.append( " " )
+                                           .append( k )
+                                           .append( "=" )
+                                           .append( v.size() ) );
+//         .append( String.join( " ", getAllUris() ) );
+//        .append( getCoveredText() )
+//        .append( " " )
+//        .append( isNegated() ? "\tnegated" : "" )
+//        .append( isUncertain() ? "\tuncertain" : "" )
+//        .append( isConditional() ? "\tconditional" : "" )
+//        .append( isGeneric() ? "\thypothetical" : "" )
+////        .append( isPermanent() ? "\tpermanent" : "" )
+////        .append( isIntermittent() ? "\tintermittent" : "" )
+//        .append( inPatientHistory() ? "\tpatient history" : "" )
+//        .append( getSubject().isEmpty() ? "" : "\t" + getSubject() )
+//        .append( getDocTimeRel().isEmpty() ? "" : "\t" + getDocTimeRel() );
+////        .append( getModality().isEmpty() ? "" : "\t" + getModality() );
       for ( Map.Entry<String,Collection<ConceptAggregate>> related : getRelatedConceptMap().entrySet() ) {
-         sb.append( "\n" ).append( related.getKey() );
-         related.getValue().forEach( ci -> sb.append( "\n   " ).append( ci.getPreferredText() ).append( "  " ).append( ci.getId() ) );
+         sb.append( "\n  " ).append( related.getKey() );
+//         related.getValue().forEach( ci -> sb.append( "\n   " ).append( ci.getPreferredText() ).append( "  " ).append( ci.getId() ) );
+         related.getValue().forEach( ci -> sb.append( "\n    " )
+                                             .append( ci.getUri() ).append( " " )
+                                             .append( ci.getId() ).append( " : "  )
+//                                             .append( ci.getMentions().size() ).append( " mentions,   all uris: " )
+//                                             .append( String.join( " ", ci.getAllUris() ) ) );
+               .append( ci.getUriMentions().entrySet().stream().map( e -> e.getKey() + "=" + e.getValue().size() ).collect(
+                     Collectors.joining( " " ) ) ) );
       }
       return sb.toString();
    }
@@ -474,8 +527,8 @@ public interface ConceptAggregate {
       }
 
       @Override
-      public Collection<Mention> getMentions() {
-         return Collections.emptyList();
+      public Map<Mention, String> getNoteIdMap() {
+         return Collections.emptyMap();
       }
 
       @Override
@@ -492,19 +545,6 @@ public interface ConceptAggregate {
       public String getJoinedNoteId() {
          return "";
       }
-
-      @Override
-      public Collection<String> getNoteIds() {
-         return Collections.emptyList();
-      }
-
-      @Override
-      public String getNoteId( final Mention mention ) {
-         return "";
-      }
-
-      @Override
-      public Map<String,Collection<Mention>> getNoteMentions() { return Collections.emptyMap(); }
 
       @Override
       public Date getNoteDate( final Mention mention ) {

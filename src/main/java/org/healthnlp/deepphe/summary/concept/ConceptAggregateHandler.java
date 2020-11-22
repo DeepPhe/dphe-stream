@@ -48,8 +48,8 @@ final public class ConceptAggregateHandler {
       final Map<String, Collection<String>> associatedUrisMap = UriUtil.getAssociatedUriMap( uriMentionsMap.keySet() );
 
 
-      LOGGER.info( "\nMap of unique xDoc URIs to URIs that are associated (e.g. same branch)." );
-      associatedUrisMap.forEach( (k,v) -> LOGGER.info( k + ": (" + String.join( ",", v ) + ")" ) );
+//      LOGGER.info( "\nMap of unique xDoc URIs to URIs that are associated (e.g. same branch)." );
+//      associatedUrisMap.forEach( (k,v) -> LOGGER.info( k + ": (" + String.join( ",", v ) + ")" ) );
 
 
       // TODO - jinky.  Relies upon corefs that may be incorrect.
@@ -70,7 +70,7 @@ final public class ConceptAggregateHandler {
       buildPlacements( patientRelations, mentionIdMap, locationUris, lateralityUris );
 
 
-      LOGGER.info( "\nDetermined Locations for all Mentions." );
+      LOGGER.info( "!!!    Determined Locations for all Mentions." );
       locationUris.forEach( (k,v) -> LOGGER.info( "Mention " + k.getClassUri() +" "+ k.getId() + " at (" + String.join( ",", v ) + ")" ) );
       lateralityUris.forEach( (k,v) -> LOGGER.info( "Mention " + k.getClassUri() +" "+ k.getId() + " on (" + String.join( ",", v ) + ")" ) );
 
@@ -109,7 +109,7 @@ final public class ConceptAggregateHandler {
 
 
 
-               LOGGER.info( "Created ConceptAggregate " + concept.getUri() + " " + concept.getId() + " scored: " + concept.getUriScore() );
+//               LOGGER.info( "Created ConceptAggregate " + concept.getUri() + " " + concept.getId() + " scored: " + concept.getUriScore() );
 //               uriRoots.forEach( (k,v) -> LOGGER.info( "URI " + k + " with -unordered- root URIs (" + String.join( ",", v ) + ")" ) );
 
 
@@ -138,7 +138,7 @@ final public class ConceptAggregateHandler {
                            Collections.singletonList( mentionNoteId.getKey() ) ) ) );
 
 
-         LOGGER.info( "Created Simple ConceptAggregate of " + bestUri );
+//         LOGGER.info( "Created Simple ConceptAggregate of " + bestUri );
 
 
       }
@@ -147,7 +147,7 @@ final public class ConceptAggregateHandler {
       addRelations( conceptAggregates.values(), patientRelations );
 
 
-      LOGGER.info( "\nConcept Aggregates:" );
+      LOGGER.info( "\n!!!     All Concept Aggregates:" );
       conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
 
 
@@ -215,7 +215,7 @@ final public class ConceptAggregateHandler {
          final Collection<Collection<ConceptAggregate>> conceptAggregateSet,
          final Collection<MentionRelation> patientRelations ) {
 
-      LOGGER.info( "Adding relations to Concept Aggregates ..." );
+//      LOGGER.info( "Adding relations to Concept Aggregates ..." );
 
 
       final Map<Mention, ConceptAggregate> mentionConceptAggregateMap
@@ -234,7 +234,7 @@ final public class ConceptAggregateHandler {
 
 
 
-                  LOGGER.info( "Adding Concept Aggregate Relation " + conceptAggregate.getUri() + " " + conceptAggregate.getId() + " " + type + " " + target.getUri() + " " + target.getId() );
+//                  LOGGER.info( "Adding Concept Aggregate Relation " + conceptAggregate.getUri() + " " + conceptAggregate.getId() + " " + type + " " + target.getUri() + " " + target.getId() );
 
 
 

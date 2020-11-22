@@ -8,7 +8,6 @@ import org.healthnlp.deepphe.summary.container.CancerContainer;
 import org.healthnlp.deepphe.summary.container.TumorContainer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_DIAGNOSIS;
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_LATERALITY;
@@ -34,20 +33,20 @@ final public class ConceptAggregateMerger {
          final Collection<ConceptAggregate> conceptAggregates ) {
 
 
-      LOGGER.info( "\n================ Merging Tumors ===================" );
-      LOGGER.info( "We want to determine existing Cancers and associate tumors with those cancers.  " +
-                   "The first thing to do is to merge ConceptAggregates into unique Tumors." );
+//      LOGGER.info( "\n================ Merging Tumors ===================" );
+//      LOGGER.info( "We want to determine existing Cancers and associate tumors with those cancers.  " +
+//                   "The first thing to do is to merge ConceptAggregates into unique Tumors." );
 
 
       final Collection<ConceptAggregate> tumors = mergeTumors( neoplasms, conceptAggregates );
 
 
-      LOGGER.info( "Current ConceptAggregates:" );
-      conceptAggregates.forEach( LOGGER::info );
+//      LOGGER.info( "Current ConceptAggregates:" );
+//      conceptAggregates.forEach( LOGGER::info );
 
 
-      LOGGER.info( "\n================ Merging Cancers ===================" );
-      LOGGER.info( "We now have unique tumors.  We will try to associate them and classify unique Cancers accordingly." );
+//      LOGGER.info( "\n================ Merging Cancers ===================" );
+//      LOGGER.info( "We now have unique tumors.  We will try to associate them and classify unique Cancers accordingly." );
 
 
       final Map<ConceptAggregate,Collection<ConceptAggregate>> cancerMap = mergeCancers( neoplasms, conceptAggregates, tumors );
@@ -102,7 +101,7 @@ final public class ConceptAggregateMerger {
 
 
 
-      LOGGER.info( "\nTumor Containers by Laterality and Location:" );
+//      LOGGER.info( "\nTumor Containers by Laterality and Location:" );
 //      tumorContainers.forEach( t -> LOGGER.info( "("
 //                                                 + t._neoplasms.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining(",") ) + ")" ) );
 
@@ -159,7 +158,7 @@ final public class ConceptAggregateMerger {
       }
 
 
-      LOGGER.info( "\nMerging Tumors by Laterality and Site ..." );
+//      LOGGER.info( "\nMerging Tumors by Laterality and Site ..." );
 
 
       // Seed Bilaterals
@@ -199,8 +198,8 @@ final public class ConceptAggregateMerger {
             tumorContainers.add( new TumorContainer( neoplasm ) );
 
 
-            LOGGER.info( "Added Concept Aggregate " + neoplasm.getUri() + " " + neoplasm.getId() + " to Bilateral new Container (" +
-                         String.join( ",", neoplasm.getRelatedSiteUris() ) + ")" );
+//            LOGGER.info( "Added Concept Aggregate " + neoplasm.getUri() + " " + neoplasm.getId() + " to Bilateral new Container (" +
+//                         String.join( ",", neoplasm.getRelatedSiteUris() ) + ")" );
 
 
          }
@@ -245,9 +244,9 @@ final public class ConceptAggregateMerger {
             tumorContainers.add( new TumorContainer( neoplasm ) );
 
 
-            LOGGER.info( "Added Concept Aggregate " + neoplasm.getUri() + " " + neoplasm.getId() + " to Lateral new Container ("
-                         + lateralities.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining(",") )
-                         + ") (" + String.join( ",", neoplasm.getRelatedSiteUris() ) + ")" );
+//            LOGGER.info( "Added Concept Aggregate " + neoplasm.getUri() + " " + neoplasm.getId() + " to Lateral new Container ("
+//                         + lateralities.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining(",") )
+//                         + ") (" + String.join( ",", neoplasm.getRelatedSiteUris() ) + ")" );
 
 
 
@@ -296,8 +295,8 @@ final public class ConceptAggregateMerger {
             tumorContainers.add( new TumorContainer( neoplasm ) );
 
 
-            LOGGER.info( "Added Concept Aggregate " + neoplasm.getUri() + " " + neoplasm.getId() + " to non lateral new Container (" +
-                         String.join( ",", neoplasm.getRelatedSiteUris() ) + ")" );
+//            LOGGER.info( "Added Concept Aggregate " + neoplasm.getUri() + " " + neoplasm.getId() + " to non lateral new Container (" +
+//                         String.join( ",", neoplasm.getRelatedSiteUris() ) + ")" );
 
 
          }
@@ -325,8 +324,8 @@ final public class ConceptAggregateMerger {
             l -> new HashSet<>() ).add( t ) );
 
 
-      LOGGER.info( "Tumors by Type:" );
-      typeTumors.forEach( (k,v) -> LOGGER.info( k + " (" + v.stream().map( c -> c.getUri() + " " + c.getId() ).collect( Collectors.joining(",") ) + ")" ) );
+//      LOGGER.info( "Tumors by Type:" );
+//      typeTumors.forEach( (k,v) -> LOGGER.info( k + " (" + v.stream().map( c -> c.getUri() + " " + c.getId() ).collect( Collectors.joining(",") ) + ")" ) );
 
 
       // Do tumors first so that tumor duplication is less frequent.
@@ -367,11 +366,11 @@ final public class ConceptAggregateMerger {
       createCancers( typeTumors.get( PRIMARY ), cancerContainers, assignedNeoplasms );
 
 
-      LOGGER.info( "Creating Cancers by Primary Tumors ..." );
+//      LOGGER.info( "Creating Cancers by Primary Tumors ..." );
       createCancerContainers( typeTumors.get( PRIMARY ), cancerContainers, assignedNeoplasms );
-      LOGGER.info( "Creating Cancers by Unknown Tumors ..." );
+//      LOGGER.info( "Creating Cancers by Unknown Tumors ..." );
       createCancerContainers( typeTumors.get( UNKNOWN ), cancerContainers, assignedNeoplasms );
-      LOGGER.info( "Creating Cancers by Secondary Tumors ..." );
+//      LOGGER.info( "Creating Cancers by Secondary Tumors ..." );
       createCancerContainers( typeTumors.get( SECONDARY ), cancerContainers, assignedNeoplasms );
 
 
@@ -418,7 +417,7 @@ final public class ConceptAggregateMerger {
          return true;
       }
 
-      LOGGER.info( "Matching " + neoplasms.size() + " Neoplasms to best of " + cancerContainers.size() + " Cancer Containers ..." );
+//      LOGGER.info( "Matching " + neoplasms.size() + " Neoplasms to best of " + cancerContainers.size() + " Cancer Containers ..." );
 
       final Collection<ConceptAggregate> assigned = new HashSet<>();
       final Collection<CancerContainer> bestContainers = new HashSet<>();
@@ -436,8 +435,8 @@ final public class ConceptAggregateMerger {
             }
          }
          if ( bestRating > 0 ) {
-            LOGGER.info( "Best Diagnosis Match Rating " + bestRating + " for neoplasm " + neoplasm.getUri() + " adding to\n" +
-                         bestContainers.stream().map( Object::toString ).collect( Collectors.joining( "\n" ) ) );
+//            LOGGER.info( "Best Diagnosis Match Rating " + bestRating + " for neoplasm " + neoplasm.getUri() + " adding to\n" +
+//                         bestContainers.stream().map( Object::toString ).collect( Collectors.joining( "\n" ) ) );
             bestContainers.forEach( c -> c.addNeoplasm( neoplasm ) );
             assigned.add( neoplasm );
          }
@@ -448,8 +447,8 @@ final public class ConceptAggregateMerger {
       }
       final Collection<ConceptAggregate> unassigned = new HashSet<>( neoplasms );
       unassigned.removeAll( assigned );
-      LOGGER.info( "Unassigned Neoplasms : " + unassigned.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining( "," ) )
-                   + " attempting cell match ..." );
+//      LOGGER.info( "Unassigned Neoplasms : " + unassigned.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining( "," ) )
+//                   + " attempting cell match ..." );
       for ( ConceptAggregate neoplasm : unassigned ) {
          int bestRating = 0;
          bestContainers.clear();
@@ -464,8 +463,8 @@ final public class ConceptAggregateMerger {
             }
          }
          if ( bestRating > 0 ) {
-            LOGGER.info( "Best Cell Match Rating " + bestRating + " for neoplasm " + neoplasm.getUri() + " adding to\n" +
-                         bestContainers.stream().map( Object::toString ).collect( Collectors.joining( "\n" ) ) );
+//            LOGGER.info( "Best Cell Match Rating " + bestRating + " for neoplasm " + neoplasm.getUri() + " adding to\n" +
+//                         bestContainers.stream().map( Object::toString ).collect( Collectors.joining( "\n" ) ) );
             bestContainers.forEach( c -> c.addNeoplasm( neoplasm ) );
             assigned.add( neoplasm );
          }
@@ -493,17 +492,17 @@ final public class ConceptAggregateMerger {
          final Collection<ConceptAggregate> assignedNeoplasms ) {
 
 
-      LOGGER.info( "Creating Cancers from Primary Tumors ..." );
+//      LOGGER.info( "Creating Cancers from Primary Tumors ..." );
 
 
       if ( primaries == null || primaries.isEmpty() ) {
-         LOGGER.info( "No Primaries." );
+//         LOGGER.info( "No Primaries." );
          return;
       }
       for ( ConceptAggregate primary : primaries ) {
 
 
-         LOGGER.info( "Creating primary cancer " + primary.getUri() + " " + primary.getId() );
+//         LOGGER.info( "Creating primary cancer " + primary.getUri() + " " + primary.getId() );
 
 
          final CancerContainer primaryCancer = new CancerContainer( primary );
@@ -545,9 +544,9 @@ final public class ConceptAggregateMerger {
          if ( diagnoses.stream().anyMatch( neoplasm::equals ) ) {
 
 
-            LOGGER.info( "Creating Primary cancer based upon Tumor diagnosed as self (it is a cancer) " + neoplasm.getUri() +  " " + neoplasm.getId() );
-            LOGGER.info( "Own Diagnosis (" +
-                         diagnoses.stream().map( c -> c.getUri() + " " + c.getId() ).collect( Collectors.joining( "," ) ) + ")" );
+//            LOGGER.info( "Creating Primary cancer based upon Tumor diagnosed as self (it is a cancer) " + neoplasm.getUri() +  " " + neoplasm.getId() );
+//            LOGGER.info( "Own Diagnosis (" +
+//                         diagnoses.stream().map( c -> c.getUri() + " " + c.getId() ).collect( Collectors.joining( "," ) ) + ")" );
 
 
             final CancerContainer primaryCancer = new CancerContainer( neoplasm );
@@ -583,11 +582,11 @@ final public class ConceptAggregateMerger {
 
 
 
-      if ( mostPrimary != null ) {
-         LOGGER.info(
-               "Creating Cancer " + mostPrimary.getUri() + " " + mostPrimary.getId() + " based upon it having the most Mentions "
-               + mostMentions + " and most related " + mostRelated );
-      }
+//      if ( mostPrimary != null ) {
+//         LOGGER.info(
+//               "Creating Cancer " + mostPrimary.getUri() + " " + mostPrimary.getId() + " based upon it having the most Mentions "
+//               + mostMentions + " and most related " + mostRelated );
+//      }
 
 
 
@@ -617,7 +616,7 @@ final public class ConceptAggregateMerger {
          if ( assignedNeoplasms.contains( metastasis ) ) {
             continue;
          }
-         LOGGER.info( "No cancer assignable for " + metastasis.getUri() + " " + metastasis.getId() + " creating cancer container for it." );
+//         LOGGER.info( "No cancer assignable for " + metastasis.getUri() + " " + metastasis.getId() + " creating cancer container for it." );
          final CancerContainer metastaticCancer = new CancerContainer( metastasis, true );
          cancerContainers.add( metastaticCancer );
          assignedNeoplasms.add( metastasis );
@@ -731,7 +730,7 @@ final public class ConceptAggregateMerger {
 //            = createConceptInstance( patientId, bestUri, docAnnotations );
 
 
-      LOGGER.error( "Created new Naaccr Cancer with URI " + naaccrNeoplasm.getUri() + " " + naaccrNeoplasm.getId() + " uri score: " + naaccrNeoplasm.getUriScore() );
+//      LOGGER.error( "Created new Naaccr Cancer with URI " + naaccrNeoplasm.getUri() + " " + naaccrNeoplasm.getId() + " uri score: " + naaccrNeoplasm.getUriScore() );
 
 
       final Map<String, Collection<ConceptAggregate>> neoplasmRelations = new HashMap<>();
@@ -768,6 +767,8 @@ final public class ConceptAggregateMerger {
       naaccrNeoplasm.setRelated( neoplasmRelations );
       allConcepts.removeAll( naaccrNeoplasms );
       allConcepts.add( naaccrNeoplasm );
+
+//      LOGGER.info( "createNaaccrCancer : NAACCR NEOPLASM\n" + naaccrNeoplasm );
 
       return naaccrNeoplasm;
    }

@@ -75,13 +75,13 @@ public class CancerContainer extends AbstractNeoplasmContainer {
     * @param metastasis has a site
     */
    public void addMetastasis( final ConceptAggregate metastasis ) {
-      LOGGER.info( "Adding metastasis " + metastasis.getUri() + " to cancer " + getPrimary().getUri() );
+//      LOGGER.info( "Adding metastasis " + metastasis.getUri() + " to cancer " + getPrimary().getUri() );
       _metastases.add( metastasis );
       addRelatedUris( metastasis );
    }
 
    public void addNeoplasm( final ConceptAggregate neoplasm ) {
-      LOGGER.info( "Adding neoplasm " + neoplasm.getUri() + " to cancer " + getPrimary().getUri() );
+//      LOGGER.info( "Adding neoplasm " + neoplasm.getUri() + " to cancer " + getPrimary().getUri() );
       _neoplasms.add( neoplasm );
       addRelatedUris( neoplasm );
    }
@@ -114,18 +114,18 @@ public class CancerContainer extends AbstractNeoplasmContainer {
             removals.add( tumor );
             continue;
          }
-         if ( tumor.getMentions().size() == 1 ) {
-            LOGGER.info( "Only 1 mention : " + tumor.getUri() + " " + tumor.getCoveredText() + " Loci " +
-                                       locations.stream().map( ConceptAggregate::getCoveredText ).collect( Collectors.joining() ) +
-                                       " " + _primary.equals( tumor ) );
-         }
+//         if ( tumor.getMentions().size() == 1 ) {
+//            LOGGER.info( "Only 1 mention : " + tumor.getUri() + " " + tumor.getCoveredText() + " Loci " +
+//                                       locations.stream().map( ConceptAggregate::getCoveredText ).collect( Collectors.joining() ) +
+//                                       " " + _primary.equals( tumor ) );
+//         }
          if ( locations.size() > 1 ) {
             continue;
          }
          for ( ConceptAggregate location : locations ) {
             if ( location.getMentions().size() == 1 && !_primary.equals( tumor ) ) {
-               LOGGER.info( "Only 1 loci : " + tumor.getUri() + " " + tumor.getCoveredText() + " of " +
-                                          location.getUri() + " " + location.getCoveredText() );
+//               LOGGER.info( "Only 1 loci : " + tumor.getUri() + " " + tumor.getCoveredText() + " of " +
+//                                          location.getUri() + " " + location.getCoveredText() );
                removals.add( tumor );
             }
          }
@@ -137,9 +137,9 @@ public class CancerContainer extends AbstractNeoplasmContainer {
             final Collection<ConceptAggregate> diagnosis = tumor.getRelated( HAS_DIAGNOSIS );
             if ( diagnosis == null || diagnosis.isEmpty() ) {
                for ( ConceptAggregate diag : diagnoses ) {
-                  LOGGER.info(
-                        "Adding diagnosis " + diag.getUri() + " to tumor " + tumor.getUri() + " for primary " +
-                        _primary.getUri() );
+//                  LOGGER.info(
+//                        "Adding diagnosis " + diag.getUri() + " to tumor " + tumor.getUri() + " for primary " +
+//                        _primary.getUri() );
                   tumor.addRelated( HAS_DIAGNOSIS, diag );
                }
             }
@@ -195,7 +195,7 @@ public class CancerContainer extends AbstractNeoplasmContainer {
    public int rateDiagnosisMatch( final ConceptAggregate neoplasm ) {
       final Collection<String> neoplasmUris = neoplasm.getRelatedUris( HAS_DIAGNOSIS );
       if ( neoplasmUris.contains( _primary.getUri() ) ) {
-         LOGGER.info( "Diagnostic Match rated 10 because the neoplasm " + neoplasm.getUri() + " has this cancer " + _primary.getUri() + " as a diagnosis." );
+//         LOGGER.info( "Diagnostic Match rated 10 because the neoplasm " + neoplasm.getUri() + " has this cancer " + _primary.getUri() + " as a diagnosis." );
          return 10;
       }
 
@@ -206,19 +206,19 @@ public class CancerContainer extends AbstractNeoplasmContainer {
                 .forEach( containerUris::add );
 
       if ( neoplasmUris.stream().anyMatch( containerUris::contains ) ) {
-         LOGGER.info( "Diagnostic Match rated 9 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasm URIs " + _primary.getUri() + "." );
+//         LOGGER.info( "Diagnostic Match rated 9 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasm URIs " + _primary.getUri() + "." );
          return 9;
       }
 
       containerUris.addAll( getRelatedUris( HAS_DIAGNOSIS ) );
       neoplasmUris.add( neoplasm.getUri() );
       if ( neoplasmUris.stream().anyMatch( containerUris::contains ) ) {
-         LOGGER.info( "Diagnostic Match rated 7 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses." );
+//         LOGGER.info( "Diagnostic Match rated 7 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses." );
          return 7;
       }
 
       if ( containerUris.stream().anyMatch( neoplasmUris::contains ) ) {
-         LOGGER.info( "Diagnostic Match rated 5 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses (reverse)." );
+//         LOGGER.info( "Diagnostic Match rated 5 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses (reverse)." );
          return 5;
       }
       final Collection<String> containerBranch = containerUris.stream()
@@ -227,7 +227,7 @@ public class CancerContainer extends AbstractNeoplasmContainer {
                                                               .collect( Collectors.toSet() );
       if ( neoplasmUris.stream()
                        .anyMatch( containerBranch::contains ) ) {
-         LOGGER.info( "Diagnostic Match rated 3 because the neoplasm " + neoplasm.getUri() + " has a diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses branch URIs." );
+//         LOGGER.info( "Diagnostic Match rated 3 because the neoplasm " + neoplasm.getUri() + " has a diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses branch URIs." );
          return 3;
       }
       final Collection<String> neoplasmBranch = neoplasmUris.stream()
@@ -236,7 +236,7 @@ public class CancerContainer extends AbstractNeoplasmContainer {
                                                             .collect( Collectors.toSet() );
       if ( containerUris.stream()
                         .anyMatch( neoplasmBranch::contains ) ) {
-         LOGGER.info( "Diagnostic Match rated 1 because the neoplasm " + neoplasm.getUri() + " has a diagnosis branch URI matching one of this cancer's neoplasms " + _primary.getUri() + " diagnoses branch URIs." );
+//         LOGGER.info( "Diagnostic Match rated 1 because the neoplasm " + neoplasm.getUri() + " has a diagnosis branch URI matching one of this cancer's neoplasms " + _primary.getUri() + " diagnoses branch URIs." );
          return 1;
       }
 //         return isTnmMatch( neoplasm );
@@ -374,9 +374,9 @@ public class CancerContainer extends AbstractNeoplasmContainer {
          final Map<String, Collection<ConceptAggregate>> related = neoplasm.getRelatedConceptMap();
          for ( Map.Entry<String, Collection<ConceptAggregate>> relation : related.entrySet() ) {
             final String relationName = relation.getKey();
-            LOGGER.info( relationName + " for cancer ... " );
+//            LOGGER.info( relationName + " for cancer ... " );
             if ( !RelationConstants.isLocationRelation( relationName ) ) {
-               LOGGER.info( "Yes" );
+//               LOGGER.info( "Yes" );
                allRelated.computeIfAbsent( relation.getKey(), r -> new HashSet<>() )
                          .addAll( relation.getValue() );
             }
@@ -432,12 +432,12 @@ public class CancerContainer extends AbstractNeoplasmContainer {
       conceptAggregates.add( _primary );
       // Need to create merged primary?
 
-      LOGGER.info( "\nRecomputed best URI " + merge.getUri() + " for cancer " + merge.getId() + " scored: " + merge.getUriScore() + ":" );
-      _neoplasms.forEach( ca -> LOGGER.info( ca.getUri() + " (" + ca.getMentions()
-                                                                    .stream()
-                                                                    .map( Mention::getClassUri )
-                                                                    .collect( Collectors.joining( "," ) ) + ")" ) );
-      LOGGER.info( " and added a new ConceptAggregate replacing all constituent Cancer Container ConceptAggregates " );
+//      LOGGER.info( "\nRecomputed best URI " + merge.getUri() + " for cancer " + merge.getId() + " scored: " + merge.getUriScore() + ":" );
+//      _neoplasms.forEach( ca -> LOGGER.info( ca.getUri() + " (" + ca.getMentions()
+//                                                                    .stream()
+//                                                                    .map( Mention::getClassUri )
+//                                                                    .collect( Collectors.joining( "," ) ) + ")" ) );
+//      LOGGER.info( " and added a new ConceptAggregate replacing all constituent Cancer Container ConceptAggregates " );
 
       return merge;
    }

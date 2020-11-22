@@ -23,7 +23,6 @@ final public class DocSummarizer {
             LOGGER.error( "Processing Failed:\n" + ioE.getMessage() );
             System.exit( -1 );
         }
-        LOGGER.info( "Doc " + args[0] + " has size: " + text.length() );
         // Process doc text
         final String json = DmsRunner.getInstance().summarizeDoc( docId, text );
 

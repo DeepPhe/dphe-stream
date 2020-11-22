@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 final public class DefaultConceptAggregate implements ConceptAggregate {
 
-   static private final IdCounter _ID_NUM = new IdCounter();
+   static private final IdCounter ID_COUNTER = new IdCounter();
 
    private final BigInteger _unique_id_num;
    private final Map<String,Collection<String>> _uriRootsMap;
@@ -35,7 +35,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
    public DefaultConceptAggregate( final String patientId,
                                    final Map<String,Collection<String>> uriRootsMap,
                                     final Map<String, Collection<Mention>> docMentionMap ) {
-      _unique_id_num = _ID_NUM.incrementAndGet();
+      _unique_id_num = ID_COUNTER.incrementAndGet();
       _patientId = patientId;
       _uriRootsMap = uriRootsMap;
       _date = new Date();
@@ -68,28 +68,6 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
    }
 
    /**
-    *
-    * @return document identifiers as single text string joined by underscore
-    */
-   @Override
-   public String getJoinedNoteId() {
-      if ( _noteIdMap == null ) {
-         return "";
-      }
-      return _noteIdMap.values().stream()
-                       .distinct()
-                       .collect( Collectors.joining( "_") );
-   }
-
-   /**
-    * @return document identifiers as single text string joined by underscore
-    */
-   @Override
-   public Collection<String> getNoteIds() {
-      return _noteIdMap.values();
-   }
-
-   /**
     * @return the url of the instance
     */
    @Override
@@ -116,46 +94,6 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
    @Override
    public String getPatientId() {
       return _patientId;
-   }
-
-   /**
-    * @return all represented Identified Annotations
-    */
-   @Override
-   public Collection<Mention> getMentions() {
-      if ( _noteIdMap == null ) {
-         return Collections.emptyList();
-      }
-      return _noteIdMap.keySet().stream()
-                       .sorted( Comparator.comparing( Mention::getBegin ).thenComparing( Mention::getEnd ) )
-                       .collect( Collectors.toList() );
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public String getNoteId( final Mention mention ) {
-      if ( _noteIdMap == null ) {
-         return "";
-      }
-      return _noteIdMap.get( mention );
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public Map<String,Collection<Mention>> getNoteMentions() {
-      if ( _noteIdMap == null ) {
-         return Collections.emptyMap();
-      }
-      final Map<String,Collection<Mention>> docMentions = new HashMap<>();
-      for ( Map.Entry<Mention,String> mentionDoc : _noteIdMap.entrySet() ) {
-         docMentions.computeIfAbsent( mentionDoc.getValue(), d -> new ArrayList<>() )
-                       .add( mentionDoc.getKey() );
-      }
-      return docMentions;
    }
 
    /**
@@ -207,7 +145,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
 
 
 
-   private Map<Mention, String> getNoteIdMap() {
+   final public Map<Mention, String> getNoteIdMap() {
       return _noteIdMap != null ? _noteIdMap : Collections.emptyMap();
    }
 

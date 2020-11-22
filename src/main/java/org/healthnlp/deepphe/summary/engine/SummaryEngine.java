@@ -33,14 +33,12 @@ final public class SummaryEngine {
 
 
          LOGGER.info( "\n====================== Note " + noteId + " ======================" );
-         LOGGER.info( "We have completed the per-document nlp and trimmed it to information essential for summarization." +
-                      "  Below are the mentions, relations between mentions, and mention coreference chains for the document " + noteId + "." );
+//         LOGGER.info( "We have completed the per-document nlp and trimmed it to information essential for summarization." +
+//                      "  Below are the mentions, relations between mentions, and mention coreference chains for the document " + noteId + "." );
          note.getMentions().forEach( m -> LOGGER.info( "Mention: " + m.getClassUri() + " " + m.getId() ) );
          note.getRelations().forEach( r -> LOGGER.info( "Relation: " + r.getSourceId() + " " + r.getType() + " " + r.getTargetId() ) );
 //         LOGGER.info( "Within doc corefs are no longer being dicovered by NLP pipeline." );
 //         note.getCorefs().forEach( c -> LOGGER.info( "Chain: (" + String.join( ",", Arrays.asList( c.getIdChain() ) ) + ")" ) );
-
-
       }
 
       final PatientSummary patientSummary = createPatientSummary( patientId,
@@ -67,17 +65,17 @@ final public class SummaryEngine {
                                                 final Collection<Note> patientNotes,
                                                 final Map<Mention, String> patientMentionNoteIds,
                                                 final Collection<MentionRelation> patientRelations ) {
-      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
-      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
-                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
+//      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
+//      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
+//                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
 //      +
 //                   "  Concept Aggregates do not only aggregate cross-document mentions, but will also both aggregate and separate" +
 //                   " mentions in within-document coreference chains." +
 //                   "  So, yes, we could logically remove the coreference annotator from the nlp pipeline." +
 //                   "   I will experiment when I have time.   - 10/14/2020 Done." );
-      LOGGER.info( "For the patient we have " + patientNotes.size() + " notes, "
-                   + patientMentionNoteIds.size() + " mentions, "
-                   + patientRelations.size() + " relations" );
+//      LOGGER.info( "For the patient we have " + patientNotes.size() + " notes, "
+//                   + patientMentionNoteIds.size() + " mentions, "
+//                   + patientRelations.size() + " relations" );
 //                   + patientCorefs.size() + " coref chains." );
       final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
 //            = createUriConceptAggregateMap( patientId, patientNotes, patientMentionNoteIds, patientRelations, patientCorefs );
@@ -94,10 +92,10 @@ final public class SummaryEngine {
       final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
 
 
-      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );
-      LOGGER.info( "We are now using the ConceptAggregates for the patient to create Cancer Summaries." +
-                   "  For KCR we force this down to a single summary, but that is only for the simplicity of the dataset." +
-                   "  dPhe Classic does not do this.  I think that this will not be done at some future date for CR." );
+//      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );
+//      LOGGER.info( "We are now using the ConceptAggregates for the patient to create Cancer Summaries." +
+//                   "  For KCR we force this down to a single summary, but that is only for the simplicity of the dataset." +
+//                   "  dPhe Classic does not do this.  I think that this will not be done at some future date for CR." );
 
 
       final Collection<ConceptAggregate> allAggregates = new HashSet<>();
@@ -114,7 +112,7 @@ final public class SummaryEngine {
                neoplasmAggregates.add( concept );
 
 
-               LOGGER.info( "ConceptAggregate " + concept.getUri() + " " + concept.getId() + " is a neoplasm and will be used for a Summary." );
+//               LOGGER.info( "ConceptAggregate " + concept.getUri() + " " + concept.getId() + " is a neoplasm and will be used for a Summary." );
 
 
             }
