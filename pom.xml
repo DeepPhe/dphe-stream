@@ -117,6 +117,12 @@
          <version>0.0.1</version>
       </dependency>
 
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.8.2</version> <!-- versions after 4.7 allow tests to be run in parallel -->
+      </dependency>
+
    </dependencies>
 
    <repositories>
@@ -190,6 +196,35 @@
                </executions>
             </plugin>
 
+            <!-- PLUGINS FOR TESTING -->
+
+            <!-- configure the surefire plugin to run tests in parallel -->
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>3.0.0-M5</version>
+               <configuration>
+                  <parallel>methods</parallel>
+                  <threadCount>10</threadCount>
+               </configuration>
+            </plugin>
+
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <version>3.7.1</version>
+            </plugin>
+
          </plugins>
    </build>
+   <reporting>
+         <plugins>
+            <!-- configure the surefire reports to generate on every build -->
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-report-plugin</artifactId>
+               <version>3.0.0-M5</version>
+            </plugin>
+         </plugins>
+   </reporting>
 </project>
