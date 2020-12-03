@@ -3,7 +3,7 @@
 NLP Pipeline, Document-level
 Summarization, Document and Patient -level
 
-This is the main entry point for DeepPhe-Classsic. To build:
+This is the main entry point for DeepPhe-Classsic. To build, use Java 8. 
 
     clone https://github.com/DeepPhe/dphe-onto-db.git
     mvn install
