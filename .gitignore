@@ -7,4 +7,4 @@
 /.project
 *.iml
 /git.Pull.manual.history.txt
-
+.DS_Store
