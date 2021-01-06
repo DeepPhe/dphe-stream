@@ -44,12 +44,7 @@ jobs:
         GITHUB_USER_REF: ${{ secrets.DPHE_ROBOT_USERNAME }}
         GITHUB_TOKEN_REF: ${{ secrets.DPHE_ROBOT_ACCESS_TOKEN }}
 
-    - name: Publish to GitHub Packages Apache Maven
-      run:  mvn deploy 
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_USER_REF: ${{ secrets.DPHE_ROBOT_USERNAME }}
-        GITHUB_TOKEN_REF: ${{ secrets.DPHE_ROBOT_ACCESS_TOKEN }}  
+
         
         
      
