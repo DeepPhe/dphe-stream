@@ -138,9 +138,14 @@
          </snapshots>
       </repository>
       <repository>
-          <id>github</id>
+          <id>core</id>
           <name>Github Packages</name>
           <url>https://maven.pkg.github.com/DeepPhe/dphe-core</url>
+      </repository>
+       <repository>
+          <id>onto-db</id>
+          <name>Github Packages</name>
+          <url>https://maven.pkg.github.com/DeepPhe/dphe-onto-db</url>
       </repository>
    </repositories>
 
