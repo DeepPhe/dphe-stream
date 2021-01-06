@@ -137,6 +137,11 @@
             <enabled>true</enabled>
          </snapshots>
       </repository>
+      <repository>
+          <id>github</id>
+          <name>Github Packages</name>
+          <url>https://maven.pkg.github.com/DeepPhe/dphe-core</url>
+      </repository>
    </repositories>
 
    <build>
