@@ -31,7 +31,7 @@ jobs:
          [{
           "id": "core",
           "username": "${{ secrets.DPHE_ROBOT_USERNAME }}",
-          "password": "${{ secrets.secrets.DPHE_ROBOT_ACCESS_TOKEN }}"
+          "password": "${{ secrets.DPHE_ROBOT_ACCESS_TOKEN }}"
           },
           {
           "id": "onto-db",
