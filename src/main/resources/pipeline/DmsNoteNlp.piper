@@ -47,7 +47,7 @@ add DefaultJCasTermAnnotator
 add MassFilter
 
 //  Assign such as negation and uncertainty using machine-learning models.  TODO Use Windowed Version?
-load AttributeCleartkSubPipe
+load WindowedAttributeCleartkSubPipe
 
 //  Assign such as negation and uncertainty using context.
 set MaxRightScopeSize=12

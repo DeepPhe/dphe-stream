@@ -14,7 +14,7 @@ INSTANCE;
       return INSTANCE;
    }
 
-   // Ex: C00, LIP
+   // Ex: C000, LIP
    private final Map<String,String> _siteClasses = new HashMap<>();
    private final Map<String,String> _siteCodes = new HashMap<>();
 
@@ -84,7 +84,7 @@ INSTANCE;
             final String morphology = splits[ 4 ].trim();
             final String morphoDescription = splits[ 5 ].trim();
 
-            // Ex: C00, LIP
+            // Ex: C000, LIP
             topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteClasses.put( c, siteDescription ) );
             topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteCodes.put( siteDescription, c ) );
             // Ex: C000, [8000/3,8001/1,8002/3]

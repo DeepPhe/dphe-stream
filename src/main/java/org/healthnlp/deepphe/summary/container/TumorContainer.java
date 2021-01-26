@@ -37,7 +37,7 @@ public class TumorContainer extends AbstractNeoplasmContainer {
    }
 
    public boolean isLocationMatch( final ConceptAggregate neoplasm ) {
-      final Collection<String> neoplasmSiteUris = neoplasm.getRelatedSiteUris();
+      final Collection<String> neoplasmSiteUris = neoplasm.getRelatedSiteMainUris();
       if ( neoplasmSiteUris.isEmpty() ) {
          return false;
       }

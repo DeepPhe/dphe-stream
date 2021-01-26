@@ -303,6 +303,17 @@ public interface ConceptAggregate {
       return Collections.emptyList();
    }
 
+   default Collection<ConceptAggregate> getRelated( final String... types ) {
+      final Collection<ConceptAggregate> relateds = new HashSet<>();
+      for ( String type : types ) {
+         final Collection<ConceptAggregate> related = getRelated( type );
+         if ( related != null ) {
+            relateds.addAll( related );
+         }
+      }
+      return relateds;
+   }
+
 
    default Collection<String> getRelatedUris( final String type ) {
       return getRelated( type ).stream()
@@ -310,6 +321,16 @@ public interface ConceptAggregate {
                                .collect( Collectors.toSet() );
    }
 
+   default Collection<String> getRelatedUris( final String... types ) {
+      final Collection<String> relateds = new HashSet<>();
+      for ( String type : types ) {
+         final Collection<String> relatedUris = getRelatedUris( type );
+         if ( relatedUris != null ) {
+            relateds.addAll( relatedUris );
+         }
+      }
+      return relateds;
+   }
 
    default Collection<ConceptAggregate> getRelatedSites() {
       return getRelatedConceptMap().entrySet()
@@ -321,11 +342,19 @@ public interface ConceptAggregate {
    }
 
 
-   default Collection<String> getRelatedSiteUris() {
+   default Collection<String> getRelatedSiteMainUris() {
       return getRelatedSites().stream()
                                .map( ConceptAggregate::getUri )
                                .collect( Collectors.toSet() );
    }
+
+   default Collection<String> getRelatedSiteAllUris() {
+      return getRelatedSites().stream()
+                              .map( ConceptAggregate::getAllUris )
+                              .flatMap( Collection::stream )
+                              .collect( Collectors.toSet() );
+   }
+
 
 
    default Map<String,Collection<ConceptAggregate>> getNonLocationRelationMap() {
@@ -414,7 +443,7 @@ public interface ConceptAggregate {
 //         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Secondary by having a metastasis_of relation." );
          return SECONDARY;
       }
-      final Collection<String> primarySiteUris = getRelatedSiteUris();
+      final Collection<String> primarySiteUris = getRelatedSiteMainUris();
       if ( !primarySiteUris.isEmpty() ) {
          // This won't work for lymphoma
          final Collection<String> lymphSiteUris = Neo4jOntologyConceptUtil.getBranchUris( LYMPH_NODE );

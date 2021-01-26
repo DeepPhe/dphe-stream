@@ -32,11 +32,11 @@ final public class SummaryEngine {
          patientRelations.addAll( note.getRelations() );
 
 
-         LOGGER.info( "\n====================== Note " + noteId + " ======================" );
+//         LOGGER.info( "\n====================== Note " + noteId + " ======================" );
 //         LOGGER.info( "We have completed the per-document nlp and trimmed it to information essential for summarization." +
 //                      "  Below are the mentions, relations between mentions, and mention coreference chains for the document " + noteId + "." );
-         note.getMentions().forEach( m -> LOGGER.info( "Mention: " + m.getClassUri() + " " + m.getId() ) );
-         note.getRelations().forEach( r -> LOGGER.info( "Relation: " + r.getSourceId() + " " + r.getType() + " " + r.getTargetId() ) );
+//         note.getMentions().forEach( m -> LOGGER.info( "Mention: " + m.getClassUri() + " " + m.getId() ) );
+//         note.getRelations().forEach( r -> LOGGER.info( "Relation: " + r.getSourceId() + " " + r.getType() + " " + r.getTargetId() ) );
 //         LOGGER.info( "Within doc corefs are no longer being dicovered by NLP pipeline." );
 //         note.getCorefs().forEach( c -> LOGGER.info( "Chain: (" + String.join( ",", Arrays.asList( c.getIdChain() ) ) + ")" ) );
       }
@@ -152,10 +152,11 @@ final public class SummaryEngine {
       final ConceptAggregate naaccrCancer = ConceptAggregateMerger.createNaaccrCancer( patientId, diagnosisMap, allConcepts );
 
 
-      LOGGER.info( "\n===================== NAACCR Cancer =============================" );
-      LOGGER.info( naaccrCancer );
+//      LOGGER.info( "\n===================== NAACCR Cancer =============================" );
+//      LOGGER.info( naaccrCancer );
 
-      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer );
+//      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer );
+      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer, allConcepts );
 
       final PatientSummary patientSummary = new PatientSummary();
       patientSummary.setId( patientId );

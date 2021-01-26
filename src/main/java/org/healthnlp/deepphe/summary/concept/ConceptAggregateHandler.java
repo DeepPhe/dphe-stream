@@ -70,9 +70,9 @@ final public class ConceptAggregateHandler {
       buildPlacements( patientRelations, mentionIdMap, locationUris, lateralityUris );
 
 
-      LOGGER.info( "!!!    Determined Locations for all Mentions." );
-      locationUris.forEach( (k,v) -> LOGGER.info( "Mention " + k.getClassUri() +" "+ k.getId() + " at (" + String.join( ",", v ) + ")" ) );
-      lateralityUris.forEach( (k,v) -> LOGGER.info( "Mention " + k.getClassUri() +" "+ k.getId() + " on (" + String.join( ",", v ) + ")" ) );
+//      LOGGER.info( "!!!    Determined Locations for all Mentions." );
+//      locationUris.forEach( (k,v) -> LOGGER.info( "Mention " + k.getClassUri() +" "+ k.getId() + " at (" + String.join( ",", v ) + ")" ) );
+//      lateralityUris.forEach( (k,v) -> LOGGER.info( "Mention " + k.getClassUri() +" "+ k.getId() + " on (" + String.join( ",", v ) + ")" ) );
 
 
 
@@ -147,8 +147,8 @@ final public class ConceptAggregateHandler {
       addRelations( conceptAggregates.values(), patientRelations );
 
 
-      LOGGER.info( "\n!!!     All Concept Aggregates:" );
-      conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
+//      LOGGER.info( "\n!!!     All Concept Aggregates:" );
+//      conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
 
 
 

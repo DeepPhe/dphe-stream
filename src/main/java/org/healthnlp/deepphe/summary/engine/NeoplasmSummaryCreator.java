@@ -4,16 +4,50 @@ package org.healthnlp.deepphe.summary.engine;
 import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.uri.UriUtil;
+import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
+import org.healthnlp.deepphe.summary.attribute.MinorTopography;
+import org.healthnlp.deepphe.summary.attribute.topography.MajorTopography5;
+import org.healthnlp.deepphe.summary.attribute.topography.MajorTopography50;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.util.TopoMorphValidator;
-import org.healthnlp.deepphe.util.UriScoreUtil;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.*;
+
+
+
+
+
+
+// Output files from System : 1 file for each attribute.  Comma separated.
+//   attribute_name.csv
+//       neoplasm_id,attribute_name,value,8,8,10,10,10
+//       neoplasm_id,attribute_name,value,7,6,10,5,10
+//       neoplasm_id,attribute_name,value,1,1,7,8,9
+//       bobs_cancer,topo_major,C50,1,1,7,8,9
+
+// Fed to Eval script.  New Output file from Eval:
+//   attribute_name_eval.csv
+//       neoplasm_id,attribute_name,value,8,8,10,10,10  , F1
+//       neoplasm_id,attribute_name,value,7,6,10,5,10  , F1
+//       neoplasm_id,attribute_name,value,1,1,7,8,9   , F1
+//       bobs_cancer,topo_major,C50,1,1,7,8,9  , (c42)  ->  (0)  ->   review
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * @author SPF , chip-nlp
@@ -29,31 +63,59 @@ final public class NeoplasmSummaryCreator {
 
 
 
-   static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm ) {
+//   static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm ) {
+//      final NeoplasmSummary summary = new NeoplasmSummary();
+//      summary.setId( neoplasm.getUri() );
+//      final Collection<String> sites = getFirstSiteUris( neoplasm );
+//      summary.setSite_major( getMajorSite( sites ) );
+//      summary.setSite_minor( getMinorSite( sites ) );
+//
+//      final Collection<String> topos = sites.stream()
+//                                            .map( Neo4jOntologyConceptUtil::getIcdoTopoCode )
+//                                            .filter( t -> !t.isEmpty() )
+//                                            .collect( Collectors.toSet() );
+////      LOGGER.info( "Major topography according to ICDO codes for sites " + String.join( ",", sites ) + " " + String.join( ",", topos ) );
+//      final String majorTopo = getMajorTopoCode( topos );
+//      final String minorTopo = getMinorTopo( topos );
+//      summary.setTopography_major( majorTopo );
+//      summary.setTopography_minor( minorTopo );
+//      summary.setSite_related( getSiteRelated( neoplasm ) );
+//      final Collection<String> morphs = getMorphology( neoplasm, majorTopo+minorTopo );
+//      summary.setHistology( getBestHistology( morphs ) );
+//      summary.setBehavior( getBestBehavior( morphs ) );
+//      final Collection<String> sides = getLateralities( neoplasm );
+//      summary.setLaterality( getLaterality( sides ) );
+//      summary.setLaterality_code( getLateralityIcdo( sides ) );
+//      summary.setGrade( getGrade( neoplasm ) );
+//      summary.setPathologic_t( getT( neoplasm ) );
+//      summary.setPathologic_n( getN( neoplasm ) );
+//      summary.setPathologic_m( getM( neoplasm ) );
+//      summary.setEr( getEr( neoplasm ) );
+//      summary.setPr( getPr( neoplasm ) );
+//      summary.setHer2( getHer2( neoplasm ) );
+//      summary.setKi67( getKi67( neoplasm ) );
+//      summary.setPsa( getPsa( neoplasm ) );
+//      return summary;
+//   }
+
+   static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm,
+                                                        final Collection<ConceptAggregate> allConcepts ) {
       final NeoplasmSummary summary = new NeoplasmSummary();
       summary.setId( neoplasm.getUri() );
-      final Collection<String> sites = getSites( neoplasm );
-      summary.setSite_major( getMajorSite( sites ) );
-      summary.setSite_minor( getMinorSite( sites ) );
+      final List<NeoplasmAttribute> attributes = new ArrayList<>();
 
-      final Collection<String> topos = sites.stream()
-                                            .map( Neo4jOntologyConceptUtil::getIcdoTopoCode )
-                                            .filter( t -> !t.isEmpty() )
-                                            .collect( Collectors.toSet() );
-//      LOGGER.info( "Major topography according to ICDO codes for sites " + String.join( ",", sites ) + " " + String.join( ",", topos ) );
-      final String majorTopo = getMajorTopo( topos );
-      final String minorTopo = getMinorTopo( topos );
-      summary.setTopography_major( majorTopo );
-      summary.setTopography_minor( minorTopo );
-      summary.setSite_related( getSiteRelated( neoplasm ) );
-      final Collection<String> morphs = getMorphology( neoplasm, majorTopo+minorTopo );
-//      getBestHistology( morphs, majorTopo+minorTopo );       // Doesn't really help.
+      final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );
+
+      final Collection<String> morphs = getMorphology( neoplasm, topoCode );
       summary.setHistology( getBestHistology( morphs ) );
       summary.setBehavior( getBestBehavior( morphs ) );
+
       final Collection<String> sides = getLateralities( neoplasm );
       summary.setLaterality( getLaterality( sides ) );
       summary.setLaterality_code( getLateralityIcdo( sides ) );
+
       summary.setGrade( getGrade( neoplasm ) );
+
       summary.setPathologic_t( getT( neoplasm ) );
       summary.setPathologic_n( getN( neoplasm ) );
       summary.setPathologic_m( getM( neoplasm ) );
@@ -62,119 +124,41 @@ final public class NeoplasmSummaryCreator {
       summary.setHer2( getHer2( neoplasm ) );
       summary.setKi67( getKi67( neoplasm ) );
       summary.setPsa( getPsa( neoplasm ) );
+
+      summary.setAttributes( attributes );
       return summary;
    }
 
+   static private String addTopography( final ConceptAggregate neoplasm,
+                                      final NeoplasmSummary summary,
+                                      final List<NeoplasmAttribute> attributes,
+                                        final Collection<ConceptAggregate> allConcepts ) {
+      final MajorTopography50 majorTopography = new MajorTopography50( neoplasm, allConcepts );
+      final NeoplasmAttribute majorTopoAttr = majorTopography.toNeoplasmAttribute();
+      attributes.add( majorTopoAttr );
+      final MinorTopography minorTopography = new MinorTopography( majorTopography.getTopographyCodes() );
+      final NeoplasmAttribute minorTopoAttr = minorTopography.toNeoplasmAttribute();
+      attributes.add( minorTopoAttr );
 
-   static private Collection<String> getSites( final ConceptAggregate neoplasm ) {
-      return getFirstRelatedUris( neoplasm,
-            DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
-            DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE,
-            DISEASE_HAS_METASTATIC_ANATOMIC_SITE,
-            Disease_Has_Associated_Region,
-            Disease_Has_Associated_Cavity );
+      summary.setSite_major( majorTopography.getMajorSiteUri() );
+      summary.setSite_minor( majorTopography.getMinorSiteUri() );
+      summary.setTopography_major( majorTopography.getBestMajorTopoCode() );
+      summary.setTopography_minor( majorTopography.getBestMinorTopoCode() );
+
+      // TODO as NeoplasmAttribute
+      summary.setSite_related( getSiteRelated( neoplasm ) );
+
+      return majorTopoAttr.getValue() + minorTopoAttr.getValue();
    }
 
-   static private String getMajorSite( final Collection<String> sites ) {
-//      LOGGER.info( "Major site according to best uris for sites " + String.join( ",", sites ) );
-      return UriScoreUtil.getBestUri( sites );
-//      return UriUtil.getShortestRootUri( sites );
-   }
 
-   static private String getMinorSite( final Collection<String> sites ) {
-//      LOGGER.info( "Minor site according to most specific uri for sites " + String.join( ",", sites ) );
-      return UriUtil.getMostSpecificUri( sites );
-   }
-
-   static private String getMajorTopo( final Collection<String> topos ) {
-      if ( topos.isEmpty() ) {
-//         LOGGER.info( "No sites, using C80." );
-         return "C80";
-      }
-      final Function<String, String> getMajor = t -> {
-         final int dot = t.indexOf( '.' );
-         return dot > 0 ? t.substring( 0, dot ) : t;
-      };
-      return topos.stream()
-                  .map( getMajor )
-                  .distinct()
-                  .sorted()
-                  .collect( Collectors.joining( ";" ) );
-   }
-
-   static private String getMinorTopo( final Collection<String> topos ) {
-      if ( topos.isEmpty() ) {
-         return "9";
-      }
-      final Function<String, String> getMinor = t -> {
-         final int dot = t.indexOf( '.' );
-         return dot > 0 ? t.substring( dot + 1 ) : "";
-      };
-      final Collection<String> allMinors = topos.stream()
-                                                .map( getMinor )
-                                                .filter( t -> !t.isEmpty() )
-                                                .distinct()
-                                                .sorted()
-                                                .collect( Collectors.toList() );
-      if ( allMinors.size() > 1 ) {
-         allMinors.remove( "9" );
-      }
-      String minors = String.join( ";", allMinors );
-      if ( minors.isEmpty() ) {
-//         LOGGER.info( "No specific site codes, using 9." );
-         return "9";
-      }
-      return minors;
-   }
 
    static private String getSiteRelated( final ConceptAggregate conceptAggregate ) {
       return String.join( ";", getRelatedUris( conceptAggregate, HAS_QUADRANT, HAS_CLOCKFACE ) );
    }
 
 
-//   static private Collection<String> getMorphology( final ConceptAggregate conceptAggregate ) {
-////      final Collection<String> uris
-////            = instance.getAnnotations().stream()
-////                      .map( Neo4jOntologyConceptUtil::getUri )
-////                      .filter( Objects::nonNull )
-////                      .filter( u -> !u.isEmpty() )
-////                      .collect( Collectors.toSet() );
-////      if ( uris.isEmpty() ) {
-////         return Collections.emptyList();
-////      }
-////      Collection<String> morphs = uris.stream()
-////                                      .map( NeoplasmSummaryWriter::getIcdoMorphCodes )
-////                                      .flatMap( Collection::stream )
-////                                      .collect( Collectors.toSet() );
-//      LOGGER.info( "Morphology seems to have a little bit of human favoratism involved ..." );
-//
-//      final String uri = conceptAggregate.getUri();
-//      final Collection<String> morphs = new HashSet<>( getIcdoMorphCodes( uri ) );
-//      LOGGER.info( "All Ontology Morphology codes for " + uri + ": " + String.join( ",", morphs ) );
-//
-////      if ( uris.contains( "Invasive_Breast_Carcinoma" ) && uris.contains( "Ductal_Carcinoma" ) ) {
-//      if ( uri.equals( "Ductal_Carcinoma" ) ) {
-//         // Kludge for invasive ductal
-//         LOGGER.info( "Hardcoded Ductal_Carcinoma = 8500/3" );
-//         morphs.add( "8500/3" );
-//      }
-//      if ( uri.equals( "Lung_Carcinoma" ) ) {
-//         // Kludge for lung carcinoma  -- 8046/3 is non-small cell carcinoma.
-//         LOGGER.info( "Hardcoded Lung_Carcinoma = 8046/3" );
-//         morphs.add( "8046/3" );
-//      }
-//      return morphs;
-////      final Collection<String> prefTexts = uris.stream()
-////                                               .map( Neo4jOntologyConceptUtil::getPreferredText )
-////                                               .collect( Collectors.toSet() );
-////      return getBestHisto( morphs ) + B
-////             + String.join( ";", prefTexts ) + ":" + String.join( ";", morphs ) + B
-////             + getBestBehave( morphs ) + B
-////             + String.join( ";", getRelatedUris( summary, HAS_TUMOR_EXTENT ) );
-//   }
-
-
-   static private Collection<String> getMorphology( final ConceptAggregate conceptAggregate, final String topo ) {
+   static public Collection<String> getMorphology( final ConceptAggregate conceptAggregate, final String topo ) {
 //      LOGGER.info( "Morphology seems to have a little bit of human favoritism involved ..." );
 
 //      conceptAggregate.getUriRootsMap()
@@ -220,17 +204,6 @@ final public class NeoplasmSummaryCreator {
          return Collections.singletonList( "8000/3" );
       }
 //      LOGGER.info( "All Ontology Morphology codes for " + conceptAggregate.getUri() + ": " + String.join( ",", morphs ) );
-//      if ( uris.contains( "Invasive_Breast_Carcinoma" ) && uris.contains( "Ductal_Carcinoma" ) ) {
-//      if ( uri.equals( "Ductal_Carcinoma" ) ) {
-//         // Kludge for invasive ductal
-//         LOGGER.info( "Hardcoded Ductal_Carcinoma = 8500/3" );
-//         morphs.add( "8500/3" );
-//      }
-//      if ( uri.equals( "Lung_Carcinoma" ) ) {
-//         // Kludge for lung carcinoma  -- 8046/3 is non-small cell carcinoma.
-//         LOGGER.info( "Hardcoded Lung_Carcinoma = 8046/3" );
-//         morphs.add( "8046/3" );
-//      }
       return morphs;
    }
 
@@ -262,7 +235,7 @@ final public class NeoplasmSummaryCreator {
 
 
 
-   static private String getBestHistology( final Collection<String> morphs ) {
+   static public String getBestHistology( final Collection<String> morphs ) {
 //      LOGGER.info( "Getting Best Histology from Morphology codes " + String.join( ",", morphs ) );
       final HistoComparator comparator = new HistoComparator();
 
@@ -357,7 +330,43 @@ final public class NeoplasmSummaryCreator {
    }
 
 
-//   1   Grade 1
+
+
+   static private String addGrade( final ConceptAggregate neoplasm,
+                                        final NeoplasmSummary summary,
+                                        final List<NeoplasmAttribute> attributes,
+                                        final Collection<ConceptAggregate> allConcepts ) {
+//      final MajorTopography majorTopography = new MajorTopography( neoplasm, allConcepts );
+      final MajorTopography5 majorTopography = new MajorTopography5( neoplasm, allConcepts );
+      final NeoplasmAttribute majorTopoAttr = majorTopography.toNeoplasmAttribute();
+      attributes.add( majorTopoAttr );
+      final MinorTopography minorTopography = new MinorTopography( majorTopography.getTopographyCodes() );
+      final NeoplasmAttribute minorTopoAttr = minorTopography.toNeoplasmAttribute();
+      attributes.add( minorTopoAttr );
+
+//      summary.setSite_major( majorTopography.getBestSiteUri() );
+      summary.setSite_major( majorTopography.getMajorSiteUri() );
+//      final Collection<String> firstSiteUris = majorTopography.getBestAssociatedSiteUris();
+      final Collection<String> firstSiteUris = majorTopography.getFirstSiteUris();
+      String specificUri = "";
+      try {
+         specificUri = UriUtil.getMostSpecificUri( firstSiteUris );
+      } catch ( NullPointerException npE ) {
+         //
+      }
+      summary.setSite_minor( specificUri );
+      summary.setTopography_major( majorTopoAttr.getValue() );
+      summary.setTopography_minor( minorTopoAttr.getValue() );
+
+      // TODO as NeoplasmAttribute
+      summary.setSite_related( getSiteRelated( neoplasm ) );
+
+      return majorTopoAttr.getValue() + minorTopoAttr.getValue();
+   }
+
+
+
+   //   1   Grade 1
 //   2   Grade 2
 //   3   Grade 3
 //   4   Grade 4

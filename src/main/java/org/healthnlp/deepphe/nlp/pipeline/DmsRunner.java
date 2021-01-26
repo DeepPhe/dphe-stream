@@ -84,6 +84,40 @@ public enum DmsRunner implements Closeable {
 
    ////////////////////////////////////////////////////////////////////////
    //
+   //                            Internal Calls
+   //
+   ////////////////////////////////////////////////////////////////////////
+
+
+   /**
+    * Summarize the note and return a patient summary as if the note represents the entire patient.
+    * This is a call to be used internally for things like evaluation runs.
+    *
+    * @param docId     -
+    * @param text      -
+    * @return -
+    */
+   public PatientSummary createPatientSummary( final String docId, final String text ) {
+      try {
+         final Note note = runNlp( docId, docId, text );
+         if ( note == null ) {
+            return null;
+         }
+
+         final Patient patient = new Patient();
+         patient.setId( docId );
+         patient.setNotes( Collections.singletonList( note ) );
+
+         return SummaryEngine.createPatientSummary( patient );
+      } catch ( CASRuntimeException multE ) {
+         LOGGER.error( multE.getMessage() );
+         return null;
+      }
+   }
+
+
+   ////////////////////////////////////////////////////////////////////////
+   //
    //                            REST Calls
    //
    ////////////////////////////////////////////////////////////////////////

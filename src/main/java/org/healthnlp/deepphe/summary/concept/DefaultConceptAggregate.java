@@ -46,7 +46,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
          docMentions.getValue().forEach( a -> addMention( a, documentId, _date ) );
       }
       final KeyValue<String,Double> bestUriScore
-            = UriScoreUtil.getBestUriScore( createUriList(), uriRootsMap );
+            = UriScoreUtil.getBestUriScore( createUriList(), uriRootsMap, getMentions() );
       _uri = bestUriScore.getKey();
       _uriScore = bestUriScore.getValue();
    }
@@ -154,7 +154,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
    }
 
    private List<String> createUriList() {
-      return getNoteIdMap().keySet().stream()
+      return getMentions().stream()
                            .map( Mention::getClassUri )
                            .collect( Collectors.toList() );
    }
