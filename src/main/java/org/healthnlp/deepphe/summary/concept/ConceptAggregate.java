@@ -9,6 +9,8 @@ import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.node.NoteNodeStore;
+import org.healthnlp.deepphe.util.KeyValue;
+import org.healthnlp.deepphe.util.UriScoreUtil;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
@@ -479,7 +481,14 @@ public interface ConceptAggregate {
 //                              .collect( Collectors.joining( "_") ) ).append( "\n" )
 //        .append( getPreferredText() ).append( "\n" )
         .append( getUri() ).append( "  " )
-        .append( getId() ).append( " : " );
+        .append( getId() ).append( " :\n" );
+      final List<KeyValue<String, Double>> uriQuotients = UriScoreUtil.mapUriQuotients( getAllUris(),
+                                                                                        getUriRootsMap(),
+                                                                                        getMentions() );
+      uriQuotients.stream()
+                  .map( kv -> " " + kv.getKey() + "=" + kv.getValue() + " "  )
+                  .forEach( sb::append );
+      sb.append( "\n" );
 //        .append( getMentions().size() ).append( " mentions,   all uris: " );
       getUriMentions().forEach( (k,v) -> sb.append( " " )
                                            .append( k )

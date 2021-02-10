@@ -443,10 +443,12 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                                           final List<IdentifiedAnnotation> windowMasses,
                                           final List<IdentifiedAnnotation> allMasses ) {
       final Collection<IdentifiedAnnotation> gleasons = GleasonFinder.findGleasonGrades( jCas, paragraph );
+//      final Collection<IdentifiedAnnotation> gleasons
+//            = Neo4jOntologyConceptUtil.getAnnotationsByUriBranch( jCas, paragraph, "Gleason_Grade" );
       if ( gleasons.isEmpty() || (windowMasses.isEmpty() && allMasses.isEmpty()) ) {
          return;
       }
-      SectionIdSetter.setContainerIds( jCas, gleasons );
+//      SectionIdSetter.setContainerIds( jCas, gleasons );
       final List<IdentifiedAnnotation> unusedGleasons = new ArrayList<>( gleasons );
       if ( !windowMasses.isEmpty() ) {
          final Map<IdentifiedAnnotation, Collection<IdentifiedAnnotation>> gradeMap

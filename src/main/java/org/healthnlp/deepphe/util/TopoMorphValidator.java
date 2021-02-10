@@ -2,6 +2,7 @@ package org.healthnlp.deepphe.util;
 
 import org.apache.ctakes.core.resource.FileLocator;
 import org.apache.ctakes.core.util.StringUtil;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.*;
@@ -23,11 +24,17 @@ INSTANCE;
 
    // Ex: 800, Neoplasm
 //   private final Map<String,String> _histoClasses = new HashMap<>();
-   private final Map<String,String> _histoCodes = new HashMap<>();
+//   private final Map<String,String> _histoCodes = new HashMap<>();
+   private final Map<String,Collection<String>> _broadMorphCodes = new HashMap<>();
 
    // Ex: 8000/3, "Neoplasm, Malignant"
 //   private final Map<String,String> _morphClasses = new HashMap<>();
-   private final Map<String,String> _morphCodes = new HashMap<>();
+   private final Map<String,String> _exactMorphCodes = new HashMap<>();
+
+   // There are "primary" morphology codes where the main histology type is the same as the subtype.
+// C340-C343,C348-C349|Bronchus|807|Squamous_Cell_Carcinoma|8070/3|Squamous_Cell_Carcinoma
+// C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
+//   private final Map<String,String> _primaryMorphs = new HashMap<>();
 
 
    TopoMorphValidator() {
@@ -46,12 +53,16 @@ INSTANCE;
       return _topoMorphs.getOrDefault( topoCode.replace( ".", "" ), Collections.emptyList() );
    }
 
-   public String getHistoCode( final String histologyClass ) {
-      return _histoCodes.getOrDefault( histologyClass, "" );
+//   public String getHistoCode( final String histologyClass ) {
+//      return _histoCodes.getOrDefault( histologyClass, "" );
+//   }
+
+   public String getExactMorphCode( final String morphologyClass ) {
+      return _exactMorphCodes.getOrDefault( morphologyClass, "" );
    }
 
-   public String getMorphCode( final String morphologyClass ) {
-      return _morphCodes.getOrDefault( morphologyClass, "" );
+   public Collection<String> getBroadMorphCode( final String morphologyClass ) {
+      return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
    }
 
    
@@ -63,6 +74,7 @@ INSTANCE;
          System.err.println( fnfE.getMessage() );
          System.exit( -1 );
       }
+//      final Map<String,Collection<String>> primaryMorphs = new HashMap<>();
       try ( BufferedReader reader = new BufferedReader( new FileReader( file ) ) ) {
          int i = 0;
          String line = reader.readLine();
@@ -90,19 +102,35 @@ INSTANCE;
             // Ex: C000, [8000/3,8001/1,8002/3]
             topoCodes.forEach( c -> _topoMorphs.computeIfAbsent( c, n -> new HashSet<>() ).add( morphology ) );
             // Ex: 800, Neoplasm
-//            _histoClasses.put( histology, histoDescription );
-            _histoCodes.put( histoDescription, histology );
-
-            // Ex: 8000/3, "Neoplasm, Malignant"
-//            _morphClasses.put( morphology, morphoDescription );
+//            _histoCodes.put( histoDescription, histology );
             // Ex: "Neoplasm, Malignant", 8000/3
-            _morphCodes.put( morphoDescription, morphology );
+            String prev = _exactMorphCodes.put( morphoDescription, morphology );
+            _broadMorphCodes.computeIfAbsent( histoDescription, h -> new HashSet<>() ).add( morphology );
+            if ( prev != null && !prev.equals( morphology ) ) {
+               Logger.getLogger( "TopoMorphValidator" ).error( "Previous morph " + prev
+                                                               + " does not match " + morphoDescription
+                                                               + " for " + morphology );
+            }
+
+//            if ( histoDescription.equals( morphoDescription ) ) {
+//               primaryMorphs.computeIfAbsent( histoDescription, h -> new HashSet<>() )
+//                            .add( morphology );
+//            }
 
             line = reader.readLine();
          }
       } catch ( IOException ioE ) {
          System.out.println( "parseValidationFile " + ioE.getMessage() );
       }
+//      for ( Map.Entry<String,Collection<String>> entry : primaryMorphs.entrySet() ) {
+//         _primaryMorphs.put( entry.getKey(),
+//                             entry.getValue()
+//                                  .stream()
+//                                  .filter( m -> !m.startsWith( "800" )
+//                                                && !m.startsWith( "801" ) )
+//                                  .min( Comparator.naturalOrder() )
+//                                  .orElse( "" ) );
+//      }
    }
 
    static private Collection<String> parseTopoCodes( final String codeLine ) {

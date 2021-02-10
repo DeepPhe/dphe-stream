@@ -18,32 +18,27 @@ public interface SpecificAttribute {
    NeoplasmAttribute toNeoplasmAttribute();
 
    static NeoplasmAttribute createAttribute( final String name, final String value ) {
-      return createAttribute( name, value, Collections.emptyList(), Collections.emptyList() );
+      return createAttribute( name, value, Collections.emptyMap(), Collections.emptyList() );
    }
 
    static NeoplasmAttribute createAttribute( final String name, final String value,
-                                                     final List<Mention> directEvidence ) {
-      return createAttribute( name, value, directEvidence, Collections.emptyList() );
-   }
-
-   static NeoplasmAttribute createAttribute( final String name, final String value,
-                                               final List<Mention> directEvidence,
-                                               final List<Mention> indirectEvidence ) {
-      return createAttribute( name, value, directEvidence, indirectEvidence, indirectEvidence );
+                                             final Map<EvidenceLevel, Collection<Mention>> evidence,
+                                             final List<Integer> features ) {
+      return createAttributeWithFeatures( name, value,
+                                          new ArrayList<>( evidence.getOrDefault( EvidenceLevel.DIRECT_EVIDENCE,
+                                                                                  Collections.emptyList() ) ),
+                                          new ArrayList<>( evidence.getOrDefault( EvidenceLevel.INDIRECT_EVIDENCE,
+                                                                                  Collections.emptyList() ) ),
+                                          new ArrayList<>( evidence.getOrDefault( EvidenceLevel.NOT_EVIDENCE,
+                                                                                  Collections.emptyList() ) ),
+                                          features );
    }
 
    static NeoplasmAttribute createAttribute( final String name, final String value,
                                              final List<Mention> directEvidence,
                                              final List<Mention> indirectEvidence,
-                                             final List<Mention> notEvidence ) {
-      return createAttributeWithFeatures( name, value, directEvidence, indirectEvidence, notEvidence, Collections.emptyList() );
-   }
-
-   static NeoplasmAttribute createAttribute( final String name, final String value,
-                                                         final List<Mention> directEvidence,
-                                                         final List<Mention> indirectEvidence,
-                                                         final List<Mention> notEvidence,
-                                                         final List<Integer> features ) {
+                                             final List<Mention> notEvidence,
+                                             final List<Integer> features ) {
       return createAttributeWithFeatures( name, value, directEvidence, indirectEvidence, notEvidence, features );
    }
 
@@ -89,6 +84,39 @@ public interface SpecificAttribute {
       return evidenceMap;
    }
 
+   static Map<EvidenceLevel, Collection<Mention>> mapEvidence( final ConceptAggregate mainConcept,
+                                                               final Collection<ConceptAggregate> patientConcepts ) {
+      final Map<EvidenceLevel,Collection<Mention>> evidenceMap = new HashMap<>();
+      Arrays.stream( EvidenceLevel.values() )
+            .forEach( l -> evidenceMap.put( l, new HashSet<>() ) );
+      final String mainUri = mainConcept.getUri();
+      final Collection<Mention> secondaryMentions = mainConcept.getMentions();
+      final Collection<Mention> primaryMentions
+            = secondaryMentions.stream()
+                               .filter( m -> mainUri.equals( m.getClassUri() ) )
+                               .collect( Collectors.toList() );
+      final Collection<Mention> otherMentions = getAllMentions( patientConcepts  );
+      secondaryMentions.removeAll( primaryMentions );
+      otherMentions.removeAll( primaryMentions );
+      otherMentions.removeAll( secondaryMentions );
+      evidenceMap.put( EvidenceLevel.DIRECT_EVIDENCE, primaryMentions );
+      evidenceMap.put( EvidenceLevel.INDIRECT_EVIDENCE, secondaryMentions );
+      evidenceMap.put( EvidenceLevel.NOT_EVIDENCE, otherMentions );
+      return evidenceMap;
+   }
+
+   static Collection<Mention> getMainMentions( final Collection<ConceptAggregate> concepts ) {
+      return getMainMentions( concepts, getMainUris( concepts ) );
+   }
+
+   static Collection<Mention> getMainMentions( final Collection<ConceptAggregate> concepts,
+                                               final Collection<String> mainUris ) {
+      return concepts.stream()
+                     .map( ConceptAggregate::getMentions )
+                     .flatMap( Collection::stream )
+                     .filter( m -> mainUris.contains( m.getClassUri() ) )
+                     .collect( Collectors.toSet() );
+   }
 
    static Collection<Mention> getAllMentions( final Collection<ConceptAggregate> concepts ) {
       return concepts.stream()
@@ -131,6 +159,15 @@ public interface SpecificAttribute {
                      .filter( c -> c.getAllUris().contains( uri ) )
                      .collect( Collectors.toSet() );
    }
+
+
+   static int getBranchCountsSum( final Map<String, Integer> conceptBranchCounts ) {
+      return conceptBranchCounts.values()
+                                .stream()
+                                .mapToInt( i -> i )
+                                .sum();
+   }
+
 
 
 

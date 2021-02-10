@@ -83,6 +83,9 @@ final public class AddFeatureUtil {
 
    static public int divisionDouble0to10( final double numerator,
                                           final double denominator ) {
+      if ( denominator == 0 ) {
+         return 0;
+      }
       final double ratio = numerator / denominator;
       return Math.min( 10, (int)Math.ceil( ratio*10d ) );
    }

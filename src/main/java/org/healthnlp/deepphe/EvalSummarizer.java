@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.neo4j.node.PatientSummary;
 import org.healthnlp.deepphe.nlp.pipeline.DmsRunner;
+import org.healthnlp.deepphe.summary.attribute.morphology.Morphology;
 import org.healthnlp.deepphe.util.eval.FeatureFilesAppender;
 import org.healthnlp.deepphe.util.eval.ForEvalLineCreator;
 
@@ -14,7 +15,11 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Run multiple docs and write output for scoring with the eval tool and output for features.
@@ -25,10 +30,20 @@ final public class EvalSummarizer {
 
    static public final String PATIENT_ID = "Patient_ID";
 
-   static private final List<String> ATTRIBUTE_NAMES = Arrays.asList( "topography_major" );
-   static private final List<String> EVAL_ATTRIBUTE_NAMES = Arrays.asList( "*patient ID",
-                                                                           "-Summary_ID",
-                                                                           "topography: ICD-O code (MAJOR SITE); code is only the digits before decimal point" );
+   static private final List<String> ATTRIBUTE_NAMES
+         = Arrays.asList( "topography_major",
+                         "topography_minor",
+                         "histology",
+                         "behavior",
+                         "grade" );
+   static private final List<String> EVAL_ATTRIBUTE_NAMES
+         = Arrays.asList( "*patient ID",
+                          "-Summary_ID",
+                          "topography: ICD-O code (MAJOR SITE); code is only the digits before decimal point",
+                          "topography: ICD-O code (SUBSITE); code is only digits after decimal point",
+                          "histology: ICD-O code",
+                          "behavior: ICD-O code",
+                          "grade: ICD-O code" );
 
 //    "*patient ID|topography: ICD-O code (MAJOR SITE); code is only the digits before decimal point|-primary site: text in note|topography: ICD-O code (SUBSITE); code is only digits after decimal point|-site: text in note|histology: ICD-O code|-histology: text in note|behavior: ICD-O code|-behavior: text in note|laterality: ICD-O code|-laterality: text in note|grade: ICD-O code|-grade: text in note|-AJCC Clinical TNM|-AJCC Pathological TNM: text in note|AJCC Pathological T value|AJCC Pathological N value|AJCC Pathological M value|-3 digits: Tumor size|-Text: Tumor size|-2 digits: Extension|-Text: Extension|-1 digit: Lymph nodes|-Text: Lymph nodes|-2 digits: # of lymph nodes pathologically positive|-Text: # of lymph nodes pathologically positive|-2 digits: # of lymph nodes pathologically examined|-Text: # of lymph nodes pathologically examined|-ER: DeepPhe value set|ER: SSDI value set|-text for ER|-PR: DeepPhe value set|PR: SSDI value set|-text for PR|-HER2: DeepPhe Value Set|HER2: SSDI Value Set|-text for HER2|-ki67: DeepPhe value set|-ki67: DeepPhe value set; if % enter value|-ki67: SSDI value set|ki67: SSDI value set; if % positive enter value|-text for ki67|-BRCA1: DeepPhe value set|-BRCA1: SSDI value set|-text for BRCA1|-BRCA2: DeepPhe value set|-BRCA2: SSDI value set|-text for BRCA2|-ALK: DeepPhe value set|-ALK: SSDI value set|-text for ALK|-EGFR: DeepPhe value set|-EGFR: SSDI value set|-text for EGFR|-BRAF: DeepPhe value set|-BRAF: SSDI value set|-text for BRAF|-ROS1: DeepPhe value set|-ROS1: SSDI value set|-text for ROS1|-pd1: DeepPhe value set|-pd1: SSDI value set|-text for pd1|-pdl1: DeepPhe value set|-pdl1: SSDI value set|-text for pdl1|-msi: DeepPhe value set|msi: SSDI value set|-text for msi|-KRAS: DeepPhe value set|KRAS: SSDI value set|-text for KRAS|-PSA: DeepPhe value set|-PSA: DeepPhe value set -- if numerical enter the value|-PSA: SSDI value set|PSA: SSDI value set - if numerical enter the value|-text for PSA\n"
 
@@ -63,6 +78,30 @@ final public class EvalSummarizer {
       }
       DmsRunner.getInstance()
                .close();
+
+      final Map<String,Map<String,Long>> confusion = new HashMap<>();
+      for ( Map.Entry<String,List<String>> confused : Morphology.CONFUSION.entrySet() ) {
+         final Map<String,Long> counts = confused.getValue().stream().collect( Collectors.groupingBy(
+               Function.identity(), Collectors.counting() ) );
+         confusion.put( confused.getKey(), counts );
+      }
+      System.out.println("System : Gold");
+      confusion.forEach( (k,v) -> System.out.println( k + " : " + v ) );
+
+      final Map<String,Map<String,Long>> realConfusion = new HashMap<>();
+      for ( Map.Entry<String,List<String>> confused : Morphology.REAL_CONFUSION.entrySet() ) {
+         final Map<String,Long> counts = confused.getValue().stream().collect( Collectors.groupingBy(
+               Function.identity(), Collectors.counting() ) );
+         realConfusion.put( confused.getKey(), counts );
+      }
+      System.out.println("System : Available Gold");
+      realConfusion.forEach( (k,v) -> System.out.println( k + " : " + v ) );
+
+      System.out.println("System Counts");
+      Morphology.SYS_COUNTS.forEach( (k,v) -> System.out.println( k + " = " + v ) );
+      System.out.println("Gold Counts");
+      Morphology.GOLD_COUNTS.forEach( (k,v) -> System.out.println( k + " = " + v ) );
+
       System.exit( 0 );
    }
 

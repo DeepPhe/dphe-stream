@@ -46,7 +46,7 @@ add DefaultJCasTermAnnotator
 //  Filter various concepts using context.
 add MassFilter
 
-//  Assign such as negation and uncertainty using machine-learning models.  TODO Use Windowed Version?
+//  Assign such as negation and uncertainty using machine-learning models.
 load WindowedAttributeCleartkSubPipe
 
 //  Assign such as negation and uncertainty using context.

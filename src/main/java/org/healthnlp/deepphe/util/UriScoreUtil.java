@@ -139,7 +139,7 @@ final public class UriScoreUtil {
    static public List<KeyValue<String,Double>> mapUriQuotients( final Collection<String> uris,
                                                                 final Map<String, Collection<String>> uriRootsMap,
                                                                 final Collection<Mention> mentions ) {
-      final Map<String,Integer> uriCountsMap = mapUriMentionCounts( uris, mentions );
+      final Map<String,Integer> uriCountsMap = mapUriMentionCounts( mentions );
 
       return mapUriQuotientsA( uris, uriRootsMap, uriCountsMap );
    }
@@ -183,9 +183,8 @@ final public class UriScoreUtil {
 //                 .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
 //   }
 
-   static public Map<String,Integer> mapUriMentionCounts( final Collection<String> uris,
-                                                          final Collection<Mention> mentions ) {
-      final Map<String,Integer> uriMentionCounts = new HashMap<>( uris.size() );
+   static public Map<String,Integer> mapUriMentionCounts( final Collection<Mention> mentions ) {
+      final Map<String,Integer> uriMentionCounts = new HashMap<>();
       for ( Mention mention : mentions ) {
          final String uri = mention.getClassUri();
          uriMentionCounts.put( uri, uriMentionCounts.getOrDefault( uri, 0 ) + 1 );

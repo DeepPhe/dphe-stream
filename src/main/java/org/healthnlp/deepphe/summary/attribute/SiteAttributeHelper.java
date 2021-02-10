@@ -184,7 +184,7 @@ public class SiteAttributeHelper extends AbstractAttributeHelper {
          return new Pair<>( new KeyValue<>( concept.getUri(), 1.0 ), new KeyValue<>( "DeepPhe", 0d ) );
       }
       final Collection<String> orderUris = getAllUris( orderConcepts );
-      final Map<String,Integer> uriCountsMap = UriScoreUtil.mapUriMentionCounts( orderUris, allNeoplasmMentions );
+      final Map<String,Integer> uriCountsMap = UriScoreUtil.mapUriMentionCounts( allNeoplasmMentions );
       final int totalCounts = uriCountsMap.values()
                                           .stream()
                                           .mapToInt( i -> i )

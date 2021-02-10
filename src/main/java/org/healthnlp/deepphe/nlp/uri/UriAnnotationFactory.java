@@ -5,7 +5,10 @@ import org.apache.ctakes.dictionary.lookup2.consumer.AllTuiTermConsumer;
 import org.apache.ctakes.typesystem.type.constants.CONST;
 import org.apache.ctakes.typesystem.type.refsem.UmlsConcept;
 import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
+import org.apache.ctakes.typesystem.type.textspan.Segment;
+import org.apache.ctakes.typesystem.type.textspan.Sentence;
 import org.apache.log4j.Logger;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.healthnlp.deepphe.core.uri.UriUtil;
@@ -16,6 +19,7 @@ import org.neo4j.graphdb.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.apache.ctakes.typesystem.type.constants.CONST.NE_DISCOVERY_TECH_EXPLICIT_AE;
 import static org.healthnlp.deepphe.neo4j.constant.Neo4jConstants.*;
@@ -64,6 +68,15 @@ public class UriAnnotationFactory {
       final IdentifiedAnnotation annotation = semanticGroup.getCreator().apply( jcas );
       annotation.setBegin( beginOffset );
       annotation.setEnd( endOffset );
+      final List<Segment> sections = JCasUtil.selectCovering( jcas, Segment.class, beginOffset, endOffset );
+      String sectionId = sections.isEmpty() ? "UNKNOWN_SECTION" : sections.get( 0 ).getId();
+      annotation.setSegmentID(
+            ((sectionId != null && !sectionId.isEmpty()) ? sectionId : "UNKNOWN_SECTION" ) );
+      final List<Sentence> sentences = JCasUtil.selectCovering( jcas, Sentence.class, beginOffset, endOffset );
+      String sentenceId = sentences.isEmpty()
+                          ? "UNKNOWN_SENTENCE"
+                          : "Sentence_" + sentences.get( 0 ).getSentenceNumber();
+      annotation.setSentenceID( sentenceId );
       annotation.setTypeID( CONST.NE_TYPE_ID_UNKNOWN );
       annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
       final UmlsConcept umlsConcept = createUmlsConcept( jcas, cui, tui, prefText, uri );
