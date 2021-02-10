@@ -17,7 +17,7 @@ addLogged SentenceDetectorAnnotatorBIO classifierJarPath=/org/apache/ctakes/core
 add MrsDrSentenceJoiner
 
 //  Use the DeepPhe paragraph expressions for paragraph discovery.
-set PARAGRAPH_TYPES_PATH=org/apache/ctakes/cancer/paragraph/ParagraphRegex.bsv
+set PARAGRAPH_TYPES_PATH=org/healthnlp/deepphe/paragraph/ParagraphRegex.bsv
 //  Discover paragraphs.
 add ParagraphAnnotator
 
