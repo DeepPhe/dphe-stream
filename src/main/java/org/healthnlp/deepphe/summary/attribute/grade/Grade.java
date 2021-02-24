@@ -175,18 +175,18 @@ final public class Grade implements SpecificAttribute {
       //1.  !!!!!  Best URI  !!!!!
       //    ======  CONCEPT  =====
 
-      final Collection<ConceptAggregate> bestInFirstMainConcepts = getUriIsMain( _bestUri,
+      final Collection<ConceptAggregate> bestInFirstMainConcepts = getIfUriIsMain( _bestUri,
+                                                                                   neoplasmHighStore._concepts );
+      final Collection<ConceptAggregate> bestInFirstAllConcepts = getIfUriIsAny( _bestUri,
                                                                                  neoplasmHighStore._concepts );
-      final Collection<ConceptAggregate> bestInFirstAllConcepts = getUriInAny( _bestUri,
-                                                                               neoplasmHighStore._concepts );
-      final Collection<ConceptAggregate> bestInNeoplasmMainConcepts = getUriIsMain( _bestUri,
+      final Collection<ConceptAggregate> bestInNeoplasmMainConcepts = getIfUriIsMain( _bestUri,
+                                                                                      neoplasmFullStore._concepts );
+      final Collection<ConceptAggregate> bestInNeoplasmAllConcepts = getIfUriIsAny( _bestUri,
                                                                                     neoplasmFullStore._concepts );
-      final Collection<ConceptAggregate> bestInNeoplasmAllConcepts = getUriInAny( _bestUri,
-                                                                                  neoplasmFullStore._concepts );
-      final Collection<ConceptAggregate> bestInPatientMainConcepts = getUriIsMain( _bestUri,
+      final Collection<ConceptAggregate> bestInPatientMainConcepts = getIfUriIsMain( _bestUri,
+                                                                                     patientFullStore._concepts );
+      final Collection<ConceptAggregate> bestInPatientAllConcepts = getIfUriIsAny( _bestUri,
                                                                                    patientFullStore._concepts );
-      final Collection<ConceptAggregate> bestInPatientAllConcepts = getUriInAny( _bestUri,
-                                                                                 patientFullStore._concepts );
       addCollectionFeatures( features,
                              neoplasmHighStore._concepts,
                              neoplasmFullStore._concepts,
@@ -386,7 +386,7 @@ final public class Grade implements SpecificAttribute {
       final int neoplasmMentionBranchCount = getBranchCountsSum( neoplasmMentionBranchCounts );
       final int patientMentionBranchCount = getBranchCountsSum( patientMentionBranchCounts );
 
-      addIntFeatures( features, firstMentionBranchCount, neoplasmMentionBranchCount, patientMentionBranchCount );
+      addLargeIntFeatures( features, firstMentionBranchCount, neoplasmMentionBranchCount, patientMentionBranchCount );
 
       addStandardFeatures( features,
                            bestFirstMainMentionBranchCount,
@@ -448,7 +448,7 @@ final public class Grade implements SpecificAttribute {
                                                   .max()
                                                   .orElse( 0 );
 
-      addIntFeatures( features,
+      addLargeIntFeatures( features,
                       bestDepth * 2,
                       bestMaxDepth * 2,
                       firstMainMaxDepth * 2,
@@ -495,7 +495,7 @@ final public class Grade implements SpecificAttribute {
             .map( c -> getGradeRelations( c, patientFullStore._concepts) )
             .count();
 
-      addIntFeatures( features, allSiteRelationCount, patientRelationCount );
+      addLargeIntFeatures( features, allSiteRelationCount, patientRelationCount );
       addStandardFeatures( features, bestRelationCount, allSiteRelationCount, patientRelationCount );
 
 
@@ -517,18 +517,18 @@ final public class Grade implements SpecificAttribute {
       final String runnerUp = haveRunnerUp ? bestUriScores.get( bestUriScores.size()-2 )
                                                           .getKey() : "";
       final Collection<ConceptAggregate> runnerUpInFirstMainConcepts
-            = haveRunnerUp ? getUriIsMain( runnerUp, neoplasmHighStore._concepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsMain( runnerUp, neoplasmHighStore._concepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpNeoplasmMainConcepts
-            = haveRunnerUp ? getUriIsMain( runnerUp, neoplasmFullStore._concepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsMain( runnerUp, neoplasmFullStore._concepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpPatientMainConcepts
-            = haveRunnerUp ? getUriIsMain( runnerUp, patientFullStore._concepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsMain( runnerUp, patientFullStore._concepts ) : Collections.emptyList();
 
       final Collection<ConceptAggregate> runnerUpInFirstAllConcepts
-            = haveRunnerUp ? getUriInAny( runnerUp, neoplasmHighStore._concepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsAny( runnerUp, neoplasmHighStore._concepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpNeoplasmAllConcepts
-            = haveRunnerUp ? getUriInAny( runnerUp, neoplasmFullStore._concepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsAny( runnerUp, neoplasmFullStore._concepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpPatientAllConcepts
-            = haveRunnerUp ? getUriInAny( runnerUp, patientFullStore._concepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsAny( runnerUp, patientFullStore._concepts ) : Collections.emptyList();
 
       addStandardFeatures( features, runnerUpInFirstMainConcepts,
                            neoplasmHighStore._concepts,
@@ -697,7 +697,7 @@ final public class Grade implements SpecificAttribute {
                              .max()
                              .orElse( 0 );
 
-      addIntFeatures( features, runnerUpDepth * 2, runnerUpMaxDepth * 2 );
+      addLargeIntFeatures( features, runnerUpDepth * 2, runnerUpMaxDepth * 2 );
       addStandardFeatures( features, runnerUpDepth, firstMainMaxDepth, firstAllMaxDepth, neoplasmMainMaxDepth,
                            neoplasmAllMaxDepth, patientMainMaxDepth, patientAllMaxDepth );
       addStandardFeatures( features, runnerUpMaxDepth, firstMainMaxDepth, firstAllMaxDepth, neoplasmMainMaxDepth,
@@ -714,7 +714,7 @@ final public class Grade implements SpecificAttribute {
 
       addBooleanFeatures( features, neoplasm.isNegated(), neoplasm.isUncertain(), neoplasm.isGeneric(),
                           neoplasm.isConditional() );
-      addIntFeatures( features, neoplasm.getMentions().size() );
+      addLargeIntFeatures( features, neoplasm.getMentions().size() );
 
 
       LOGGER.info( "Features: " + features.size() );

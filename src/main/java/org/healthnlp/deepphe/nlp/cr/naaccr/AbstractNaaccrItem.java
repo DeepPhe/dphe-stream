@@ -13,7 +13,7 @@ import java.util.List;
  * @since 1/14/2020
  */
 abstract public class AbstractNaaccrItem<T extends NaaccrItem>
-      implements NaaccrItem, NaaccrItemGetter, NaaccrSectionGetter {
+      implements NaaccrItem, NaaccrItemGetter<T>,NaaccrSectionGetter {
 
    private String _id;
    private int _index = 0;

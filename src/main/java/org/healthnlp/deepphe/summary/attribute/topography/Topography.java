@@ -305,18 +305,18 @@ public class Topography implements SpecificAttribute {
       //1.  !!!!!  Best URI  !!!!!
       //    ======  CONCEPT  =====
 
-      final Collection<ConceptAggregate> bestInFirstMainConcepts = getUriIsMain( _bestUri,
+      final Collection<ConceptAggregate> bestInFirstMainConcepts = getIfUriIsMain( _bestUri,
+                                                                                   firstSiteConcepts );
+      final Collection<ConceptAggregate> bestInFirstAllConcepts = getIfUriIsAny( _bestUri,
                                                                                  firstSiteConcepts );
-      final Collection<ConceptAggregate> bestInFirstAllConcepts = getUriInAny( _bestUri,
-                                                                               firstSiteConcepts );
-      final Collection<ConceptAggregate> bestInNeoplasmMainConcepts = getUriIsMain( _bestUri,
+      final Collection<ConceptAggregate> bestInNeoplasmMainConcepts = getIfUriIsMain( _bestUri,
+                                                                                      neoplasmSiteConcepts );
+      final Collection<ConceptAggregate> bestInNeoplasmAllConcepts = getIfUriIsAny( _bestUri,
                                                                                     neoplasmSiteConcepts );
-      final Collection<ConceptAggregate> bestInNeoplasmAllConcepts = getUriInAny( _bestUri,
-                                                                                  neoplasmSiteConcepts );
-      final Collection<ConceptAggregate> bestInPatientMainConcepts = getUriIsMain( _bestUri,
+      final Collection<ConceptAggregate> bestInPatientMainConcepts = getIfUriIsMain( _bestUri,
+                                                                                     patientSiteConcepts );
+      final Collection<ConceptAggregate> bestInPatientAllConcepts = getIfUriIsAny( _bestUri,
                                                                                    patientSiteConcepts );
-      final Collection<ConceptAggregate> bestInPatientAllConcepts = getUriInAny( _bestUri,
-                                                                                 patientSiteConcepts );
 
       addCollectionFeatures( features, firstSiteConcepts, neoplasmSiteConcepts, patientSiteConcepts );
 
@@ -505,7 +505,7 @@ public class Topography implements SpecificAttribute {
       final int neoplasmMentionBranchCount = getBranchCountsSum( neoplasmMentionBranchCounts );
       final int patientMentionBranchCount = getBranchCountsSum( patientMentionBranchCounts );
 
-      addIntFeatures( features, firstMentionBranchCount, neoplasmMentionBranchCount, patientMentionBranchCount );
+      addLargeIntFeatures( features, firstMentionBranchCount, neoplasmMentionBranchCount, patientMentionBranchCount );
 
       addStandardFeatures( features,
                            bestFirstMainMentionBranchCount,
@@ -567,7 +567,7 @@ public class Topography implements SpecificAttribute {
                                                   .max()
                                                   .orElse( 0 );
 
-      addIntFeatures( features,
+      addLargeIntFeatures( features,
                      bestDepth * 2, bestMaxDepth * 2,firstMainMaxDepth * 2,firstAllMaxDepth * 2,
                      neoplasmMainMaxDepth * 2,neoplasmAllMaxDepth * 2,patientMainMaxDepth * 2,patientAllMaxDepth * 2 );
 
@@ -613,7 +613,7 @@ public class Topography implements SpecificAttribute {
             .map( Map.Entry::getValue )
             .count();
 
-      addIntFeatures( features, allSiteRelationCount, patientRelationCount );
+      addLargeIntFeatures( features, allSiteRelationCount, patientRelationCount );
       addStandardFeatures( features, bestRelationCount, allSiteRelationCount, patientRelationCount );
 
 
@@ -633,18 +633,18 @@ public class Topography implements SpecificAttribute {
       final String runnerUp = haveRunnerUp ? bestUriScores.get( bestUriScores.size()-2 )
                                                           .getKey() : "";
       final Collection<ConceptAggregate> runnerUpInFirstMainConcepts
-            = haveRunnerUp ? getUriIsMain( runnerUp, firstSiteConcepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsMain( runnerUp, firstSiteConcepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpNeoplasmMainConcepts
-            = haveRunnerUp ? getUriIsMain( runnerUp, neoplasmSiteConcepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsMain( runnerUp, neoplasmSiteConcepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpPatientMainConcepts
-            = haveRunnerUp ? getUriIsMain( runnerUp, patientSiteConcepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsMain( runnerUp, patientSiteConcepts ) : Collections.emptyList();
 
       final Collection<ConceptAggregate> runnerUpInFirstAllConcepts
-            = haveRunnerUp ? getUriInAny( runnerUp, firstSiteConcepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsAny( runnerUp, firstSiteConcepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpNeoplasmAllConcepts
-            = haveRunnerUp ? getUriInAny( runnerUp, neoplasmSiteConcepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsAny( runnerUp, neoplasmSiteConcepts ) : Collections.emptyList();
       final Collection<ConceptAggregate> runnerUpPatientAllConcepts
-            = haveRunnerUp ? getUriInAny( runnerUp, patientSiteConcepts ) : Collections.emptyList();
+            = haveRunnerUp ? getIfUriIsAny( runnerUp, patientSiteConcepts ) : Collections.emptyList();
 
       addStandardFeatures( features, runnerUpInFirstMainConcepts,
                            firstSiteConcepts,
@@ -803,7 +803,7 @@ public class Topography implements SpecificAttribute {
                                           .max()
                                           .orElse( 0 );
 
-      addIntFeatures( features, runnerUpDepth * 2, runnerUpMaxDepth * 2 );
+      addLargeIntFeatures( features, runnerUpDepth * 2, runnerUpMaxDepth * 2 );
       addStandardFeatures( features, runnerUpDepth, firstMainMaxDepth, firstAllMaxDepth, neoplasmMainMaxDepth,
                            neoplasmAllMaxDepth, patientMainMaxDepth, patientAllMaxDepth );
       addStandardFeatures( features, runnerUpMaxDepth, firstMainMaxDepth, firstAllMaxDepth, neoplasmMainMaxDepth,
@@ -883,7 +883,7 @@ public class Topography implements SpecificAttribute {
       features.add( _bestMajorTopoCode.equals( "C80" ) ? 0 : 10 );
       addBooleanFeatures( features, neoplasm.isNegated(), neoplasm.isUncertain(), neoplasm.isGeneric(),
                           neoplasm.isConditional() );
-      addIntFeatures( features, neoplasm.getMentions().size() );
+      addLargeIntFeatures( features, neoplasm.getMentions().size() );
 
 //      final Collection<String> morphs = NeoplasmSummaryCreator.getMorphology( featureHelper.getNeoplasm(),
 //                                                                              _majorTopoCode + "0" );

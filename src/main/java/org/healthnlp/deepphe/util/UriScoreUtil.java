@@ -211,7 +211,7 @@ final public class UriScoreUtil {
          // How many of the roots of this uri are in the collection of uris for this concept (and how many times), multiplied
          final int sum = uriRoots.stream()
                                   .filter( uriSet::contains )
-                                  .mapToInt( uriCountsMap::get )
+                                  .mapToInt( u -> uriCountsMap.getOrDefault( u, 0 ) )
                                   .sum();
          uriSumMap.put( uri, sum );
 //         LOGGER.info( "URI " + uri + " has " + sum

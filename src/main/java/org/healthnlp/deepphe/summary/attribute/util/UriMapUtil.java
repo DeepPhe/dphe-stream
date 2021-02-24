@@ -34,8 +34,9 @@ final public class UriMapUtil {
    }
 
    static public Map<String,Integer> mapUriBranchConceptCounts( final Collection<ConceptAggregate> concepts,
-                                                                 final Map<String, Collection<String>> patientSiteAllUriRootsMap ) {
-      final Map<String,Collection<ConceptAggregate>> uriConceptMap = mapUriBranchConcepts( concepts, patientSiteAllUriRootsMap );
+                                                                 final Map<String, Collection<String>> uriRootsMap ) {
+      final Map<String,Collection<ConceptAggregate>> uriConceptMap
+            = mapUriBranchConcepts( concepts, uriRootsMap );
       return uriConceptMap.entrySet()
                           .stream()
                           .collect( Collectors.toMap( Map.Entry::getKey,

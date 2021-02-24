@@ -84,39 +84,39 @@ public interface SpecificAttribute {
       return evidenceMap;
    }
 
-   static Map<EvidenceLevel, Collection<Mention>> mapEvidence( final ConceptAggregate mainConcept,
-                                                               final Collection<ConceptAggregate> patientConcepts ) {
-      final Map<EvidenceLevel,Collection<Mention>> evidenceMap = new HashMap<>();
-      Arrays.stream( EvidenceLevel.values() )
-            .forEach( l -> evidenceMap.put( l, new HashSet<>() ) );
-      final String mainUri = mainConcept.getUri();
-      final Collection<Mention> secondaryMentions = mainConcept.getMentions();
-      final Collection<Mention> primaryMentions
-            = secondaryMentions.stream()
-                               .filter( m -> mainUri.equals( m.getClassUri() ) )
-                               .collect( Collectors.toList() );
-      final Collection<Mention> otherMentions = getAllMentions( patientConcepts  );
-      secondaryMentions.removeAll( primaryMentions );
-      otherMentions.removeAll( primaryMentions );
-      otherMentions.removeAll( secondaryMentions );
-      evidenceMap.put( EvidenceLevel.DIRECT_EVIDENCE, primaryMentions );
-      evidenceMap.put( EvidenceLevel.INDIRECT_EVIDENCE, secondaryMentions );
-      evidenceMap.put( EvidenceLevel.NOT_EVIDENCE, otherMentions );
-      return evidenceMap;
-   }
+//   static Map<EvidenceLevel, Collection<Mention>> mapEvidence( final ConceptAggregate mainConcept,
+//                                                               final Collection<ConceptAggregate> patientConcepts ) {
+//      final Map<EvidenceLevel,Collection<Mention>> evidenceMap = new HashMap<>();
+//      Arrays.stream( EvidenceLevel.values() )
+//            .forEach( l -> evidenceMap.put( l, new HashSet<>() ) );
+//      final String mainUri = mainConcept.getUri();
+//      final Collection<Mention> secondaryMentions = mainConcept.getMentions();
+//      final Collection<Mention> primaryMentions
+//            = secondaryMentions.stream()
+//                               .filter( m -> mainUri.equals( m.getClassUri() ) )
+//                               .collect( Collectors.toList() );
+//      final Collection<Mention> otherMentions = getAllMentions( patientConcepts  );
+//      secondaryMentions.removeAll( primaryMentions );
+//      otherMentions.removeAll( primaryMentions );
+//      otherMentions.removeAll( secondaryMentions );
+//      evidenceMap.put( EvidenceLevel.DIRECT_EVIDENCE, primaryMentions );
+//      evidenceMap.put( EvidenceLevel.INDIRECT_EVIDENCE, secondaryMentions );
+//      evidenceMap.put( EvidenceLevel.NOT_EVIDENCE, otherMentions );
+//      return evidenceMap;
+//   }
 
-   static Collection<Mention> getMainMentions( final Collection<ConceptAggregate> concepts ) {
-      return getMainMentions( concepts, getMainUris( concepts ) );
-   }
+//   static Collection<Mention> getMainMentions( final Collection<ConceptAggregate> concepts ) {
+//      return getMainMentions( concepts, getMainUris( concepts ) );
+//   }
 
-   static Collection<Mention> getMainMentions( final Collection<ConceptAggregate> concepts,
-                                               final Collection<String> mainUris ) {
-      return concepts.stream()
-                     .map( ConceptAggregate::getMentions )
-                     .flatMap( Collection::stream )
-                     .filter( m -> mainUris.contains( m.getClassUri() ) )
-                     .collect( Collectors.toSet() );
-   }
+//   static Collection<Mention> getMainMentions( final Collection<ConceptAggregate> concepts,
+//                                               final Collection<String> mainUris ) {
+//      return concepts.stream()
+//                     .map( ConceptAggregate::getMentions )
+//                     .flatMap( Collection::stream )
+//                     .filter( m -> mainUris.contains( m.getClassUri() ) )
+//                     .collect( Collectors.toSet() );
+//   }
 
    static Collection<Mention> getAllMentions( final Collection<ConceptAggregate> concepts ) {
       return concepts.stream()
@@ -146,15 +146,15 @@ public interface SpecificAttribute {
    }
 
 
-   static Collection<ConceptAggregate> getUriIsMain( final String uri,
-                                                      final Collection<ConceptAggregate> concepts ) {
+   static Collection<ConceptAggregate> getIfUriIsMain( final String uri,
+                                                       final Collection<ConceptAggregate> concepts ) {
       return concepts.stream()
                      .filter( c -> c.getUri().equals( uri ) )
                      .collect( Collectors.toSet() );
    }
 
 
-   static Collection<ConceptAggregate> getUriInAny( final String uri, final Collection<ConceptAggregate> concepts ) {
+   static Collection<ConceptAggregate> getIfUriIsAny( final String uri, final Collection<ConceptAggregate> concepts ) {
       return concepts.stream()
                      .filter( c -> c.getAllUris().contains( uri ) )
                      .collect( Collectors.toSet() );

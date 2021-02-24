@@ -36,12 +36,33 @@ final public class AddFeatureUtil {
       }
    }
 
-   static public void addIntFeatures( final List<Integer> features,
-                                      final int ... values ) {
+   static public void addLargeIntFeatures( final List<Integer> features,
+                                           final int ... values ) {
       for ( int value : values ) {
+         // Though Multiple documents may have large counts, single documents may not.
+         features.add( Math.min( 10, value ) );
          addDoubleFeature( features, Math.log( 1 + value ) );
-         addDivisionFeature( features, 1, value );
+//         addRatioFeature( features, 1, value );
       }
+   }
+
+   static public void addRatioFeature( final List<Integer> features,
+                                       final int numerator,
+                                       final int denominator ) {
+      if ( denominator == 0 ) {
+         features.add( 10 );
+      } else {
+         final double ratio = (double) numerator / (double) denominator;
+         final int intValue = Math.min( 10, (int)Math.ceil( ratio*10d ) );
+         features.add( intValue );
+      }
+//      if ( numerator == 0 ) {
+//         features.add( 10 );
+//      } else {
+//         final double ratio2 = (double) denominator / (double) numerator;
+//         final int intValue2 = Math.min( 10, (int) Math.ceil( ratio2 * 10d ) );
+//         features.add( intValue2 );
+//      }
    }
 
    static public void addBooleanFeatures( final List<Integer> features, final boolean ... values ) {

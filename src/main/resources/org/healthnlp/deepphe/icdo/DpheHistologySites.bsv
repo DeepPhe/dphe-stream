@@ -34,7 +34,7 @@ C000-C006,C008-C009|Lip_Proper|808|Lymphoepithelial_Carcinoma|8082/3|Lymphoepith
 C000-C006,C008-C009|Lip_Proper|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C000-C006,C008-C009|Lip_Proper|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C000-C006,C008-C009|Lip_Proper|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C000-C006,C008-C009|Lip_Proper|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C000-C006,C008-C009|Lip_Proper|814|Adenocarcinoma|8140/3|Metastasis
 C000-C006,C008-C009|Lip_Proper|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C000-C006,C008-C009|Lip_Proper|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C000-C006,C008-C009|Lip_Proper|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -106,7 +106,7 @@ C019|Root_Of_Tongue|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinom
 C019|Root_Of_Tongue|808|Lymphoepithelial_Carcinoma|8085/3|Squamous_Cell_Carcinoma
 C019|Root_Of_Tongue|808|Lymphoepithelial_Carcinoma|8086/3|Squamous_Cell_Carcinoma
 C019|Root_Of_Tongue|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C019|Root_Of_Tongue|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C019|Root_Of_Tongue|814|Adenocarcinoma|8140/3|Metastasis
 C019|Root_Of_Tongue|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C019|Root_Of_Tongue|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C019|Root_Of_Tongue|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -120,10 +120,10 @@ C019|Root_Of_Tongue|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarc
 C019|Root_Of_Tongue|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C019|Root_Of_Tongue|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell_Spindle_Cell
 C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C019|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C019|Root_Of_Tongue|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C019|Root_Of_Tongue|872|Melanoma|8720/3|Melanoma
@@ -197,13 +197,13 @@ C019|Root_Of_Tongue|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Ce
 C019|Root_Of_Tongue|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C019|Root_Of_Tongue|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C019|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C019|Root_Of_Tongue|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C019|Root_Of_Tongue|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -248,7 +248,7 @@ C020-C024,C028-C029|Root_Of_Tongue|808|Lymphoepithelial_Carcinoma|8082/3|Lymphoe
 C020-C024,C028-C029|Root_Of_Tongue|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C020-C024,C028-C029|Root_Of_Tongue|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C020-C024,C028-C029|Root_Of_Tongue|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C020-C024,C028-C029|Root_Of_Tongue|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C020-C024,C028-C029|Root_Of_Tongue|814|Adenocarcinoma|8140/3|Metastasis
 C020-C024,C028-C029|Root_Of_Tongue|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C020-C024,C028-C029|Root_Of_Tongue|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C020-C024,C028-C029|Root_Of_Tongue|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -262,10 +262,10 @@ C020-C024,C028-C029|Root_Of_Tongue|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Prod
 C020-C024,C028-C029|Root_Of_Tongue|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C020-C024,C028-C029|Root_Of_Tongue|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell_Spindle_Cell
 C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C020-C024,C028-C029|Root_Of_Tongue|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C020-C024,C028-C029|Root_Of_Tongue|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C020-C024,C028-C029|Root_Of_Tongue|872|Melanoma|8720/3|Melanoma
@@ -339,13 +339,13 @@ C020-C024,C028-C029|Root_Of_Tongue|975|True_Histiocytic_Lymphoma|9758/3|Follicul
 C020-C024,C028-C029|Root_Of_Tongue|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C020-C024,C028-C029|Root_Of_Tongue|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C020-C024,C028-C029|Root_Of_Tongue|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C020-C024,C028-C029|Root_Of_Tongue|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C020-C024,C028-C029|Root_Of_Tongue|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -390,7 +390,7 @@ C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|808|Lymphoep
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|814|Adenocarcinoma|8140/3|Metastasis
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -497,13 +497,13 @@ C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|975|True_His
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C030-C031,C039-C041,C048-C052,C058-C062,C068-C069|Sublingual_Region|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -546,7 +546,7 @@ C079-C081,C088-C089|Salivary_Gland|808|Lymphoepithelial_Carcinoma|8082/3|Lymphoe
 C079-C081,C088-C089|Salivary_Gland|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C079-C081,C088-C089|Salivary_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C079-C081,C088-C089|Salivary_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C079-C081,C088-C089|Salivary_Gland|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C079-C081,C088-C089|Salivary_Gland|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C079-C081,C088-C089|Salivary_Gland|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -570,7 +570,7 @@ C079-C081,C088-C089|Salivary_Gland|843|Mucoepidermoid_Carcinoma|8430/3|Mucoepide
 C079-C081,C088-C089|Salivary_Gland|844|Cystadenocarcinoma|8440/3|Cystadenocarcinoma
 C079-C081,C088-C089|Salivary_Gland|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C079-C081,C088-C089|Salivary_Gland|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
-C079-C081,C088-C089|Salivary_Gland|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C079-C081,C088-C089|Salivary_Gland|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|850|Ductal_Carcinoma|8502/3|Secretory_Breast_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|855|Acinar_Cell_Carcinoma|8550/3|Acinar_Cell_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Cell_Cystadenocarcinoma
@@ -578,10 +578,10 @@ C079-C081,C088-C089|Salivary_Gland|856|Adenosquamous_Carcinoma|8560/3|Adenosquam
 C079-C081,C088-C089|Salivary_Gland|856|Adenosquamous_Carcinoma|8561/3|Adenolymphoma
 C079-C081,C088-C089|Salivary_Gland|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell_Spindle_Cell
 C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C079-C081,C088-C089|Salivary_Gland|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C079-C081,C088-C089|Salivary_Gland|880|Sarcoma|8800/3|Sarcoma
 C079-C081,C088-C089|Salivary_Gland|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -681,13 +681,13 @@ C079-C081,C088-C089|Salivary_Gland|975|True_Histiocytic_Lymphoma|9758/3|Follicul
 C079-C081,C088-C089|Salivary_Gland|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C079-C081,C088-C089|Salivary_Gland|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C079-C081,C088-C089|Salivary_Gland|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C079-C081,C088-C089|Salivary_Gland|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C079-C081,C088-C089|Salivary_Gland|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -740,7 +740,7 @@ C090-C091,C098-C104,C108-C109|Pharynx|812|Transitional_Cell_Carcinoma|8122/3|Sar
 C090-C091,C098-C104,C108-C109|Pharynx|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C090-C091,C098-C104,C108-C109|Pharynx|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C090-C091,C098-C104,C108-C109|Pharynx|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C090-C091,C098-C104,C108-C109|Pharynx|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C090-C091,C098-C104,C108-C109|Pharynx|814|Adenocarcinoma|8140/3|Metastasis
 C090-C091,C098-C104,C108-C109|Pharynx|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C090-C091,C098-C104,C108-C109|Pharynx|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C090-C091,C098-C104,C108-C109|Pharynx|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -854,13 +854,13 @@ C090-C091,C098-C104,C108-C109|Pharynx|975|True_Histiocytic_Lymphoma|9758/3|Folli
 C090-C091,C098-C104,C108-C109|Pharynx|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C090-C091,C098-C104,C108-C109|Pharynx|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C090-C091,C098-C104,C108-C109|Pharynx|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C090-C091,C098-C104,C108-C109|Pharynx|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C090-C091,C098-C104,C108-C109|Pharynx|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -913,7 +913,7 @@ C110,C112-C113,C118-C119|Nasopharynx|812|Transitional_Cell_Carcinoma|8122/3|Sarc
 C110,C112-C113,C118-C119|Nasopharynx|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C110,C112-C113,C118-C119|Nasopharynx|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C110,C112-C113,C118-C119|Nasopharynx|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C110,C112-C113,C118-C119|Nasopharynx|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C110,C112-C113,C118-C119|Nasopharynx|814|Adenocarcinoma|8140/3|Metastasis
 C110,C112-C113,C118-C119|Nasopharynx|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C110,C112-C113,C118-C119|Nasopharynx|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C110,C112-C113,C118-C119|Nasopharynx|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -1030,13 +1030,13 @@ C110,C112-C113,C118-C119|Nasopharynx|975|True_Histiocytic_Lymphoma|9758/3|Follic
 C110,C112-C113,C118-C119|Nasopharynx|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C110,C112-C113,C118-C119|Nasopharynx|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C110,C112-C113,C118-C119|Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C110,C112-C113,C118-C119|Nasopharynx|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C110,C112-C113,C118-C119|Nasopharynx|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -1091,7 +1091,7 @@ C111|Posterior_Wall_Of_The_Nasopharynx|812|Transitional_Cell_Carcinoma|8122/3|Sa
 C111|Posterior_Wall_Of_The_Nasopharynx|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C111|Posterior_Wall_Of_The_Nasopharynx|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C111|Posterior_Wall_Of_The_Nasopharynx|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C111|Posterior_Wall_Of_The_Nasopharynx|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C111|Posterior_Wall_Of_The_Nasopharynx|814|Adenocarcinoma|8140/3|Metastasis
 C111|Posterior_Wall_Of_The_Nasopharynx|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C111|Posterior_Wall_Of_The_Nasopharynx|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C111|Posterior_Wall_Of_The_Nasopharynx|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -1205,13 +1205,13 @@ C111|Posterior_Wall_Of_The_Nasopharynx|975|True_Histiocytic_Lymphoma|9757/3|Inte
 C111|Posterior_Wall_Of_The_Nasopharynx|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcoma
 C111|Posterior_Wall_Of_The_Nasopharynx|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C111|Posterior_Wall_Of_The_Nasopharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C111|Posterior_Wall_Of_The_Nasopharynx|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C111|Posterior_Wall_Of_The_Nasopharynx|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
 C111|Posterior_Wall_Of_The_Nasopharynx|983|Leukemia|9837/3|T_Lymphoblastic_Leukemia_Lymphoma
@@ -1255,7 +1255,7 @@ C129-C132,C138-C139|Hypopharynx|812|Transitional_Cell_Carcinoma|8122/3|Sarcomato
 C129-C132,C138-C139|Hypopharynx|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C129-C132,C138-C139|Hypopharynx|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C129-C132,C138-C139|Hypopharynx|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C129-C132,C138-C139|Hypopharynx|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C129-C132,C138-C139|Hypopharynx|814|Adenocarcinoma|8140/3|Metastasis
 C129-C132,C138-C139|Hypopharynx|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C129-C132,C138-C139|Hypopharynx|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C129-C132,C138-C139|Hypopharynx|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -1334,13 +1334,13 @@ C129-C132,C138-C139|Hypopharynx|975|True_Histiocytic_Lymphoma|9758/3|Follicular_
 C129-C132,C138-C139|Hypopharynx|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C129-C132,C138-C139|Hypopharynx|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C129-C132,C138-C139|Hypopharynx|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C129-C132,C138-C139|Hypopharynx|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C129-C132,C138-C139|Hypopharynx|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -1379,7 +1379,7 @@ C140,C142,C148|Pharynx|808|Lymphoepithelial_Carcinoma|8082/3|Lymphoepithelial_Ca
 C140,C142,C148|Pharynx|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C140,C142,C148|Pharynx|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C140,C142,C148|Pharynx|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C140,C142,C148|Pharynx|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C140,C142,C148|Pharynx|814|Adenocarcinoma|8140/3|Metastasis
 C140,C142,C148|Pharynx|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C140,C142,C148|Pharynx|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C140,C142,C148|Pharynx|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -1459,13 +1459,13 @@ C140,C142,C148|Pharynx|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic
 C140,C142,C148|Pharynx|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C140,C142,C148|Pharynx|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C140,C142,C148|Pharynx|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C140,C142,C148|Pharynx|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C140,C142,C148|Pharynx|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -1508,7 +1508,7 @@ C150-C155,C158-C159|Esophagus|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamou
 C150-C155,C158-C159|Esophagus|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C150-C155,C158-C159|Esophagus|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C150-C155,C158-C159|Esophagus|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C150-C155,C158-C159|Esophagus|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C150-C155,C158-C159|Esophagus|814|Adenocarcinoma|8140/3|Metastasis
 C150-C155,C158-C159|Esophagus|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C150-C155,C158-C159|Esophagus|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C150-C155,C158-C159|Esophagus|814|Adenocarcinoma|8145/3|Diffuse_Type_Adenocarcinoma
@@ -1533,10 +1533,10 @@ C150-C155,C158-C159|Esophagus|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing
 C150-C155,C158-C159|Esophagus|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C150-C155,C158-C159|Esophagus|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C150-C155,C158-C159|Esophagus|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C150-C155,C158-C159|Esophagus|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C150-C155,C158-C159|Esophagus|872|Melanoma|8720/3|Melanoma
@@ -1590,13 +1590,13 @@ C150-C155,C158-C159|Esophagus|975|True_Histiocytic_Lymphoma|9758/3|Follicular_De
 C150-C155,C158-C159|Esophagus|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C150-C155,C158-C159|Esophagus|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C150-C155,C158-C159|Esophagus|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C150-C155,C158-C159|Esophagus|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C150-C155,C158-C159|Esophagus|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -1639,7 +1639,7 @@ C160-C166,C168-C169|Stomach|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous_
 C160-C166,C168-C169|Stomach|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C160-C166,C168-C169|Stomach|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C160-C166,C168-C169|Stomach|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C160-C166,C168-C169|Stomach|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C160-C166,C168-C169|Stomach|814|Adenocarcinoma|8140/3|Metastasis
 C160-C166,C168-C169|Stomach|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C160-C166,C168-C169|Stomach|814|Adenocarcinoma|8142/3|Linitis_Plastica
 C160-C166,C168-C169|Stomach|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
@@ -1680,10 +1680,10 @@ C160-C166,C168-C169|Stomach|851|Medullary_Carcinoma|8510/3|Medullary_Carcinoma
 C160-C166,C168-C169|Stomach|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C160-C166,C168-C169|Stomach|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C160-C166,C168-C169|Stomach|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C160-C166,C168-C169|Stomach|880|Sarcoma|8800/3|Sarcoma
@@ -1763,13 +1763,13 @@ C160-C166,C168-C169|Stomach|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dend
 C160-C166,C168-C169|Stomach|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C160-C166,C168-C169|Stomach|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C160-C166,C168-C169|Stomach|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C160-C166,C168-C169|Stomach|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C160-C166,C168-C169|Stomach|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -1796,7 +1796,7 @@ C170-C173,C178-C179|Small_Intestine|805|Papillary_Carcinoma|8051/3|Verrucous_Car
 C170-C173,C178-C179|Small_Intestine|805|Papillary_Carcinoma|8052/2|Papillary_Squamous_Cell_Carcinoma
 C170-C173,C178-C179|Small_Intestine|805|Papillary_Carcinoma|8052/3|Papillary_Squamous_Cell_Carcinoma
 C170-C173,C178-C179|Small_Intestine|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C170-C173,C178-C179|Small_Intestine|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C170-C173,C178-C179|Small_Intestine|814|Adenocarcinoma|8140/3|Metastasis
 C170-C173,C178-C179|Small_Intestine|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C170-C173,C178-C179|Small_Intestine|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C170-C173,C178-C179|Small_Intestine|814|Adenocarcinoma|8145/3|Diffuse_Type_Adenocarcinoma
@@ -1824,10 +1824,10 @@ C170-C173,C178-C179|Small_Intestine|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_
 C170-C173,C178-C179|Small_Intestine|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C170-C173,C178-C179|Small_Intestine|849|Signet_Ring_Cell_Carcinoma|8490/3|Signet_Ring_Cell_Carcinoma
 C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C170-C173,C178-C179|Small_Intestine|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C170-C173,C178-C179|Small_Intestine|871|Malignant_Glomus_Tumor|8710/3|Malignant_Glomus_Tumor
@@ -1921,13 +1921,13 @@ C170-C173,C178-C179|Small_Intestine|975|True_Histiocytic_Lymphoma|9759/3|Fibrobl
 C170-C173,C178-C179|Small_Intestine|976|Immunoproliferative_Disorder|9764/3|Immunoproliferative_Disorder
 C170-C173,C178-C179|Small_Intestine|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C170-C173,C178-C179|Small_Intestine|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C170-C173,C178-C179|Small_Intestine|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C170-C173,C178-C179|Small_Intestine|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -1970,7 +1970,7 @@ C180, C182-C189, C199|Large_Intestine|807|Squamous_Cell_Carcinoma|8076/2|Stage_0
 C180, C182-C189, C199|Large_Intestine|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C180, C182-C189, C199|Large_Intestine|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C180, C182-C189, C199|Large_Intestine|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C180, C182-C189, C199|Large_Intestine|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C180, C182-C189, C199|Large_Intestine|814|Adenocarcinoma|8140/3|Metastasis
 C180, C182-C189, C199|Large_Intestine|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C180, C182-C189, C199|Large_Intestine|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C180, C182-C189, C199|Large_Intestine|814|Adenocarcinoma|8145/3|Diffuse_Type_Adenocarcinoma
@@ -2013,10 +2013,10 @@ C180, C182-C189, C199|Large_Intestine|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Ce
 C180, C182-C189, C199|Large_Intestine|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C180, C182-C189, C199|Large_Intestine|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C180, C182-C189, C199|Large_Intestine|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C180, C182-C189, C199|Large_Intestine|880|Sarcoma|8800/3|Sarcoma
@@ -2110,13 +2110,13 @@ C180, C182-C189, C199|Large_Intestine|975|True_Histiocytic_Lymphoma|9758/3|Folli
 C180, C182-C189, C199|Large_Intestine|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C180, C182-C189, C199|Large_Intestine|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C180, C182-C189, C199|Large_Intestine|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C180, C182-C189, C199|Large_Intestine|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C180, C182-C189, C199|Large_Intestine|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -2159,7 +2159,7 @@ C181|Appendix|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous_Cell_Carcinoma
 C181|Appendix|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C181|Appendix|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C181|Appendix|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C181|Appendix|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C181|Appendix|814|Adenocarcinoma|8140/3|Metastasis
 C181|Appendix|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C181|Appendix|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C181|Appendix|814|Adenocarcinoma|8145/3|Diffuse_Type_Adenocarcinoma
@@ -2203,10 +2203,10 @@ C181|Appendix|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Cell_Cystadenocarcinoma
 C181|Appendix|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C181|Appendix|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C181|Appendix|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C181|Appendix|880|Sarcoma|8800/3|Sarcoma
@@ -2300,13 +2300,13 @@ C181|Appendix|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sar
 C181|Appendix|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C181|Appendix|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C181|Appendix|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C181|Appendix|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C181|Appendix|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -2355,7 +2355,7 @@ C209|Rectal|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_Carcinoma
 C209|Rectal|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C209|Rectal|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C209|Rectal|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C209|Rectal|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C209|Rectal|814|Adenocarcinoma|8140/3|Metastasis
 C209|Rectal|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C209|Rectal|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C209|Rectal|814|Adenocarcinoma|8145/3|Diffuse_Type_Adenocarcinoma
@@ -2398,10 +2398,10 @@ C209|Rectal|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Cell_Cystadenocarcinoma
 C209|Rectal|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C209|Rectal|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C209|Rectal|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C209|Rectal|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
@@ -2508,13 +2508,13 @@ C209|Rectal|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarco
 C209|Rectal|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C209|Rectal|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C209|Rectal|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C209|Rectal|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C209|Rectal|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -2558,7 +2558,7 @@ C210-C212,C218|Anal_Canal|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_Car
 C210-C212,C218|Anal_Canal|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C210-C212,C218|Anal_Canal|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C210-C212,C218|Anal_Canal|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C210-C212,C218|Anal_Canal|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C210-C212,C218|Anal_Canal|814|Adenocarcinoma|8140/3|Metastasis
 C210-C212,C218|Anal_Canal|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C210-C212,C218|Anal_Canal|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C210-C212,C218|Anal_Canal|814|Adenocarcinoma|8145/3|Diffuse_Type_Adenocarcinoma
@@ -2585,7 +2585,7 @@ C210-C212,C218|Anal_Canal|843|Mucoepidermoid_Carcinoma|8430/3|Mucoepidermoid_Car
 C210-C212,C218|Anal_Canal|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C210-C212,C218|Anal_Canal|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C210-C212,C218|Anal_Canal|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C210-C212,C218|Anal_Canal|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C210-C212,C218|Anal_Canal|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C210-C212,C218|Anal_Canal|850|Ductal_Carcinoma|8503/2|Intraductal_Papillary_Breast_Carcinoma
 C210-C212,C218|Anal_Canal|850|Ductal_Carcinoma|8503/3|Intraductal_Papillary_Breast_Carcinoma
 C210-C212,C218|Anal_Canal|850|Ductal_Carcinoma|8504/2|Intracystic_Papillary_Breast_Carcinoma
@@ -2594,10 +2594,10 @@ C210-C212,C218|Anal_Canal|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_Ex
 C210-C212,C218|Anal_Canal|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C210-C212,C218|Anal_Canal|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C210-C212,C218|Anal_Canal|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C210-C212,C218|Anal_Canal|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
@@ -2683,13 +2683,13 @@ C210-C212,C218|Anal_Canal|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendri
 C210-C212,C218|Anal_Canal|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C210-C212,C218|Anal_Canal|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C210-C212,C218|Anal_Canal|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C210-C212,C218|Anal_Canal|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C210-C212,C218|Anal_Canal|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -2715,7 +2715,7 @@ C220|Liver|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C220|Liver|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C220|Liver|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C220|Liver|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C220|Liver|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C220|Liver|814|Adenocarcinoma|8140/3|Metastasis
 C220|Liver|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C220|Liver|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C220|Liver|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -2734,7 +2734,7 @@ C220|Liver|831|Clear_Cell_Adenocarcinoma|8310/3|Clear_Cell_Adenocarcinoma
 C220|Liver|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C220|Liver|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C220|Liver|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C220|Liver|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C220|Liver|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C220|Liver|850|Ductal_Carcinoma|8501/2|Comedocarcinoma
 C220|Liver|850|Ductal_Carcinoma|8501/3|Comedocarcinoma
 C220|Liver|850|Ductal_Carcinoma|8503/2|Intraductal_Papillary_Breast_Carcinoma
@@ -2823,13 +2823,13 @@ C220|Liver|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcom
 C220|Liver|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C220|Liver|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C220|Liver|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C220|Liver|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C220|Liver|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C220|Liver|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C220|Liver|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C220|Liver|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C220|Liver|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C220|Liver|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C220|Liver|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C220|Liver|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C220|Liver|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C220|Liver|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C220|Liver|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C220|Liver|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C220|Liver|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C220|Liver|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -2855,7 +2855,7 @@ C221|Intrahepatic_Bile_Duct|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcino
 C221|Intrahepatic_Bile_Duct|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C221|Intrahepatic_Bile_Duct|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C221|Intrahepatic_Bile_Duct|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C221|Intrahepatic_Bile_Duct|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C221|Intrahepatic_Bile_Duct|814|Adenocarcinoma|8140/3|Metastasis
 C221|Intrahepatic_Bile_Duct|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C221|Intrahepatic_Bile_Duct|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C221|Intrahepatic_Bile_Duct|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -2875,7 +2875,7 @@ C221|Intrahepatic_Bile_Duct|831|Clear_Cell_Adenocarcinoma|8310/3|Clear_Cell_Aden
 C221|Intrahepatic_Bile_Duct|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C221|Intrahepatic_Bile_Duct|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C221|Intrahepatic_Bile_Duct|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C221|Intrahepatic_Bile_Duct|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C221|Intrahepatic_Bile_Duct|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C221|Intrahepatic_Bile_Duct|850|Ductal_Carcinoma|8501/2|Comedocarcinoma
 C221|Intrahepatic_Bile_Duct|850|Ductal_Carcinoma|8501/3|Comedocarcinoma
 C221|Intrahepatic_Bile_Duct|850|Ductal_Carcinoma|8503/2|Intraductal_Papillary_Breast_Carcinoma
@@ -2961,13 +2961,13 @@ C221|Intrahepatic_Bile_Duct|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dend
 C221|Intrahepatic_Bile_Duct|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C221|Intrahepatic_Bile_Duct|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C221|Intrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C221|Intrahepatic_Bile_Duct|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C221|Intrahepatic_Bile_Duct|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -3004,7 +3004,7 @@ C239-C241,C248-C249|Extrahepatic_Bile_Duct|807|Squamous_Cell_Carcinoma|8076/2|St
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|814|Adenocarcinoma|8140/3|Metastasis
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -3023,7 +3023,7 @@ C239-C241,C248-C249|Extrahepatic_Bile_Duct|848|Mucinous_Adenocarcinoma|8480/3|Mu
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|849|Signet_Ring_Cell_Carcinoma|8490/3|Signet_Ring_Cell_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8501/2|Comedocarcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8501/3|Comedocarcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8503/2|Intraductal_Papillary_Breast_Carcinoma
@@ -3035,10 +3035,10 @@ C239-C241,C248-C249|Extrahepatic_Bile_Duct|850|Ductal_Carcinoma|8508/3|Secretory
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|880|Sarcoma|8800/3|Sarcoma
@@ -3118,13 +3118,13 @@ C239-C241,C248-C249|Extrahepatic_Bile_Duct|975|True_Histiocytic_Lymphoma|9758/3|
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -3167,7 +3167,7 @@ C250-C254,C257-C259|Pancreas|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous
 C250-C254,C257-C259|Pancreas|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C250-C254,C257-C259|Pancreas|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C250-C254,C257-C259|Pancreas|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C250-C254,C257-C259|Pancreas|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C250-C254,C257-C259|Pancreas|814|Adenocarcinoma|8140/3|Metastasis
 C250-C254,C257-C259|Pancreas|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C250-C254,C257-C259|Pancreas|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C250-C254,C257-C259|Pancreas|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -3217,7 +3217,7 @@ C250-C254,C257-C259|Pancreas|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenoca
 C250-C254,C257-C259|Pancreas|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C250-C254,C257-C259|Pancreas|849|Signet_Ring_Cell_Carcinoma|8490/3|Signet_Ring_Cell_Carcinoma
 C250-C254,C257-C259|Pancreas|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C250-C254,C257-C259|Pancreas|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C250-C254,C257-C259|Pancreas|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C250-C254,C257-C259|Pancreas|850|Ductal_Carcinoma|8501/2|Comedocarcinoma
 C250-C254,C257-C259|Pancreas|850|Ductal_Carcinoma|8501/3|Comedocarcinoma
 C250-C254,C257-C259|Pancreas|850|Ductal_Carcinoma|8503/2|Intraductal_Papillary_Breast_Carcinoma
@@ -3235,10 +3235,10 @@ C250-C254,C257-C259|Pancreas|855|Acinar_Cell_Carcinoma|8552/3|Pancreatic_Acinar_
 C250-C254,C257-C259|Pancreas|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C250-C254,C257-C259|Pancreas|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C250-C254,C257-C259|Pancreas|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C250-C254,C257-C259|Pancreas|880|Sarcoma|8800/3|Sarcoma
@@ -3315,13 +3315,13 @@ C250-C254,C257-C259|Pancreas|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Den
 C250-C254,C257-C259|Pancreas|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C250-C254,C257-C259|Pancreas|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C250-C254,C257-C259|Pancreas|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C250-C254,C257-C259|Pancreas|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C250-C254,C257-C259|Pancreas|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -3376,7 +3376,7 @@ C260,C268-C269|Entire_Digestive_Organ|813|Papillary_Transitional_Cell_Carcinoma|
 C260,C268-C269|Entire_Digestive_Organ|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C260,C268-C269|Entire_Digestive_Organ|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C260,C268-C269|Entire_Digestive_Organ|814|Adenocarcinoma|8140/3|Metastasis
 C260,C268-C269|Entire_Digestive_Organ|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C260,C268-C269|Entire_Digestive_Organ|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C260,C268-C269|Entire_Digestive_Organ|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -3433,10 +3433,10 @@ C260,C268-C269|Entire_Digestive_Organ|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Ce
 C260,C268-C269|Entire_Digestive_Organ|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C260,C268-C269|Entire_Digestive_Organ|869|Malignant_Extra_Adrenal_Paraganglioma|8693/3|Malignant_Extra_Adrenal_Paraganglioma
@@ -3601,13 +3601,13 @@ C260,C268-C269|Entire_Digestive_Organ|975|True_Histiocytic_Lymphoma|9758/3|Folli
 C260,C268-C269|Entire_Digestive_Organ|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C260,C268-C269|Entire_Digestive_Organ|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C260,C268-C269|Entire_Digestive_Organ|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C260,C268-C269|Entire_Digestive_Organ|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C260,C268-C269|Entire_Digestive_Organ|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -3661,7 +3661,7 @@ C300|Nasal_Cartilage|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_
 C300|Nasal_Cartilage|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C300|Nasal_Cartilage|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C300|Nasal_Cartilage|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C300|Nasal_Cartilage|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C300|Nasal_Cartilage|814|Adenocarcinoma|8140/3|Metastasis
 C300|Nasal_Cartilage|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C300|Nasal_Cartilage|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C300|Nasal_Cartilage|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -3681,10 +3681,10 @@ C300|Nasal_Cartilage|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocar
 C300|Nasal_Cartilage|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C300|Nasal_Cartilage|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C300|Nasal_Cartilage|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C300|Nasal_Cartilage|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C300|Nasal_Cartilage|872|Melanoma|8720/3|Melanoma
@@ -3802,13 +3802,13 @@ C300|Nasal_Cartilage|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_C
 C300|Nasal_Cartilage|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C300|Nasal_Cartilage|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C300|Nasal_Cartilage|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C300|Nasal_Cartilage|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C300|Nasal_Cartilage|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -3861,7 +3861,7 @@ C301|Middle_Ear|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Trans
 C301|Middle_Ear|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C301|Middle_Ear|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C301|Middle_Ear|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C301|Middle_Ear|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C301|Middle_Ear|814|Adenocarcinoma|8140/3|Metastasis
 C301|Middle_Ear|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C301|Middle_Ear|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C301|Middle_Ear|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -3881,10 +3881,10 @@ C301|Middle_Ear|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinom
 C301|Middle_Ear|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C301|Middle_Ear|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C301|Middle_Ear|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C301|Middle_Ear|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C301|Middle_Ear|872|Melanoma|8720/3|Melanoma
@@ -4000,13 +4000,13 @@ C301|Middle_Ear|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_S
 C301|Middle_Ear|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C301|Middle_Ear|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C301|Middle_Ear|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C301|Middle_Ear|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C301|Middle_Ear|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -4061,7 +4061,7 @@ C310-C313, C318|Nasal_Sinus|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Pap
 C310-C313, C318|Nasal_Sinus|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C310-C313, C318|Nasal_Sinus|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C310-C313, C318|Nasal_Sinus|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C310-C313, C318|Nasal_Sinus|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C310-C313, C318|Nasal_Sinus|814|Adenocarcinoma|8140/3|Metastasis
 C310-C313, C318|Nasal_Sinus|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C310-C313, C318|Nasal_Sinus|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C310-C313, C318|Nasal_Sinus|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -4081,10 +4081,10 @@ C310-C313, C318|Nasal_Sinus|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_A
 C310-C313, C318|Nasal_Sinus|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C310-C313, C318|Nasal_Sinus|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C310-C313, C318|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C310-C313, C318|Nasal_Sinus|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C310-C313, C318|Nasal_Sinus|872|Melanoma|8720/3|Melanoma
@@ -4201,13 +4201,13 @@ C310-C313, C318|Nasal_Sinus|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dend
 C310-C313, C318|Nasal_Sinus|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C310-C313, C318|Nasal_Sinus|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C310-C313, C318|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C310-C313, C318|Nasal_Sinus|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C310-C313, C318|Nasal_Sinus|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -4263,7 +4263,7 @@ C319|Nasal_Sinus|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Tran
 C319|Nasal_Sinus|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C319|Nasal_Sinus|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C319|Nasal_Sinus|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C319|Nasal_Sinus|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C319|Nasal_Sinus|814|Adenocarcinoma|8140/3|Metastasis
 C319|Nasal_Sinus|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C319|Nasal_Sinus|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C319|Nasal_Sinus|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -4283,10 +4283,10 @@ C319|Nasal_Sinus|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcino
 C319|Nasal_Sinus|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C319|Nasal_Sinus|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C319|Nasal_Sinus|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C319|Nasal_Sinus|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C319|Nasal_Sinus|872|Melanoma|8720/3|Melanoma
@@ -4403,13 +4403,13 @@ C319|Nasal_Sinus|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_
 C319|Nasal_Sinus|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C319|Nasal_Sinus|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C319|Nasal_Sinus|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C319|Nasal_Sinus|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C319|Nasal_Sinus|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -4461,7 +4461,7 @@ C320-C323,C328-C329|Larynx|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_Ca
 C320-C323,C328-C329|Larynx|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C320-C323,C328-C329|Larynx|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C320-C323,C328-C329|Larynx|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C320-C323,C328-C329|Larynx|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C320-C323,C328-C329|Larynx|814|Adenocarcinoma|8140/3|Metastasis
 C320-C323,C328-C329|Larynx|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C320-C323,C328-C329|Larynx|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C320-C323,C328-C329|Larynx|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -4556,13 +4556,13 @@ C320-C323,C328-C329|Larynx|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendr
 C320-C323,C328-C329|Larynx|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C320-C323,C328-C329|Larynx|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C320-C323,C328-C329|Larynx|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C320-C323,C328-C329|Larynx|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C320-C323,C328-C329|Larynx|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -4587,9 +4587,10 @@ C339|Trachea|803|Sarcomatoid_Carcinoma|8032/3|Sarcomatoid_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
+C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
-C339|Trachea|804|Small_Cell_Carcinoma|8042/3|Small_Cell_Carcinoma
+C339|Trachea|804|Small_Cell_Carcinoma|8042/3|null
 C339|Trachea|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C339|Trachea|804|Small_Cell_Carcinoma|8044/3|Small_Cell_Intermediate_Cell_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8045/3|Combined_Small_Cell_Lung_Carcinoma
@@ -4609,17 +4610,17 @@ C339|Trachea|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous_Cell_Carcinoma
 C339|Trachea|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C339|Trachea|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C339|Trachea|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C339|Trachea|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C339|Trachea|814|Adenocarcinoma|8140/3|Metastasis
 C339|Trachea|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C339|Trachea|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C339|Trachea|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
 C339|Trachea|820|Cribriform_Carcinoma|8200/3|Adenoid_Cystic_Carcinoma
 C339|Trachea|820|Cribriform_Carcinoma|8201/2|Cribriform_Carcinoma_In_Situ
 C339|Trachea|820|Cribriform_Carcinoma|8201/3|Cribriform_Carcinoma
-C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8250/3|null
-C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8252/3|Bronchioloalveolar_Adenocarcinoma
+C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8250/3|Lepidic_Predominant_Adenocarcinoma
+C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8252/3|Non_Mucinous_Lung_Adenocarcinoma_In_Situ
 C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8253/3|Mucinous_Adenocarcinoma
-C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8254/3|Adenocarcinoma
+C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8254/3|Mixed_Subtype_Adenocarcinoma_Of_Lung
 C339|Trachea|825|Bronchioloalveolar_Adenocarcinoma|8255/3|Adenocarcinoma_With_Mixed_Subtypes
 C339|Trachea|826|Papillary_Adenocarcinoma|8260/3|Papillary_Adenocarcinoma
 C339|Trachea|826|Papillary_Adenocarcinoma|8261/2|Adenocarcinoma_In_Situ
@@ -4664,6 +4665,7 @@ C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8032/3|Sarcomatoid_Carcin
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
+C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8042/3|Small_Cell_Carcinoma
@@ -4693,7 +4695,7 @@ C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_
 C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8140/3|Metastasis
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -4711,13 +4713,13 @@ C340-C343,C348-C349|Bronchus|824|Atypical_Carcinoid_Tumor|8244/3|Adenocarcinoid_
 C340-C343,C348-C349|Bronchus|824|Atypical_Carcinoid_Tumor|8245/3|Adenocarcinoid_Tumor
 C340-C343,C348-C349|Bronchus|824|Atypical_Carcinoid_Tumor|8246/3|Carcinoma__Neuroendocrine
 C340-C343,C348-C349|Bronchus|824|Atypical_Carcinoid_Tumor|8249/3|Atypical_Carcinoid_Tumor
-C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8250/2|Adenocarcinoma_In_Situ
-C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8250/3|null
+C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8250/2|Non_mucinous_Adenocarcinoma_In_Situ
+C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8250/3|Lepidic_Predominant_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8251/3|Bronchioloalveolar_Adenocarcinoma
-C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8252/3|Bronchioloalveolar_Adenocarcinoma
-C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8253/2|Adenocarcinoma_In_Situ
+C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8252/3|Non_Mucinous_Lung_Adenocarcinoma_In_Situ
+C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8253/2|Mucinous_Adenocarcinoma_In_Situ
 C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8253/3|Mucinous_Adenocarcinoma
-C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8254/3|Adenocarcinoma
+C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8254/3|Mixed_Subtype_Adenocarcinoma_Of_Lung
 C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8255/3|Adenocarcinoma_With_Mixed_Subtypes
 C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8256/3|Adenocarcinoma
 C340-C343,C348-C349|Bronchus|825|Bronchioloalveolar_Adenocarcinoma|8257/3|Mucinous_Adenocarcinoma
@@ -4737,10 +4739,10 @@ C340-C343,C348-C349|Bronchus|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Cell_Cystad
 C340-C343,C348-C349|Bronchus|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C340-C343,C348-C349|Bronchus|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C340-C343,C348-C349|Bronchus|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|871|Malignant_Glomus_Tumor|8714/3|Malignant_PEComa
@@ -4844,13 +4846,13 @@ C340-C343,C348-C349|Bronchus|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Den
 C340-C343,C348-C349|Bronchus|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C340-C343,C348-C349|Bronchus|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C340-C343,C348-C349|Bronchus|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C340-C343,C348-C349|Bronchus|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C340-C343,C348-C349|Bronchus|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -4948,13 +4950,13 @@ C379|Thymus_Gland|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell
 C379|Thymus_Gland|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C379|Thymus_Gland|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C379|Thymus_Gland|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C379|Thymus_Gland|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C379|Thymus_Gland|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5022,13 +5024,13 @@ C380|Heart|975|True_Histiocytic_Lymphoma|9751/3|Adult_Langerhans_Cell_Histiocyto
 C380|Heart|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C380|Heart|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C380|Heart|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C380|Heart|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C380|Heart|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C380|Heart|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C380|Heart|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C380|Heart|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C380|Heart|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C380|Heart|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C380|Heart|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C380|Heart|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C380|Heart|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C380|Heart|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C380|Heart|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C380|Heart|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C380|Heart|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C380|Heart|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5162,13 +5164,13 @@ C381-C383, C388|Mediastinum|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dend
 C381-C383, C388|Mediastinum|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C381-C383, C388|Mediastinum|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C381-C383, C388|Mediastinum|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C381-C383, C388|Mediastinum|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C381-C383, C388|Mediastinum|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5255,13 +5257,13 @@ C384|Pleura|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarco
 C384|Pleura|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C384|Pleura|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C384|Pleura|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C384|Pleura|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C384|Pleura|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5310,7 +5312,7 @@ C390,C398-C399|Respiratory_System|812|Transitional_Cell_Carcinoma|8122/3|Sarcoma
 C390,C398-C399|Respiratory_System|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C390,C398-C399|Respiratory_System|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C390,C398-C399|Respiratory_System|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C390,C398-C399|Respiratory_System|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C390,C398-C399|Respiratory_System|814|Adenocarcinoma|8140/3|Metastasis
 C390,C398-C399|Respiratory_System|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C390,C398-C399|Respiratory_System|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C390,C398-C399|Respiratory_System|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -5328,11 +5330,11 @@ C390,C398-C399|Respiratory_System|824|Atypical_Carcinoid_Tumor|8244/3|Adenocarci
 C390,C398-C399|Respiratory_System|824|Atypical_Carcinoid_Tumor|8245/3|Adenocarcinoid_Tumor
 C390,C398-C399|Respiratory_System|824|Atypical_Carcinoid_Tumor|8246/3|Carcinoma__Neuroendocrine
 C390,C398-C399|Respiratory_System|824|Atypical_Carcinoid_Tumor|8249/3|Atypical_Carcinoid_Tumor
-C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8250/3|null
+C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8250/3|Lepidic_Predominant_Adenocarcinoma
 C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8251/3|Bronchioloalveolar_Adenocarcinoma
-C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8252/3|Bronchioloalveolar_Adenocarcinoma
+C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8252/3|Non_Mucinous_Lung_Adenocarcinoma_In_Situ
 C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8253/3|Mucinous_Adenocarcinoma
-C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8254/3|Adenocarcinoma
+C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8254/3|Mixed_Subtype_Adenocarcinoma_Of_Lung
 C390,C398-C399|Respiratory_System|825|Bronchioloalveolar_Adenocarcinoma|8255/3|Adenocarcinoma_With_Mixed_Subtypes
 C390,C398-C399|Respiratory_System|826|Papillary_Adenocarcinoma|8260/3|Papillary_Adenocarcinoma
 C390,C398-C399|Respiratory_System|826|Papillary_Adenocarcinoma|8261/2|Adenocarcinoma_In_Situ
@@ -5353,10 +5355,10 @@ C390,C398-C399|Respiratory_System|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Cell_C
 C390,C398-C399|Respiratory_System|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C390,C398-C399|Respiratory_System|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C390,C398-C399|Respiratory_System|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C390,C398-C399|Respiratory_System|880|Sarcoma|8800/3|Sarcoma
@@ -5521,13 +5523,13 @@ C400-C403,C408-C409,C412-C414,C418-C419|Mandible|975|True_Histiocytic_Lymphoma|9
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C400-C403,C408-C409,C412-C414,C418-C419|Mandible|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5661,13 +5663,13 @@ C410|Skull|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcom
 C410|Skull|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C410|Skull|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C410|Skull|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C410|Skull|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C410|Skull|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C410|Skull|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C410|Skull|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C410|Skull|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C410|Skull|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C410|Skull|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C410|Skull|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C410|Skull|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C410|Skull|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C410|Skull|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C410|Skull|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C410|Skull|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C410|Skull|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C410|Skull|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5801,13 +5803,13 @@ C411|Mandible|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sar
 C411|Mandible|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C411|Mandible|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C411|Mandible|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C411|Mandible|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C411|Mandible|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -5887,13 +5889,13 @@ C420, C421, C424|Bone_Marrow|980|Leukemia|9807/3|Mixed_Phenotype_Acute_Leukemia
 C420, C421, C424|Bone_Marrow|980|Leukemia|9808/3|Mixed_Phenotype_Acute_Leukemia
 C420, C421, C424|Bone_Marrow|980|Leukemia|9809/3|Mixed_Phenotype_Acute_Leukemia
 C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C420, C421, C424|Bone_Marrow|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C420, C421, C424|Bone_Marrow|982|Lymphoid_Leukemia|9820/3|Lymphoid_Leukemia
 C420, C421, C424|Bone_Marrow|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
@@ -6026,13 +6028,13 @@ C422|Spleen|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarco
 C422|Spleen|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C422|Spleen|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C422|Spleen|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C422|Spleen|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C422|Spleen|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -6055,7 +6057,7 @@ C423|Reticuloendothelial_System|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic
 C440-C449|Skin|810|Trichilemmocarcinoma|8102/3|Trichilemmocarcinoma
 C440-C449|Skin|811|Pilomatrical_Carcinoma|8110/3|Pilomatrical_Carcinoma
 C440-C449|Skin|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C440-C449|Skin|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C440-C449|Skin|814|Adenocarcinoma|8140/3|Metastasis
 C440-C449|Skin|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C440-C449|Skin|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C440-C449|Skin|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -6094,10 +6096,10 @@ C440-C449|Skin|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_Extramammary
 C440-C449|Skin|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C440-C449|Skin|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C440-C449|Skin|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C440-C449|Skin|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C440-C449|Skin|872|Melanoma|8720/3|Melanoma
@@ -6351,13 +6353,13 @@ C470-C476,C478-C479|Peripheral_Nerve|975|True_Histiocytic_Lymphoma|9758/3|Follic
 C470-C476,C478-C479|Peripheral_Nerve|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C470-C476,C478-C479|Peripheral_Nerve|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C470-C476,C478-C479|Peripheral_Nerve|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C470-C476,C478-C479|Peripheral_Nerve|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C470-C476,C478-C479|Peripheral_Nerve|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -6500,13 +6502,13 @@ C480-C482,C488|Retroperitoneal_Space|975|True_Histiocytic_Lymphoma|9758/3|Follic
 C480-C482,C488|Retroperitoneal_Space|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C480-C482,C488|Retroperitoneal_Space|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C480-C482,C488|Retroperitoneal_Space|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C480-C482,C488|Retroperitoneal_Space|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C480-C482,C488|Retroperitoneal_Space|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -6550,7 +6552,7 @@ C500-C506,C508-C509|Breast|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous_C
 C500-C506,C508-C509|Breast|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C500-C506,C508-C509|Breast|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C500-C506,C508-C509|Breast|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C500-C506,C508-C509|Breast|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C500-C506,C508-C509|Breast|814|Adenocarcinoma|8140/3|Metastasis
 C500-C506,C508-C509|Breast|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C500-C506,C508-C509|Breast|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C500-C506,C508-C509|Breast|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -6578,7 +6580,7 @@ C500-C506,C508-C509|Breast|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarc
 C500-C506,C508-C509|Breast|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C500-C506,C508-C509|Breast|849|Signet_Ring_Cell_Carcinoma|8490/3|Signet_Ring_Cell_Carcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8501/2|Comedocarcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8501/3|Comedocarcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8502/3|Secretory_Breast_Carcinoma
@@ -6599,7 +6601,7 @@ C500-C506,C508-C509|Breast|851|Medullary_Carcinoma|8519/2|Pleomorphic_Lobular_Ca
 C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8520/2|Lobular_Breast_Carcinoma_In_Situ
 C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8520/3|Carcinoma__Lobular
 C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8521/3|Invasive_Ductal_Breast_Carcinoma
-C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8522/2|Intraductal_And_Lobular_Carcinoma
+C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8522/2|Breast_Carcinoma
 C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8522/3|Intraductal_And_Lobular_Carcinoma
 C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8523/2|Infiltrating_Duct_And_Tubular_Carcinoma
 C500-C506,C508-C509|Breast|852|Intraductal_And_Lobular_Carcinoma|8523/3|Infiltrating_Duct_And_Tubular_Carcinoma
@@ -6614,10 +6616,10 @@ C500-C506,C508-C509|Breast|855|Acinar_Cell_Carcinoma|8551/3|Acinar_Cell_Cystaden
 C500-C506,C508-C509|Breast|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C500-C506,C508-C509|Breast|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C500-C506,C508-C509|Breast|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C500-C506,C508-C509|Breast|880|Sarcoma|8800/3|Sarcoma
 C500-C506,C508-C509|Breast|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -6716,13 +6718,13 @@ C500-C506,C508-C509|Breast|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendr
 C500-C506,C508-C509|Breast|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C500-C506,C508-C509|Breast|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C500-C506,C508-C509|Breast|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C500-C506,C508-C509|Breast|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C500-C506,C508-C509|Breast|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -6782,7 +6784,7 @@ C510-C512,C518, C529|Vagina|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Pap
 C510-C512,C518, C529|Vagina|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C510-C512,C518, C529|Vagina|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C510-C512,C518, C529|Vagina|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C510-C512,C518, C529|Vagina|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C510-C512,C518, C529|Vagina|814|Adenocarcinoma|8140/3|Metastasis
 C510-C512,C518, C529|Vagina|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C510-C512,C518, C529|Vagina|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C510-C512,C518, C529|Vagina|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -6807,10 +6809,10 @@ C510-C512,C518, C529|Vagina|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_
 C510-C512,C518, C529|Vagina|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C510-C512,C518, C529|Vagina|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C510-C512,C518, C529|Vagina|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C510-C512,C518, C529|Vagina|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
@@ -6936,13 +6938,13 @@ C510-C512,C518, C529|Vagina|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dend
 C510-C512,C518, C529|Vagina|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C510-C512,C518, C529|Vagina|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C510-C512,C518, C529|Vagina|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C510-C512,C518, C529|Vagina|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C510-C512,C518, C529|Vagina|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -7003,7 +7005,7 @@ C519|Vulva|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transition
 C519|Vulva|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C519|Vulva|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C519|Vulva|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C519|Vulva|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C519|Vulva|814|Adenocarcinoma|8140/3|Metastasis
 C519|Vulva|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C519|Vulva|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C519|Vulva|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -7034,10 +7036,10 @@ C519|Vulva|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_Extramammary
 C519|Vulva|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C519|Vulva|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C519|Vulva|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C519|Vulva|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C519|Vulva|872|Melanoma|8720/3|Melanoma
@@ -7163,13 +7165,13 @@ C519|Vulva|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcom
 C519|Vulva|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C519|Vulva|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C519|Vulva|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C519|Vulva|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C519|Vulva|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -7226,7 +7228,7 @@ C530-C531,C538-C539|Cervix_Uteri|812|Transitional_Cell_Carcinoma|8122/3|Sarcomat
 C530-C531,C538-C539|Cervix_Uteri|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C530-C531,C538-C539|Cervix_Uteri|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C530-C531,C538-C539|Cervix_Uteri|814|Adenocarcinoma|8140/3|Metastasis
 C530-C531,C538-C539|Cervix_Uteri|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C530-C531,C538-C539|Cervix_Uteri|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C530-C531,C538-C539|Cervix_Uteri|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -7250,10 +7252,10 @@ C530-C531,C538-C539|Cervix_Uteri|848|Mucinous_Adenocarcinoma|8482/3|Adenocarcino
 C530-C531,C538-C539|Cervix_Uteri|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C530-C531,C538-C539|Cervix_Uteri|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|880|Sarcoma|8800/3|Sarcoma
 C530-C531,C538-C539|Cervix_Uteri|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -7344,13 +7346,13 @@ C530-C531,C538-C539|Cervix_Uteri|975|True_Histiocytic_Lymphoma|9758/3|Follicular
 C530-C531,C538-C539|Cervix_Uteri|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C530-C531,C538-C539|Cervix_Uteri|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C530-C531,C538-C539|Cervix_Uteri|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C530-C531,C538-C539|Cervix_Uteri|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C530-C531,C538-C539|Cervix_Uteri|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -7402,7 +7404,7 @@ C540-C543,C548-C549|Corpus_Uteri|813|Papillary_Transitional_Cell_Carcinoma|8130/
 C540-C543,C548-C549|Corpus_Uteri|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C540-C543,C548-C549|Corpus_Uteri|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C540-C543,C548-C549|Corpus_Uteri|814|Adenocarcinoma|8140/3|Metastasis
 C540-C543,C548-C549|Corpus_Uteri|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C540-C543,C548-C549|Corpus_Uteri|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C540-C543,C548-C549|Corpus_Uteri|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -7439,10 +7441,10 @@ C540-C543,C548-C549|Corpus_Uteri|851|Medullary_Carcinoma|8510/3|Medullary_Carcin
 C540-C543,C548-C549|Corpus_Uteri|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C540-C543,C548-C549|Corpus_Uteri|880|Sarcoma|8800/3|Sarcoma
@@ -7535,13 +7537,13 @@ C540-C543,C548-C549|Corpus_Uteri|975|True_Histiocytic_Lymphoma|9758/3|Follicular
 C540-C543,C548-C549|Corpus_Uteri|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C540-C543,C548-C549|Corpus_Uteri|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C540-C543,C548-C549|Corpus_Uteri|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C540-C543,C548-C549|Corpus_Uteri|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C540-C543,C548-C549|Corpus_Uteri|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -7596,7 +7598,7 @@ C559|Uterus|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitio
 C559|Uterus|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C559|Uterus|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C559|Uterus|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C559|Uterus|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C559|Uterus|814|Adenocarcinoma|8140/3|Metastasis
 C559|Uterus|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C559|Uterus|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C559|Uterus|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -7631,10 +7633,10 @@ C559|Uterus|851|Medullary_Carcinoma|8510/3|Medullary_Carcinoma
 C559|Uterus|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C559|Uterus|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C559|Uterus|857|Adenocarcinoma_With_Metaplasia|8576/3|Hepatoid_Adenocarcinoma
 C559|Uterus|880|Sarcoma|8800/3|Sarcoma
@@ -7730,13 +7732,13 @@ C559|Uterus|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarco
 C559|Uterus|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C559|Uterus|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C559|Uterus|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C559|Uterus|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C559|Uterus|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -7778,7 +7780,7 @@ C569|Ovary|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous_Cell_Carcinoma
 C569|Ovary|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C569|Ovary|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C569|Ovary|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C569|Ovary|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C569|Ovary|814|Adenocarcinoma|8140/3|Metastasis
 C569|Ovary|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C569|Ovary|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C569|Ovary|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -7832,10 +7834,10 @@ C569|Ovary|851|Medullary_Carcinoma|8510/3|Medullary_Carcinoma
 C569|Ovary|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C569|Ovary|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C569|Ovary|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C569|Ovary|859|Ovarian_Sex_Cord_Stromal_Tumor|8590/3|Ovarian_Sex_Cord_Stromal_Tumor
 C569|Ovary|860|Malignant_Ovarian_Thecoma|8600/3|Malignant_Ovarian_Thecoma
@@ -7948,13 +7950,13 @@ C569|Ovary|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcom
 C569|Ovary|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C569|Ovary|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C569|Ovary|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C569|Ovary|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C569|Ovary|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -7993,7 +7995,7 @@ C570|Fallopian_Tube|808|Lymphoepithelial_Carcinoma|8082/3|Lymphoepithelial_Carci
 C570|Fallopian_Tube|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C570|Fallopian_Tube|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C570|Fallopian_Tube|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C570|Fallopian_Tube|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C570|Fallopian_Tube|814|Adenocarcinoma|8140/3|Metastasis
 C570|Fallopian_Tube|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C570|Fallopian_Tube|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C570|Fallopian_Tube|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8018,10 +8020,10 @@ C570|Fallopian_Tube|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C570|Fallopian_Tube|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C570|Fallopian_Tube|848|Mucinous_Adenocarcinoma|8482/3|Adenocarcinoma__Endocervical_Type
 C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C570|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C570|Fallopian_Tube|880|Sarcoma|8800/3|Sarcoma
 C570|Fallopian_Tube|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -8105,13 +8107,13 @@ C570|Fallopian_Tube|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Ce
 C570|Fallopian_Tube|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C570|Fallopian_Tube|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C570|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C570|Fallopian_Tube|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C570|Fallopian_Tube|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -8150,7 +8152,7 @@ C571-C574,C577-C579|Fallopian_Tube|808|Lymphoepithelial_Carcinoma|8082/3|Lymphoe
 C571-C574,C577-C579|Fallopian_Tube|808|Lymphoepithelial_Carcinoma|8083/3|Basaloid_Squamous_Cell_Carcinoma
 C571-C574,C577-C579|Fallopian_Tube|808|Lymphoepithelial_Carcinoma|8084/3|Squamous_Cell_Carcinoma
 C571-C574,C577-C579|Fallopian_Tube|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C571-C574,C577-C579|Fallopian_Tube|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C571-C574,C577-C579|Fallopian_Tube|814|Adenocarcinoma|8140/3|Metastasis
 C571-C574,C577-C579|Fallopian_Tube|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C571-C574,C577-C579|Fallopian_Tube|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C571-C574,C577-C579|Fallopian_Tube|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8171,10 +8173,10 @@ C571-C574,C577-C579|Fallopian_Tube|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_A
 C571-C574,C577-C579|Fallopian_Tube|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C571-C574,C577-C579|Fallopian_Tube|848|Mucinous_Adenocarcinoma|8482/3|Adenocarcinoma__Endocervical_Type
 C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C571-C574,C577-C579|Fallopian_Tube|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C571-C574,C577-C579|Fallopian_Tube|880|Sarcoma|8800/3|Sarcoma
 C571-C574,C577-C579|Fallopian_Tube|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -8258,13 +8260,13 @@ C571-C574,C577-C579|Fallopian_Tube|975|True_Histiocytic_Lymphoma|9758/3|Follicul
 C571-C574,C577-C579|Fallopian_Tube|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C571-C574,C577-C579|Fallopian_Tube|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C571-C574,C577-C579|Fallopian_Tube|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C571-C574,C577-C579|Fallopian_Tube|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C571-C574,C577-C579|Fallopian_Tube|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -8328,7 +8330,7 @@ C600-C602,C608-C609|Penis|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_Car
 C600-C602,C608-C609|Penis|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C600-C602,C608-C609|Penis|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C600-C602,C608-C609|Penis|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C600-C602,C608-C609|Penis|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C600-C602,C608-C609|Penis|814|Adenocarcinoma|8140/3|Metastasis
 C600-C602,C608-C609|Penis|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C600-C602,C608-C609|Penis|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C600-C602,C608-C609|Penis|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8346,10 +8348,10 @@ C600-C602,C608-C609|Penis|841|Eccrine_Adenocarcinoma|8410/3|Sebaceous_Adenocarci
 C600-C602,C608-C609|Penis|841|Eccrine_Adenocarcinoma|8413/3|Eccrine_Adenocarcinoma
 C600-C602,C608-C609|Penis|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_Extramammary
 C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C600-C602,C608-C609|Penis|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C600-C602,C608-C609|Penis|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C600-C602,C608-C609|Penis|872|Melanoma|8720/3|Melanoma
@@ -8465,7 +8467,7 @@ C619|Prostate|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transit
 C619|Prostate|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C619|Prostate|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C619|Prostate|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C619|Prostate|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C619|Prostate|814|Adenocarcinoma|8140/3|Metastasis
 C619|Prostate|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C619|Prostate|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C619|Prostate|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8486,7 +8488,7 @@ C619|Prostate|831|Clear_Cell_Adenocarcinoma|8310/3|Clear_Cell_Adenocarcinoma
 C619|Prostate|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C619|Prostate|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C619|Prostate|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C619|Prostate|850|Ductal_Carcinoma|8500/3|Ductal_Carcinoma
+C619|Prostate|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
 C619|Prostate|850|Ductal_Carcinoma|8503/2|Intraductal_Papillary_Breast_Carcinoma
 C619|Prostate|850|Ductal_Carcinoma|8503/3|Intraductal_Papillary_Breast_Carcinoma
 C619|Prostate|850|Ductal_Carcinoma|8504/2|Intracystic_Papillary_Breast_Carcinoma
@@ -8500,10 +8502,10 @@ C619|Prostate|855|Acinar_Cell_Carcinoma|8552/3|Prostate_Acinar_Adenocarcinoma
 C619|Prostate|856|Adenosquamous_Carcinoma|8560/3|Adenosquamous_Carcinoma
 C619|Prostate|856|Adenosquamous_Carcinoma|8562/3|Epithelial_Myoepithelial_Carcinoma
 C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C619|Prostate|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C619|Prostate|880|Sarcoma|8800/3|Sarcoma
 C619|Prostate|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -8546,13 +8548,13 @@ C619|Prostate|975|True_Histiocytic_Lymphoma|9751/3|Adult_Langerhans_Cell_Histioc
 C619|Prostate|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C619|Prostate|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C619|Prostate|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C619|Prostate|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C619|Prostate|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -8572,7 +8574,7 @@ C620-C621,C629|Testis|802|Carcinoma|8020/3|Undifferentiated_Carcinoma
 C620-C621,C629|Testis|802|Carcinoma|8021/3|Undifferentiated_Carcinoma
 C620-C621,C629|Testis|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C620-C621,C629|Testis|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C620-C621,C629|Testis|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C620-C621,C629|Testis|814|Adenocarcinoma|8140/3|Metastasis
 C620-C621,C629|Testis|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C620-C621,C629|Testis|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C620-C621,C629|Testis|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8678,13 +8680,13 @@ C620-C621,C629|Testis|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_
 C620-C621,C629|Testis|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C620-C621,C629|Testis|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C620-C621,C629|Testis|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C620-C621,C629|Testis|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C620-C621,C629|Testis|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -8725,7 +8727,7 @@ C630, C631, C637-C639|Spermatic_Cord|812|Transitional_Cell_Carcinoma|8122/3|Sarc
 C630, C631, C637-C639|Spermatic_Cord|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C630, C631, C637-C639|Spermatic_Cord|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C630, C631, C637-C639|Spermatic_Cord|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C630, C631, C637-C639|Spermatic_Cord|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C630, C631, C637-C639|Spermatic_Cord|814|Adenocarcinoma|8140/3|Metastasis
 C630, C631, C637-C639|Spermatic_Cord|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C630, C631, C637-C639|Spermatic_Cord|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C630, C631, C637-C639|Spermatic_Cord|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8739,10 +8741,10 @@ C630, C631, C637-C639|Spermatic_Cord|826|Papillary_Adenocarcinoma|8263/3|Adenoca
 C630, C631, C637-C639|Spermatic_Cord|840|Sweat_Gland_Adenocarcinoma|8401/3|Apocrine_Adenocarcinoma
 C630, C631, C637-C639|Spermatic_Cord|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_Extramammary
 C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C630, C631, C637-C639|Spermatic_Cord|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C630, C631, C637-C639|Spermatic_Cord|880|Sarcoma|8800/3|Sarcoma
 C630, C631, C637-C639|Spermatic_Cord|880|Sarcoma|8801/3|Spindle_Cell_Sarcoma
@@ -8835,7 +8837,7 @@ C632|Scrotum|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_Carcinoma
 C632|Scrotum|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C632|Scrotum|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
 C632|Scrotum|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C632|Scrotum|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C632|Scrotum|814|Adenocarcinoma|8140/3|Metastasis
 C632|Scrotum|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C632|Scrotum|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C632|Scrotum|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -8853,10 +8855,10 @@ C632|Scrotum|841|Eccrine_Adenocarcinoma|8410/3|Sebaceous_Adenocarcinoma
 C632|Scrotum|841|Eccrine_Adenocarcinoma|8413/3|Eccrine_Adenocarcinoma
 C632|Scrotum|854|Paget_Disease_Extramammary|8542/3|Paget_Disease_Extramammary
 C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8570/3|Adenocarcinoma_With_Squamous_Metaplasia
-C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma
-C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma
+C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8571/3|Adenocarcinoma_With_Osseous_Metaplasia
+C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8572/3|Adenocarcinoma_Spindle_Cell
 C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8573/3|Adenocarcinoma_With_Apocrine_Metaplasia
-C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8574/3|Adenocarcinoma
+C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8574/3|Carcinoma__Neuroendocrine
 C632|Scrotum|857|Adenocarcinoma_With_Metaplasia|8575/3|Metaplastic_Carcinoma
 C632|Scrotum|872|Melanoma|8720/2|Stage_0_Skin_Melanoma
 C632|Scrotum|872|Melanoma|8720/3|Melanoma
@@ -8972,7 +8974,7 @@ C649|Kidney|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitio
 C649|Kidney|813|Papillary_Transitional_Cell_Carcinoma|8130/3|Papillary_Transitional_Cell_Carcinoma
 C649|Kidney|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C649|Kidney|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C649|Kidney|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C649|Kidney|814|Adenocarcinoma|8140/3|Metastasis
 C649|Kidney|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C649|Kidney|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C649|Kidney|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -9105,13 +9107,13 @@ C649|Kidney|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarco
 C649|Kidney|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C649|Kidney|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C649|Kidney|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C649|Kidney|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C649|Kidney|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -9163,7 +9165,7 @@ C659, C669|Renal_Pelvis|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papilla
 C659, C669|Renal_Pelvis|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C659, C669|Renal_Pelvis|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C659, C669|Renal_Pelvis|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C659, C669|Renal_Pelvis|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C659, C669|Renal_Pelvis|814|Adenocarcinoma|8140/3|Metastasis
 C659, C669|Renal_Pelvis|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C659, C669|Renal_Pelvis|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C659, C669|Renal_Pelvis|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -9288,13 +9290,13 @@ C659, C669|Renal_Pelvis|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendriti
 C659, C669|Renal_Pelvis|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C659, C669|Renal_Pelvis|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C659, C669|Renal_Pelvis|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C659, C669|Renal_Pelvis|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C659, C669|Renal_Pelvis|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -9346,7 +9348,7 @@ C670-C679|Urinary_Bladder|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papil
 C670-C679|Urinary_Bladder|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C670-C679|Urinary_Bladder|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C670-C679|Urinary_Bladder|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C670-C679|Urinary_Bladder|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C670-C679|Urinary_Bladder|814|Adenocarcinoma|8140/3|Metastasis
 C670-C679|Urinary_Bladder|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C670-C679|Urinary_Bladder|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C670-C679|Urinary_Bladder|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -9457,13 +9459,13 @@ C670-C679|Urinary_Bladder|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendri
 C670-C679|Urinary_Bladder|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C670-C679|Urinary_Bladder|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C670-C679|Urinary_Bladder|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C670-C679|Urinary_Bladder|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C670-C679|Urinary_Bladder|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -9515,7 +9517,7 @@ C680-C681,C688-C689|Genitourinary_System|813|Papillary_Transitional_Cell_Carcino
 C680-C681,C688-C689|Genitourinary_System|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C680-C681,C688-C689|Genitourinary_System|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C680-C681,C688-C689|Genitourinary_System|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C680-C681,C688-C689|Genitourinary_System|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C680-C681,C688-C689|Genitourinary_System|814|Adenocarcinoma|8140/3|Metastasis
 C680-C681,C688-C689|Genitourinary_System|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C680-C681,C688-C689|Genitourinary_System|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C680-C681,C688-C689|Genitourinary_System|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -9664,13 +9666,13 @@ C680-C681,C688-C689|Genitourinary_System|975|True_Histiocytic_Lymphoma|9758/3|Fo
 C680-C681,C688-C689|Genitourinary_System|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C680-C681,C688-C689|Genitourinary_System|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C680-C681,C688-C689|Genitourinary_System|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C680-C681,C688-C689|Genitourinary_System|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C680-C681,C688-C689|Genitourinary_System|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -9718,7 +9720,7 @@ C690-C691, C693, C695-C698|Lacrimal_Gland|813|Papillary_Transitional_Cell_Carcin
 C690-C691, C693, C695-C698|Lacrimal_Gland|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C690-C691, C693, C695-C698|Lacrimal_Gland|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C690-C691, C693, C695-C698|Lacrimal_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C690-C691, C693, C695-C698|Lacrimal_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C690-C691, C693, C695-C698|Lacrimal_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C690-C691, C693, C695-C698|Lacrimal_Gland|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C690-C691, C693, C695-C698|Lacrimal_Gland|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C690-C691, C693, C695-C698|Lacrimal_Gland|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -9823,13 +9825,13 @@ C690-C691, C693, C695-C698|Lacrimal_Gland|975|True_Histiocytic_Lymphoma|9758/3|F
 C690-C691, C693, C695-C698|Lacrimal_Gland|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C690-C691, C693, C695-C698|Lacrimal_Gland|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C690-C691, C693, C695-C698|Lacrimal_Gland|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C690-C691, C693, C695-C698|Lacrimal_Gland|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C690-C691, C693, C695-C698|Lacrimal_Gland|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -9877,7 +9879,7 @@ C692|Retina|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitio
 C692|Retina|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C692|Retina|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C692|Retina|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C692|Retina|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C692|Retina|814|Adenocarcinoma|8140/3|Metastasis
 C692|Retina|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C692|Retina|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C692|Retina|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -9984,13 +9986,13 @@ C692|Retina|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarco
 C692|Retina|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C692|Retina|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C692|Retina|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C692|Retina|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C692|Retina|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C692|Retina|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C692|Retina|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C692|Retina|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C692|Retina|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C692|Retina|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C692|Retina|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C692|Retina|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C692|Retina|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C692|Retina|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C692|Retina|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C692|Retina|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C692|Retina|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C692|Retina|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10038,7 +10040,7 @@ C694|Eye|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional
 C694|Eye|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C694|Eye|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C694|Eye|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C694|Eye|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C694|Eye|814|Adenocarcinoma|8140/3|Metastasis
 C694|Eye|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C694|Eye|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C694|Eye|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -10143,13 +10145,13 @@ C694|Eye|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcoma
 C694|Eye|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C694|Eye|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C694|Eye|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C694|Eye|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C694|Eye|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C694|Eye|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C694|Eye|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C694|Eye|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C694|Eye|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C694|Eye|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C694|Eye|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C694|Eye|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C694|Eye|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C694|Eye|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C694|Eye|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C694|Eye|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C694|Eye|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C694|Eye|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10193,7 +10195,7 @@ C699|Eye|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional
 C699|Eye|813|Papillary_Transitional_Cell_Carcinoma|8130/2|Papillary_Transitional_Cell_Carcinoma
 C699|Eye|813|Transitional_Cell_Carcinoma|8131/3|Transitional_Cell_Carcinoma
 C699|Eye|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C699|Eye|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C699|Eye|814|Adenocarcinoma|8140/3|Metastasis
 C699|Eye|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C699|Eye|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C699|Eye|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -10300,13 +10302,13 @@ C699|Eye|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_Sarcoma
 C699|Eye|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C699|Eye|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C699|Eye|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C699|Eye|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C699|Eye|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C699|Eye|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C699|Eye|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C699|Eye|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C699|Eye|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C699|Eye|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C699|Eye|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C699|Eye|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C699|Eye|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C699|Eye|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C699|Eye|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C699|Eye|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C699|Eye|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C699|Eye|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10415,13 +10417,13 @@ C700-C701,C709|Meninges|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendriti
 C700-C701,C709|Meninges|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C700-C701,C709|Meninges|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C700-C701,C709|Meninges|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C700-C701,C709|Meninges|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C700-C701,C709|Meninges|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10568,13 +10570,13 @@ C710-C714, C717-C719, C720-C725|Cranial_Nerve|975|True_Histiocytic_Lymphoma|9758
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C710-C714, C717-C719, C720-C725|Cranial_Nerve|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10680,13 +10682,13 @@ C715|Heart_Ventricle|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_C
 C715|Heart_Ventricle|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C715|Heart_Ventricle|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C715|Heart_Ventricle|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C715|Heart_Ventricle|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C715|Heart_Ventricle|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10805,13 +10807,13 @@ C716|Cerebellum|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cell_S
 C716|Cerebellum|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C716|Cerebellum|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C716|Cerebellum|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C716|Cerebellum|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C716|Cerebellum|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -10936,13 +10938,13 @@ C728-C729|Central_Nervous_System|975|True_Histiocytic_Lymphoma|9758/3|Follicular
 C728-C729|Central_Nervous_System|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C728-C729|Central_Nervous_System|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C728-C729|Central_Nervous_System|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C728-C729|Central_Nervous_System|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C728-C729|Central_Nervous_System|982|Lymphoid_Leukemia|9827/3|Adult_T_cell_Leukemia
@@ -10985,7 +10987,7 @@ C739|Thyroid_Gland|807|Squamous_Cell_Carcinoma|8076/2|Stage_0_Squamous_Cell_Carc
 C739|Thyroid_Gland|807|Squamous_Cell_Carcinoma|8076/3|Microinvasive_Squamous_Cell_Carcinoma
 C739|Thyroid_Gland|807|Squamous_Cell_Carcinoma|8078/3|Microinvasive_Squamous_Cell_Carcinoma
 C739|Thyroid_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C739|Thyroid_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C739|Thyroid_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C739|Thyroid_Gland|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C739|Thyroid_Gland|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C739|Thyroid_Gland|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -11086,13 +11088,13 @@ C739|Thyroid_Gland|975|True_Histiocytic_Lymphoma|9758/3|Follicular_Dendritic_Cel
 C739|Thyroid_Gland|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic_Reticular_Cell_Tumor
 C739|Thyroid_Gland|976|Immunoproliferative_Disorder|9766/3|Lymphomatoid_Granulomatosis
 C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C739|Thyroid_Gland|981|Precursor_Lymphoid_Neoplasm|9819/3|Leukemia__B_Cell
 C739|Thyroid_Gland|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C739|Thyroid_Gland|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
@@ -11112,7 +11114,7 @@ C740-C741,C749|Adrenal_Gland|802|Carcinoma|8020/3|Undifferentiated_Carcinoma
 C740-C741,C749|Adrenal_Gland|802|Carcinoma|8021/3|Undifferentiated_Carcinoma
 C740-C741,C749|Adrenal_Gland|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C740-C741,C749|Adrenal_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C740-C741,C749|Adrenal_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C740-C741,C749|Adrenal_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C740-C741,C749|Adrenal_Gland|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C740-C741,C749|Adrenal_Gland|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C740-C741,C749|Adrenal_Gland|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -11160,7 +11162,7 @@ C750|Parathyroid_Gland|802|Carcinoma|8020/3|Undifferentiated_Carcinoma
 C750|Parathyroid_Gland|802|Carcinoma|8021/3|Undifferentiated_Carcinoma
 C750|Parathyroid_Gland|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C750|Parathyroid_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C750|Parathyroid_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C750|Parathyroid_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C750|Parathyroid_Gland|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C750|Parathyroid_Gland|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C750|Parathyroid_Gland|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -11201,7 +11203,7 @@ C751|Pituitary_Gland|801|Carcinoma|8010/2|In_Situ_Cancer
 C751|Pituitary_Gland|801|Carcinoma|8010/3|Carcinoma
 C751|Pituitary_Gland|814|Adenocarcinoma|8140/0|Adenoma
 C751|Pituitary_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C751|Pituitary_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C751|Pituitary_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C751|Pituitary_Gland|814|Adenocarcinoma|8146/0|Salivary_Gland_Monomorphic_Adenoma
 C751|Pituitary_Gland|826|Papillary_Adenocarcinoma|8260/0|Papillary_Adenoma
 C751|Pituitary_Gland|827|Chromophobe_Renal_Cell_Carcinoma|8270/0|Pituitary_Gland_Chromophobe_Adenoma
@@ -11260,7 +11262,7 @@ C752|Craniopharyngeal_Duct|801|Carcinoma|8010/2|In_Situ_Cancer
 C752|Craniopharyngeal_Duct|801|Carcinoma|8010/3|Carcinoma
 C752|Craniopharyngeal_Duct|814|Adenocarcinoma|8140/0|Adenoma
 C752|Craniopharyngeal_Duct|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C752|Craniopharyngeal_Duct|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C752|Craniopharyngeal_Duct|814|Adenocarcinoma|8140/3|Metastasis
 C752|Craniopharyngeal_Duct|814|Adenocarcinoma|8146/0|Salivary_Gland_Monomorphic_Adenoma
 C752|Craniopharyngeal_Duct|826|Papillary_Adenocarcinoma|8260/0|Papillary_Adenoma
 C752|Craniopharyngeal_Duct|827|Chromophobe_Renal_Cell_Carcinoma|8270/0|Pituitary_Gland_Chromophobe_Adenoma
@@ -11356,7 +11358,7 @@ C754-C755,C758-C759|Endocrine_Gland|802|Carcinoma|8020/3|Undifferentiated_Carcin
 C754-C755,C758-C759|Endocrine_Gland|802|Carcinoma|8021/3|Undifferentiated_Carcinoma
 C754-C755,C758-C759|Endocrine_Gland|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C754-C755,C758-C759|Endocrine_Gland|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
-C754-C755,C758-C759|Endocrine_Gland|814|Adenocarcinoma|8140/3|Adenocarcinoma
+C754-C755,C758-C759|Endocrine_Gland|814|Adenocarcinoma|8140/3|Metastasis
 C754-C755,C758-C759|Endocrine_Gland|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma
 C754-C755,C758-C759|Endocrine_Gland|814|Adenocarcinoma|8143/3|Superficial_Spreading_Adenocarcinoma
 C754-C755,C758-C759|Endocrine_Gland|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
@@ -11449,13 +11451,13 @@ C770-C775,C778-C779|Lymph_Node|975|True_Histiocytic_Lymphoma|9759/3|Fibroblastic
 C770-C775,C778-C779|Lymph_Node|976|Immunoproliferative_Disorder|9761/3|Waldenstrom_Macroglobulinemia
 C770-C775,C778-C779|Lymph_Node|976|Immunoproliferative_Disorder|9762/3|Heavy_Chain_Disease
 C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9811/3|B_Lymphoblastic_Leukemia_Lymphoma
-C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9812/3|Lymphoma
-C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9813/3|Lymphoma
-C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9814/3|Lymphoma
+C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9812/3|null
+C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9813/3|null
+C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9814/3|null
 C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9815/3|B_Lymphoblastic_Leukemia_Lymphoma
 C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9816/3|Hypodiploid_ALL
-C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9817/3|Lymphoma
-C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9818/3|Lymphoma
+C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9817/3|null
+C770-C775,C778-C779|Lymph_Node|981|Precursor_Lymphoid_Neoplasm|9818/3|null
 C770-C775,C778-C779|Lymph_Node|982|Lymphoid_Leukemia|9823/3|Chronic_Lymphocytic_Leukemia
 C770-C775,C778-C779|Lymph_Node|983|Leukemia|9831/3|Leukemia__Large_Granular_Lymphocytic
 C770-C775,C778-C779|Lymph_Node|983|Leukemia|9837/3|T_Lymphoblastic_Leukemia_Lymphoma
