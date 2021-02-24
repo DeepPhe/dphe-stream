@@ -12,7 +12,7 @@ final public class LateralUriInfoVisitor implements UriInfoVisitor {
    private Collection<ConceptAggregate> _lateralityConcepts;
 
    public Collection<ConceptAggregate> getConcepts( final Collection<ConceptAggregate> neoplasms ) {
-      if ( _lateralityConcepts != null ) {
+      if ( _lateralityConcepts == null ) {
          _lateralityConcepts = neoplasms.stream()
                                   .map( c -> c.getRelated( RelationConstants.HAS_LATERALITY ) )
                                   .flatMap( Collection::stream )
