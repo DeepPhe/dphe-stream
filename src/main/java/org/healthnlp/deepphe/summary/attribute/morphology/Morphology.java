@@ -91,7 +91,6 @@ final public class Morphology implements SpecificAttribute {
       final MorphologyInfoStore patientStore = new MorphologyInfoStore( patientNeoplasms,
                                                                         uriInfoVisitor,
                                                                         validTopoMorphs );
-
       final MorphologyInfoStore neoplasmStore = new MorphologyInfoStore( neoplasm,
                                                                          uriInfoVisitor,
                                                                          validTopoMorphs );

@@ -2,7 +2,6 @@ package org.healthnlp.deepphe.summary.attribute.laterality;
 
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
-import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
 import java.util.*;
 
@@ -11,8 +10,7 @@ public class LateralityCodeInfoStore {
    public String _bestLateralityCode;
 
 
-   protected void init( final Collection<ConceptAggregate> neoplasms,
-                        final UriInfoStore uriInfoStore ) {
+   protected void init( final UriInfoStore uriInfoStore ) {
       _bestLateralityCode = getBestLateralityCode( uriInfoStore._uriStrengths );
    }
 

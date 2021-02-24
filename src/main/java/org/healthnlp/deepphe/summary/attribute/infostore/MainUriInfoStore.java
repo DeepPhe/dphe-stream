@@ -12,10 +12,7 @@ public class MainUriInfoStore extends UriInfoStore {
                             final AllUriInfoStore allUriInfoStore,
                             final UriInfoVisitor uriInfoVisitor ) {
       super( uriInfoVisitor.getMainUris( neoplasms ) );
-      final Map<String, Integer> uriStrengths = new HashMap<>( allUriInfoStore._uriStrengths );
-      uriStrengths.keySet()
-                  .retainAll( _uris );
-      setUriStrengths( uriStrengths );
+      setUriStrengths( uriInfoVisitor.getUriStrengths( neoplasms ) );
       final Map<String, Integer> classLevelMap = new HashMap<>( allUriInfoStore._classLevelMap );
       classLevelMap.keySet()
                    .retainAll( _uris );

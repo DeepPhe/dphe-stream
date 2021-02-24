@@ -34,8 +34,11 @@ final public class Laterality implements SpecificAttribute {
 
       final LateralityInfoStore neoplasmStore = new LateralityInfoStore( neoplasm, uriInfoVisitor );
 
-      patientStore._codeInfoStore.init( patientNeoplasms, patientStore._mainUriStore );
-      neoplasmStore._codeInfoStore.init( Collections.singletonList( neoplasm ), neoplasmStore._mainUriStore );
+      final LateralityInfoStore allConceptsStore = new LateralityInfoStore( allConcepts, uriInfoVisitor );
+
+      patientStore._codeInfoStore.init( patientStore._mainUriStore );
+      neoplasmStore._codeInfoStore.init( neoplasmStore._mainUriStore );
+      allConceptsStore._codeInfoStore.init( allConceptsStore._mainUriStore );
 
       _bestLaterality = neoplasmStore._mainUriStore._bestUri;
       _bestLateralityCode = neoplasmStore._codeInfoStore._bestLateralityCode;
@@ -43,12 +46,13 @@ final public class Laterality implements SpecificAttribute {
       final List<Integer> features = createFeatures( neoplasm,
                                                      allConcepts,
                                                      neoplasmStore,
-                                                     patientStore );
+                                                     patientStore,
+                                                     allConceptsStore );
 
       final Map<EvidenceLevel, Collection<Mention>> evidence
             = SpecificAttribute.mapEvidence( Collections.singletonList( neoplasm ),
-                                             neoplasmStore._concepts,
-                                             patientStore._concepts );
+                                             patientStore._concepts,
+                                             allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( "laterality",
                                                 neoplasmStore._codeInfoStore._bestLateralityCode,
@@ -71,19 +75,24 @@ final public class Laterality implements SpecificAttribute {
    private List<Integer> createFeatures( final ConceptAggregate neoplasm,
                                          final Collection<ConceptAggregate> allConcepts,
                                          final AttributeInfoStore neoplasmStore,
-                                         final AttributeInfoStore patientStore ) {
+                                         final AttributeInfoStore patientStore,
+                                         final AttributeInfoStore allConceptStore ) {
       final List<Integer> features = new ArrayList<>();
 
       neoplasmStore.addGeneralFeatures( features );
       patientStore.addGeneralFeatures( features );
       neoplasmStore.addGeneralRatioFeatures( features, patientStore );
 
-      // Todo addLateralityFeatures ... boolean isDefault.
-//      addMorphStoreFeatures( features, neoplasmStore );
-//      addMorphStoreFeatures( features, patientStore );
+      allConceptStore.addGeneralFeatures( features );
+      neoplasmStore.addGeneralRatioFeatures( features, allConceptStore );
 
-//      neoplasmStore.addMorphRatioFeatures( features, patientStore );
-
+      final boolean noLaterality = neoplasmStore._mainUriStore._bestUri.isEmpty();
+      addBooleanFeatures( features,
+                          noLaterality,
+                          noLaterality && !patientStore._mainUriStore._bestUri.isEmpty(),
+                          noLaterality && !allConceptStore._mainUriStore._bestUri.isEmpty(),
+                          neoplasmStore._mainUriStore._bestUri.equals( patientStore._mainUriStore._bestUri ),
+                          neoplasmStore._mainUriStore._bestUri.equals( allConceptStore._mainUriStore._bestUri ) );
 
       addBooleanFeatures( features,
                           neoplasm.isNegated(),
