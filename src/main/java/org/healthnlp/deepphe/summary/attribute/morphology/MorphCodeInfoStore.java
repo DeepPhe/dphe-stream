@@ -51,7 +51,6 @@ abstract class MorphCodeInfoStore {
                        ? getBestHistology( _sortedMorphCodes )
                        : _bestMorphCode.substring( 0, 4 );
       _bestBehaviorCode = getBestBehavior( _sortedMorphCodes );
-
    }
 
    protected void addMorphFeatures( final List<Integer> features ) {

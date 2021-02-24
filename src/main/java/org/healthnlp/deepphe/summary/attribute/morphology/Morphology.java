@@ -17,6 +17,8 @@ final public class Morphology implements SpecificAttribute {
 
    static private final Logger LOGGER = Logger.getLogger( "Morphology" );
 
+   static public String QUOTIENT_TEXT = "";
+
    private String _bestHistoCode = "";
    private String _bestBehaveCode = "";
    final private NeoplasmAttribute _histology;
@@ -59,19 +61,6 @@ final public class Morphology implements SpecificAttribute {
       _behavior = createBehaviorAttribute();
    }
 
-   private NeoplasmAttribute createBehaviorAttribute() {
-      final List<Integer> behaviorFeatures = new ArrayList<>( _histology.getConfidenceFeatures() );
-      behaviorFeatures.addAll( createBehaviorFeatures() );
-      return SpecificAttribute.createAttribute( "behavior",
-                                                getBestBehaveCode(),
-                                                _histology.getDirectEvidence(),
-                                                _histology.getIndirectEvidence(),
-                                                _histology.getNotEvidence(),
-                                                behaviorFeatures );
-   }
-
-
-
 
    public String getBestHistoCode() {
       return _bestHistoCode.isEmpty() ? "8000" : _bestHistoCode;
@@ -98,9 +87,14 @@ final public class Morphology implements SpecificAttribute {
                                                    final Collection<ConceptAggregate> patientNeoplasms,
                                                    final Collection<String> validTopoMorphs,
                                                    final String topographyCode ) {
-      final MorphologyInfoStore patientStore = new MorphologyInfoStore( patientNeoplasms, validTopoMorphs );
+      final MorphUriInfoVisitor uriInfoVisitor = new MorphUriInfoVisitor();
+      final MorphologyInfoStore patientStore = new MorphologyInfoStore( patientNeoplasms,
+                                                                        uriInfoVisitor,
+                                                                        validTopoMorphs );
 
-      final MorphologyInfoStore neoplasmStore = new MorphologyInfoStore( neoplasm, validTopoMorphs );
+      final MorphologyInfoStore neoplasmStore = new MorphologyInfoStore( neoplasm,
+                                                                         uriInfoVisitor,
+                                                                         validTopoMorphs );
 
       _bestHistoCode = neoplasmStore._mainMorphStore._bestHistoCode;
       _bestBehaveCode = neoplasmStore._mainMorphStore._bestBehaviorCode;
@@ -145,18 +139,22 @@ final public class Morphology implements SpecificAttribute {
       }
    }
 
-      return SpecificAttribute.createAttribute( "histology",
+   return SpecificAttribute.createAttribute( "histology",
                                                 neoplasmStore._mainMorphStore._bestHistoCode,
                                                    evidence,
                                                    features );
    }
 
-
-
-
-
-   static public String QUOTIENT_TEXT = "";
-
+   private NeoplasmAttribute createBehaviorAttribute() {
+      final List<Integer> behaviorFeatures = new ArrayList<>( _histology.getConfidenceFeatures() );
+      behaviorFeatures.addAll( createBehaviorFeatures() );
+      return SpecificAttribute.createAttribute( "behavior",
+                                                getBestBehaveCode(),
+                                                _histology.getDirectEvidence(),
+                                                _histology.getIndirectEvidence(),
+                                                _histology.getNotEvidence(),
+                                                behaviorFeatures );
+   }
 
 
 

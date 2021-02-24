@@ -33,13 +33,13 @@ public class AttributeInfoStore {
    final public int _mentionAsBestBranchCountsSum;
    final public int _mentionWithBestBranchCountsSum;
 
-   public AttributeInfoStore( final ConceptAggregate neoplasm ) {
-      this( Collections.singletonList( neoplasm ) );
+   public AttributeInfoStore( final ConceptAggregate neoplasm, final UriInfoVisitor uriInfoVisitor ) {
+      this( Collections.singletonList( neoplasm ), uriInfoVisitor );
    }
 
-   public AttributeInfoStore( final Collection<ConceptAggregate> neoplasms ) {
-      _allUriStore = new AllUriInfoStore( neoplasms );
-      _mainUriStore = new MainUriInfoStore( neoplasms, _allUriStore );
+   public AttributeInfoStore( final Collection<ConceptAggregate> neoplasms, final UriInfoVisitor uriInfoVisitor ) {
+      _allUriStore = new AllUriInfoStore( neoplasms, uriInfoVisitor );
+      _mainUriStore = new MainUriInfoStore( neoplasms, _allUriStore, uriInfoVisitor );
       _uriRootsMap = UriUtil.mapUriRoots( _allUriStore._uris );
       _concepts = neoplasms;
       _mentions = getMentions( _concepts );

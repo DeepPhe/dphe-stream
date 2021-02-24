@@ -5,13 +5,13 @@ import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MainUriInfoStore extends UriInfoStore {
 
    public MainUriInfoStore( final Collection<ConceptAggregate> neoplasms,
-                            final AllUriInfoStore allUriInfoStore ) {
-      super( getMainUris( neoplasms ) );
+                            final AllUriInfoStore allUriInfoStore,
+                            final UriInfoVisitor uriInfoVisitor ) {
+      super( uriInfoVisitor.getMainUris( neoplasms ) );
       final Map<String, Integer> uriStrengths = new HashMap<>( allUriInfoStore._uriStrengths );
       uriStrengths.keySet()
                   .retainAll( _uris );
@@ -22,11 +22,5 @@ public class MainUriInfoStore extends UriInfoStore {
       setClassLevelMap( classLevelMap );
    }
 
-   // Allows for uris that have tied quotients
-   static private Collection<String> getMainUris( final Collection<ConceptAggregate> neoplasms  ) {
-      return neoplasms.stream()
-                      .map( ConceptAggregate::getUri )
-                      .collect( Collectors.toSet() );
-   }
 
 }

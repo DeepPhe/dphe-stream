@@ -17,6 +17,7 @@ final public class Laterality implements SpecificAttribute {
    static private final Logger LOGGER = Logger.getLogger( "Laterality" );
 
    final private NeoplasmAttribute _laterality;
+   private String _bestLaterality;
    private String _bestLateralityCode;
 
    public Laterality( final ConceptAggregate neoplasm,
@@ -28,13 +29,15 @@ final public class Laterality implements SpecificAttribute {
    private NeoplasmAttribute createLateralityAttribute( final ConceptAggregate neoplasm,
                                                    final Collection<ConceptAggregate> allConcepts,
                                                    final Collection<ConceptAggregate> patientNeoplasms ) {
-      final LateralityInfoStore patientStore = new LateralityInfoStore( patientNeoplasms );
+      final LateralUriInfoVisitor uriInfoVisitor = new LateralUriInfoVisitor();
+      final LateralityInfoStore patientStore = new LateralityInfoStore( patientNeoplasms, uriInfoVisitor );
 
-      final LateralityInfoStore neoplasmStore = new LateralityInfoStore( neoplasm );
+      final LateralityInfoStore neoplasmStore = new LateralityInfoStore( neoplasm, uriInfoVisitor );
 
       patientStore._codeInfoStore.init( patientNeoplasms, patientStore._mainUriStore );
       neoplasmStore._codeInfoStore.init( Collections.singletonList( neoplasm ), neoplasmStore._mainUriStore );
 
+      _bestLaterality = neoplasmStore._mainUriStore._bestUri;
       _bestLateralityCode = neoplasmStore._codeInfoStore._bestLateralityCode;
 
       final List<Integer> features = createFeatures( neoplasm,
@@ -51,6 +54,14 @@ final public class Laterality implements SpecificAttribute {
                                                 neoplasmStore._codeInfoStore._bestLateralityCode,
                                                 evidence,
                                                 features );
+   }
+
+   public String getBestLaterality() {
+      return _bestLaterality;
+   }
+
+   public String getBestLateralityCode() {
+      return _bestLateralityCode;
    }
 
    public NeoplasmAttribute toNeoplasmAttribute() {

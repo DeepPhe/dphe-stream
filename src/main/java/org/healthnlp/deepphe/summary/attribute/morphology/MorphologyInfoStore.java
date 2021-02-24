@@ -2,6 +2,7 @@ package org.healthnlp.deepphe.summary.attribute.morphology;
 
 import org.healthnlp.deepphe.summary.attribute.infostore.AttributeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
+import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
 import java.util.*;
@@ -15,13 +16,15 @@ public class MorphologyInfoStore extends AttributeInfoStore {
    final public MainMorphCodeInfoStore _mainMorphStore;
 
    public MorphologyInfoStore( final ConceptAggregate neoplasm,
-                                final Collection<String> validTopoMorphs ) {
-      this( Collections.singletonList( neoplasm ), validTopoMorphs );
+                               final UriInfoVisitor uriInfoVisitor,
+                               final Collection<String> validTopoMorphs ) {
+      this( Collections.singletonList( neoplasm ), uriInfoVisitor, validTopoMorphs );
    }
 
    public MorphologyInfoStore( final Collection<ConceptAggregate> neoplasms,
+                               final UriInfoVisitor uriInfoVisitor,
                         final Collection<String> validTopoMorphs ) {
-      super( neoplasms );
+      super( neoplasms, uriInfoVisitor );
       _allMorphStore = new AllMorphCodeInfoStore( neoplasms, _allUriStore, validTopoMorphs );
       _mainMorphStore = new MainMorphCodeInfoStore( neoplasms, _mainUriStore, _allMorphStore,
                                                                validTopoMorphs );
