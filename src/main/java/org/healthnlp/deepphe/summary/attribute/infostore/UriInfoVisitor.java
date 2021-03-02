@@ -1,21 +1,19 @@
 package org.healthnlp.deepphe.summary.attribute.infostore;
 
+import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.util.KeyValue;
 import org.healthnlp.deepphe.util.UriScoreUtil;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public interface UriInfoVisitor {
 
-   Collection<ConceptAggregate> getConcepts( Collection<ConceptAggregate> neoplasms );
+   Collection<ConceptAggregate> getAttributeConcepts( Collection<ConceptAggregate> neoplasms );
 
-   default Collection<String> getAllUris( final Collection<ConceptAggregate> neoplasms ) {
-      return getConcepts( neoplasms )
+   default Collection<String> getAttributeAllUris( final Collection<ConceptAggregate> neoplasms ) {
+      return getAttributeConcepts( neoplasms )
             .stream()
             .map( ConceptAggregate::getAllUris )
             .flatMap( Collection::stream )
@@ -23,22 +21,43 @@ public interface UriInfoVisitor {
    }
 
    // Allows for uris that have tied quotients
-   default Collection<String> getMainUris( final Collection<ConceptAggregate> neoplasms ) {
-      return getConcepts( neoplasms )
+   default Collection<String> getAttributeMainUris( final Collection<ConceptAggregate> neoplasms ) {
+      return getAttributeConcepts( neoplasms )
             .stream()
             .map( ConceptAggregate::getUri )
             .collect( Collectors.toSet() );
    }
 
-   default Map<String,Integer> getUriStrengths( final Collection<ConceptAggregate> neoplasms ) {
-      final Collection<ConceptAggregate> concepts = getConcepts( neoplasms );
-      final List<KeyValue<String, Double>> uriQuotients
-            = concepts.stream()
-                          .map( c -> UriScoreUtil.mapUriQuotients( c.getAllUris(),
-                                                                   c.getUriRootsMap(),
-                                                                   c.getMentions() ) )
-                          .flatMap( Collection::stream )
-                          .collect( Collectors.toList() );
+   default Map<String,Integer> getAttributeUriStrengths( final Collection<ConceptAggregate> neoplasms ) {
+      final Collection<ConceptAggregate> concepts = getAttributeConcepts( neoplasms );
+//      final List<KeyValue<String, Double>> uriQuotients
+//            = concepts.stream()
+//                          .map( c -> UriScoreUtil.mapUriQuotients( c.getAllUris(),
+//                                                                   c.getUriRootsMap(),
+//                                                                   c.getMentions() ) )
+//                          .flatMap( Collection::stream )
+//                          .collect( Collectors.toList() );
+      if ( concepts.isEmpty() ) {
+         return Collections.emptyMap();
+      }
+      final Collection<String> allUris = concepts.stream()
+                                                 .map( ConceptAggregate::getAllUris )
+                                                 .flatMap( Collection::stream )
+                                                 .collect( Collectors.toSet() );
+      final Map<String,Collection<String>> allUriRoots = concepts.stream()
+                                                                 .map( ConceptAggregate::getUriRootsMap )
+                                                                 .map( Map::entrySet )
+                                                                 .flatMap( Collection::stream )
+                                                                 .distinct()
+                                                                 .collect( Collectors.toMap( Map.Entry::getKey,
+                                                                                             Map.Entry::getValue ) );
+      final Collection<Mention> allMentions = concepts.stream()
+                                                      .map( ConceptAggregate::getMentions )
+                                                      .flatMap( Collection::stream )
+                                                      .collect( Collectors.toSet() );
+      final List<KeyValue<String, Double>> uriQuotients = UriScoreUtil.mapUriQuotients( allUris,
+                                                                                        allUriRoots,
+                                                                                        allMentions );
       final Map<String,Integer> uriStrengths = new HashMap<>();
       for ( KeyValue<String,Double> quotients : uriQuotients ) {
          final int previousStrength = uriStrengths.getOrDefault( quotients.getKey(), 0 );

@@ -71,7 +71,7 @@ final public class NeoplasmSummaryCreator {
       final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );
       addMorphology( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
       addLaterality( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addGrade( neoplasm, summary, attributes, allConcepts );
+      addGrade( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
 
       summary.setPathologic_t( getT( neoplasm ) );
       summary.setPathologic_n( getN( neoplasm ) );
@@ -148,8 +148,10 @@ final public class NeoplasmSummaryCreator {
    static private void addGrade( final ConceptAggregate neoplasm,
                                         final NeoplasmSummary summary,
                                         final List<NeoplasmAttribute> attributes,
-                                        final Collection<ConceptAggregate> allConcepts ) {
-      final Grade grade = new Grade( neoplasm, allConcepts );
+                                        final Collection<ConceptAggregate> allConcepts,
+                                 final Collection<ConceptAggregate> patientNeoplasms ) {
+//      final Grade grade = new Grade( neoplasm, allConcepts );
+      final Grade grade = new Grade( neoplasm, allConcepts, patientNeoplasms );
       final NeoplasmAttribute gradeAttribute = grade.toNeoplasmAttribute();
       attributes.add( gradeAttribute );
       summary.setGrade( grade.getBestGradeCode() );

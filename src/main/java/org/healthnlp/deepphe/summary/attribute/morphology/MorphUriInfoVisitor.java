@@ -7,7 +7,7 @@ import java.util.Collection;
 
 final public class MorphUriInfoVisitor implements UriInfoVisitor {
 
-   public Collection<ConceptAggregate> getConcepts( final Collection<ConceptAggregate> neoplasms ) {
+   public Collection<ConceptAggregate> getAttributeConcepts( final Collection<ConceptAggregate> neoplasms ) {
       return neoplasms;
    }
 

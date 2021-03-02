@@ -68,15 +68,8 @@ public class UriAnnotationFactory {
       final IdentifiedAnnotation annotation = semanticGroup.getCreator().apply( jcas );
       annotation.setBegin( beginOffset );
       annotation.setEnd( endOffset );
-      final List<Segment> sections = JCasUtil.selectCovering( jcas, Segment.class, beginOffset, endOffset );
-      String sectionId = sections.isEmpty() ? "UNKNOWN_SECTION" : sections.get( 0 ).getId();
-      annotation.setSegmentID(
-            ((sectionId != null && !sectionId.isEmpty()) ? sectionId : "UNKNOWN_SECTION" ) );
-      final List<Sentence> sentences = JCasUtil.selectCovering( jcas, Sentence.class, beginOffset, endOffset );
-      String sentenceId = sentences.isEmpty()
-                          ? "UNKNOWN_SENTENCE"
-                          : "Sentence_" + sentences.get( 0 ).getSentenceNumber();
-      annotation.setSentenceID( sentenceId );
+      annotation.setSegmentID( getSectionId( jcas, beginOffset, endOffset ) );
+      annotation.setSentenceID( getSentenceId( jcas, beginOffset, endOffset ) );
       annotation.setTypeID( CONST.NE_TYPE_ID_UNKNOWN );
       annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
       final UmlsConcept umlsConcept = createUmlsConcept( jcas, cui, tui, prefText, uri );
@@ -134,6 +127,8 @@ public class UriAnnotationFactory {
    static private IdentifiedAnnotation createUnknownAnnotation( final JCas jCas, final int beginOffset,
                                                                 final int endOffset, final String uri ) {
       final IdentifiedAnnotation annotation = new IdentifiedAnnotation( jCas, beginOffset, endOffset );
+      annotation.setSegmentID( getSectionId( jCas, beginOffset, endOffset ) );
+      annotation.setSentenceID( getSentenceId( jCas, beginOffset, endOffset ) );
       annotation.setTypeID( CONST.NE_TYPE_ID_UNKNOWN );
       annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
       final UmlsConcept umlsConcept = createUmlsConcept( jCas, uri );
@@ -190,6 +185,8 @@ public class UriAnnotationFactory {
                                                                 final int beginOffset, final int endOffset,
                                                                 final String uri, final String preferredText ) {
       final IdentifiedAnnotation annotation = new IdentifiedAnnotation( jCas, beginOffset, endOffset );
+      annotation.setSegmentID( getSectionId( jCas, beginOffset, endOffset ) );
+      annotation.setSentenceID( getSentenceId( jCas, beginOffset, endOffset ) );
       annotation.setTypeID( CONST.NE_TYPE_ID_UNKNOWN );
       annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
       final UmlsConcept umlsConcept = createUmlsConcept( jCas, "", "", preferredText, uri );
@@ -208,6 +205,8 @@ public class UriAnnotationFactory {
       annotation.setTypeID( semanticId );
       annotation.setBegin( beginOffset );
       annotation.setEnd( endOffset );
+      annotation.setSegmentID( getSectionId( jCas, beginOffset, endOffset ) );
+      annotation.setSentenceID( getSentenceId( jCas, beginOffset, endOffset ) );
       annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
       final UmlsConcept umlsConcept = createUmlsConcept( jCas, cui, "", preferredText, uri );
       final FSArray conceptArray = new FSArray( jCas, 1 );
@@ -225,6 +224,8 @@ public class UriAnnotationFactory {
       annotation.setTypeID( semanticId );
       annotation.setBegin( beginOffset );
       annotation.setEnd( endOffset );
+      annotation.setSegmentID( getSectionId( jCas, beginOffset, endOffset ) );
+      annotation.setSentenceID( getSentenceId( jCas, beginOffset, endOffset ) );
       annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
       final FSArray conceptArray = new FSArray( jCas, tuis.size() );
       int i = 0;
@@ -268,6 +269,21 @@ public class UriAnnotationFactory {
       umlsConcept.setCodingScheme( DPHE_CODING_SCHEME );
       umlsConcept.setCode( uri );
       return umlsConcept;
+   }
+
+   static private String getSectionId( final JCas jCas, final int beginOffset, final int endOffset ) {
+      final List<Segment> sections = JCasUtil.selectCovering( jCas, Segment.class, beginOffset, endOffset );
+      return sections.isEmpty()
+             ? "UNKNOWN_SECTION"
+             : sections.get( 0 )
+                       .getId();
+   }
+
+   static private String getSentenceId( final JCas jCas, final int beginOffset, final int endOffset ) {
+      final List<Sentence> sentences = JCasUtil.selectCovering( jCas, Sentence.class, beginOffset, endOffset );
+      return sentences.isEmpty()
+                          ? "UNKNOWN_SENTENCE"
+                          : "Sentence_" + sentences.get( 0 ).getSentenceNumber();
    }
 
 }

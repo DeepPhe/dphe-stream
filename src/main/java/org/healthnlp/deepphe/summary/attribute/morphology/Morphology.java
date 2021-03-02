@@ -187,8 +187,6 @@ final public class Morphology implements SpecificAttribute {
                           neoplasm.isUncertain(),
                           neoplasm.isGeneric(),
                           neoplasm.isConditional() );
-
-      LOGGER.info( "Features: " + features.size() );
       return features;
    }
 

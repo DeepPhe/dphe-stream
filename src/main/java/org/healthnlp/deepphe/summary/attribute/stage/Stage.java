@@ -1,4 +1,4 @@
-package org.healthnlp.deepphe.summary.attribute.laterality;
+package org.healthnlp.deepphe.summary.attribute.stage;
 
 
 import org.apache.log4j.Logger;
@@ -12,36 +12,37 @@ import java.util.*;
 
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addBooleanFeatures;
 
-final public class Laterality implements SpecificAttribute {
+final public class Stage implements SpecificAttribute {
 
-   static private final Logger LOGGER = Logger.getLogger( "Laterality" );
+   static private final Logger LOGGER = Logger.getLogger( "Stage" );
 
-   final private NeoplasmAttribute _laterality;
-   private String _bestLaterality;
-   private String _bestLateralityCode;
+   final private NeoplasmAttribute _stage;
+   private String _bestStageUri;
+   private String _bestStage;
+   private String _bestStageCode;
 
-   public Laterality( final ConceptAggregate neoplasm,
-                      final Collection<ConceptAggregate> allConcepts,
-                      final Collection<ConceptAggregate> patientNeoplasms ) {
-      _laterality = createLateralityAttribute( neoplasm, allConcepts, patientNeoplasms );
+   public Stage( final ConceptAggregate neoplasm,
+                 final Collection<ConceptAggregate> allConcepts,
+                 final Collection<ConceptAggregate> patientNeoplasms ) {
+      _stage = createStageAttribute( neoplasm, allConcepts, patientNeoplasms );
    }
 
-   private NeoplasmAttribute createLateralityAttribute( final ConceptAggregate neoplasm,
+   private NeoplasmAttribute createStageAttribute( final ConceptAggregate neoplasm,
                                                    final Collection<ConceptAggregate> allConcepts,
                                                    final Collection<ConceptAggregate> patientNeoplasms ) {
-      final LateralUriInfoVisitor uriInfoVisitor = new LateralUriInfoVisitor();
-      final LateralityInfoStore patientStore = new LateralityInfoStore( patientNeoplasms, uriInfoVisitor );
+      final StageUriInfoVisitor uriInfoVisitor = new StageUriInfoVisitor();
+      final StageInfoStore patientStore = new StageInfoStore( patientNeoplasms, uriInfoVisitor );
 
-      final LateralityInfoStore neoplasmStore = new LateralityInfoStore( neoplasm, uriInfoVisitor );
+      final StageInfoStore neoplasmStore = new StageInfoStore( neoplasm, uriInfoVisitor );
 
-      final LateralityInfoStore allConceptsStore = new LateralityInfoStore( allConcepts, uriInfoVisitor );
+      final StageInfoStore allConceptsStore = new StageInfoStore( allConcepts, uriInfoVisitor );
 
       patientStore._codeInfoStore.init( patientStore._mainUriStore );
       neoplasmStore._codeInfoStore.init( neoplasmStore._mainUriStore );
       allConceptsStore._codeInfoStore.init( allConceptsStore._mainUriStore );
 
-      _bestLaterality = neoplasmStore._mainUriStore._bestUri;
-      _bestLateralityCode = neoplasmStore._codeInfoStore._bestLateralityCode;
+      _bestStage = neoplasmStore._mainUriStore._bestUri;
+      _bestStageCode = neoplasmStore._codeInfoStore._bestStageCode;
 
       final List<Integer> features = createFeatures( neoplasm,
                                                      allConcepts,
@@ -54,22 +55,22 @@ final public class Laterality implements SpecificAttribute {
                                              patientStore._concepts,
                                              allConceptsStore._concepts );
 
-      return SpecificAttribute.createAttribute( "laterality",
-                                                neoplasmStore._codeInfoStore._bestLateralityCode,
+      return SpecificAttribute.createAttribute( "stage",
+                                                neoplasmStore._codeInfoStore._bestStageCode,
                                                 evidence,
                                                 features );
    }
 
-   public String getBestLaterality() {
-      return _bestLaterality;
+   public String getBestStage() {
+      return _bestStage;
    }
 
-   public String getBestLateralityCode() {
-      return _bestLateralityCode;
+   public String getBestStageCode() {
+      return _bestStageCode;
    }
 
    public NeoplasmAttribute toNeoplasmAttribute() {
-      return _laterality;
+      return _stage;
    }
 
    private List<Integer> createFeatures( final ConceptAggregate neoplasm,
@@ -86,11 +87,11 @@ final public class Laterality implements SpecificAttribute {
       allConceptStore.addGeneralFeatures( features );
       neoplasmStore.addGeneralRatioFeatures( features, allConceptStore );
 
-      final boolean noLaterality = neoplasmStore._mainUriStore._bestUri.isEmpty();
+      final boolean noStage = neoplasmStore._mainUriStore._bestUri.isEmpty();
       addBooleanFeatures( features,
-                          noLaterality,
-                          noLaterality && !patientStore._mainUriStore._bestUri.isEmpty(),
-                          noLaterality && !allConceptStore._mainUriStore._bestUri.isEmpty(),
+                          noStage,
+                          noStage && !patientStore._mainUriStore._bestUri.isEmpty(),
+                          noStage && !allConceptStore._mainUriStore._bestUri.isEmpty(),
                           neoplasmStore._mainUriStore._bestUri.equals( patientStore._mainUriStore._bestUri ),
                           neoplasmStore._mainUriStore._bestUri.equals( allConceptStore._mainUriStore._bestUri ) );
 

@@ -4,6 +4,7 @@ package org.healthnlp.deepphe.nlp.phenotype.tnm;
 import org.apache.ctakes.core.util.Pair;
 import org.apache.ctakes.core.util.annotation.SemanticGroup;
 import org.apache.ctakes.core.util.regex.RegexSpanFinder;
+import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.ctakes.typesystem.type.textsem.SignSymptomMention;
 import org.apache.log4j.Logger;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -208,22 +209,26 @@ public enum TnmFinder {
       }
    }
 
-   static public void addTnms( final JCas jcas, final AnnotationFS lookupWindow ) {
+   static public List<IdentifiedAnnotation> addTnms( final JCas jcas, final AnnotationFS lookupWindow ) {
       final String windowText = lookupWindow.getCoveredText();
       final List<SimpleTnm> tnms = getTnms( windowText );
       if ( tnms.isEmpty() ) {
-         return;
+         return Collections.emptyList();
       }
       final boolean isPathologic = windowText.toLowerCase().contains( "patholog" );
       if ( isPathologic ) {
          tnms.forEach( SimpleTnm::setPathologic );
       }
       final int windowStartOffset = lookupWindow.getBegin();
+      final List<IdentifiedAnnotation> tnmAnnotations = new ArrayList<>();
       for ( SimpleTnm tnm : tnms ) {
-         UriAnnotationFactory.createIdentifiedAnnotations( jcas,
+         final Collection<IdentifiedAnnotation> annotations
+               = UriAnnotationFactory.createIdentifiedAnnotations( jcas,
                windowStartOffset + tnm._begin,
                windowStartOffset + tnm._end, tnm.getUri(), SemanticGroup.FINDING, "T033" );
+         tnmAnnotations.addAll( annotations );
       }
+      return tnmAnnotations;
    }
 
 

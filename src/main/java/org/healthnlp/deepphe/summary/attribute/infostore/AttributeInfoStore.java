@@ -41,7 +41,7 @@ public class AttributeInfoStore {
       _allUriStore = new AllUriInfoStore( neoplasms, uriInfoVisitor );
       _mainUriStore = new MainUriInfoStore( neoplasms, _allUriStore, uriInfoVisitor );
       _uriRootsMap = UriUtil.mapUriRoots( _allUriStore._uris );
-      _concepts = uriInfoVisitor.getConcepts( neoplasms );
+      _concepts = uriInfoVisitor.getAttributeConcepts( neoplasms );
       _mentions = getMentions( _concepts );
       _uriMentions = mapUriMentions( _mentions );
 //         _uriMentionCounts = UriScoreUtil.mapUriMentionCounts( _mentions );

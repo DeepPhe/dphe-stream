@@ -9,8 +9,8 @@ public class AllUriInfoStore extends UriInfoStore {
 
    public AllUriInfoStore( final Collection<ConceptAggregate> neoplasms,
                            final UriInfoVisitor uriInfoVisitor ) {
-      super( uriInfoVisitor.getAllUris( neoplasms ) );
-      setUriStrengths( uriInfoVisitor.getUriStrengths( neoplasms ) );
+      super( uriInfoVisitor.getAttributeAllUris( neoplasms ) );
+      setUriStrengths( uriInfoVisitor.getAttributeUriStrengths( neoplasms ) );
       setClassLevelMap( UriScoreUtil.createUriClassLevelMap( _uris ) );
    }
 

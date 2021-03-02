@@ -1,18 +1,18 @@
 package org.healthnlp.deepphe.nlp.phenotype.receptor;
 
 import org.apache.ctakes.core.util.annotation.SemanticGroup;
+import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.log4j.Logger;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.healthnlp.deepphe.nlp.uri.UriAnnotationFactory;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.UriConstants.*;
 import static org.junit.Assert.*;
@@ -150,20 +150,24 @@ final public class StatusFinder {
 
 
 
-   static public void addReceptorStatuses( final JCas jcas, final AnnotationFS lookupWindow ) {
+   static public List<IdentifiedAnnotation> addReceptorStatuses( final JCas jcas, final AnnotationFS lookupWindow ) {
       final String windowText = lookupWindow.getCoveredText();
       final List<SimpleStatus> statuses = getReceptorStatuses( windowText );
       final Collection<SimpleStatus> statuses2 = getReceptorStatuses2( windowText );
       statuses.addAll( statuses2 );
       if ( statuses.isEmpty() ) {
-         return;
+         return Collections.emptyList();
       }
       final int windowStartOffset = lookupWindow.getBegin();
-      for ( SimpleStatus status : statuses ) {
-         UriAnnotationFactory.createIdentifiedAnnotations( jcas,
-               windowStartOffset + status._begin,
-               windowStartOffset + status._end, status._uri, SemanticGroup.LAB, "T034" );
-      }
+      return statuses.stream()
+                     .map( s -> UriAnnotationFactory.createIdentifiedAnnotations( jcas,
+                                                                                    windowStartOffset + s._begin,
+                                                                                    windowStartOffset + s._end,
+                                                                                    s._uri, SemanticGroup.LAB,
+                                                                                    "T034" ) )
+              .flatMap( Collection::stream )
+              .sorted( Comparator.comparingInt( Annotation::getBegin ).thenComparing( Annotation::getEnd ) )
+              .collect( Collectors.toList() );
    }
 
 
