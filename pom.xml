@@ -22,22 +22,89 @@
          <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-         <groupId>org.apache.ctakes</groupId>
-         <artifactId>ctakes-coreference</artifactId>
-         <version>${ctakes.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>org.apache.ctakes</groupId>
-               <artifactId>ctakes-clinical-pipeline</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
 <!--      <dependency>-->
 <!--         <groupId>org.apache.ctakes</groupId>-->
 <!--         <artifactId>ctakes-gui</artifactId>-->
 <!--         <version>${ctakes.version}</version>-->
 <!--      </dependency>-->
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-utils</artifactId>
+         <version>${ctakes.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.lucene</groupId>
+               <artifactId>lucene-core</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.lucene</groupId>
+               <artifactId>lucene-queries</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.lucene</groupId>
+               <artifactId>lucene-queryparser</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.lucene</groupId>
+               <artifactId>lucene-analyzers-common</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-core</artifactId>
+         <version>${ctakes.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-core-res</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>xerces</groupId>
+               <artifactId>xercesImpl</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>jdom</groupId>
+               <artifactId>jdom2</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.cleartk</groupId>
+               <artifactId>cleartk-util</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.google.guava</groupId>
+               <artifactId>guava</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.opennlp</groupId>
+               <artifactId>opennlp-tools</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.opennlp</groupId>
+               <artifactId>opennlp-maxent</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>edu.mit.findstruct</groupId>
+               <artifactId>findstructapi</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.googlecode.armbrust-file-utils</groupId>
+               <artifactId>sqlwrapper</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>net.sourceforge.openai</groupId>
+               <artifactId>openaifsm</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.lexicalscope.jewelcli</groupId>
+               <artifactId>jewelcli</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.cleartk</groupId>
+               <artifactId>cleartk-ml</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
       <dependency>
          <groupId>org.apache.ctakes</groupId>
          <artifactId>ctakes-chunker</artifactId>
@@ -56,12 +123,37 @@
          </exclusions>
       </dependency>
 
+
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-ne-contexts</artifactId>
+         <version>${ctakes.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-dependency-parser</artifactId>
+         <version>${ctakes.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-dependency-parser-res-clear</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-context-tokenizer</artifactId>
+         <version>${ctakes.version}</version>
+      </dependency>
       <dependency>
          <groupId>org.apache.ctakes</groupId>
          <artifactId>ctakes-assertion</artifactId>
          <version>${ctakes.version}</version>
          <exclusions>
-            <!--  We do not want the standard ctakes dictionary  -->
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-dependency-parser</artifactId>
+            </exclusion>
             <exclusion>
                <groupId>org.springframework</groupId>
                <artifactId>spring-core</artifactId>
@@ -71,37 +163,6 @@
                <artifactId>spring-context</artifactId>
             </exclusion>
          </exclusions>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.ctakes</groupId>
-         <artifactId>ctakes-ne-contexts</artifactId>
-         <version>${ctakes.version}</version>
-      </dependency>
-<!--      <dependency>-->
-<!--         <groupId>org.apache.ctakes</groupId>-->
-<!--         <artifactId>ctakes-constituency-parser</artifactId>-->
-<!--         <version>${ctakes.version}</version>-->
-<!--      </dependency>-->
-<!--      <dependency>-->
-<!--         <groupId>org.apache.ctakes</groupId>-->
-<!--         <artifactId>ctakes-dependency-parser</artifactId>-->
-<!--         <version>${ctakes.version}</version>-->
-<!--         <exclusions>-->
-<!--            <exclusion>-->
-<!--               <groupId>org.apache.ctakes</groupId>-->
-<!--               <artifactId>ctakes-dependency-parser-res-clear</artifactId>-->
-<!--            </exclusion>-->
-<!--            <exclusion>-->
-<!--               <groupId>org.apache.ctakes</groupId>-->
-<!--               <artifactId>ctakes-lvg</artifactId>-->
-<!--            </exclusion>-->
-<!--         </exclusions>-->
-<!--      </dependency>-->
-      <dependency>
-         <groupId>org.apache.ctakes</groupId>
-         <artifactId>ctakes-context-tokenizer</artifactId>
-         <version>${ctakes.version}</version>
       </dependency>
 
       <!--  libsvm for temporal and episodes  -->
@@ -120,7 +181,8 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <version>4.8.2</version> <!-- versions after 4.7 allow tests to be run in parallel -->
+         <version>4.8.2</version>
+         <!-- versions after 4.7 allow tests to be run in parallel -->
       </dependency>
 
    </dependencies>
