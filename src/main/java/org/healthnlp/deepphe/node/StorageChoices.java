@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author SPF , chip-nlp
@@ -36,7 +35,7 @@ public enum StorageChoices {
 
    StorageChoices() {
       _cacheCleaner = Executors.newScheduledThreadPool( 1 );
-      _cacheCleaner.scheduleAtFixedRate( new StorageChoices.CacheCleaner(), START, PERIOD, TimeUnit.MILLISECONDS );
+//      _cacheCleaner.scheduleAtFixedRate( new StorageChoices.CacheCleaner(), START, PERIOD, TimeUnit.MILLISECONDS );
    }
 
    public void shutdown() {
@@ -44,9 +43,10 @@ public enum StorageChoices {
    }
 
    public boolean getStoreNote( final String noteId ) {
-      synchronized ( LOCK ) {
-         return _storeNotes.containsKey( noteId );
-      }
+      return true;
+//      synchronized ( LOCK ) {
+//         return _storeNotes.containsKey( noteId );
+//      }
    }
 
    public void setStoreNote( final String noteId ) {
@@ -56,9 +56,10 @@ public enum StorageChoices {
    }
 
    public boolean getStorePatient( final String patientId ) {
-      synchronized ( LOCK ) {
-         return _storePatients.containsKey( patientId );
-      }
+      return true;
+//      synchronized ( LOCK ) {
+//         return _storePatients.containsKey( patientId );
+//      }
    }
 
    public void setStorePatient( final String patientId ) {

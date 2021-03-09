@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.summary.attribute.morphology;
 
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
+import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addBooleanFeatures;
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addLargeIntFeatures;
 
-abstract class MorphCodeInfoStore {
+abstract class MorphCodeInfoStore implements CodeInfoStore {
 
    // Morphology Codes
    protected Map<String, List<String>> _uriOntoMorphCodes;
@@ -24,6 +25,12 @@ abstract class MorphCodeInfoStore {
    protected String _bestMorphCode;
    protected String _bestHistoCode;
    protected String _bestBehaviorCode;
+
+   private Map<String,Integer> _uriOntoStrengths = new HashMap<>();
+   private Map<String,Integer> _uriBroadStrengths = new HashMap<>();
+   private Map<String,Integer> _uriExactStrengths = new HashMap<>();
+   private Map<String,Integer> _uriTotalStrengths = new HashMap<>();
+
 
    protected void init( final Collection<ConceptAggregate> neoplasms,
                         final UriInfoStore uriInfoStore,
@@ -51,6 +58,13 @@ abstract class MorphCodeInfoStore {
                        ? getBestHistology( _sortedMorphCodes )
                        : _bestMorphCode.substring( 0, 4 );
       _bestBehaviorCode = getBestBehavior( _sortedMorphCodes );
+   }
+
+   public void init( final UriInfoStore uriInfoStore ) {
+      // do nothing
+   }
+   public String getBestCode() {
+      return _bestMorphCode;
    }
 
    protected void addMorphFeatures( final List<Integer> features ) {
@@ -177,6 +191,11 @@ abstract class MorphCodeInfoStore {
          }
          hitCounts.computeIfAbsent( count, c -> new HashSet<>() ).add( code );
       }
+
+//      private Map<String,Integer> _uriBroadStrengths = new HashMap<>();
+//      private Map<String,Integer> _uriExactStrengths = new HashMap<>();
+//      private Map<String,Integer> _uriTotalStrengths = new HashMap<>();
+
       HIT_COUNT_TEXT = "";
       ontoStrengths.keySet().retainAll( allCodes );
       exactStrengths.keySet().retainAll( allCodes );

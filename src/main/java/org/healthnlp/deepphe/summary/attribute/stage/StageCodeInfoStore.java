@@ -1,16 +1,21 @@
 package org.healthnlp.deepphe.summary.attribute.stage;
 
 import org.healthnlp.deepphe.neo4j.constant.Neo4jConstants;
+import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
 
-public class StageCodeInfoStore {
+public class StageCodeInfoStore implements CodeInfoStore {
 
-   public String _bestStageCode;
+   public String _bestCode;
 
 
-   protected void init( final UriInfoStore uriInfoStore ) {
-      _bestStageCode = getBestStageCode( uriInfoStore._bestUri );
+   public void init( final UriInfoStore uriInfoStore ) {
+      _bestCode = getBestStageCode( uriInfoStore._bestUri );
+   }
+
+   public String getBestCode() {
+      return _bestCode;
    }
 
    static private String getBestStageCode( final String bestUri ) {

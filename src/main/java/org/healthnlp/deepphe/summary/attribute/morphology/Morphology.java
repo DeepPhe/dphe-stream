@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.summary.attribute.SpecificAttribute;
+import org.healthnlp.deepphe.summary.attribute.util.DebugHelper;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
 import java.io.*;
@@ -28,27 +29,23 @@ final public class Morphology implements SpecificAttribute {
    static public final Map<String,List<String>> REAL_CONFUSION = new HashMap<>();
    static public final Map<String,Integer> SYS_COUNTS = new HashMap<>();
    static public final Map<String,Integer> GOLD_COUNTS = new HashMap<>();
-   static private int HIT = 0;
-   static private int MISS = 0;
 
-   static private final Map<String,String> GOLD_MAP = parseGold();
-
-
-   static private Map<String,String> parseGold() {
-      final Map<String,String> map = new HashMap<>();
+   static private final Map<String,String> GOLD_HISTO = new HashMap<>();
+   static private final Map<String,String> GOLD_BEHAVE = new HashMap<>();
+   static {
       final String goldPath = "C:\\Spiffy\\data\\dphe_data\\kcr\\CombinedKcrGold.bsv";
       try ( BufferedReader reader = new BufferedReader( new FileReader( goldPath ) ) ){
          String line = reader.readLine();
          while ( line != null ) {
             final String[] splits = StringUtil.fastSplit( line, '|' );
-            if ( splits.length > 8 ) {
-               map.put( splits[ 0 ], splits[ 7 ] );
+            if ( splits.length > 10 ) {
+               GOLD_HISTO.put( splits[ 0 ], splits[ 7 ] );
+               GOLD_BEHAVE.put( splits[ 0 ], splits[ 9 ] );
             }
             line = reader.readLine();
          }
       } catch ( IOException ioE ) {
       }
-      return map;
    }
 
 
@@ -109,24 +106,32 @@ final public class Morphology implements SpecificAttribute {
                                              neoplasmStore._concepts,
                                              patientStore._concepts );
 
-      final String goldHisto = GOLD_MAP.getOrDefault( neoplasm.getPatientId(),"??" );
+      final String goldHistoCode = GOLD_HISTO.getOrDefault( neoplasm.getPatientId(), "" );
+      DebugHelper.AttributeDebugObject attributeDebugObject
+            = new DebugHelper.AttributeDebugObject( neoplasm.getPatientId(),
+                                                    _bestHistoCode,
+                                                    neoplasmStore._mainUriStore._bestUri,
+                                                    goldHistoCode );
+
+      final Collection<DebugHelper.UriDebugObject> uriDebugObjects
+            = neoplasmStore._mainUriStore.createUriDebugObjects();
+
+
+
       SYS_COUNTS.put( _bestHistoCode, SYS_COUNTS.getOrDefault( _bestHistoCode, 0 )+1 );
-      GOLD_COUNTS.put( goldHisto, GOLD_COUNTS.getOrDefault( goldHisto, 0 )+1 );
-      if ( _bestHistoCode.equals( goldHisto ) ) {
-         HIT++;
-      } else {
-         MISS++;
-         CONFUSION.computeIfAbsent( _bestHistoCode, c -> new ArrayList<>() ).add( goldHisto );
+      GOLD_COUNTS.put( goldHistoCode, GOLD_COUNTS.getOrDefault( goldHistoCode, 0 )+1 );
+      if ( !_bestHistoCode.equals( goldHistoCode ) ) {
+         CONFUSION.computeIfAbsent( _bestHistoCode, c -> new ArrayList<>() ).add( goldHistoCode );
          final List<String> allMorphCodes = neoplasmStore._mainMorphStore._sortedMorphCodes;
          String available = "false";
-         if ( allMorphCodes.stream().anyMatch( c -> goldHisto.equals( c.substring( 0,4 ) ) ) ) {
+         if ( allMorphCodes.stream().anyMatch( c -> goldHistoCode.equals( c.substring( 0,4 ) ) ) ) {
             available = "true";
-            REAL_CONFUSION.computeIfAbsent( _bestHistoCode, c -> new ArrayList<>() ).add( goldHisto );
+            REAL_CONFUSION.computeIfAbsent( _bestHistoCode, c -> new ArrayList<>() ).add( goldHistoCode );
          }
          try ( Writer writer = new FileWriter( "C:/Spiffy/output/morphs.txt", true ) ) {
             writer.write( "\n\n" + neoplasm.getPatientId() + " MORPH : " + _bestHistoCode
                           + " " + topographyCode + " " + neoplasm.getUri()
-                          + " " + goldHisto + " " + available + "\n" );
+                          + " " + goldHistoCode + " " + available + "\n" );
             writer.write( QUOTIENT_TEXT );
             writer.write( MorphCodeInfoStore.URI_ONTO_TEXT );
             writer.write( MorphCodeInfoStore.URI_EXCT_TEXT );

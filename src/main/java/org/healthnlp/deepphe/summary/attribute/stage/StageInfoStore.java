@@ -7,9 +7,8 @@ import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import java.util.Collection;
 import java.util.Collections;
 
-public class StageInfoStore extends AttributeInfoStore {
+public class StageInfoStore extends AttributeInfoStore<StageCodeInfoStore> {
 
-   public StageCodeInfoStore _codeInfoStore = new StageCodeInfoStore();
 
    public StageInfoStore( final ConceptAggregate neoplasm, final UriInfoVisitor uriInfoVisitor ) {
       this( Collections.singletonList( neoplasm ), uriInfoVisitor );
@@ -19,5 +18,7 @@ public class StageInfoStore extends AttributeInfoStore {
       super( neoplasms, uriInfoVisitor );
    }
 
-
+   protected StageCodeInfoStore createCodeInfoStore() {
+      return new StageCodeInfoStore();
+   }
 }

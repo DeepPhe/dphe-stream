@@ -1,7 +1,10 @@
 package org.healthnlp.deepphe.summary.attribute.infostore;
 
 
+import org.healthnlp.deepphe.summary.attribute.util.DebugHelper;
+
 import java.util.*;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addLargeIntFeatures;
@@ -99,6 +102,17 @@ public abstract class UriInfoStore {
                            urisWith2ndStrengthCount );
       addRatioFeature( features, urisWithMaxStrengthCount, _strengthUriMap.size() );
       addRatioFeature( features, urisWith2ndStrengthCount, _strengthUriMap.size() );
+   }
+
+
+
+   // For debugging
+   final private ToIntFunction<String> getStrength = u -> _uriStrengths.getOrDefault( u, 0 );
+   public Collection<DebugHelper.UriDebugObject> createUriDebugObjects() {
+      return _uris.stream()
+                  .sorted( Comparator.comparingInt( getStrength ).reversed() )
+                  .map( u ->  new DebugHelper.UriDebugObject( u, _uriStrengths.getOrDefault( u, 0 ) ) )
+                  .collect( Collectors.toList() );
    }
 
 }

@@ -7,9 +7,7 @@ import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import java.util.Collection;
 import java.util.Collections;
 
-public class GradeInfoStore extends AttributeInfoStore {
-
-   public GradeCodeInfoStore _codeInfoStore = new GradeCodeInfoStore();
+public class GradeInfoStore extends AttributeInfoStore<GradeCodeInfoStore> {
 
    public GradeInfoStore( final ConceptAggregate neoplasm, final UriInfoVisitor uriInfoVisitor ) {
       this( Collections.singletonList( neoplasm ), uriInfoVisitor );
@@ -19,5 +17,8 @@ public class GradeInfoStore extends AttributeInfoStore {
       super( neoplasms, uriInfoVisitor );
    }
 
+   protected GradeCodeInfoStore createCodeInfoStore() {
+      return new GradeCodeInfoStore();
+   }
 
 }

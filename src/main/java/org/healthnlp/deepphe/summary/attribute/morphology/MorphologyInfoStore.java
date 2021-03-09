@@ -9,7 +9,7 @@ import java.util.*;
 
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addLargeIntFeatures;
 
-public class MorphologyInfoStore extends AttributeInfoStore {
+public class MorphologyInfoStore extends AttributeInfoStore<MorphCodeInfoStore> {
 
    // Morphologies
    final public AllMorphCodeInfoStore _allMorphStore;
@@ -28,6 +28,19 @@ public class MorphologyInfoStore extends AttributeInfoStore {
       _allMorphStore = new AllMorphCodeInfoStore( neoplasms, _allUriStore, validTopoMorphs );
       _mainMorphStore = new MainMorphCodeInfoStore( neoplasms, _mainUriStore, _allMorphStore,
                                                                validTopoMorphs );
+   }
+
+   @Override
+   protected MorphCodeInfoStore createCodeInfoStore() {
+      return null;
+   }
+
+   @Override
+   public void initCodeInfoStore( final UriInfoStore uriInfoStore ) {
+   }
+
+   public String getBestCode() {
+      return _mainMorphStore.getBestCode();
    }
 
    protected void addMorphFeatures( final List<Integer> features ) {

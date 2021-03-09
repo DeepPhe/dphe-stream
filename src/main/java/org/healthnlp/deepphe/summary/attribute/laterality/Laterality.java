@@ -36,12 +36,9 @@ final public class Laterality implements SpecificAttribute {
 
       final LateralityInfoStore allConceptsStore = new LateralityInfoStore( allConcepts, uriInfoVisitor );
 
-      patientStore._codeInfoStore.init( patientStore._mainUriStore );
-      neoplasmStore._codeInfoStore.init( neoplasmStore._mainUriStore );
-      allConceptsStore._codeInfoStore.init( allConceptsStore._mainUriStore );
 
       _bestLaterality = neoplasmStore._mainUriStore._bestUri;
-      _bestLateralityCode = neoplasmStore._codeInfoStore._bestLateralityCode;
+      _bestLateralityCode = neoplasmStore.getBestCode();
 
       final List<Integer> features = createFeatures( neoplasm,
                                                      allConcepts,
@@ -55,7 +52,7 @@ final public class Laterality implements SpecificAttribute {
                                              allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( "laterality",
-                                                neoplasmStore._codeInfoStore._bestLateralityCode,
+                                                neoplasmStore.getBestCode(),
                                                 evidence,
                                                 features );
    }

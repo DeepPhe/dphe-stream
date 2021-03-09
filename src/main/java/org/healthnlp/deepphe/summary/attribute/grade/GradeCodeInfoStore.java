@@ -1,16 +1,21 @@
 package org.healthnlp.deepphe.summary.attribute.grade;
 
+import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
 
-public class GradeCodeInfoStore {
+public class GradeCodeInfoStore implements CodeInfoStore {
 
-   public String _bestGradeCode;
+   public String _bestCode;
 
 
-   protected void init( final UriInfoStore uriInfoStore ) {
-      _bestGradeCode = getBestGradeCode( uriInfoStore._bestUri );
+   public void init( final UriInfoStore uriInfoStore ) {
+      _bestCode = getBestGradeCode( uriInfoStore._bestUri );
+   }
+
+   public String getBestCode() {
+      return _bestCode;
    }
 
    static private String getBestGradeCode( final String bestUri ) {
@@ -29,12 +34,15 @@ public class GradeCodeInfoStore {
    static public int getUriGradeNumber( final String uri ) {
       if ( uri.startsWith( "Gleason_Score_" ) ) {
          if ( uri.endsWith( "6" ) ) {
+			 // well differentiated
             return 1;
          } else if ( uri.endsWith( "7" ) ) {
+			 // moderately differentiated
             return 2;
          } else if ( uri.endsWith( "8" )
                      || uri.endsWith( "9" )
                      || uri.endsWith( "10" ) ) {
+						 // poorly differentiated
             return 3;
          } else {
             return -1;
@@ -59,8 +67,8 @@ public class GradeCodeInfoStore {
          // todo add "anaplastic"
 //            LOGGER.info( "Have an Undifferentiated, adding its Grade Equivalent (4) to possible ICDO Grades." );
          return 4;
-      } else if ( uri.equals( "Grade_5" ) ) {
-         return 5;
+//      } else if ( uri.equals( "Grade_5" ) ) {
+//         return 5;
       }
       return -1;
    }

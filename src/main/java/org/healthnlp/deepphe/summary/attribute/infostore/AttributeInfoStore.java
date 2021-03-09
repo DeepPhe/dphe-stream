@@ -14,12 +14,14 @@ import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addLar
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addRatioFeature;
 import static org.healthnlp.deepphe.summary.attribute.util.UriMapUtil.*;
 
-public class AttributeInfoStore {
+abstract public class AttributeInfoStore<T extends CodeInfoStore> {
 
    // Uris
    final public AllUriInfoStore _allUriStore;
    final public MainUriInfoStore _mainUriStore;
    final public Map<String, Collection<String>> _uriRootsMap;
+   // Codes
+   final public T _codeInfoStore;
    // Concepts, Mentions
    final public Collection<ConceptAggregate> _concepts;
    final public Collection<Mention> _mentions;
@@ -53,6 +55,18 @@ public class AttributeInfoStore {
       _mentionBranchCountsSum = getBranchCountsSum( _mentionBranchCounts );
       _mentionAsBestBranchCountsSum = getBranchCountsSum( _mentionAsBestBranchCounts );
       _mentionWithBestBranchCountsSum = getBranchCountsSum( _mentionWithBestBranchCounts );
+      _codeInfoStore = createCodeInfoStore();
+      initCodeInfoStore( _mainUriStore );
+   }
+
+   abstract protected T createCodeInfoStore();
+
+   public void initCodeInfoStore( final UriInfoStore uriInfoStore ) {
+      _codeInfoStore.init( uriInfoStore );
+   }
+
+   public String getBestCode() {
+      return _codeInfoStore.getBestCode();
    }
 
    public void addGeneralFeatures( final List<Integer> features ) {

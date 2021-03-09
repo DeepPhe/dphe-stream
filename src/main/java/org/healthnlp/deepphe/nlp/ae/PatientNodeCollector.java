@@ -19,7 +19,7 @@ import org.healthnlp.deepphe.node.*;
  */
 @PipeBitInfo(
       name = "PatientNodeCollector",
-      description = "For dphe-stream.", role = PipeBitInfo.Role.ANNOTATOR
+      description = "For dphe-stream.", role = PipeBitInfo.Role.SPECIAL
 )
 final public class PatientNodeCollector extends JCasAnnotator_ImplBase {
 
@@ -36,6 +36,7 @@ final public class PatientNodeCollector extends JCasAnnotator_ImplBase {
       final String noteId = DocIdUtil.getDocumentID( jCas );
       final boolean storeNote = StorageChoices.getInstance().getStoreNote( noteId );
       if ( !storePatient && !storeNote ) {
+         LOGGER.warn( "Not storing " + patientId + " " + noteId + " " + storePatient + " " + storeNote );
          return;
       }
       final String message = "Caching"

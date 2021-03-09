@@ -38,7 +38,7 @@ public class DocNeo4jWriter extends JCasAnnotator_ImplBase {
     */
    @Override
    public void initialize( final UimaContext uimaContext ) throws ResourceInitializationException {
-      LOGGER.info( "Initializing Naaccr Neo4j Writer ..." );
+      LOGGER.info( "Initializing Neo4j Document Writer ..." );
       // The super.initialize call will automatically assign user-specified values for to ConfigurationParameters.
       super.initialize( uimaContext );
 
@@ -69,7 +69,7 @@ public class DocNeo4jWriter extends JCasAnnotator_ImplBase {
       final String patientId = SourceMetadataUtil.getPatientIdentifier( jCas );
 
       LOGGER.info( "Writing " + patientId + " " + DocIdUtil.getDocumentID( jCas )
-                   + " to Neo4j Server " + DriverConnection.getInstance().getUrl() );
+                   + " to Neo4j Database " + DriverConnection.getInstance().getUrl() );
       final Driver driver = DriverConnection.getInstance().getDriver();
       if ( driver == null ) {
          LOGGER.info( "Empty Driver.  Writing to Neo4j will be skipped." );

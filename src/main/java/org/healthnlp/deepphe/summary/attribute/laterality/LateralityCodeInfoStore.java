@@ -1,22 +1,27 @@
 package org.healthnlp.deepphe.summary.attribute.laterality;
 
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
 import java.util.*;
 
-public class LateralityCodeInfoStore {
+public class LateralityCodeInfoStore implements CodeInfoStore {
 
-   public String _bestLateralityCode;
+   public String _bestCode;
 
 
-   protected void init( final UriInfoStore uriInfoStore ) {
-      _bestLateralityCode = getBestLateralityCode( uriInfoStore._uriStrengths );
+   public void init( final UriInfoStore uriInfoStore ) {
+      _bestCode = getBestLateralityCode( uriInfoStore._uriStrengths );
+   }
+
+   public String getBestCode() {
+      return _bestCode;
    }
 
    static private String getBestLateralityCode( final Map<String,Integer> uriStrengths ) {
       if ( uriStrengths.isEmpty() ) {
-         return "";
+         return "0";
       }
       final Map<Integer,List<String>> hitCounts = new HashMap<>();
       for ( Map.Entry<String,Integer> uriStrength : uriStrengths.entrySet() ) {
@@ -38,7 +43,7 @@ public class LateralityCodeInfoStore {
          return "4";
       }
       // What else could it be?
-      return "";
+      return "0";
    }
 
 

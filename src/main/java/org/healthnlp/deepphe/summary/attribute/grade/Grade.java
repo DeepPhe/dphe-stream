@@ -37,12 +37,9 @@ final public class Grade implements SpecificAttribute {
 
       final GradeInfoStore allConceptsStore = new GradeInfoStore( allConcepts, uriInfoVisitor );
 
-      patientStore._codeInfoStore.init( patientStore._mainUriStore );
-      neoplasmStore._codeInfoStore.init( neoplasmStore._mainUriStore );
-      allConceptsStore._codeInfoStore.init( allConceptsStore._mainUriStore );
 
       _bestGrade = neoplasmStore._mainUriStore._bestUri;
-      _bestGradeCode = neoplasmStore._codeInfoStore._bestGradeCode;
+      _bestGradeCode = neoplasmStore.getBestCode();
 
       final List<Integer> features = createFeatures( neoplasm,
                                                      allConcepts,
@@ -56,7 +53,7 @@ final public class Grade implements SpecificAttribute {
                                              allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( "grade",
-                                                neoplasmStore._codeInfoStore._bestGradeCode,
+                                                neoplasmStore.getBestCode(),
                                                 evidence,
                                                 features );
    }

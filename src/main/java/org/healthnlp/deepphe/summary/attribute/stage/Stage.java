@@ -37,12 +37,9 @@ final public class Stage implements SpecificAttribute {
 
       final StageInfoStore allConceptsStore = new StageInfoStore( allConcepts, uriInfoVisitor );
 
-      patientStore._codeInfoStore.init( patientStore._mainUriStore );
-      neoplasmStore._codeInfoStore.init( neoplasmStore._mainUriStore );
-      allConceptsStore._codeInfoStore.init( allConceptsStore._mainUriStore );
 
       _bestStage = neoplasmStore._mainUriStore._bestUri;
-      _bestStageCode = neoplasmStore._codeInfoStore._bestStageCode;
+      _bestStageCode = neoplasmStore.getBestCode();
 
       final List<Integer> features = createFeatures( neoplasm,
                                                      allConcepts,
@@ -56,7 +53,7 @@ final public class Stage implements SpecificAttribute {
                                              allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( "stage",
-                                                neoplasmStore._codeInfoStore._bestStageCode,
+                                                neoplasmStore.getBestCode(),
                                                 evidence,
                                                 features );
    }

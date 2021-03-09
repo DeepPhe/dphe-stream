@@ -7,9 +7,7 @@ import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import java.util.Collection;
 import java.util.Collections;
 
-public class LateralityInfoStore extends AttributeInfoStore {
-
-   public LateralityCodeInfoStore _codeInfoStore = new LateralityCodeInfoStore();
+public class LateralityInfoStore extends AttributeInfoStore<LateralityCodeInfoStore> {
 
    public LateralityInfoStore( final ConceptAggregate neoplasm, final UriInfoVisitor uriInfoVisitor ) {
       this( Collections.singletonList( neoplasm ), uriInfoVisitor );
@@ -19,5 +17,8 @@ public class LateralityInfoStore extends AttributeInfoStore {
       super( neoplasms, uriInfoVisitor );
    }
 
+   protected LateralityCodeInfoStore createCodeInfoStore() {
+      return new LateralityCodeInfoStore();
+   }
 
 }
