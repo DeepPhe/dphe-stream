@@ -17,14 +17,15 @@ public interface SpecificAttribute {
 
    NeoplasmAttribute toNeoplasmAttribute();
 
-   static NeoplasmAttribute createAttribute( final String name, final String value ) {
-      return createAttribute( name, value, Collections.emptyMap(), Collections.emptyList() );
+   static NeoplasmAttribute createAttribute( final String name, final String value, final String uri ) {
+      return createAttribute( name, value, uri, Collections.emptyMap(), Collections.emptyList() );
    }
 
    static NeoplasmAttribute createAttribute( final String name, final String value,
+                                             final String uri,
                                              final Map<EvidenceLevel, Collection<Mention>> evidence,
                                              final List<Integer> features ) {
-      return createAttributeWithFeatures( name, value,
+      return createAttributeWithFeatures( name, value, uri,
                                           new ArrayList<>( evidence.getOrDefault( EvidenceLevel.DIRECT_EVIDENCE,
                                                                                   Collections.emptyList() ) ),
                                           new ArrayList<>( evidence.getOrDefault( EvidenceLevel.INDIRECT_EVIDENCE,
@@ -35,28 +36,34 @@ public interface SpecificAttribute {
    }
 
    static NeoplasmAttribute createAttribute( final String name, final String value,
+                                             final String uri,
                                              final List<Mention> directEvidence,
                                              final List<Mention> indirectEvidence,
                                              final List<Mention> notEvidence,
                                              final List<Integer> features ) {
-      return createAttributeWithFeatures( name, value, directEvidence, indirectEvidence, notEvidence, features );
+      return createAttributeWithFeatures( name, value, uri, directEvidence, indirectEvidence, notEvidence, features );
    }
 
       static NeoplasmAttribute createAttributeWithFeatures( final String name, final String value,
-                                             final List<Mention> directEvidence,
+                                                            final String uri,
+                                                            final List<Mention> directEvidence,
                                              final List<Mention> indirectEvidence,
                                              final List<Integer> features  ) {
-      return createAttributeWithFeatures( name, value, directEvidence, indirectEvidence, indirectEvidence, features );
+      return createAttributeWithFeatures( name, value, uri, directEvidence, indirectEvidence, indirectEvidence,
+                                          features );
    }
 
    static NeoplasmAttribute createAttributeWithFeatures( final String name, final String value,
-                                             final List<Mention> directEvidence,
+                                                         final String uri,
+                                                         final List<Mention> directEvidence,
                                              final List<Mention> indirectEvidence,
                                              final List<Mention> notEvidence,
                                              final List<Integer> features ) {
       final NeoplasmAttribute attribute = new NeoplasmAttribute();
       attribute.setName( name );
       attribute.setValue( value );
+      attribute.setClassUri( uri );
+      attribute.setId( uri + "_" + System.currentTimeMillis() );
       attribute.setDirectEvidence( directEvidence );
       attribute.setIndirectEvidence( indirectEvidence );
       attribute.setNotEvidence( notEvidence );

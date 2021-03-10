@@ -54,6 +54,7 @@ final public class Stage implements SpecificAttribute {
 
       return SpecificAttribute.createAttribute( "stage",
                                                 neoplasmStore.getBestCode(),
+                                                neoplasmStore._mainUriStore._bestUri,
                                                 evidence,
                                                 features );
    }

@@ -109,6 +109,7 @@ public class Topography implements SpecificAttribute {
       minorFeatures.addAll( createMinorFeatures( _topographyCodes ) );
       return SpecificAttribute.createAttribute( "topography_minor",
                                                 getBestMinorTopoCode(),
+                                                _bestUri,
                                                 _majorTopography.getDirectEvidence(),
                                                 _majorTopography.getIndirectEvidence(),
                                                 _majorTopography.getNotEvidence(),
@@ -198,6 +199,7 @@ public class Topography implements SpecificAttribute {
 
       return SpecificAttribute.createAttribute( "topography_major",
                                                 _bestMajorTopoCode,
+                                                _bestUri,
                                                 directEvidence,
                                                 new ArrayList<>( evidence.getOrDefault( INDIRECT_EVIDENCE,
                                                                                         Collections.emptyList() ) ),

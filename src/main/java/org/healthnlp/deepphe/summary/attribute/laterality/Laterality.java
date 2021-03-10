@@ -53,6 +53,7 @@ final public class Laterality implements SpecificAttribute {
 
       return SpecificAttribute.createAttribute( "laterality",
                                                 neoplasmStore.getBestCode(),
+                                                neoplasmStore._mainUriStore._bestUri,
                                                 evidence,
                                                 features );
    }

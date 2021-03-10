@@ -144,6 +144,7 @@ final public class Morphology implements SpecificAttribute {
    }
 
    return SpecificAttribute.createAttribute( "histology",
+                                                neoplasmStore._mainUriStore._bestUri,
                                                 neoplasmStore._mainMorphStore._bestHistoCode,
                                                    evidence,
                                                    features );
@@ -154,6 +155,7 @@ final public class Morphology implements SpecificAttribute {
       behaviorFeatures.addAll( createBehaviorFeatures() );
       return SpecificAttribute.createAttribute( "behavior",
                                                 getBestBehaveCode(),
+                                                "Behavior",
                                                 _histology.getDirectEvidence(),
                                                 _histology.getIndirectEvidence(),
                                                 _histology.getNotEvidence(),

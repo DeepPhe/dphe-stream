@@ -65,7 +65,8 @@ final public class NeoplasmSummaryCreator {
                          .collect( Collectors.toList() );
 
       final NeoplasmSummary summary = new NeoplasmSummary();
-      summary.setId( neoplasm.getUri() );
+      summary.setId( neoplasm.getUri() + "_" + System.currentTimeMillis() );
+      summary.setClassUri( neoplasm.getUri() );
       final List<NeoplasmAttribute> attributes = new ArrayList<>();
 
       final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );

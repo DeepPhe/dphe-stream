@@ -54,6 +54,7 @@ final public class Grade implements SpecificAttribute {
 
       return SpecificAttribute.createAttribute( "grade",
                                                 neoplasmStore.getBestCode(),
+                                                neoplasmStore._mainUriStore._bestUri,
                                                 evidence,
                                                 features );
    }
