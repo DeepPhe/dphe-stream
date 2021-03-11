@@ -33,14 +33,17 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
                                             .max( Comparator.comparingInt( Map.Entry::getKey ) )
                                             .map( Map.Entry::getValue )
                                             .orElse( Collections.emptyList() );
+      if ( topUris.contains( UriConstants.BILATERAL ) ) {
+         return "4";
+      }
       if ( topUris.contains( UriConstants.RIGHT ) ) {
+         if ( topUris.contains( UriConstants.LEFT ) ) {
+            return "4";
+         }
          return "1";
       }
       if ( topUris.contains( UriConstants.LEFT ) ) {
          return "2";
-      }
-      if ( topUris.contains( UriConstants.BILATERAL ) ) {
-         return "4";
       }
       // What else could it be?
       return "0";
