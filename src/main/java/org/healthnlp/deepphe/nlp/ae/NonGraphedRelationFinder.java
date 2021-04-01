@@ -67,10 +67,14 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
       super.initialize( context );
       if ( BREAST_URIS == null ) {
          BREAST_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.BREAST );
-         BREAST_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Nipple") );
+//         BREAST_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Nipple") );
       }
       if ( QUADRANT_URIS == null ) {
          QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT );
+         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Nipple" );
+         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Areola" );
+         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Central_Portion_Of_The_Breast" );
+         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Subareolar_Region" );
       }
       if ( CLOCK_URIS == null ) {
          CLOCK_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.CLOCKFACE );
@@ -371,17 +375,18 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                = RelationUtil.createSourceTargetMap( unusedStatus, breastTumors, false );
          for ( Map.Entry<IdentifiedAnnotation, Collection<IdentifiedAnnotation>> entry : statusMap.entrySet() ) {
             final IdentifiedAnnotation status = entry.getKey();
-            final String uri = Neo4jOntologyConceptUtil.getUri( status );
+//            final String uri = Neo4jOntologyConceptUtil.getUri( status );
             for ( IdentifiedAnnotation tumor : entry.getValue() ) {
-               if ( uri.contains( UriConstants.ER_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
-                  RelationUtil.createRelation( jCas, tumor, status, HAS_ER_STATUS );
-               }
-               if ( uri.contains( UriConstants.PR_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
-                  RelationUtil.createRelation( jCas, tumor, status, HAS_PR_STATUS );
-               }
-               if ( uri.contains( UriConstants.HER2_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
-                  RelationUtil.createRelation( jCas, tumor, status, HAS_HER2_STATUS );
-               }
+//               if ( uri.contains( UriConstants.ER_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
+//                  RelationUtil.createRelation( jCas, tumor, status, HAS_ER_STATUS );
+//               }
+//               if ( uri.contains( UriConstants.PR_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
+//                  RelationUtil.createRelation( jCas, tumor, status, HAS_PR_STATUS );
+//               }
+//               if ( uri.contains( UriConstants.HER2_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
+//                  RelationUtil.createRelation( jCas, tumor, status, HAS_HER2_STATUS );
+//               }
+               RelationUtil.createRelation( jCas, tumor, status, has_Biomarker );
             }
             unusedStatus.remove( status );
          }
@@ -393,17 +398,18 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
             = RelationUtil.createSourceTargetMap( unusedStatus, allBreastTumors, false );
       for ( Map.Entry<IdentifiedAnnotation, Collection<IdentifiedAnnotation>> entry : allStatusMap.entrySet() ) {
          final IdentifiedAnnotation status = entry.getKey();
-         final String uri = Neo4jOntologyConceptUtil.getUri( status );
+//         final String uri = Neo4jOntologyConceptUtil.getUri( status );
          for ( IdentifiedAnnotation tumor : entry.getValue() ) {
-            if ( uri.contains( UriConstants.ER_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
-               RelationUtil.createRelation( jCas, tumor, status, HAS_ER_STATUS );
-            }
-            if ( uri.contains( UriConstants.PR_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
-               RelationUtil.createRelation( jCas, tumor, status, HAS_PR_STATUS );
-            }
-            if ( uri.contains( UriConstants.HER2_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
-               RelationUtil.createRelation( jCas, tumor, status, HAS_HER2_STATUS );
-            }
+//            if ( uri.contains( UriConstants.ER_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
+//               RelationUtil.createRelation( jCas, tumor, status, HAS_ER_STATUS );
+//            }
+//            if ( uri.contains( UriConstants.PR_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
+//               RelationUtil.createRelation( jCas, tumor, status, HAS_PR_STATUS );
+//            }
+//            if ( uri.contains( UriConstants.HER2_STATUS ) || uri.equals( UriConstants.TRIPLE_NEGATIVE ) ) {
+//               RelationUtil.createRelation( jCas, tumor, status, HAS_HER2_STATUS );
+//            }
+            RelationUtil.createRelation( jCas, tumor, status, has_Biomarker );
          }
       }
    }
@@ -551,6 +557,8 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                                           final Paragraph paragraph,
                                           final List<IdentifiedAnnotation> windowNeoplasmMasses,
                                           final List<IdentifiedAnnotation> allNeoplasmMasses ) {
+      Neo4jOntologyConceptUtil.getAnnotationsByUriBranch( jCas,"TNM_Stage" )
+                              .forEach( Annotation::removeFromIndexes );
       final Collection<IdentifiedAnnotation> tnms = TnmFinder.addTnms( jCas, paragraph );
       if ( tnms.isEmpty() || (windowNeoplasmMasses.isEmpty() && allNeoplasmMasses.isEmpty()) ) {
          return;

@@ -35,17 +35,29 @@ final public class GradeUriInfoVisitor implements UriInfoVisitor {
     */
    @Override
    public Map<String,Integer> getAttributeUriStrengths( final Collection<ConceptAggregate> neoplasms ) {
-      final Collection<ConceptAggregate> concepts = getAttributeConcepts( neoplasms );
-      return concepts.stream()
+      final Collection<ConceptAggregate> attributes = getAttributeConcepts( neoplasms );
+      final Map<String,Integer> uriStrengths = attributes.stream()
                      .map( ConceptAggregate::getAllUris )
                      .flatMap( Collection::stream )
                      .distinct()
                      .collect( Collectors.toMap( Function.identity(),
                                                  GradeUriInfoVisitor::getGradeStrength ) );
+      UriInfoVisitor.applySectionAttributeUriStrengths( attributes, uriStrengths );
+      UriInfoVisitor.applyHistoryAttributeUriStrengths( attributes, uriStrengths );
+      return uriStrengths;
    }
 
    static private int getGradeStrength( final String uri ) {
-      return Math.min( 0, Math.max( 100, GradeCodeInfoStore.getUriGradeNumber( uri )*20 ) );
+      if ( uri.startsWith( "Gleason_Score_" ) ) {
+         // 60 - 90, Gleason should be favored.
+         final int gleason = GradeCodeInfoStore.getUriGradeNumber( uri );
+         if ( gleason < 0 ) {
+            return 0;
+         }
+         return Math.max( 0, Math.min( 100, 50+(gleason*10) ) );
+      }
+      // Other grade types are not quite as favored as the more exact gleason score.
+      return Math.max( 0, Math.min( 100, GradeCodeInfoStore.getUriGradeNumber( uri )*10 ) );
    }
 
 }

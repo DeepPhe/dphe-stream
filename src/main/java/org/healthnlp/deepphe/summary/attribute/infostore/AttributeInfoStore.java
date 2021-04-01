@@ -3,18 +3,22 @@ package org.healthnlp.deepphe.summary.attribute.infostore;
 import org.healthnlp.deepphe.core.uri.UriUtil;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
+import org.healthnlp.deepphe.util.KeyValue;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.summary.attribute.SpecificAttribute.*;
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addLargeIntFeatures;
 import static org.healthnlp.deepphe.summary.attribute.util.AddFeatureUtil.addRatioFeature;
 import static org.healthnlp.deepphe.summary.attribute.util.UriMapUtil.*;
 
-abstract public class AttributeInfoStore<T extends CodeInfoStore> {
+public class AttributeInfoStore<V extends UriInfoVisitor, T extends CodeInfoStore> {
 
    // Uris
    final public AllUriInfoStore _allUriStore;
@@ -35,15 +39,44 @@ abstract public class AttributeInfoStore<T extends CodeInfoStore> {
    final public int _mentionAsBestBranchCountsSum;
    final public int _mentionWithBestBranchCountsSum;
 
-   public AttributeInfoStore( final ConceptAggregate neoplasm, final UriInfoVisitor uriInfoVisitor ) {
-      this( Collections.singletonList( neoplasm ), uriInfoVisitor );
+   public AttributeInfoStore( final ConceptAggregate neoplasm,
+                              final Supplier<V> uriVisitorCreator,
+                              final Supplier<T> codeInfoStoreCreator,
+                              final Map<String,String> dependencies ) {
+      this( Collections.singletonList( neoplasm ), uriVisitorCreator, codeInfoStoreCreator, dependencies );
    }
 
-   public AttributeInfoStore( final Collection<ConceptAggregate> neoplasms, final UriInfoVisitor uriInfoVisitor ) {
-      _allUriStore = new AllUriInfoStore( neoplasms, uriInfoVisitor );
-      _mainUriStore = new MainUriInfoStore( neoplasms, _allUriStore, uriInfoVisitor );
+   static private String toConceptText( final ConceptAggregate concept ) {
+      final StringBuilder sb = new StringBuilder();
+      sb.append( "  " ).append( concept.getUri() );
+      final Map<String,Double> uriQuotients
+            = concept.getUriQuotients()
+                     .stream()
+                     .collect( Collectors.toMap( KeyValue::getKey, KeyValue::getValue ) );
+      final Map<String,List<Mention>> uriMentionsMap = concept.getUriMentions();
+      for ( Map.Entry<String,List<Mention>> uriMentions : uriMentionsMap.entrySet() ) {
+         sb.append( "\n    " )
+           .append( uriMentions.getKey() )
+           .append( " = " )
+           .append( uriQuotients.get( uriMentions.getKey() ) )
+           .append( " : " );
+         for( Mention mention : uriMentions.getValue() ) {
+            sb.append( "[" ).append( concept.getCoveredText( mention ) ).append( "]" );
+         }
+      }
+      return sb.append( "\n" ).toString();
+   }
+
+   public AttributeInfoStore( final Collection<ConceptAggregate> neoplasms,
+                              final Supplier<V> uriVisitorCreator,
+                              final Supplier<T> codeInfoStoreCreator,
+                              final Map<String,String> dependencies ) {
+      NeoplasmSummaryCreator.DEBUG_SB.append( "  AllUriStore\n" );
+      _allUriStore = new AllUriInfoStore( neoplasms, uriVisitorCreator.get() );
+      NeoplasmSummaryCreator.DEBUG_SB.append( "  MainUriStore\n" );
+      _mainUriStore = new MainUriInfoStore( neoplasms, _allUriStore, uriVisitorCreator.get() );
       _uriRootsMap = UriUtil.mapUriRoots( _allUriStore._uris );
-      _concepts = uriInfoVisitor.getAttributeConcepts( neoplasms );
+      _concepts = uriVisitorCreator.get().getAttributeConcepts( neoplasms );
       _mentions = getMentions( _concepts );
       _uriMentions = mapUriMentions( _mentions );
 //         _uriMentionCounts = UriScoreUtil.mapUriMentionCounts( _mentions );
@@ -55,14 +88,25 @@ abstract public class AttributeInfoStore<T extends CodeInfoStore> {
       _mentionBranchCountsSum = getBranchCountsSum( _mentionBranchCounts );
       _mentionAsBestBranchCountsSum = getBranchCountsSum( _mentionAsBestBranchCounts );
       _mentionWithBestBranchCountsSum = getBranchCountsSum( _mentionWithBestBranchCounts );
-      _codeInfoStore = createCodeInfoStore();
-      initCodeInfoStore( _mainUriStore );
+      _codeInfoStore = codeInfoStoreCreator.get();
+      initCodeInfoStore( dependencies );
+
+      _concepts.stream()
+               .map( AttributeInfoStore::toConceptText )
+               .forEach( NeoplasmSummaryCreator.DEBUG_SB::append );
    }
 
-   abstract protected T createCodeInfoStore();
+   public void initCodeInfoStore( final Map<String,String> dependencies ) {
+      initCodeInfoStore( _mainUriStore, dependencies );
+   }
 
-   public void initCodeInfoStore( final UriInfoStore uriInfoStore ) {
-      _codeInfoStore.init( uriInfoStore );
+   public void initCodeInfoStore( final UriInfoStore uriInfoStore,
+                                  final Map<String,String> dependencies ) {
+      _codeInfoStore.init( uriInfoStore, dependencies );
+   }
+
+   public String getBestUri() {
+      return _mainUriStore._bestUri;
    }
 
    public String getBestCode() {

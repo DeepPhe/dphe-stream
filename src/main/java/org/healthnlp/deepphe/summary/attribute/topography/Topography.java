@@ -9,7 +9,9 @@ import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.summary.attribute.SpecificAttribute;
+import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.healthnlp.deepphe.util.KeyValue;
 import org.healthnlp.deepphe.util.TopoMorphValidator;
 import org.healthnlp.deepphe.util.UriScoreUtil;
@@ -38,37 +40,37 @@ public class Topography implements SpecificAttribute {
    private Collection<String> _firstSiteAllUris;
    private Collection<String> _topographyCodes;
    final private NeoplasmAttribute _majorTopography;
-   final private NeoplasmAttribute _minorTopography;
+//   final private NeoplasmAttribute _minorTopography;
 
 
    public Topography( final ConceptAggregate neoplasm,
                       final Collection<ConceptAggregate> allConcepts ) {
       _majorTopography = createMajorTopoAttribute( neoplasm, allConcepts );
-      _minorTopography = createMinorTopoAttribute();
+//      _minorTopography = createMinorTopoAttribute();
    }
 
    public NeoplasmAttribute toNeoplasmAttribute() {
       return _majorTopography;
    }
 
-   public NeoplasmAttribute getMinorTopography() {
-      return _minorTopography;
-   }
+//   public NeoplasmAttribute getMinorTopography() {
+//      return _minorTopography;
+//   }
 
    public String getMajorSiteUri() {
       return _bestUri;
    }
 
-   public String getMinorSiteUri() {
-      String specificUri = "";
-      try {
-         // TODO try _firstSiteAllUris and see if there are better results
-         specificUri = UriUtil.getMostSpecificUri( _firstSiteMainUris );
-      } catch ( NullPointerException npE ) {
-         //
-      }
-      return specificUri;
-   }
+//   public String getMinorSiteUri() {
+//      String specificUri = "";
+//      try {
+//         // TODO try _firstSiteAllUris and see if there are better results
+//         specificUri = UriUtil.getMostSpecificUri( _firstSiteMainUris );
+//      } catch ( NullPointerException npE ) {
+//         //
+//      }
+//      return specificUri;
+//   }
 
    public Collection<String> getFirstSiteMainUris() {
       return _firstSiteMainUris;
@@ -104,72 +106,96 @@ public class Topography implements SpecificAttribute {
                             .collect( Collectors.joining( ";" ) );
    }
 
-   private NeoplasmAttribute createMinorTopoAttribute() {
-      final List<Integer> minorFeatures = new ArrayList<>( _majorTopography.getConfidenceFeatures() );
-      minorFeatures.addAll( createMinorFeatures( _topographyCodes ) );
-      return SpecificAttribute.createAttribute( "topography_minor",
-                                                getBestMinorTopoCode(),
-                                                _bestUri,
-                                                _majorTopography.getDirectEvidence(),
-                                                _majorTopography.getIndirectEvidence(),
-                                                _majorTopography.getNotEvidence(),
-                                                minorFeatures );
-   }
+//   private NeoplasmAttribute createMinorTopoAttribute() {
+//      final List<Integer> minorFeatures = new ArrayList<>( _majorTopography.getConfidenceFeatures() );
+//      minorFeatures.addAll( createMinorFeatures( _topographyCodes ) );
+//      return SpecificAttribute.createAttribute( "topography_minor",
+//                                                getBestMinorTopoCode(),
+//                                                _bestUri,
+//                                                _majorTopography.getDirectEvidence(),
+//                                                _majorTopography.getIndirectEvidence(),
+//                                                _majorTopography.getNotEvidence(),
+//                                                minorFeatures );
+//   }
 
-   public String getBestMinorTopoCode() {
-      return getMinorTopoCode( _topographyCodes );
+//   public String getBestMinorTopoCode() {
+//      return getMinorTopoCode( _topographyCodes );
+//   }
+//
+//   static private String getMinorTopoCode( final Collection<String> topographyCodes ) {
+//      if ( topographyCodes.isEmpty() ) {
+//         return "9";
+//      }
+//      final Function<String, String> getMinor = t -> {
+//         final int dot = t.indexOf( '.' );
+//         return dot > 0 ? t.substring( dot + 1 ) : "";
+//      };
+//      final Collection<String> allMinors = topographyCodes.stream()
+//                                                          .map( getMinor )
+//                                                          .filter( t -> !t.isEmpty() )
+//                                                          .distinct()
+//                                                          .sorted()
+//                                                          .collect( Collectors.toList() );
+//      if ( allMinors.size() > 1 ) {
+//         allMinors.remove( "9" );
+//      }
+//      String minors = String.join( ";", allMinors );
+//      if ( minors.isEmpty() ) {
+////         LOGGER.info( "No specific site codes, using 9." );
+//         return "9";
+//      }
+//      return minors;
+//   }
+//
+//   static private List<Integer> createMinorFeatures( final Collection<String> topographyCodes ) {
+//      final List<Integer> features = new ArrayList<>( 2 );
+//      final Function<String, String> getMinor = t -> {
+//         final int dot = t.indexOf( '.' );
+//         return dot > 0 ? t.substring( dot + 1 ) : "";
+//      };
+//      final Collection<String> allMinors = topographyCodes.stream()
+//                                                          .map( getMinor )
+//                                                          .filter( t -> !t.isEmpty() )
+//                                                          .distinct()
+//                                                          .sorted()
+//                                                          .collect( Collectors.toList() );
+//      if ( allMinors.size() > 1 ) {
+//         allMinors.remove( "9" );
+//      }
+//      final boolean default9 = allMinors.isEmpty();
+//      addCollectionFeatures( features, topographyCodes );
+//      addCollectionFeatures( features, allMinors );
+//      addBooleanFeatures( features, default9 );
+//      return features;
+//   }
+static private String toConceptText( final ConceptAggregate concept ) {
+   final StringBuilder sb = new StringBuilder();
+   sb.append( "  " ).append( concept.getUri() );
+   final Map<String,Double> uriQuotients
+         = concept.getUriQuotients()
+                  .stream()
+                  .collect( Collectors.toMap( KeyValue::getKey, KeyValue::getValue ) );
+   final Map<String,List<Mention>> uriMentionsMap = concept.getUriMentions();
+   for ( Map.Entry<String,List<Mention>> uriMentions : uriMentionsMap.entrySet() ) {
+      sb.append( "\n    " )
+        .append( uriMentions.getKey() )
+        .append( " = " )
+        .append( uriQuotients.get( uriMentions.getKey() ) )
+        .append( " : " );
+      for( Mention mention : uriMentions.getValue() ) {
+         sb.append( "[" ).append( concept.getCoveredText( mention ) ).append( "]" );
+      }
    }
-
-   static private String getMinorTopoCode( final Collection<String> topographyCodes ) {
-      if ( topographyCodes.isEmpty() ) {
-         return "9";
-      }
-      final Function<String, String> getMinor = t -> {
-         final int dot = t.indexOf( '.' );
-         return dot > 0 ? t.substring( dot + 1 ) : "";
-      };
-      final Collection<String> allMinors = topographyCodes.stream()
-                                                          .map( getMinor )
-                                                          .filter( t -> !t.isEmpty() )
-                                                          .distinct()
-                                                          .sorted()
-                                                          .collect( Collectors.toList() );
-      if ( allMinors.size() > 1 ) {
-         allMinors.remove( "9" );
-      }
-      String minors = String.join( ";", allMinors );
-      if ( minors.isEmpty() ) {
-//         LOGGER.info( "No specific site codes, using 9." );
-         return "9";
-      }
-      return minors;
-   }
-
-   static private List<Integer> createMinorFeatures( final Collection<String> topographyCodes ) {
-      final List<Integer> features = new ArrayList<>( 2 );
-      final Function<String, String> getMinor = t -> {
-         final int dot = t.indexOf( '.' );
-         return dot > 0 ? t.substring( dot + 1 ) : "";
-      };
-      final Collection<String> allMinors = topographyCodes.stream()
-                                                          .map( getMinor )
-                                                          .filter( t -> !t.isEmpty() )
-                                                          .distinct()
-                                                          .sorted()
-                                                          .collect( Collectors.toList() );
-      if ( allMinors.size() > 1 ) {
-         allMinors.remove( "9" );
-      }
-      final boolean default9 = allMinors.isEmpty();
-      addCollectionFeatures( features, topographyCodes );
-      addCollectionFeatures( features, allMinors );
-      addBooleanFeatures( features, default9 );
-      return features;
-   }
+   return sb.append( "\n" ).toString();
+}
 
    private NeoplasmAttribute createMajorTopoAttribute( final ConceptAggregate neoplasm,
                                                        final Collection<ConceptAggregate> allConcepts ) {
       final Collection<ConceptAggregate> firstSiteConcepts = getFirstSiteConcepts( neoplasm );
+      NeoplasmSummaryCreator.DEBUG_SB.append( "TopoMajor First Sites\n" );
+      firstSiteConcepts.stream()
+                       .map( Topography::toConceptText )
+                       .forEach( NeoplasmSummaryCreator.DEBUG_SB::append );
       _firstSiteMainUris = firstSiteConcepts.stream()
                                         .map( ConceptAggregate::getUri )
                                         .collect( Collectors.toSet() );
@@ -251,10 +277,10 @@ public class Topography implements SpecificAttribute {
 
       //1. Number of exact site class mentions. Normalized over total site class mentions.  Rounded to 0-10.
       final int exactSiteMentionCount = uriCountsMap.getOrDefault( _bestUri, 0 );
-      LOGGER.info( "1. " + _bestUri + "=" + exactSiteMentionCount + " "
-                   + allPatientSiteMentions.stream()
-                                           .map( Mention::getClassUri )
-                                           .collect( Collectors.joining( "," ) ) );
+//      LOGGER.info( "1. " + _bestUri + "=" + exactSiteMentionCount + " "
+//                   + allPatientSiteMentions.stream()
+//                                           .map( Mention::getClassUri )
+//                                           .collect( Collectors.joining( "," ) ) );
       features.add( getPrimaryToPatientMentions( exactSiteMentionCount, allPatientSiteMentions.size() ) );
 
       final Map<String, Integer> allSitesUriCountsMap = UriScoreUtil.mapUriMentionCounts( allPatientSiteMentions );
@@ -265,41 +291,41 @@ public class Topography implements SpecificAttribute {
                                                     .stream()
                                                     .mapToInt( i -> i )
                                                     .sum();
-      LOGGER.info( "2. " + _bestUri + "=" + uriSums.getOrDefault( _bestUri, 0 ) + " "
-                   + bestSitesUriSums.entrySet()
-                                     .stream()
-                                     .map( e -> e.getKey() + "=" + e.getValue() )
-                                     .collect( Collectors.joining( "," ) ) );
+//      LOGGER.info( "2. " + _bestUri + "=" + uriSums.getOrDefault( _bestUri, 0 ) + " "
+//                   + bestSitesUriSums.entrySet()
+//                                     .stream()
+//                                     .map( e -> e.getKey() + "=" + e.getValue() )
+//                                     .collect( Collectors.joining( "," ) ) );
       features.add( createFeature2( uriSums.getOrDefault( _bestUri, 0 ), totalSitesUriSums ) );
 
-      LOGGER.info( "3. " + _bestUri + "=" + classLevelMap.getOrDefault( _bestUri, 0 ) + " "
-                   + classLevelMap.entrySet()
-                                  .stream()
-                                  .map( e -> e.getKey() + "=" + e.getValue() )
-                                  .collect( Collectors.joining( "," ) ) );
+//      LOGGER.info( "3. " + _bestUri + "=" + classLevelMap.getOrDefault( _bestUri, 0 ) + " "
+//                   + classLevelMap.entrySet()
+//                                  .stream()
+//                                  .map( e -> e.getKey() + "=" + e.getValue() )
+//                                  .collect( Collectors.joining( "," ) ) );
       features.add( createFeature3( _bestUri, classLevelMap ) );
 
       final Map<String, Integer> uriRelationCounts = mapSiteUriCounts( neoplasm );
       final int bestUriRelationCount = uriRelationCounts.getOrDefault( _bestUri, 0 );
-      LOGGER.info( "4. " + _bestUri + "=" + bestUriRelationCount + " sum " + uriRelationCounts.values()
-                                                                                              .stream()
-                                                                                              .mapToInt( l -> l )
-                                                                                              .sum() + " "
-                   + uriRelationCounts.entrySet()
-                                      .stream()
-                                      .map( e -> e.getKey() + "=" + e.getValue() )
-                                      .collect( Collectors.joining( "," ) ) );
+//      LOGGER.info( "4. " + _bestUri + "=" + bestUriRelationCount + " sum " + uriRelationCounts.values()
+//                                                                                              .stream()
+//                                                                                              .mapToInt( l -> l )
+//                                                                                              .sum() + " "
+//                   + uriRelationCounts.entrySet()
+//                                      .stream()
+//                                      .map( e -> e.getKey() + "=" + e.getValue() )
+//                                      .collect( Collectors.joining( "," ) ) );
       features.add( createFeature4( bestUriRelationCount, uriRelationCounts ) );
 
-      LOGGER.info( "5. " + _bestUri + "=" + bestUriRelationCount + " max " + uriRelationCounts.values()
-                                                                                              .stream()
-                                                                                              .max( Integer::compareTo )
-                                                                                              .orElse(
-                                                                                                        Integer.MAX_VALUE ) + " "
-                   + uriRelationCounts.entrySet()
-                                      .stream()
-                                      .map( e -> e.getKey() + "=" + e.getValue() )
-                                      .collect( Collectors.joining( "," ) ) );
+//      LOGGER.info( "5. " + _bestUri + "=" + bestUriRelationCount + " max " + uriRelationCounts.values()
+//                                                                                              .stream()
+//                                                                                              .max( Integer::compareTo )
+//                                                                                              .orElse(
+//                                                                                                        Integer.MAX_VALUE ) + " "
+//                   + uriRelationCounts.entrySet()
+//                                      .stream()
+//                                      .map( e -> e.getKey() + "=" + e.getValue() )
+//                                      .collect( Collectors.joining( "," ) ) );
       features.add( createFeature5( bestUriRelationCount, uriRelationCounts ) );
 
       addIntFeature( features, bestUriRelationCount );
@@ -879,6 +905,10 @@ public class Topography implements SpecificAttribute {
          _topographyCodes = Collections.emptyList();
       }
       _bestMajorTopoCode = getMajorTopoCode( _topographyCodes );
+      if ( _bestMajorTopoCode.equals( "C60-C63" ) ) {
+         // Hard swap for now.
+         _bestMajorTopoCode = "C61";
+      }
 
       addCollectionFeatures( features, _topographyCodes );
 //      features.add( Math.min( 10, site._bestNeoplasmMentionBranchCount ) );
@@ -892,7 +922,7 @@ public class Topography implements SpecificAttribute {
 //      features.add( NeoplasmSummaryCreator.getBestHistology( morphs ).equals( "8000" ) ? 0 : 10 );
 //      features.add( Math.min( 10, (site._bestNeoplasmMentionBranchCount+1) * site._bestNeoplasmMentionBranchCount ) );
 
-      LOGGER.info( "Features: " + features.size() );
+//      LOGGER.info( "Features: " + features.size() );
       return features;
    }
 
@@ -1035,12 +1065,51 @@ public class Topography implements SpecificAttribute {
 
 
    static private Collection<ConceptAggregate> getFirstSiteConcepts( final ConceptAggregate neoplasm ) {
-      return getFirstRelatedConcepts( neoplasm,
+      final Collection<ConceptAggregate> firstConcepts = getFirstRelatedConcepts( neoplasm,
                                       DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
                                       DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE,
                                       DISEASE_HAS_METASTATIC_ANATOMIC_SITE,
                                       Disease_Has_Associated_Region,
                                       Disease_Has_Associated_Cavity );
+      if ( firstConcepts.size() <= 1 ) {
+         return firstConcepts;
+      }
+
+      //  Added 3-22-2021
+      final Collection<String> allUris = firstConcepts.stream()
+                                                   .map( ConceptAggregate::getAllUris )
+                                                   .flatMap( Collection::stream )
+                                                   .collect( Collectors.toSet() );
+      final Map<String,Collection<String>> allUriRoots = firstConcepts.stream()
+                                                                   .map( ConceptAggregate::getUriRootsMap )
+                                                                   .map( Map::entrySet )
+                                                                   .flatMap( Collection::stream )
+                                                                   .distinct()
+                                                                   .collect( Collectors.toMap( Map.Entry::getKey,
+                                                                                               Map.Entry::getValue ) );
+      final Collection<Mention> allMentions = firstConcepts.stream()
+                                                        .map( ConceptAggregate::getMentions )
+                                                        .flatMap( Collection::stream )
+                                                        .collect( Collectors.toSet() );
+      final List<KeyValue<String, Double>> uriQuotients = UriScoreUtil.mapUriQuotients( allUris,
+                                                                                        allUriRoots,
+                                                                                        allMentions );
+      final Map<String,Integer> uriStrengths = new HashMap<>();
+      for ( KeyValue<String,Double> quotients : uriQuotients ) {
+         final int previousStrength = uriStrengths.getOrDefault( quotients.getKey(), 0 );
+         final int strength = (int)Math.ceil( quotients.getValue() * 100 );
+         uriStrengths.put( quotients.getKey(), Math.max( previousStrength, strength ) );
+      }
+      UriInfoVisitor.applySectionAttributeUriStrengths( firstConcepts, uriStrengths );
+      UriInfoVisitor.applyHistoryAttributeUriStrengths( firstConcepts, uriStrengths );
+      final String topUri = uriStrengths.entrySet()
+                           .stream()
+                           .max( Comparator.comparingInt( Map.Entry::getValue ) )
+                           .map( Map.Entry::getKey )
+                                        .orElse( "" );
+      return firstConcepts.stream()
+                   .filter( c -> c.getAllUris().contains( topUri ) )
+                          .collect( Collectors.toSet() );
    }
 
 
@@ -1112,6 +1181,7 @@ public class Topography implements SpecificAttribute {
       return uris.stream()
                  .map( Neo4jOntologyConceptUtil::getIcdoTopoCode )
                  .filter( t -> !t.isEmpty() )
+                 .filter( t -> !t.contains( "-" ) )
                  .collect( Collectors.toSet() );
    }
 

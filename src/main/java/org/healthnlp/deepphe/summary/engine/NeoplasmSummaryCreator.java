@@ -6,12 +6,20 @@ import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
-import org.healthnlp.deepphe.summary.attribute.grade.Grade;
-import org.healthnlp.deepphe.summary.attribute.laterality.Laterality;
-import org.healthnlp.deepphe.summary.attribute.morphology.Morphology;
+import org.healthnlp.deepphe.summary.attribute.DefaultAttribute;
+import org.healthnlp.deepphe.summary.attribute.behavior.BehaviorCodeInfoStore;
+import org.healthnlp.deepphe.summary.attribute.behavior.BehaviorUriInfoVisitor;
+import org.healthnlp.deepphe.summary.attribute.grade.GradeCodeInfoStore;
+import org.healthnlp.deepphe.summary.attribute.grade.GradeUriInfoVisitor;
+import org.healthnlp.deepphe.summary.attribute.histology.Histology;
+import org.healthnlp.deepphe.summary.attribute.histology.HistologyCodeInfoStore;
+import org.healthnlp.deepphe.summary.attribute.histology.HistologyUriInfoVisitor;
+import org.healthnlp.deepphe.summary.attribute.laterality.LateralUriInfoVisitor;
+import org.healthnlp.deepphe.summary.attribute.laterality.LateralityCodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.topography.Topography;
+import org.healthnlp.deepphe.summary.attribute.topography.minor.TopoMinorCodeInfoStore;
+import org.healthnlp.deepphe.summary.attribute.topography.minor.TopoMinorUriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
-import org.healthnlp.deepphe.util.TopoMorphValidator;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
@@ -46,13 +54,18 @@ final public class NeoplasmSummaryCreator {
 
    static private final Logger LOGGER = Logger.getLogger( "NeoplasmSummaryCreator" );
 
+   static public final StringBuilder DEBUG_SB = new StringBuilder();
 
    private NeoplasmSummaryCreator() {}
 
-
+// TODO put output in dated folder in shared drive dphe_cr/output/
+//  also add scores to shared drive dphe_cr/output/ evaluations.xlsx
 
    static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm,
                                                         final Collection<ConceptAggregate> allConcepts ) {
+      DEBUG_SB.append( "=======================================================================\n" )
+              .append( neoplasm.getPatientId() )
+              .append( "\n" );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
       final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
@@ -70,8 +83,10 @@ final public class NeoplasmSummaryCreator {
       final List<NeoplasmAttribute> attributes = new ArrayList<>();
 
       final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );
+      final String lateralityCode = addLaterality( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
+      addTopoMinor( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode, lateralityCode );
       addMorphology( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
-      addLaterality( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
+      addBehavior( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
       addGrade( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
 
       summary.setPathologic_t( getT( neoplasm ) );
@@ -94,18 +109,36 @@ final public class NeoplasmSummaryCreator {
       final Topography topography = new Topography( neoplasm, allConcepts );
       final NeoplasmAttribute majorTopoAttr = topography.toNeoplasmAttribute();
       attributes.add( majorTopoAttr );
-      final NeoplasmAttribute minorTopoAttr = topography.getMinorTopography();
-      attributes.add( minorTopoAttr );
 
       summary.setSite_major( topography.getMajorSiteUri() );
-      summary.setSite_minor( topography.getMinorSiteUri() );
       summary.setTopography_major( topography.getBestMajorTopoCode() );
-      summary.setTopography_minor( topography.getBestMinorTopoCode() );
 
       // TODO as NeoplasmAttribute
       summary.setSite_related( getSiteRelated( neoplasm ) );
 
-      return majorTopoAttr.getValue() + minorTopoAttr.getValue();
+      return majorTopoAttr.getValue() + "3";
+   }
+
+   static private void addTopoMinor( final ConceptAggregate neoplasm,
+                                    final NeoplasmSummary summary,
+                                    final List<NeoplasmAttribute> attributes,
+                                    final Collection<ConceptAggregate> allConcepts,
+                                    final Collection<ConceptAggregate> patientNeoplasms,
+                                     final String topographyMajor,
+                                     final String lateralityCode ) {
+      final Map<String,String> dependencies = new HashMap<>( 1 );
+      dependencies.put( "topography_major", topographyMajor );
+      dependencies.put( "laterality", lateralityCode );
+      final DefaultAttribute<TopoMinorUriInfoVisitor, TopoMinorCodeInfoStore> topoMinor
+            = new DefaultAttribute<>( "topography_minor",
+                                      neoplasm,
+                                      allConcepts,
+                                      patientNeoplasms,
+                                      TopoMinorUriInfoVisitor::new,
+                                      TopoMinorCodeInfoStore::new,
+                                      dependencies );
+      attributes.add( topoMinor.toNeoplasmAttribute() );
+      summary.setTopography_minor( topoMinor.getBestCode() );
    }
 
    static private void addMorphology( final ConceptAggregate neoplasm,
@@ -114,16 +147,23 @@ final public class NeoplasmSummaryCreator {
                                         final Collection<ConceptAggregate> allConcepts,
                                       final Collection<ConceptAggregate> patientNeoplasms,
                                         final String topographyCode ) {
-      final Collection<String> validTopoMorphs = TopoMorphValidator.getInstance()
-                                                                   .getValidTopoMorphs( topographyCode );
-      final Morphology morphology = new Morphology( neoplasm, allConcepts, patientNeoplasms, validTopoMorphs, topographyCode );
-      final NeoplasmAttribute histologyAttr = morphology.toNeoplasmAttribute();
-      attributes.add( histologyAttr );
-      final NeoplasmAttribute behaviorAttr = morphology.getBehaviorAttribute();
-      attributes.add( behaviorAttr );
+      final DefaultAttribute<HistologyUriInfoVisitor, HistologyCodeInfoStore> histology
+            = new Histology( neoplasm,
+                             allConcepts,
+                             patientNeoplasms );
+      attributes.add( histology.toNeoplasmAttribute() );
+      summary.setHistology( histology.getBestCode() );
 
-      summary.setHistology( morphology.getBestHistoCode() );
-      summary.setBehavior( morphology.getBestBehaveCode() );
+//      final Collection<String> validTopoMorphs = TopoMorphValidator.getInstance()
+//                                                                   .getValidTopoMorphs( topographyCode );
+////      final Morphology morphology = new Morphology( neoplasm, allConcepts, patientNeoplasms, validTopoMorphs, topographyCode );
+//      final Morphology morphology = new Morphology( neoplasm, allConcepts, patientNeoplasms, validTopoMorphs );
+//      attributes.add( morphology.toNeoplasmAttribute() );
+////      final NeoplasmAttribute behaviorAttr = morphology.getBehaviorAttribute();
+////      attributes.add( behaviorAttr );
+//
+//      summary.setHistology( morphology.getBestHistoCode() );
+////      summary.setBehavior( morphology.getBestBehaveCode() );
    }
 
 
@@ -131,18 +171,44 @@ final public class NeoplasmSummaryCreator {
       return String.join( ";", getRelatedUris( conceptAggregate, HAS_QUADRANT, HAS_CLOCKFACE ) );
    }
 
+   static private void addBehavior( final ConceptAggregate neoplasm,
+                                      final NeoplasmSummary summary,
+                                      final List<NeoplasmAttribute> attributes,
+                                      final Collection<ConceptAggregate> allConcepts,
+                                      final Collection<ConceptAggregate> patientNeoplasms ) {
+      final DefaultAttribute<BehaviorUriInfoVisitor, BehaviorCodeInfoStore> behavior
+            = new DefaultAttribute<>( "behavior",
+                                      neoplasm,
+                                      allConcepts,
+                                      patientNeoplasms,
+                                      BehaviorUriInfoVisitor::new,
+                                      BehaviorCodeInfoStore::new,
+                                      Collections.emptyMap() );
+      attributes.add( behavior.toNeoplasmAttribute() );
+      summary.setBehavior( behavior.getBestCode() );
+   }
 
 
-   static private void addLaterality( final ConceptAggregate neoplasm,
+   static private String addLaterality( final ConceptAggregate neoplasm,
                                  final NeoplasmSummary summary,
                                  final List<NeoplasmAttribute> attributes,
                                  final Collection<ConceptAggregate> allConcepts,
-                                      final Collection<ConceptAggregate> patientNeoplasms ) {
-      final Laterality laterality = new Laterality( neoplasm, allConcepts, patientNeoplasms );
-      final NeoplasmAttribute lateralityAttribute = laterality.toNeoplasmAttribute();
-      attributes.add( lateralityAttribute );
-      summary.setLaterality( laterality.getBestLaterality() );
-      summary.setLaterality_code( laterality.getBestLateralityCode() );
+                                      final Collection<ConceptAggregate> patientNeoplasms,
+                                        final String topographyMajor ) {
+      final Map<String,String> dependencies = new HashMap<>( 1 );
+      dependencies.put( "topography_major", topographyMajor );
+      final DefaultAttribute<LateralUriInfoVisitor, LateralityCodeInfoStore> laterality
+            = new DefaultAttribute<>( "laterality",
+                                      neoplasm,
+                                      allConcepts,
+                                      patientNeoplasms,
+                                      LateralUriInfoVisitor::new,
+                                      LateralityCodeInfoStore::new,
+                                      dependencies );
+      attributes.add( laterality.toNeoplasmAttribute() );
+      summary.setLaterality( laterality.getBestUri() );
+      summary.setLaterality_code( laterality.getBestCode() );
+      return laterality.getBestCode();
    }
 
 
@@ -151,11 +217,16 @@ final public class NeoplasmSummaryCreator {
                                         final List<NeoplasmAttribute> attributes,
                                         final Collection<ConceptAggregate> allConcepts,
                                  final Collection<ConceptAggregate> patientNeoplasms ) {
-//      final Grade grade = new Grade( neoplasm, allConcepts );
-      final Grade grade = new Grade( neoplasm, allConcepts, patientNeoplasms );
-      final NeoplasmAttribute gradeAttribute = grade.toNeoplasmAttribute();
-      attributes.add( gradeAttribute );
-      summary.setGrade( grade.getBestGradeCode() );
+      final DefaultAttribute<GradeUriInfoVisitor, GradeCodeInfoStore> grade
+            = new DefaultAttribute<>( "grade",
+                                      neoplasm,
+                                      allConcepts,
+                                      patientNeoplasms,
+                                      GradeUriInfoVisitor::new,
+                                      GradeCodeInfoStore::new,
+                                      Collections.emptyMap() );
+      attributes.add( grade.toNeoplasmAttribute() );
+      summary.setGrade( grade.getBestCode() );
    }
 
 

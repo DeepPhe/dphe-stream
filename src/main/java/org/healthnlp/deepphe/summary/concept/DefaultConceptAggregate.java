@@ -30,6 +30,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
    private final Map<Mention, String> _noteIdMap;
    private final Date _date;
    private final String _uri;
+   private final List<KeyValue<String, Double>> _uriQuotients;
    private final double _uriScore;
 
    public DefaultConceptAggregate( final String patientId,
@@ -45,8 +46,9 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
          final String documentId = docMentions.getKey();
          docMentions.getValue().forEach( a -> addMention( a, documentId, _date ) );
       }
+      _uriQuotients = UriScoreUtil.mapUriQuotients( createUriList(), uriRootsMap, getMentions() );
       final KeyValue<String,Double> bestUriScore
-            = UriScoreUtil.getBestUriScore( createUriList(), uriRootsMap, getMentions() );
+            = UriScoreUtil.getBestUriScore( uriRootsMap, _uriQuotients );
       _uri = bestUriScore.getKey();
       _uriScore = bestUriScore.getValue();
    }
@@ -78,6 +80,11 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
    @Override
    public double getUriScore() {
       return _uriScore;
+   }
+
+   @Override
+   public List<KeyValue<String, Double>> getUriQuotients() {
+      return _uriQuotients;
    }
 
    /**

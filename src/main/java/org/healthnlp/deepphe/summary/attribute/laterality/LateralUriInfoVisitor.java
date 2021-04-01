@@ -16,9 +16,15 @@ final public class LateralUriInfoVisitor implements UriInfoVisitor {
          _lateralityConcepts = neoplasms.stream()
                                   .map( c -> c.getRelated( RelationConstants.HAS_LATERALITY ) )
                                   .flatMap( Collection::stream )
-                                  .collect( Collectors.toSet() );
+//                                        .filter( c -> !c.isNegated() )
+                                        .collect( Collectors.toSet() );
       }
       return _lateralityConcepts;
    }
+
+//   @Override
+//   public boolean applySectionStrengths() {
+//      return true;
+//   }
 
 }

@@ -3,6 +3,7 @@ package org.healthnlp.deepphe.summary.attribute;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,6 +60,12 @@ public interface SpecificAttribute {
                                              final List<Mention> indirectEvidence,
                                              final List<Mention> notEvidence,
                                              final List<Integer> features ) {
+      NeoplasmSummaryCreator.DEBUG_SB.append( name )
+                                     .append( "=" )
+                                     .append( value )
+                                     .append( ":" )
+                                     .append( uri )
+                                     .append( "\n" );
       final NeoplasmAttribute attribute = new NeoplasmAttribute();
       attribute.setName( name );
       attribute.setValue( value );
@@ -73,20 +80,20 @@ public interface SpecificAttribute {
 
 
 
-   static Map<EvidenceLevel, Collection<Mention>> mapEvidence( final Collection<ConceptAggregate> primaryConcepts,
-                                                               final Collection<ConceptAggregate> neoplasmConcepts,
-                                                               final Collection<ConceptAggregate> patientConcepts ) {
+   static Map<EvidenceLevel, Collection<Mention>> mapEvidence( final Collection<ConceptAggregate> neoplasmConcepts,
+                                                               final Collection<ConceptAggregate> patientConcepts,
+                                                               final Collection<ConceptAggregate> allConcepts ) {
       final Map<EvidenceLevel,Collection<Mention>> evidenceMap = new HashMap<>();
       Arrays.stream( EvidenceLevel.values() )
             .forEach( l -> evidenceMap.put( l, new HashSet<>() ) );
-      final Collection<Mention> primaryMentions = getAllMentions( primaryConcepts );
-      final Collection<Mention> secondaryMentions = getAllMentions( neoplasmConcepts );
-      final Collection<Mention> otherMentions = getAllMentions( patientConcepts  );
-      secondaryMentions.removeAll( primaryMentions );
-      otherMentions.removeAll( primaryMentions );
-      otherMentions.removeAll( secondaryMentions );
-      evidenceMap.put( EvidenceLevel.DIRECT_EVIDENCE, primaryMentions );
-      evidenceMap.put( EvidenceLevel.INDIRECT_EVIDENCE, secondaryMentions );
+      final Collection<Mention> neoplasmMentions = getAllMentions( neoplasmConcepts );
+      final Collection<Mention> patientMentions = getAllMentions( patientConcepts );
+      final Collection<Mention> otherMentions = getAllMentions( allConcepts  );
+      patientMentions.removeAll( neoplasmMentions );
+      otherMentions.removeAll( neoplasmMentions );
+      otherMentions.removeAll( patientMentions );
+      evidenceMap.put( EvidenceLevel.DIRECT_EVIDENCE, neoplasmMentions );
+      evidenceMap.put( EvidenceLevel.INDIRECT_EVIDENCE, patientMentions );
       evidenceMap.put( EvidenceLevel.NOT_EVIDENCE, otherMentions );
       return evidenceMap;
    }

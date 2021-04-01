@@ -11,7 +11,7 @@ public class MainUriInfoStore extends UriInfoStore {
    public MainUriInfoStore( final Collection<ConceptAggregate> neoplasms,
                             final AllUriInfoStore allUriInfoStore,
                             final UriInfoVisitor uriInfoVisitor ) {
-      super( uriInfoVisitor.getAttributeMainUris( neoplasms ) );
+      super( uriInfoVisitor.getMainAttributeUris( neoplasms ) );
       setUriStrengths( uriInfoVisitor.getAttributeUriStrengths( neoplasms ) );
       final Map<String, Integer> classLevelMap = new HashMap<>( allUriInfoStore._classLevelMap );
       classLevelMap.keySet()

@@ -11,8 +11,12 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
    public String _bestCode;
 
 
-   public void init( final UriInfoStore uriInfoStore ) {
-      _bestCode = getBestLateralityCode( uriInfoStore._uriStrengths );
+   public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
+      if ( dependencies.getOrDefault( "topography_major", "" ).startsWith( "C61" ) ) {
+         _bestCode = "";
+      } else {
+         _bestCode = getBestLateralityCode( uriInfoStore._uriStrengths );
+      }
    }
 
    public String getBestCode() {
@@ -21,33 +25,49 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
 
    static private String getBestLateralityCode( final Map<String,Integer> uriStrengths ) {
       if ( uriStrengths.isEmpty() ) {
-         return "0";
+         return "";
       }
       final Map<Integer,List<String>> hitCounts = new HashMap<>();
-      for ( Map.Entry<String,Integer> uriStrength : uriStrengths.entrySet() ) {
-         hitCounts.computeIfAbsent( uriStrength.getValue(), u -> new ArrayList<>() )
-                  .add( uriStrength.getKey() );
+      uriStrengths.forEach( (k,v) -> hitCounts.computeIfAbsent( v, l -> new ArrayList<>() )
+                                              .add( k ) );
+      return hitCounts.keySet()
+               .stream()
+               .sorted( Comparator.comparingInt( Integer::intValue )
+                                  .reversed() )
+               .map( hitCounts::get )
+               .map( LateralityCodeInfoStore::getBestLateralityCode )
+               .filter( n -> !n.isEmpty() )
+               .findFirst()
+                      .orElse( "" );
+   }
+
+   static public String getBestLateralityCode( final Collection<String> uris ) {
+      if ( uris.isEmpty() ) {
+         return "";
       }
-      final List<String> topUris = hitCounts.entrySet()
-                                            .stream()
-                                            .max( Comparator.comparingInt( Map.Entry::getKey ) )
-                                            .map( Map.Entry::getValue )
-                                            .orElse( Collections.emptyList() );
-      if ( topUris.contains( UriConstants.BILATERAL ) ) {
+      if ( uris.contains( UriConstants.BILATERAL ) ) {
          return "4";
       }
-      if ( topUris.contains( UriConstants.RIGHT ) ) {
-         if ( topUris.contains( UriConstants.LEFT ) ) {
+      if ( uris.contains( UriConstants.RIGHT ) ) {
+         if ( uris.contains( UriConstants.LEFT ) ) {
             return "4";
          }
          return "1";
       }
-      if ( topUris.contains( UriConstants.LEFT ) ) {
+      if ( uris.contains( UriConstants.LEFT ) ) {
          return "2";
       }
+      for ( String uri : uris ) {
+         if ( uri.contains( "Left" ) ) {
+            return "2";
+         } else if ( uri.contains( "Right" ) ) {
+            return "1";
+         }
+      }
       // What else could it be?
-      return "0";
+      return "";
    }
+
 
 
 }

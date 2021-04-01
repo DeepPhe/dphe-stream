@@ -10,7 +10,6 @@ import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.util.KeyValue;
-import org.healthnlp.deepphe.util.UriScoreUtil;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
@@ -63,6 +62,12 @@ public interface ConceptAggregate {
     * @return a score used to find the "best" uri. 0-1, can be used for confidence.
     */
    double getUriScore();
+
+   /**
+    *
+    * @return the Uris and how they score against each other.
+    */
+   List<KeyValue<String, Double>> getUriQuotients();
 
    /**
     * @return all represented Identified Annotations
@@ -482,10 +487,7 @@ public interface ConceptAggregate {
 //        .append( getPreferredText() ).append( "\n" )
         .append( getUri() ).append( "  " )
         .append( getId() ).append( " :\n" );
-      final List<KeyValue<String, Double>> uriQuotients = UriScoreUtil.mapUriQuotients( getAllUris(),
-                                                                                        getUriRootsMap(),
-                                                                                        getMentions() );
-      uriQuotients.stream()
+      getUriQuotients().stream()
                   .map( kv -> " " + kv.getKey() + "=" + kv.getValue() + " "  )
                   .forEach( sb::append );
       sb.append( "\n" );
@@ -563,7 +565,10 @@ public interface ConceptAggregate {
       public double getUriScore() {
          return 0.0;
       }
-
+      @Override
+      public List<KeyValue<String, Double>> getUriQuotients() {
+         return Collections.emptyList();
+      }
       @Override
       public Map<Mention, String> getNoteIdMap() {
          return Collections.emptyMap();

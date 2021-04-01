@@ -4,13 +4,15 @@ import org.healthnlp.deepphe.neo4j.constant.Neo4jConstants;
 import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
+import java.util.Map;
+
 
 public class StageCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 
 
-   public void init( final UriInfoStore uriInfoStore ) {
+   public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
       _bestCode = getBestStageCode( uriInfoStore._bestUri );
    }
 

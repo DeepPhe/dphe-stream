@@ -6,10 +6,10 @@ import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.ctakes.typesystem.type.textspan.Segment;
 import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.nlp.uri.UriAnnotationFactory;
 
@@ -56,11 +56,13 @@ final public class GleasonFinder extends JCasAnnotator_ImplBase {
 
 
    static private final class SimpleGrade {
+      private final int _matchBegin;
       private final int _begin;
       private final int _end;
       private final String _uri;
 
-      private SimpleGrade( final int begin, final int end, final String uri ) {
+      private SimpleGrade( final int matchBegin, final int begin, final int end, final String uri ) {
+         _matchBegin = matchBegin;
          _begin = begin;
          _end = end;
          _uri = uri;
@@ -86,12 +88,18 @@ final public class GleasonFinder extends JCasAnnotator_ImplBase {
 
    }
 
-   static public List<IdentifiedAnnotation> findGleasonGrades( final JCas jcas, final AnnotationFS lookupWindow ) {
-      final String windowText = lookupWindow.getCoveredText();
-      final List<SimpleGrade> grades = getGleasonGrades( windowText );
+   static public List<IdentifiedAnnotation> findGleasonGrades( final JCas jcas, final Annotation lookupWindow ) {
+      String lookupText = lookupWindow.getCoveredText();
+      final int grouping = lookupText.indexOf( "Prognostic Grade Group" );
+      if ( grouping >= 0 ) {
+         lookupText = lookupText.substring( 0, grouping );
+      }
+      final List<SimpleGrade> grades = getGleasonGrades( lookupText );
       if ( grades.isEmpty() ) {
          return Collections.emptyList();
       }
+      final Collection<IdentifiedAnnotation> plainGrades
+            = Neo4jOntologyConceptUtil.getAnnotationsByUriBranch( jcas, lookupWindow, "CTCAE_Grade_Finding" );
       final int windowStartOffset = lookupWindow.getBegin();
       final List<IdentifiedAnnotation> annotations = new ArrayList<>( grades.size() );
       for ( SimpleGrade grade : grades ) {
@@ -99,6 +107,10 @@ final public class GleasonFinder extends JCasAnnotator_ImplBase {
                UriAnnotationFactory.createIdentifiedAnnotations( jcas,
                      windowStartOffset + grade._begin,
                      windowStartOffset + grade._end, grade._uri, SemanticGroup.FINDING, "T184" ) );
+         plainGrades.stream()
+                     .filter( a -> a.getBegin() >= windowStartOffset + grade._matchBegin )
+                     .filter( a -> a.getEnd() <= windowStartOffset + grade._end )
+                     .forEach( IdentifiedAnnotation::removeFromIndexes );
       }
       return annotations;
    }
@@ -121,7 +133,7 @@ final public class GleasonFinder extends JCasAnnotator_ImplBase {
          final String gradeText = fullMatcher.group( "GRADE" );
          final int gradeStart = fullMatcher.start( "GRADE" );
          final int gradeEnd = fullMatcher.end( "GRADE" );
-         grades.add( new SimpleGrade( gradeStart, fullMatcher.end(), getGradeUri( gradeText ) ) );
+         grades.add( new SimpleGrade( fullMatcher.start(), gradeStart, fullMatcher.end(), getGradeUri( gradeText ) ) );
       }
       return grades;
    }

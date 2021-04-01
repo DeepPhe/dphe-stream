@@ -4,13 +4,15 @@ import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
+import java.util.Map;
+
 
 public class GradeCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 
 
-   public void init( final UriInfoStore uriInfoStore ) {
+   public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
       _bestCode = getBestGradeCode( uriInfoStore._bestUri );
    }
 
@@ -28,7 +30,11 @@ public class GradeCodeInfoStore implements CodeInfoStore {
 
 
    static public int getGradeNumber( final ConceptAggregate grade ) {
-      return getUriGradeNumber( grade.getUri() );
+      return grade.getAllUris()
+                  .stream()
+                  .mapToInt( GradeCodeInfoStore::getUriGradeNumber )
+                  .max()
+                  .orElse( -1 );
    }
 
    static public int getUriGradeNumber( final String uri ) {
@@ -63,9 +69,8 @@ public class GradeCodeInfoStore implements CodeInfoStore {
                   || uri.equals( "Poorly_Differentiated" ) ) {
          return 3;
       } else if ( uri.equals( "Grade_4" )
-                  || uri.equals( "Undifferentiated" ) ) {
-         // todo add "anaplastic"
-//            LOGGER.info( "Have an Undifferentiated, adding its Grade Equivalent (4) to possible ICDO Grades." );
+                  || uri.equals( "Undifferentiated" )
+                  || uri.equals( "Anaplastic" )) {
          return 4;
 //      } else if ( uri.equals( "Grade_5" ) ) {
 //         return 5;

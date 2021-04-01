@@ -1,10 +1,13 @@
 package org.healthnlp.deepphe;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.neo4j.node.PatientSummary;
 import org.healthnlp.deepphe.nlp.pipeline.DmsRunner;
-import org.healthnlp.deepphe.summary.attribute.morphology.Morphology;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.healthnlp.deepphe.util.eval.FeatureFilesAppender;
 import org.healthnlp.deepphe.util.eval.ForEvalLineCreator;
 
@@ -15,11 +18,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Run multiple docs and write output for scoring with the eval tool and output for features.
@@ -39,6 +39,7 @@ final public class EvalSummarizer {
                          "grade" );
    static private final List<String> EVAL_ATTRIBUTE_NAMES
          = Arrays.asList( "*record_id",
+                          "-Summary_ID",
                           "topography_major",
                           "topography_minor",
                           "histology",
@@ -69,6 +70,11 @@ final public class EvalSummarizer {
       LOGGER.info( "Reading docs in " + args[ 0 ] + " writing Output for Eval to " + args[ 1 ] );
       final File evalFile = new File( args[ 1 ] );
       final File featuresDir = new File( evalFile.getParentFile(), "features" );
+      final File jsonDir = new File( evalFile.getParentFile(), "json" );
+      final File debugDir = evalFile.getParentFile();
+      featuresDir.mkdirs();
+      jsonDir.mkdirs();
+//      debugDir.mkdirs();
       try {
          FeatureFilesAppender.initFeatureFiles( featuresDir, ATTRIBUTE_NAMES );
       } catch ( IOException ioE ) {
@@ -82,40 +88,47 @@ final public class EvalSummarizer {
          }
          evalWriter.write( "\n" );
          evalWriter.flush();
-         processDir( new File( args[ 0 ] ), evalWriter, featuresDir );
+         processDir( new File( args[ 0 ] ), jsonDir, evalWriter, featuresDir );
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
       }
       DmsRunner.getInstance()
                .close();
 
-      final Map<String,Map<String,Long>> confusion = new HashMap<>();
-      for ( Map.Entry<String,List<String>> confused : Morphology.CONFUSION.entrySet() ) {
-         final Map<String,Long> counts = confused.getValue().stream().collect( Collectors.groupingBy(
-               Function.identity(), Collectors.counting() ) );
-         confusion.put( confused.getKey(), counts );
-      }
-      System.out.println("System : Gold");
-      confusion.forEach( (k,v) -> System.out.println( k + " : " + v ) );
+//      final Map<String,Map<String,Long>> confusion = new HashMap<>();
+//      for ( Map.Entry<String,List<String>> confused : Morphology.CONFUSION.entrySet() ) {
+//         final Map<String,Long> counts = confused.getValue().stream().collect( Collectors.groupingBy(
+//               Function.identity(), Collectors.counting() ) );
+//         confusion.put( confused.getKey(), counts );
+//      }
+//      System.out.println("System : Gold");
+//      confusion.forEach( (k,v) -> System.out.println( k + " : " + v ) );
+//
+//      final Map<String,Map<String,Long>> realConfusion = new HashMap<>();
+//      for ( Map.Entry<String,List<String>> confused : Morphology.REAL_CONFUSION.entrySet() ) {
+//         final Map<String,Long> counts = confused.getValue().stream().collect( Collectors.groupingBy(
+//               Function.identity(), Collectors.counting() ) );
+//         realConfusion.put( confused.getKey(), counts );
+//      }
+//      System.out.println("System : Available Gold");
+//      realConfusion.forEach( (k,v) -> System.out.println( k + " : " + v ) );
+//
+//      System.out.println("System Counts");
+//      Morphology.SYS_COUNTS.forEach( (k,v) -> System.out.println( k + " = " + v ) );
+//      System.out.println("Gold Counts");
+//      Morphology.GOLD_COUNTS.forEach( (k,v) -> System.out.println( k + " = " + v ) );
 
-      final Map<String,Map<String,Long>> realConfusion = new HashMap<>();
-      for ( Map.Entry<String,List<String>> confused : Morphology.REAL_CONFUSION.entrySet() ) {
-         final Map<String,Long> counts = confused.getValue().stream().collect( Collectors.groupingBy(
-               Function.identity(), Collectors.counting() ) );
-         realConfusion.put( confused.getKey(), counts );
+      try ( Writer writer = new FileWriter( new File( debugDir, "EvalDebug.txt" ) ) ) {
+         writer.write( NeoplasmSummaryCreator.DEBUG_SB.toString() );
+      } catch ( IOException ioE ) {
+         LOGGER.error( ioE.getMessage() );
       }
-      System.out.println("System : Available Gold");
-      realConfusion.forEach( (k,v) -> System.out.println( k + " : " + v ) );
-
-      System.out.println("System Counts");
-      Morphology.SYS_COUNTS.forEach( (k,v) -> System.out.println( k + " = " + v ) );
-      System.out.println("Gold Counts");
-      Morphology.GOLD_COUNTS.forEach( (k,v) -> System.out.println( k + " = " + v ) );
 
       System.exit( 0 );
    }
 
    static private void processDir( final File dir,
+                                   final File jsonDir,
                                    final Writer evalWriter,
                                    final File featureDir )
          throws IOException {
@@ -126,14 +139,15 @@ final public class EvalSummarizer {
       }
       for ( File file : files ) {
          if ( file.isDirectory() ) {
-            processDir( file, evalWriter, featureDir );
+            processDir( file, jsonDir, evalWriter, featureDir );
          } else {
-            processDoc( file, evalWriter, featureDir );
+            processDoc( file, jsonDir, evalWriter, featureDir );
          }
       }
    }
 
    static private void processDoc( final File file,
+                                   final File jsonDir,
                                    final Writer evalWriter,
                                    final File featureDir )
          throws IOException {
@@ -162,6 +176,7 @@ final public class EvalSummarizer {
          writeEval( patientId, neoplasm, evalWriter );
          writeFeatures( patientId, neoplasm, featureDir );
       }
+      writeJson( summary, jsonDir );
    }
 
    static private void writeEval( final String patientId,
@@ -176,5 +191,23 @@ final public class EvalSummarizer {
       FeatureFilesAppender.appendFeatureFiles( patientId, summary, featureDir, ATTRIBUTE_NAMES );
    }
 
+   static private void writeJson( final PatientSummary summary, final File jsonDir ) {
+      final List<NeoplasmSummary> neoplasms = summary.getNeoplasms();
+      for ( NeoplasmSummary neoplasm : neoplasms ) {
+         final List<NeoplasmAttribute> attributes = neoplasm.getAttributes();
+         attributes.forEach( a -> a.setConfidenceFeatures( Collections.emptyList() ) );
+         neoplasm.setAttributes( attributes );
+      }
+      summary.setNeoplasms( neoplasms );
+      final String patientId = summary.getPatient()
+                                      .getId();
+      try ( Writer writer = new FileWriter( new File( jsonDir, patientId+".json" ) ) ) {
+         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+         final String json = gson.toJson( summary );
+         writer.write( json + "\n" );
+      } catch ( IOException ioE ) {
+         LOGGER.error( ioE.getMessage() );
+      }
+   }
 
 }

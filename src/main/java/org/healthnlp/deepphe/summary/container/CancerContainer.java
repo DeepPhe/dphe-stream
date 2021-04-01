@@ -221,15 +221,19 @@ public class CancerContainer extends AbstractNeoplasmContainer {
 //         LOGGER.info( "Diagnostic Match rated 5 because the neoplasm " + neoplasm.getUri() + " has a matching diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses (reverse)." );
          return 5;
       }
-      final Collection<String> containerBranch = containerUris.stream()
-                                                              .map( Neo4jOntologyConceptUtil::getBranchUris )
-                                                              .flatMap( Collection::stream )
-                                                              .collect( Collectors.toSet() );
-      if ( neoplasmUris.stream()
-                       .anyMatch( containerBranch::contains ) ) {
+//         for ( String uri : containerUris ) {
+//            LOGGER.warn( "Container: " + uri );
+//         }
+         final Collection<String> containerBranch = containerUris.stream()
+                                                                 .filter( Objects::nonNull )
+                                                                 .map( Neo4jOntologyConceptUtil::getBranchUris )
+                                                                 .flatMap( Collection::stream )
+                                                                 .collect( Collectors.toSet() );
+         if ( neoplasmUris.stream()
+                          .anyMatch( containerBranch::contains ) ) {
 //         LOGGER.info( "Diagnostic Match rated 3 because the neoplasm " + neoplasm.getUri() + " has a diagnosis as one of this cancer's neoplasms " + _primary.getUri() + " diagnoses branch URIs." );
-         return 3;
-      }
+            return 3;
+         }
       final Collection<String> neoplasmBranch = neoplasmUris.stream()
                                                             .map( Neo4jOntologyConceptUtil::getBranchUris )
                                                             .flatMap( Collection::stream )

@@ -16,6 +16,7 @@ final public class StageUriInfoVisitor implements UriInfoVisitor {
          _stageConcepts = neoplasms.stream()
                                    .map( c -> c.getRelated( RelationConstants.HAS_STAGE ) )
                                    .flatMap( Collection::stream )
+//                                   .filter( c -> !c.isNegated() )
                                    .collect( Collectors.toSet() );
       }
       return _stageConcepts;

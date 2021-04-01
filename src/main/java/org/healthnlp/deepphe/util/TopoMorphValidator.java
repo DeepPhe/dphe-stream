@@ -61,9 +61,12 @@ INSTANCE;
       return _exactMorphCodes.getOrDefault( morphologyClass, "" );
    }
 
-   public Collection<String> getBroadMorphCode( final String morphologyClass ) {
-      return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
-   }
+//   public Collection<String> getBroadMorphCode( final String morphologyClass ) {
+//      return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
+//   }
+public Collection<String> getBroadHistoCode( final String morphologyClass ) {
+   return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
+}
 
    
    private void parseValidationFile() {
@@ -92,25 +95,26 @@ INSTANCE;
             final Collection<String> topoCodes = parseTopoCodes( splits[ 0 ].trim() );
             final String siteDescription = splits[ 1 ].trim();
             final String histology = splits[ 2 ].trim();
-            final String histoDescription = splits[ 3 ].trim();
-            final String morphology = splits[ 4 ].trim();
-            final String morphoDescription = splits[ 5 ].trim();
+            final String morphologyBroad = splits[ 3 ].trim();
+            final String morphologyCode = splits[ 4 ].trim();
+            final String morphologyExact = splits[ 5 ].trim();
 
             // Ex: C000, LIP
             topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteClasses.put( c, siteDescription ) );
             topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteCodes.put( siteDescription, c ) );
             // Ex: C000, [8000/3,8001/1,8002/3]
-            topoCodes.forEach( c -> _topoMorphs.computeIfAbsent( c, n -> new HashSet<>() ).add( morphology ) );
+            topoCodes.forEach( c -> _topoMorphs.computeIfAbsent( c, n -> new HashSet<>() ).add( morphologyCode ) );
             // Ex: 800, Neoplasm
 //            _histoCodes.put( histoDescription, histology );
             // Ex: "Neoplasm, Malignant", 8000/3
-            String prev = _exactMorphCodes.put( morphoDescription, morphology );
-            _broadMorphCodes.computeIfAbsent( histoDescription, h -> new HashSet<>() ).add( morphology );
-            if ( prev != null && !prev.equals( morphology ) ) {
-               Logger.getLogger( "TopoMorphValidator" ).error( "Previous morph " + prev
-                                                               + " does not match " + morphoDescription
-                                                               + " for " + morphology );
-            }
+//            _broadMorphCodes.computeIfAbsent( morphologyBroad, h -> new HashSet<>() ).add( morphologyCode );
+            _broadMorphCodes.computeIfAbsent( morphologyBroad, h -> new HashSet<>() ).add( histology + "0" );
+            String prev = _exactMorphCodes.put( morphologyExact, morphologyCode );
+//            if ( prev != null && !prev.equals( morphology ) ) {
+//               Logger.getLogger( "TopoMorphValidator" ).warn( "Previous morph " + prev
+//                                                               + " does not match " + morphoDescription
+//                                                               + " for " + morphology );
+//            }
 
 //            if ( histoDescription.equals( morphoDescription ) ) {
 //               primaryMorphs.computeIfAbsent( histoDescription, h -> new HashSet<>() )
@@ -120,7 +124,7 @@ INSTANCE;
             line = reader.readLine();
          }
       } catch ( IOException ioE ) {
-         System.out.println( "parseValidationFile " + ioE.getMessage() );
+         Logger.getLogger( "TopoMorphValidator" ).error( "parseValidationFile " + ioE.getMessage() );
       }
 //      for ( Map.Entry<String,Collection<String>> entry : primaryMorphs.entrySet() ) {
 //         _primaryMorphs.put( entry.getKey(),
@@ -146,7 +150,7 @@ INSTANCE;
          return Collections.singletonList( codeLine.trim() );
       }
       if ( dashCodes.length != 2 ) {
-         System.err.println( "Illegal TopoCodes " + codeLine );
+         Logger.getLogger( "TopoMorphValidator" ).error( "Illegal TopoCodes " + codeLine );
          return Collections.emptyList();
       }
       final int low = parseTopoInt( dashCodes[ 0 ] );

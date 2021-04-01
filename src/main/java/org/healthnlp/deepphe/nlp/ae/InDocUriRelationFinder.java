@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.nlp.ae;
 
 
+import org.apache.ctakes.core.util.Pair;
 import org.apache.ctakes.core.util.annotation.IdentifiedAnnotationUtil;
 import org.apache.ctakes.core.util.annotation.OntologyConceptUtil;
 import org.apache.ctakes.core.util.annotation.SemanticGroup;
@@ -677,6 +678,12 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       lateralities.addAll( getLaterality( UriConstants.LEFT, uriAnnotationMap ) );
       lateralities.addAll( getLaterality( UriConstants.RIGHT, uriAnnotationMap ) );
       lateralities.addAll( getLaterality( UriConstants.BILATERAL, uriAnnotationMap ) );
+      // Some classes have abbreviations without simple lateralities.  e.g. "lll" = left lower lobe.
+      lateralities.addAll( getMissingLaterality( "Left_Lower_Lung_Lobe", lateralities, uriAnnotationMap ) );
+      lateralities.addAll( getMissingLaterality( "Upper_Lobe_Of_The_Left_Lung", lateralities, uriAnnotationMap ) );
+      lateralities.addAll( getMissingLaterality( "Middle_Lobe_Of_The_Right_Lung", lateralities, uriAnnotationMap ) );
+      lateralities.addAll( getMissingLaterality( "Right_Lower_Lung_Lobe", lateralities, uriAnnotationMap ) );
+      lateralities.addAll( getMissingLaterality( "Upper_Lobe_Of_The_Right_Lung", lateralities, uriAnnotationMap ) );
       if ( lateralities.isEmpty() ) {
          return;
       }
@@ -734,6 +741,34 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       return Collections.emptyList();
    }
 
+   /**
+    *
+    * @param uri Some desired laterality URI.  e.g. Right Lower Lung Lobe.
+    * @param existingLateralities regular lateralities already obtained
+    * @param uriAnnotationMap Map of URI to all paragraph Annotations that have the URI.
+    * @return all annotations with the given URI that do not already encapsulate a laterality annotation.
+    */
+   static private Collection<IdentifiedAnnotation> getMissingLaterality( final String uri,
+                                                                         final Collection<IdentifiedAnnotation> existingLateralities,
+                                                                  final Map<String, Collection<IdentifiedAnnotation>> uriAnnotationMap ) {
+      final Collection<IdentifiedAnnotation> lateralityAnnotations = getLaterality( uri, uriAnnotationMap );
+      if ( lateralityAnnotations.isEmpty() ) {
+         return Collections.emptyList();
+      }
+      if ( existingLateralities.isEmpty() ) {
+         return lateralityAnnotations;
+      }
+      final Collection<IdentifiedAnnotation> newLateralities = new HashSet<>();
+      for ( IdentifiedAnnotation annotation : lateralityAnnotations ) {
+         final Pair<Integer> span = new Pair<>( annotation.getBegin(), annotation.getEnd() );
+         final boolean isNew = existingLateralities.stream()
+                         .noneMatch( a -> a.getBegin() <= span.getValue1() && a.getEnd() >= span.getValue2() );
+         if ( isNew ) {
+            newLateralities.add( annotation );
+         }
+      }
+      return newLateralities;
+   }
 
 
 

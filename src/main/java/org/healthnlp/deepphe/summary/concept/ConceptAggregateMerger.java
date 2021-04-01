@@ -637,6 +637,7 @@ final public class ConceptAggregateMerger {
          int bestRating = 0;
          bestContainers.clear();
          for ( CancerContainer container : cancerContainers ) {
+//            LOGGER.warn( "Metastasis: " + metastasis );
             final int rating = container.rateDiagnosisMatch( metastasis );
             if ( rating > bestRating ) {
                bestRating = rating;
@@ -689,6 +690,7 @@ final public class ConceptAggregateMerger {
          // There was no change in distribution.  Exit the recursion.
          return false;
       }
+      unassigned.removeAll( assigned );
       assignedNeoplasms.addAll( assigned );
       if ( assigned.size() == metastases.size() ) {
          return true;

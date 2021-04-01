@@ -150,7 +150,8 @@ public class NoteNodeCreator {
 
    static private Section createSection( final Segment segment ) {
       final Section section = new Section();
-      section.setType( segment.getId() );
+      section.setId( segment.getId() );
+      section.setType( segment.getPreferredText() );
       section.setBegin( segment.getBegin() );
       section.setEnd( segment.getEnd() );
       return section;
