@@ -47,6 +47,21 @@ import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.*;
  */
 final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
 
+
+//   From Jeremy Warner to Everyone:  12:35 PM
+//https://hemonc.org/wiki/Biomarkers
+//PIK3CA
+//BRCA1
+//BRCA2
+//PALB1
+//PALB2
+//Genes for breast/ovarian: PIK3CA (and the synonyms/shorthand such as PI3K), BRCA1/2, PALB1/2
+//Proteins: ER, PR, HER2
+//Aliases for PIK3CA: PIK3CA, CLOVE, CWS5, MCAP, MCM, MCMTC, PI3K, p110-alpha, PI3K-alpha, phosphatidylinositol-4,
+// 5-bisphosphate 3-kinase catalytic subunit alpha, CLAPO
+//Maybe for breast Ki-67
+
+
    static private final Logger LOGGER = Logger.getLogger( "NonGraphedRelationFinder" );
 
    static private final boolean DEBUG_OUT = false;

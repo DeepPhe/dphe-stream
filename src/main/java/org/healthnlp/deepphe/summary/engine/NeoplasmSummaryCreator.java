@@ -9,6 +9,7 @@ import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.summary.attribute.DefaultAttribute;
 import org.healthnlp.deepphe.summary.attribute.behavior.BehaviorCodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.behavior.BehaviorUriInfoVisitor;
+import org.healthnlp.deepphe.summary.attribute.biomarker.Biomarker;
 import org.healthnlp.deepphe.summary.attribute.grade.GradeCodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.grade.GradeUriInfoVisitor;
 import org.healthnlp.deepphe.summary.attribute.histology.Histology;
@@ -92,11 +93,13 @@ final public class NeoplasmSummaryCreator {
       summary.setPathologic_t( getT( neoplasm ) );
       summary.setPathologic_n( getN( neoplasm ) );
       summary.setPathologic_m( getM( neoplasm ) );
-      summary.setEr( getEr( neoplasm ) );
-      summary.setPr( getPr( neoplasm ) );
-      summary.setHer2( getHer2( neoplasm ) );
-      summary.setKi67( getKi67( neoplasm ) );
-      summary.setPsa( getPsa( neoplasm ) );
+//      summary.setEr( getEr( neoplasm ) );
+//      summary.setPr( getPr( neoplasm ) );
+//      summary.setHer2( getHer2( neoplasm ) );
+//      summary.setKi67( getKi67( neoplasm ) );
+//      summary.setPsa( getPsa( neoplasm ) );
+
+      addBiomarkers( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
 
       summary.setAttributes( attributes );
       return summary;
@@ -138,7 +141,7 @@ final public class NeoplasmSummaryCreator {
                                       TopoMinorCodeInfoStore::new,
                                       dependencies );
       attributes.add( topoMinor.toNeoplasmAttribute() );
-      summary.setTopography_minor( topoMinor.getBestCode() );
+//      summary.setTopography_minor( topoMinor.getBestCode() );
    }
 
    static private void addMorphology( final ConceptAggregate neoplasm,
@@ -152,7 +155,7 @@ final public class NeoplasmSummaryCreator {
                              allConcepts,
                              patientNeoplasms );
       attributes.add( histology.toNeoplasmAttribute() );
-      summary.setHistology( histology.getBestCode() );
+//      summary.setHistology( histology.getBestCode() );
 
 //      final Collection<String> validTopoMorphs = TopoMorphValidator.getInstance()
 //                                                                   .getValidTopoMorphs( topographyCode );
@@ -185,7 +188,7 @@ final public class NeoplasmSummaryCreator {
                                       BehaviorCodeInfoStore::new,
                                       Collections.emptyMap() );
       attributes.add( behavior.toNeoplasmAttribute() );
-      summary.setBehavior( behavior.getBestCode() );
+//      summary.setBehavior( behavior.getBestCode() );
    }
 
 
@@ -206,8 +209,8 @@ final public class NeoplasmSummaryCreator {
                                       LateralityCodeInfoStore::new,
                                       dependencies );
       attributes.add( laterality.toNeoplasmAttribute() );
-      summary.setLaterality( laterality.getBestUri() );
-      summary.setLaterality_code( laterality.getBestCode() );
+//      summary.setLaterality( laterality.getBestUri() );
+//      summary.setLaterality_code( laterality.getBestCode() );
       return laterality.getBestCode();
    }
 
@@ -226,7 +229,7 @@ final public class NeoplasmSummaryCreator {
                                       GradeCodeInfoStore::new,
                                       Collections.emptyMap() );
       attributes.add( grade.toNeoplasmAttribute() );
-      summary.setGrade( grade.getBestCode() );
+//      summary.setGrade( grade.getBestCode() );
    }
 
 
@@ -302,6 +305,32 @@ final public class NeoplasmSummaryCreator {
       }
       return String.join( ";", values );
    }
+
+   static private final Collection<String> BIOMARKERS = Arrays.asList(
+         "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
+         "PDL1", "MSI", "KRAS", "PSA", "PSA_EL" );
+
+   static private void addBiomarkers( final ConceptAggregate neoplasm,
+                                     final NeoplasmSummary summary,
+                                     final List<NeoplasmAttribute> attributes,
+                                     final Collection<ConceptAggregate> allConcepts,
+                                     final Collection<ConceptAggregate> patientNeoplasms ) {
+       BIOMARKERS.forEach( b -> addBiomarker( b, neoplasm, summary, attributes, allConcepts, patientNeoplasms ) );
+   }
+
+   static private void addBiomarker( final String biomarkerName,
+                                       final ConceptAggregate neoplasm,
+                                        final NeoplasmSummary summary,
+                                        final List<NeoplasmAttribute> attributes,
+                                        final Collection<ConceptAggregate> allConcepts,
+                                        final Collection<ConceptAggregate> patientNeoplasms ) {
+      final Biomarker biomarker  = new Biomarker( biomarkerName,
+                                      neoplasm,
+                                      allConcepts,
+                                      patientNeoplasms );
+      attributes.add( biomarker.toNeoplasmAttribute() );
+   }
+
 
    static private String getKi67( final ConceptAggregate summary ) {
 //      final Collection<String> ki67s = getRelatedTexts( summary, HAS_KI67_SCORE );

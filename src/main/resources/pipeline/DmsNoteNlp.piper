@@ -74,6 +74,8 @@ add GleasonFinder
 
 //add Ki67Finder
 
+add BiomarkerFinder
+
 add GradeFinder
 
 // Adjust Subjects for entities
@@ -88,3 +90,6 @@ add InDocUriRelationFinder
 //  Find relations not declared in the ontology by special means.
 //  Modified this to make "v5" faster.
 add NonGraphedRelationFinder
+
+//add JsonNodeCreator
+//add html.HtmlTextWriter OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_13_2021/kcr/combined SubDirectory=HTML

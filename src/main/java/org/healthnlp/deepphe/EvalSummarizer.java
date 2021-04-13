@@ -36,7 +36,9 @@ final public class EvalSummarizer {
                          "histology",
                          "behavior",
                          "laterality",
-                         "grade" );
+                         "grade",
+                          "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
+                          "PDL1", "MSI", "KRAS", "PSA", "PSA_EL" );
    static private final List<String> EVAL_ATTRIBUTE_NAMES
          = Arrays.asList( "*record_id",
                           "-Summary_ID",
@@ -45,7 +47,9 @@ final public class EvalSummarizer {
                           "histology",
                           "behavior",
                           "laterality",
-                          "grade" );
+                          "grade",
+                          "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
+                          "PDL1", "MSI", "KRAS", "PSA", "PSA_EL" );
 //   static private final List<String> EVAL_ATTRIBUTE_NAMES
 //         = Arrays.asList( "*patient ID",
 //                          "-Summary_ID",
