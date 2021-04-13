@@ -49,27 +49,13 @@ public class EvalPipelineRunner {
    static private String createNeoplasmSummaryLine( final String patientId, final NeoplasmSummary neoplasm ) {
       return patientId + "|"
             + neoplasm.getId() + "|"
-            + neoplasm.getSite_major() + "|"
-            + neoplasm.getSite_minor() + "|"
-            + neoplasm.getSite_related() + "|"
-            + neoplasm.getTopography_major() + "|"
-            + neoplasm.getTopography_minor() + "|"
-            + neoplasm.getHistology() + "|"
-            + neoplasm.getBehavior() + "|"
-            + neoplasm.getLaterality() + "|"
-            + neoplasm.getLaterality_code() + "|"
-            + neoplasm.getGrade() + "|"
             + neoplasm.getPathologic_t() + "|"
             + neoplasm.getPathologic_t() + "|"
             + neoplasm.getPathologic_n() + "|"
             + neoplasm.getPathologic_m() + "|"
             + neoplasm.getEr() + "|"
             + neoplasm.getPr() + "|"
-            + neoplasm.getHer2() + "|"
-            + neoplasm.getKi67() + "|"
-            + neoplasm.getMsi() + "|"
-            + neoplasm.getKras() + "|"
-            + neoplasm.getPsa() + "\n";
+            + neoplasm.getHer2() + "\n";
    }
 
 }

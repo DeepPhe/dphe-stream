@@ -6,6 +6,7 @@ import org.apache.ctakes.core.util.doc.SourceMetadataUtil;
 import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
+import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.neo4j.node.Patient;
 import org.healthnlp.deepphe.neo4j.node.PatientSummary;
@@ -51,14 +52,12 @@ final public class PatientSummarizer extends AbstractPatientConsumer {
 
    static private void logNeoplasm( final NeoplasmSummary neoplasm ) {
       LOGGER.info( "===================== Neoplasm " + neoplasm.getId() + " =====================" );
-      LOGGER.info( "Site: " + neoplasm.getSite_major() + " " + neoplasm.getSite_minor() + " " + neoplasm.getSite_related() );
-      LOGGER.info( "Topography: " + neoplasm.getTopography_major() + " , " + neoplasm.getTopography_minor() );
-      LOGGER.info( "Histology: " + neoplasm.getHistology() );
-      LOGGER.info( "Behavior: " + neoplasm.getBehavior() );
-      LOGGER.info( "Laterality: " + neoplasm.getLaterality() + " " + neoplasm.getLaterality_code() );
-      LOGGER.info( "Grade: " + neoplasm.getGrade() );
-//      LOGGER.info( "TNM: " + neoplasm.getPathologic_t() + " " + neoplasm.getPathologic_n() + " " + neoplasm.getPathologic_m() );
+      neoplasm.getAttributes().forEach( PatientSummarizer::logAttribute );
       LOGGER.info( "====================================================" );
+   }
+
+   static private void logAttribute( final NeoplasmAttribute attribute ) {
+      LOGGER.info( attribute.getName() + ": " + attribute.getClassUri() + " = " + attribute.getValue() );
    }
 
 

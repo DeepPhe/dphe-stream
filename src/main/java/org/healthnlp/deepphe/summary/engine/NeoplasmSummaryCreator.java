@@ -93,11 +93,6 @@ final public class NeoplasmSummaryCreator {
       summary.setPathologic_t( getT( neoplasm ) );
       summary.setPathologic_n( getN( neoplasm ) );
       summary.setPathologic_m( getM( neoplasm ) );
-//      summary.setEr( getEr( neoplasm ) );
-//      summary.setPr( getPr( neoplasm ) );
-//      summary.setHer2( getHer2( neoplasm ) );
-//      summary.setKi67( getKi67( neoplasm ) );
-//      summary.setPsa( getPsa( neoplasm ) );
 
       addBiomarkers( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
 
@@ -113,11 +108,8 @@ final public class NeoplasmSummaryCreator {
       final NeoplasmAttribute majorTopoAttr = topography.toNeoplasmAttribute();
       attributes.add( majorTopoAttr );
 
-      summary.setSite_major( topography.getMajorSiteUri() );
-      summary.setTopography_major( topography.getBestMajorTopoCode() );
-
       // TODO as NeoplasmAttribute
-      summary.setSite_related( getSiteRelated( neoplasm ) );
+//      summary.setSite_related( getSiteRelated( neoplasm ) );
 
       return majorTopoAttr.getValue() + "3";
    }
@@ -188,7 +180,6 @@ final public class NeoplasmSummaryCreator {
                                       BehaviorCodeInfoStore::new,
                                       Collections.emptyMap() );
       attributes.add( behavior.toNeoplasmAttribute() );
-//      summary.setBehavior( behavior.getBestCode() );
    }
 
 
@@ -209,8 +200,6 @@ final public class NeoplasmSummaryCreator {
                                       LateralityCodeInfoStore::new,
                                       dependencies );
       attributes.add( laterality.toNeoplasmAttribute() );
-//      summary.setLaterality( laterality.getBestUri() );
-//      summary.setLaterality_code( laterality.getBestCode() );
       return laterality.getBestCode();
    }
 
@@ -229,7 +218,6 @@ final public class NeoplasmSummaryCreator {
                                       GradeCodeInfoStore::new,
                                       Collections.emptyMap() );
       attributes.add( grade.toNeoplasmAttribute() );
-//      summary.setGrade( grade.getBestCode() );
    }
 
 
@@ -332,14 +320,6 @@ final public class NeoplasmSummaryCreator {
    }
 
 
-   static private String getKi67( final ConceptAggregate summary ) {
-//      final Collection<String> ki67s = getRelatedTexts( summary, HAS_KI67_SCORE );
-//      return ki67s.stream()
-//                  .map( NeoplasmSummaryWriter::getPercent )
-//                  .filter( p -> !p.isEmpty() )
-//                  .collect( Collectors.joining( ";" ) );
-      return "";
-   }
 
    static private String getPercent( final String ki67score ) {
       final int percentIndex = ki67score.indexOf( '%' );
