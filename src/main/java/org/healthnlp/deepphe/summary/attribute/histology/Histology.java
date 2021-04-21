@@ -69,8 +69,8 @@ public class Histology extends DefaultAttribute<HistologyUriInfoVisitor,Histolog
                                              allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( name,
-                                                neoplasmStore.getBestCode(),
-                                                neoplasmStore._mainUriStore._bestUri,
+                                                _bestCode,
+                                                _bestUri,
                                                 evidence,
                                                 features );
    }

@@ -119,8 +119,11 @@ final public class ClockFaceFinder extends JCasAnnotator_ImplBase {
          final int colon = matchText.indexOf( ':' );
          final String hour = matchText.substring( 0, colon );
          String minute = matchText.substring( colon+1 );
-         if ( minute.equals( "_00" ) ) {
+//         if ( minute.equals( "_00" ) ) {
+         if ( minute.equals( "00" ) ) {
             minute = "";
+         } else if ( minute.equals( "30" ) ) {
+            minute = "_30";
          }
          final String uri = "_" + hour + minute + "_O_clock";
          UriAnnotationFactory.createIdentifiedAnnotations( jCas, begin, end, uri, SemanticGroup.MODIFIER, "T082" );

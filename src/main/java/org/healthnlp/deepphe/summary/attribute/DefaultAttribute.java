@@ -78,8 +78,8 @@ public class DefaultAttribute<V extends UriInfoVisitor,T extends CodeInfoStore> 
                                              allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( name,
-                                                neoplasmStore.getBestCode(),
-                                                neoplasmStore._mainUriStore._bestUri,
+                                                _bestCode,
+                                                _bestUri,
                                                 evidence,
                                                 features );
    }

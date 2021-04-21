@@ -545,7 +545,6 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
                              .collect( Collectors.toSet() );
          targetUris.retainAll( uriAnnotationMap.keySet() );
 
-
          if ( targetUris.isEmpty() ) {
             continue;
          }
@@ -614,7 +613,12 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
          // TODO : Should this be RelationUtil.createSourceTargetMap( sources, targets, false? )
          sourceTargetMap = new HashMap<>( RelationUtil.createReverseAttributeMapSingle( sources, targets, true ) );
       } else {
-         sourceTargetMap = new HashMap<>( RelationUtil.createSourceTargetMap( sources, targets, true ) );
+         if ( relationName.equals( has_Biomarker ) ) {
+            // One neoplasm can have multiple types of biomarker.
+            sourceTargetMap = new HashMap<>( RelationUtil.createSourceTargetMap( sources, targets, false ) );
+         } else {
+            sourceTargetMap = new HashMap<>( RelationUtil.createSourceTargetMap( sources, targets, true ) );
+         }
       }
       for ( Map.Entry<IdentifiedAnnotation, Collection<IdentifiedAnnotation>> entry : sourceTargetMap.entrySet() ) {
          final IdentifiedAnnotation owner = entry.getKey();

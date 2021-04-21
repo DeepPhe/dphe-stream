@@ -14,9 +14,11 @@ import org.apache.uima.jcas.cas.FSArray;
 import org.healthnlp.deepphe.core.uri.UriUtil;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.util.SearchUtil;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.MultipleFoundException;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +48,6 @@ public class UriAnnotationFactory {
                                                                                final int endOffset, final String uri,
                                                                                final SemanticGroup semanticGroup,
                                                                                final String tui ) {
-//      final Iterable<Label> labels;
       final String cui;
       final String prefText;
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
@@ -56,7 +57,6 @@ public class UriAnnotationFactory {
             LOGGER.error( "No Class exists for URI " + uri );
             return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri ) );
          }
-//         labels = graphNode.getLabels();
          cui = (String)graphNode.getProperty( CUI_KEY );
          prefText = (String)graphNode.getProperty( PREF_TEXT_KEY );
          tx.success();
@@ -64,7 +64,6 @@ public class UriAnnotationFactory {
          LOGGER.error( mfE.getMessage(), mfE );
          return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri ) );
       }
-
       final IdentifiedAnnotation annotation = semanticGroup.getCreator().apply( jcas );
       annotation.setBegin( beginOffset );
       annotation.setEnd( endOffset );
@@ -82,46 +81,47 @@ public class UriAnnotationFactory {
 
 
    /**
-    * @param jcas        ye olde ...
-    * @param beginOffset the offset of the first character of the annotation within text
-    * @param endOffset   the offset of the last character (+1) of the annotation within text
-    * @param uri         definitive uri for the annotation to be created
-    * @return appropriate Semantic group subclass of IdentifiedAnnotation with a populated ontology concept array
+    * @param jcas          ye olde ...
+    * @param beginOffset   the offset of the first character of the annotation within text
+    * @param endOffset     the offset of the last character (+1) of the annotation within text
+    * @param uri           definitive uri for the annotation to be created
+    * @param preferredText -
+    * @param semanticGroup -
+    * @param tui           -
+    * @return an annotation with the given semantic information
     */
    static public Collection<IdentifiedAnnotation> createIdentifiedAnnotations( final JCas jcas, final int beginOffset,
-                                                                               final int endOffset, final String uri ) {
-      final Iterable<Label> labels;
+                                                                               final int endOffset, final String uri,
+                                                                               final String preferredText,
+                                                                               final SemanticGroup semanticGroup,
+                                                                               final String tui ) {
       final String cui;
-      final String prefText;
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
       try ( Transaction tx = graphDb.beginTx() ) {
          final Node graphNode = SearchUtil.getClassNode( graphDb, uri );
          if ( graphNode == null ) {
             LOGGER.error( "No Class exists for URI " + uri );
-            return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri ) );
+            return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri, preferredText ) );
          }
-         labels = graphNode.getLabels();
          cui = (String)graphNode.getProperty( CUI_KEY );
-         prefText = (String)graphNode.getProperty( PREF_TEXT_KEY );
          tx.success();
       } catch ( MultipleFoundException mfE ) {
          LOGGER.error( mfE.getMessage(), mfE );
-         return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri ) );
+         return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri, preferredText ) );
       }
-      final Collection<IdentifiedAnnotation> annotations = new ArrayList<>();
-      for ( Label label : labels ) {
-         if ( label.equals( CLASS_LABEL ) ) {
-            continue;
-         }
-         // Any non-class label should be a semantic group
-         final int semanticCode = SemanticGroup.getGroup( label.name() )
-                                               .getCode();
-         final IdentifiedAnnotation annotation = createAnnotation( jcas, beginOffset, endOffset,
-                                                                   semanticCode, cui, uri, prefText );
-         annotations.add( annotation );
-      }
-
-      return annotations;
+      final IdentifiedAnnotation annotation = semanticGroup.getCreator().apply( jcas );
+      annotation.setBegin( beginOffset );
+      annotation.setEnd( endOffset );
+      annotation.setSegmentID( getSectionId( jcas, beginOffset, endOffset ) );
+      annotation.setSentenceID( getSentenceId( jcas, beginOffset, endOffset ) );
+      annotation.setTypeID( CONST.NE_TYPE_ID_UNKNOWN );
+      annotation.setDiscoveryTechnique( NE_DISCOVERY_TECH_EXPLICIT_AE );
+      final UmlsConcept umlsConcept = createUmlsConcept( jcas, cui, tui, preferredText, uri );
+      final FSArray conceptArray = new FSArray( jcas, 1 );
+      conceptArray.set( 0, umlsConcept );
+      annotation.setOntologyConceptArr( conceptArray );
+      annotation.addToIndexes( jcas );
+      return Collections.singletonList( annotation );
    }
 
    static private IdentifiedAnnotation createUnknownAnnotation( final JCas jCas, final int beginOffset,
@@ -137,48 +137,6 @@ public class UriAnnotationFactory {
       annotation.setOntologyConceptArr( conceptArray );
       annotation.addToIndexes( jCas );
       return annotation;
-   }
-
-   /**
-    * @param jcas        ye olde ...
-    * @param beginOffset the offset of the first character of the annotation within text
-    * @param endOffset   the offset of the last character (+1) of the annotation within text
-    * @param uri         definitive uri for the annotation to be created
-    * @param preferredText a specific preferred text to use.  Useful for things like sizes which need discovered value instead of a constant.
-    * @return appropriate Semantic group subclass of IdentifiedAnnotation with a populated ontology concept array
-    */
-   static public Collection<IdentifiedAnnotation> createIdentifiedAnnotations( final JCas jcas, final int beginOffset,
-                                                                               final int endOffset, final String uri,
-                                                                               final String preferredText ) {
-      final Iterable<Label> labels;
-      final String cui;
-      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
-      try ( Transaction tx = graphDb.beginTx() ) {
-         final Node graphNode = SearchUtil.getClassNode( graphDb, uri );
-         if ( graphNode == null ) {
-            LOGGER.error( "No Class exists for URI " + uri );
-            return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri, preferredText ) );
-         }
-         labels = graphNode.getLabels();
-         cui = (String)graphNode.getProperty( CUI_KEY );
-         tx.success();
-      } catch ( MultipleFoundException mfE ) {
-         LOGGER.error( mfE.getMessage(), mfE );
-         return Collections.singletonList( createUnknownAnnotation( jcas, beginOffset, endOffset, uri, preferredText ) );
-      }
-      final Collection<IdentifiedAnnotation> annotations = new ArrayList<>();
-      for ( Label label : labels ) {
-         if ( label.equals( CLASS_LABEL ) ) {
-            continue;
-         }
-         // Any non-class label should be a semantic group
-         final int semanticCode = SemanticGroup.getGroup( label.name() )
-                                               .getCode();
-         final IdentifiedAnnotation annotation = createAnnotation( jcas, beginOffset, endOffset,
-                                                                   semanticCode, cui, uri, preferredText );
-         annotations.add( annotation );
-      }
-      return annotations;
    }
 
    static private IdentifiedAnnotation createUnknownAnnotation( final JCas jCas,

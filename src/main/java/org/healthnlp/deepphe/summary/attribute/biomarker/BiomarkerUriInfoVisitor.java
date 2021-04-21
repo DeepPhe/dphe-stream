@@ -22,12 +22,16 @@ public class BiomarkerUriInfoVisitor implements UriInfoVisitor {
 
    public Collection<ConceptAggregate> getAttributeConcepts( final Collection<ConceptAggregate> neoplasms ) {
       if ( _biomarkerConcepts == null ) {
-         _biomarkerConcepts = neoplasms.stream()
+         Collection<ConceptAggregate> biomarkerConcepts = neoplasms.stream()
                                         .map( c -> c.getRelated( RelationConstants.has_Biomarker ) )
                                         .flatMap( Collection::stream )
                                        .filter( c -> c.getUri().equals( _biomarkerName ) )
-//                                        .filter( c -> !c.isNegated() )
                                         .collect( Collectors.toSet() );
+         // For the "allConcepts" store the biomarker may not be tied to anything via a relation
+         biomarkerConcepts.addAll( neoplasms.stream()
+                                      .filter( c -> c.getUri().equals( _biomarkerName ) )
+                                      .collect( Collectors.toSet() ) );
+         _biomarkerConcepts = biomarkerConcepts;
       }
       return _biomarkerConcepts;
    }

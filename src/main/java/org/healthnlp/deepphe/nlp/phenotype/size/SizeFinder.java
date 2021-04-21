@@ -3,8 +3,6 @@ package org.healthnlp.deepphe.nlp.phenotype.size;
 import org.apache.ctakes.typesystem.type.textspan.Sentence;
 import org.apache.log4j.Logger;
 import org.apache.uima.jcas.JCas;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
-import org.healthnlp.deepphe.nlp.uri.UriAnnotationFactory;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -74,10 +72,10 @@ final public class SizeFinder {
             }
          }
          if ( !skip ) {
-            UriAnnotationFactory.createIdentifiedAnnotations( jcas,
-                  windowStartOffset + fullMatcher.start(),
-                  windowStartOffset + fullMatcher.end(), UriConstants.SIZE,
-                  sentenceText.substring( fullMatcher.start(), fullMatcher.end() ) );
+//            UriAnnotationFactory.createIdentifiedAnnotations( jcas,
+//                  windowStartOffset + fullMatcher.start(),
+//                  windowStartOffset + fullMatcher.end(), UriConstants.SIZE,
+//                  sentenceText.substring( fullMatcher.start(), fullMatcher.end() ) );
          }
       }
    }

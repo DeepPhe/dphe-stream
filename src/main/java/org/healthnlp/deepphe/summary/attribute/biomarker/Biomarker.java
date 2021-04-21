@@ -55,8 +55,22 @@ final public class Biomarker extends DefaultAttribute<BiomarkerUriInfoVisitor, B
       final AttributeInfoStore<BiomarkerUriInfoVisitor, BiomarkerCodeInfoStore> allConceptsStore
             = new BiomarkerInfoStore( allConcepts, uriVisitorCreator, codeInfoStoreCreator, dependencies );
 
-      _bestUri = neoplasmStore._mainUriStore._bestUri;
-      _bestCode = neoplasmStore.getBestCode();
+      String bestUri = neoplasmStore._mainUriStore._bestUri;
+      if ( bestUri == null || bestUri.isEmpty() ) {
+         bestUri = patientStore._mainUriStore._bestUri;
+      }
+      if ( bestUri == null || bestUri.isEmpty() ) {
+         bestUri = allConceptsStore._mainUriStore._bestUri;
+      }
+      _bestUri = bestUri;
+      String bestCode = neoplasmStore.getBestCode();
+      if ( bestCode == null || bestCode.isEmpty() ) {
+         bestCode = patientStore.getBestCode();
+      }
+      if ( bestCode == null || bestCode.isEmpty() ) {
+         bestCode = allConceptsStore.getBestCode();
+      }
+      _bestCode = bestCode;
 
       final List<Integer> features = createFeatures( neoplasm,
                                                      allConcepts,
@@ -70,8 +84,8 @@ final public class Biomarker extends DefaultAttribute<BiomarkerUriInfoVisitor, B
                                              allConceptsStore._concepts );
 
       return SpecificAttribute.createAttribute( name,
-                                                neoplasmStore.getBestCode(),
-                                                neoplasmStore._mainUriStore._bestUri,
+                                                _bestCode,
+                                                _bestUri,
                                                 evidence,
                                                 features );
    }

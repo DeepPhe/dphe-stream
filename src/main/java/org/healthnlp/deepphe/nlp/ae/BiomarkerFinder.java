@@ -2,7 +2,11 @@ package org.healthnlp.deepphe.nlp.ae;
 
 import org.apache.ctakes.core.pipeline.PipeBitInfo;
 import org.apache.ctakes.core.util.Pair;
+import org.apache.ctakes.core.util.annotation.SemanticGroup;
 import org.apache.ctakes.core.util.regex.RegexSpanFinder;
+import org.apache.ctakes.typesystem.type.textsem.AnatomicalSiteMention;
+import org.apache.ctakes.typesystem.type.textsem.EventMention;
+import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.ctakes.typesystem.type.textspan.Sentence;
 import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -47,22 +51,37 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
 //   static private final String REGEX_IS = "is|are|was";
 
    static private final String REGEX_STRONGLY = "weakly|strongly|greatly";
-   static private final String REGEX_RISING = "rising|increasing|elevated|elvtd|raised|increased|strong|amplified";
+   static private final String REGEX_ELEVATED = "rising|increasing|elevated|elvtd|raised|increased|strong|amplified";
    static private final String REGEX_FALLING = "falling|decreasing|low|lowered|decreased|weak";
    static private final String REGEX_STABLE = "stable";
 
 
-   static private final String REGEX_GT_LT = "(?:(?:Greater|\\>|Higher|Less|\\<|Lower)(?: than ?)?)?"
-                                             + "(?: or )?(?:Greater|\\>|Higher|Less|\\<|Lower|Equal|\\=)(?: than|to "
+   static private final String REGEX_GT_LT = "(?:(?:Greater|>|Higher|Less|<|Lower)(?: than ?)?)?"
+                                             + "(?: or )?(?:Greater|>|Higher|Less|<|Lower|Equal|=)(?: than|to "
                                              + "?)?";
 
-   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|\\+(?:pos)?|overexpression";
-   static private final String REGEX_NEGATIVE = "\\-?neg(?:ative)?|\\-(?:neg)?|(?:not amplified)|(?:no [a-z] detected)";
+//   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|\\+(?:pos)?|overexpression";
+//   static private final String REGEX_NEGATIVE = "\\-?neg(?:ative)?|\\-(?:neg)?|(?:not amplified)|(?:no [a-z] detected)";
+static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpression";
+   static private final String REGEX_NEGATIVE = "-?neg(?:ative)?|(?:not amplified)|(?:no [a-z] detected)|(?:non-? "
+                                                + "?detected)";
    static private final String REGEX_UNKNOWN
-         = "unknown|indeterminate|equivocal|borderline|(?:not assessed|requested|applicable)|\\bN\\/?A\\b";
+//         = "unknown|indeterminate|equivocal|borderline|(?:not assessed|requested|applicable)|\\sN\\/?A\\s";
+         = "unknown|indeterminate|equivocal|borderline";
+   static private final String REGEX_NOT_ASSESSED
+         = "(?:not assessed|requested|applicable)|insufficient|pending|\\sN\\/?A";
+
+
    static private final String REGEX_POS_NEG = "(?:" + REGEX_POSITIVE + ")|(?:" + REGEX_NEGATIVE + ")";
+
    static private final String REGEX_POS_NEG_UNK
          = "(?:" + REGEX_POSITIVE + ")|(?:" + REGEX_NEGATIVE + ")|(?:" + REGEX_UNKNOWN + ")";
+
+   static private final String REGEX_POS_NEG_UNK_NA
+         = "(?:" + REGEX_POSITIVE
+         + ")|(?:" + REGEX_NEGATIVE
+         + ")|(?:" + REGEX_UNKNOWN
+         + ")|(?:" + REGEX_NOT_ASSESSED + ")";
 
    static private final String REGEX_0_9
          = "[0-9]|zero|one|two|three|four|five|six|seven|eight|nine";
@@ -87,9 +106,20 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
 
 
    private enum Biomarker {
-//      ER( ),
-//      PR,
-//      HER2,
+      ER_( "(?:Estrogen|ER(?!B)\\+?-?|ER:(\\s*DCIS)?(\\s*IS)?)",
+           "",
+           REGEX_POS_NEG_UNK_NA,
+           true ),
+
+      PR_( "(?:Progesterone|Pg?R\\+?-?|PR:(\\s*DCIS)?(\\s*IS)?)",
+           "",
+           REGEX_POS_NEG_UNK_NA,
+           true ),
+
+      HER2( "(?:HER-? ?2(?: ?\\/-? ?neu)?\\+?-?(?:\\s*ONCOGENE)?(?:\\s*\\(?ERBB2\\)?)?)",
+            "",
+            REGEX_POS_NEG_UNK_NA ),
+
       KI67( "M?KI ?-? ?67(?: Antigen)?",
             "",
             "(?:>|< ?)?[0-9]{1,2}(?:\\.[0-9]{1,2} ?)? ?%(?: positive)?",
@@ -105,16 +135,17 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
              "",
              "" ),
 
-      ALK( "(?:ALK|CD246|(?:Anaplastic Lymphoma (?:Receptor Tyrosine )?Kinase))"
+      ALK( "(?:ALK\\+?-?|CD246\\+?-?|(?:Anaplastic Lymphoma (?:Receptor Tyrosine )?Kinase))"
            + "(?: Fusion)?(?: Gene|Oncogene)?(?: Alteration)?",
            "",
-           REGEX_POS_NEG_UNK,
+           "(?:" + REGEX_POS_NEG_UNK_NA +")|(?:no rearrangement)",
+
            true ),
 
-      EGFR( "EGFR|HER1||ERBB|C-ERBB1|(?:Epidermal Growth Factor)"
+      EGFR( "EGFR\\+?-?|HER1\\+?-?|ERBB\\+?-?|C-ERBB1\\+?-?|(?:Epidermal Growth Factor)"
             + "(?: Receptor)?",
             "",
-            REGEX_POS_NEG_UNK,
+            "(?:" + REGEX_POS_NEG_UNK_NA +")|(?:not mutant)|(?:no mutations?)|",
             true ),
 
       BRAF( "(?:Serine\\/Threonine-Protein Kinase )?B-?RAF1?"
@@ -122,38 +153,38 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
             "",
             "" ),
 
-      ROS1( "(?:Proto-Oncogene )?(?:ROS1|MCF3|C-ROS-1"
+      ROS1( "(?:Proto-Oncogene )?(?:ROS1\\+?-?|MCF3\\+?-?|C-ROS-1\\+?-?"
             + "|(?:ROS Proto-Oncogene 1)"
             + "|(?:Tyrosine-Protein Kinase ROS)"
             + "|(?:Receptor Tyrosine Kinase c-ROS Oncogene 1))"
             + "(?: Gene)?(?: Fusion|Alteration|Rearrangement)?",
             "",
-            REGEX_POS_NEG_UNK,
+            REGEX_POS_NEG_UNK_NA,
             true ),
 
 //      PD1,
       PDL1( "(?:PDL1|PD-L1|CD247|B7|B7-H|B7H1|PDCD1L1|PDCD1LG1|(?:Programmed Cell Death 1 Ligand 1))"
             + "(?: Antigen)?(?: Molecule)?",
             "",
-            "" ),
+            "[0-9]{1,2} ?%(?: high expression)?" ),
 
       MSI( "MSI|MSS|Microsatellite",
            "",
            "stable" ),
 
-      KRAS( "(?:KRAS|C-K-RAS|KRAS2|KRAS-2|V-KI-RAS2|(?:Kirsten Rat Sarcoma Viral Oncogene Homolog))"
-            + "(?: Wildtype|wt)?(?: Gene Mutation)?",
+      KRAS( "(?:KRAS\\+?-?|C-K-RAS\\+?-?|KRAS2\\+?-?|KRAS-2\\+?-?|V-KI-RAS2\\+?-?|(?:Kirsten Rat Sarcoma Viral Oncogene Homolog))"
+            + "(?: Wild ?-?type|wt)?(?: Gene Mutation)?",
             "",
-            REGEX_POS_NEG_UNK,
+            REGEX_POS_NEG_UNK_NA,
             true ),
 
-      PSA( "PSA(?: Prostate Specific Antigen)?|Prostate Specific Antigen(?: [PSA])?",
-           "[0-9]{3}\\.[0-9]{2}",
-           "[0-9]{1,2}(?:\\.[0-9]{1,4})?(?: ?ng\\/m?d?L)?" ),
+      PSA( "PSA(?: Prostate Specific Antigen)?|(?:Prostate Specific Antigen(?: [PSA])?)",
+           "",
+           "[0-9]{1,2}\\.[0-9]{1,4}" ),
 
-     PSA_EL( "PSA(?: Prostate Specific Antigen)?|Prostate Specific Antigen(?: [PSA])?",
+     PSA_EL( "PSA(?: Prostate Specific Antigen)?|(?:Prostate Specific Antigen(?: [PSA])?)",
           "",
-          REGEX_RISING,
+             "(?:" + REGEX_ELEVATED + ")|(?:" + REGEX_POSITIVE + ")|(?:" + REGEX_NEGATIVE + ")",
              true );
 
       final Pattern _typePattern;
@@ -162,6 +193,7 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
       final Pattern _skipPattern;
       final Pattern _valuePattern;
       final boolean _canPrecede;
+      final boolean _plusMinus;
       Biomarker( final String typeRegex, final String skipRegex, final String valueRegex ) {
          this( typeRegex, 20, skipRegex, valueRegex, false );
       }
@@ -182,6 +214,7 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
          }
          _valuePattern = Pattern.compile( valueRegex, Pattern.CASE_INSENSITIVE );
          _canPrecede = canPrecede;
+         _plusMinus = REGEX_POS_NEG_UNK.equals( valueRegex );
       }
    }
 
@@ -200,26 +233,52 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
 
    static public void findBiomarkers( final JCas jCas ) {
       final String docText = jCas.getDocumentText();
+      final Collection<Integer> annotationBegins = JCasUtil.select( jCas, IdentifiedAnnotation.class )
+                                                           .stream()
+                                                           .filter( a -> ( a instanceof EventMention
+                                                                           || a instanceof AnatomicalSiteMention ) )
+                                                           .map( IdentifiedAnnotation::getBegin )
+                                                           .collect( Collectors.toList() );
       final Collection<Pair<Integer>> sentenceSpans
             = JCasUtil.select( jCas, Sentence.class )
                       .stream()
                       .map( s -> new Pair<>( s.getBegin(), s.getEnd() ) )
-//                      .sorted( Comparator.comparingInt( Pair::getValue1 ) )
                       .collect( Collectors.toList() );
       for ( Biomarker biomarker : Biomarker.values() ) {
          final List<Pair<Integer>> biomarkerSpans = findBiomarkerSpans( biomarker, docText );
-         addBiomarkers( jCas, biomarker, docText, biomarkerSpans, sentenceSpans );
+         addBiomarkers( jCas, biomarker, docText, biomarkerSpans, sentenceSpans, annotationBegins );
       }
    }
 
 
    static private List<Pair<Integer>> findBiomarkerSpans( final Biomarker biomarker, final String text ) {
       try ( RegexSpanFinder finder = new RegexSpanFinder( biomarker._typePattern ) ) {
-         return finder.findSpans( text );
+         return finder.findSpans( text )
+                      .stream()
+                      .filter( s -> isWholeWord( text, s ) )
+                      .collect( Collectors.toList() );
       } catch ( IllegalArgumentException iaE ) {
          LOGGER.warn( iaE.getMessage() );
          return Collections.emptyList();
       }
+   }
+
+   // Why the heck don't word boundaries ever work in java?!
+   static private boolean isWholeWord( final String text, final Pair<Integer> span ) {
+      return isWholeWord( text, span.getValue1(), span.getValue2() );
+   }
+
+   // Why the heck don't word boundaries ever work in java?!
+   static private boolean isWholeWord( final String text, final int begin, final int end ) {
+      if ( begin > 0 ) {
+         if ( Character.isLetterOrDigit( text.charAt( begin-1 ) ) ) {
+            return false;
+         }
+      }
+      if ( end == text.length() ) {
+         return true;
+      }
+      return !Character.isLetterOrDigit( text.charAt( end ) );
    }
 
 
@@ -227,12 +286,13 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
                                       final Biomarker biomarker,
                                        final String text,
                                        final List<Pair<Integer>> biomarkerSpans,
-                                      final Collection<Pair<Integer>> sentenceSpans ) {
+                                      final Collection<Pair<Integer>> sentenceSpans,
+                                      final Collection<Integer> annotationBegins ) {
       if ( biomarkerSpans.isEmpty() ) {
          return;
       }
       for ( Pair<Integer> biomarkerSpan : biomarkerSpans ) {
-         addBiomarker( jCas, biomarker, text, biomarkerSpan, sentenceSpans );
+         addBiomarker( jCas, biomarker, text, biomarkerSpan, sentenceSpans, annotationBegins );
       }
    }
 
@@ -241,39 +301,51 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
                                       final Biomarker biomarker,
                                       final String text,
                                       final Pair<Integer> biomarkerSpan,
-                                     final Collection<Pair<Integer>> sentenceSpans ) {
+                                     final Collection<Pair<Integer>> sentenceSpans,
+                                     final Collection<Integer> annotationBegins ) {
       final Pair<Integer> sentenceSpan = getSentenceSpan( biomarkerSpan, sentenceSpans );
-      if ( addBioMarkerFollowed( jCas, biomarker, text, biomarkerSpan, sentenceSpan ) ) {
+      final int followingAnnotation = getFollowingAnnotation( biomarkerSpan, text.length(), annotationBegins );
+      if ( addBioMarkerFollowed( jCas, biomarker, text, biomarkerSpan, sentenceSpan, followingAnnotation ) ) {
          return;
       }
-      addBioMarkerPreceded( jCas, biomarker, text, biomarkerSpan, sentenceSpan );
+      if ( biomarker._canPrecede ) {
+         final int precedingAnnotation = getPrecedingAnnotation( biomarkerSpan, annotationBegins );
+         addBioMarkerPreceded( jCas, biomarker, text, biomarkerSpan, sentenceSpan, precedingAnnotation );
+      }
    }
 
    static private boolean addBioMarkerFollowed( final JCas jCas,
                                                 final Biomarker biomarker,
                                                 final String text,
                                                 final Pair<Integer> biomarkerSpan,
-                                                final Pair<Integer> sentenceSpan ) {
-      final String nextText = getFollowingText( biomarker, biomarkerSpan, text, sentenceSpan );
+                                                final Pair<Integer> sentenceSpan,
+                                                final int followingAnnotation ) {
+      if ( biomarker._plusMinus ) {
+         final char c = text.charAt( biomarkerSpan.getValue2()-1 );
+         if ( (c == '+' || c == '-') && isWholeWord( text, biomarkerSpan ) ) {
+            addBiomarker( jCas, biomarker, biomarkerSpan.getValue1(), biomarkerSpan.getValue2() );
+            return true;
+         }
+      }
+
+      final String nextText = getFollowingText( biomarker, biomarkerSpan, text, sentenceSpan, followingAnnotation );
       if ( nextText.isEmpty() ) {
          return false;
       }
-      LOGGER.info( "Testing " + biomarker.name() + " > " + nextText );
       if ( biomarker._checkSkip ) {
          final Matcher skipMatcher = biomarker._skipPattern.matcher( nextText );
          if ( skipMatcher.find() ) {
-            LOGGER.info( "Skipping Biomarker > because found " + nextText.substring(
-                  biomarkerSpan.getValue2() + skipMatcher.start(),
-                  biomarkerSpan.getValue2() + skipMatcher.end() ) );
             return false;
          }
       }
       final Matcher matcher = biomarker._valuePattern.matcher( nextText );
       if ( matcher.find() ) {
-         addBiomarker( jCas, biomarker, biomarkerSpan,
-                       biomarkerSpan.getValue2() + matcher.start(),
-                       biomarkerSpan.getValue2() + matcher.end() );
-         return true;
+         final int matchBegin = biomarkerSpan.getValue2() + matcher.start();
+         final int matchEnd = biomarkerSpan.getValue2() + matcher.end();
+         if ( isWholeWord( text, matchBegin, matchEnd ) ) {
+            addBiomarker( jCas, biomarker, matchBegin, matchEnd );
+            return true;
+         }
       }
       return false;
    }
@@ -282,15 +354,15 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
                                                 final Biomarker biomarker,
                                                 final String text,
                                                 final Pair<Integer> biomarkerSpan,
-                                                final Pair<Integer> sentenceSpan ) {
+                                                final Pair<Integer> sentenceSpan,
+                                                final int precedingAnnotation ) {
       if ( !biomarker._canPrecede ) {
          return false;
       }
-      final String prevText = getPrecedingText( biomarker, biomarkerSpan, text, sentenceSpan );
+      final String prevText = getPrecedingText( biomarker, biomarkerSpan, text, sentenceSpan, precedingAnnotation );
       if ( prevText.isEmpty() ) {
          return false;
       }
-      LOGGER.info( "Testing " + biomarker.name() + " < " + prevText );
       final Matcher matcher = biomarker._valuePattern.matcher( prevText );
       Pair<Integer> lastMatch = null;
       while ( matcher.find() ) {
@@ -299,42 +371,24 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
       if ( lastMatch == null ) {
          return false;
       }
-      addBiomarker( jCas, biomarker, biomarkerSpan,
-                    biomarkerSpan.getValue1() - prevText.length() + lastMatch.getValue1(),
-                    biomarkerSpan.getValue1() - prevText.length() + lastMatch.getValue2() );
-      return true;
+      final int matchBegin = biomarkerSpan.getValue1() - prevText.length() + lastMatch.getValue1();
+      final int matchEnd = biomarkerSpan.getValue1() - prevText.length() + lastMatch.getValue2();
+      if ( isWholeWord( text, matchBegin, matchEnd ) ) {
+         addBiomarker( jCas, biomarker, matchBegin, matchEnd );
+         return true;
+      }
+      return false;
    }
 
    static private void addBiomarker( final JCas jCas,
                                       final Biomarker biomarker,
-                                      final Pair<Integer> biomarkerSpan,
                                         final int valueSpanBegin, final int valueSpanEnd ) {
-      // Biomarker type is stored in annotation preferred text
-//     final Collection<IdentifiedAnnotation> markers
-//            = UriAnnotationFactory.createIdentifiedAnnotations( jCas,
-//                                                                biomarkerSpan.getValue1(),
-//                                                                biomarkerSpan.getValue2(),
-//                                                                "Biomarker", // UriConstants.BIOMARKER,
-//                                                                biomarker.name() );
-//      final Collection<IdentifiedAnnotation> values
-//            = UriAnnotationFactory.createIdentifiedAnnotations( jCas,
-//                                                                valueSpanBegin,
-//                                                                valueSpanEnd,
-//                                                                "LAB_VALUE", //UriConstants.LAB_VALUE,
-//                                                                SemanticTui.T034.getGroup(),
-//                                                                SemanticTui.T034.name() );
-//      for ( IdentifiedAnnotation marker : markers ) {
-//         for ( IdentifiedAnnotation value : values ) {
-//            RelationUtil.createRelation( jCas, marker, value, "hasValue" ); //RelationConstants.has_Value );
-//            LOGGER.info( "Created Biomarker " + IdentifiedAnnotationUtil.getPreferredText( marker ) + " " + value.getCoveredText() );
-//         }
-//      }
-
-      // Create annotations with the uri of the biomarker type, over the span of the biomarker VALUE within the text.
       UriAnnotationFactory.createIdentifiedAnnotations( jCas,
-                                                       valueSpanBegin,
-                                                       valueSpanEnd,
-                                                       biomarker.name() );
+                                                        valueSpanBegin,
+                                                        valueSpanEnd,
+                                                        biomarker.name(),
+                                                        SemanticGroup.FINDING,
+                                                        "T184" );
    }
 
 
@@ -347,17 +401,33 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
                          .orElse( biomarkerSpan );
    }
 
+   static private int getPrecedingAnnotation( final Pair<Integer> biomarkerSpan,
+                                               final Collection<Integer> annotationBegins ) {
+      return annotationBegins.stream()
+                          .filter( b -> b < biomarkerSpan.getValue1() )
+                             .mapToInt( b -> b )
+                          .max()
+                          .orElse( 0 );
+   }
+
+   static private int getFollowingAnnotation( final Pair<Integer> biomarkerSpan,
+                                              final int textLength,
+                                              final Collection<Integer> annotationBegins ) {
+      return annotationBegins.stream()
+                             .filter( b -> b >= biomarkerSpan.getValue2() )
+                             .mapToInt( b -> b )
+                             .min()
+                             .orElse( textLength );
+   }
 
    static private String getPrecedingText( final Biomarker biomarker,
                                            final Pair<Integer> biomarkerSpan,
                                            final String text,
-                                           final Pair<Integer> sentenceSpan ) {
-      if ( !biomarker._canPrecede ) {
-         return "";
-      }
-      final int leastStart = Math.min( sentenceSpan.getValue1(),
-                                       Math.max( 0, biomarkerSpan.getValue1() - biomarker._windowSize ) );
-      final String prevText = text.substring( leastStart, biomarkerSpan.getValue1() );
+                                           final Pair<Integer> sentenceSpan,
+                                           final int precedingAnnotation ) {
+      final int sentenceOrAnnotation = Math.max( precedingAnnotation, sentenceSpan.getValue1() );
+//      final int windowSize = Math.max( 0, biomarkerSpan.getValue1() - biomarker._windowSize );
+      final String prevText = text.substring( sentenceOrAnnotation, biomarkerSpan.getValue1() );
       // Check for end of paragraph
       final int pIndex = prevText.lastIndexOf( "\n\n" );
       if ( pIndex >= 0 ) {
@@ -370,10 +440,11 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
    static private String getFollowingText( final Biomarker biomarker,
                                             final Pair<Integer> biomarkerSpan,
                                             final String text,
-                                           final Pair<Integer> sentenceSpan ) {
-      final int mostEnd = Math.max( sentenceSpan.getValue2(),
-                                    Math.min( text.length(), biomarkerSpan.getValue2() + biomarker._windowSize ) );
-      final String nextText = text.substring( biomarkerSpan.getValue2(), mostEnd );
+                                           final Pair<Integer> sentenceSpan,
+                                           final int followingAnnotation ) {
+      final int sentenceOrAnnotation = Math.min( followingAnnotation, sentenceSpan.getValue2() );
+//      final int windowSize = Math.min( text.length(), biomarkerSpan.getValue2() + biomarker._windowSize );
+      final String nextText = text.substring( biomarkerSpan.getValue2(), sentenceOrAnnotation );
       // Check for end of paragraph
       final int pIndex = nextText.indexOf( "\n\n" );
       if ( pIndex == 0 ) {

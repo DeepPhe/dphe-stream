@@ -31,21 +31,6 @@ import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.*;
 
 
 
-// Output files from System : 1 file for each attribute.  Comma separated.
-//   attribute_name.csv
-//       neoplasm_id,attribute_name,value,8,8,10,10,10
-//       neoplasm_id,attribute_name,value,7,6,10,5,10
-//       neoplasm_id,attribute_name,value,1,1,7,8,9
-//       bobs_cancer,topo_major,C50,1,1,7,8,9
-
-// Fed to Eval script.  New Output file from Eval:
-//   attribute_name_eval.csv
-//       neoplasm_id,attribute_name,value,8,8,10,10,10  , F1
-//       neoplasm_id,attribute_name,value,7,6,10,5,10  , F1
-//       neoplasm_id,attribute_name,value,1,1,7,8,9   , F1
-//       bobs_cancer,topo_major,C50,1,1,7,8,9  , (c42)  ->  (0)  ->   review
-
-
 /**
  * @author SPF , chip-nlp
  * @version %I%
@@ -59,8 +44,6 @@ final public class NeoplasmSummaryCreator {
 
    private NeoplasmSummaryCreator() {}
 
-// TODO put output in dated folder in shared drive dphe_cr/output/
-//  also add scores to shared drive dphe_cr/output/ evaluations.xlsx
 
    static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm,
                                                         final Collection<ConceptAggregate> allConcepts ) {
@@ -109,7 +92,6 @@ final public class NeoplasmSummaryCreator {
       attributes.add( majorTopoAttr );
 
       // TODO as NeoplasmAttribute
-//      summary.setSite_related( getSiteRelated( neoplasm ) );
 
       return majorTopoAttr.getValue() + "3";
    }
@@ -133,7 +115,6 @@ final public class NeoplasmSummaryCreator {
                                       TopoMinorCodeInfoStore::new,
                                       dependencies );
       attributes.add( topoMinor.toNeoplasmAttribute() );
-//      summary.setTopography_minor( topoMinor.getBestCode() );
    }
 
    static private void addMorphology( final ConceptAggregate neoplasm,
@@ -147,24 +128,8 @@ final public class NeoplasmSummaryCreator {
                              allConcepts,
                              patientNeoplasms );
       attributes.add( histology.toNeoplasmAttribute() );
-//      summary.setHistology( histology.getBestCode() );
-
-//      final Collection<String> validTopoMorphs = TopoMorphValidator.getInstance()
-//                                                                   .getValidTopoMorphs( topographyCode );
-////      final Morphology morphology = new Morphology( neoplasm, allConcepts, patientNeoplasms, validTopoMorphs, topographyCode );
-//      final Morphology morphology = new Morphology( neoplasm, allConcepts, patientNeoplasms, validTopoMorphs );
-//      attributes.add( morphology.toNeoplasmAttribute() );
-////      final NeoplasmAttribute behaviorAttr = morphology.getBehaviorAttribute();
-////      attributes.add( behaviorAttr );
-//
-//      summary.setHistology( morphology.getBestHistoCode() );
-////      summary.setBehavior( morphology.getBestBehaveCode() );
    }
 
-
-   static private String getSiteRelated( final ConceptAggregate conceptAggregate ) {
-      return String.join( ";", getRelatedUris( conceptAggregate, HAS_QUADRANT, HAS_CLOCKFACE ) );
-   }
 
    static private void addBehavior( final ConceptAggregate neoplasm,
                                       final NeoplasmSummary summary,
@@ -224,23 +189,17 @@ final public class NeoplasmSummaryCreator {
 
 
    static private String getT( final ConceptAggregate summary ) {
-      final Collection<String> ts = new HashSet<>();
-      ts.addAll( getRelatedUris( summary, HAS_CLINICAL_T ) );
-      ts.addAll( getRelatedUris( summary, HAS_PATHOLOGIC_T ) );
+      final Collection<String> ts = new HashSet<>( summary.getRelatedUris( HAS_CLINICAL_T, HAS_PATHOLOGIC_T ) );
       return String.join( ";", getTnmValue( ts, 't', true ) );
    }
 
    static private String getN( final ConceptAggregate summary ) {
-      final Collection<String> ns = new HashSet<>();
-      ns.addAll( getRelatedUris( summary, HAS_CLINICAL_N ) );
-      ns.addAll( getRelatedUris( summary, HAS_PATHOLOGIC_N ) );
+      final Collection<String> ns = new HashSet<>( summary.getRelatedUris( HAS_CLINICAL_N, HAS_PATHOLOGIC_N ) );
       return String.join( ";", getTnmValue( ns, 'n', true ) );
    }
 
    static private String getM( final ConceptAggregate summary ) {
-      final Collection<String> ms = new HashSet<>();
-      ms.addAll( getRelatedUris( summary, HAS_CLINICAL_M ) );
-      ms.addAll( getRelatedUris( summary, HAS_PATHOLOGIC_M ) );
+      final Collection<String> ms = new HashSet<>( summary.getRelatedUris( HAS_CLINICAL_M, HAS_PATHOLOGIC_M ) );
       return String.join( ";", getTnmValue( ms, 'm', false ) );
    }
 
@@ -264,38 +223,8 @@ final public class NeoplasmSummaryCreator {
    }
 
 
-   static private String getEr( final ConceptAggregate summary ) {
-      return getErPrHer2( summary, HAS_ER_STATUS );
-   }
-
-   static private String getPr( final ConceptAggregate summary ) {
-      return getErPrHer2( summary, HAS_PR_STATUS );
-   }
-
-   static private String getHer2( final ConceptAggregate summary ) {
-      return getErPrHer2( summary, HAS_HER2_STATUS );
-   }
-
-   static private String getErPrHer2( final ConceptAggregate summary, final String relation ) {
-      final Collection<String> uris = getRelatedUris( summary, relation );
-      if ( uris.isEmpty() ) {
-         return "";
-      }
-      final Collection<String> statValues = Arrays.asList( "Positive", "Negative", "Equivocal", "Indeterminate" );
-      final Collection<String> values = new HashSet<>();
-      for ( String uri : uris ) {
-         for ( String status : statValues ) {
-            if ( uri.endsWith( status ) ) {
-               values.add( status );
-               break;
-            }
-         }
-      }
-      return String.join( ";", values );
-   }
-
    static private final Collection<String> BIOMARKERS = Arrays.asList(
-         "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
+         "ER_", "PR_", "HER2", "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
          "PDL1", "MSI", "KRAS", "PSA", "PSA_EL" );
 
    static private void addBiomarkers( final ConceptAggregate neoplasm,
@@ -317,64 +246,6 @@ final public class NeoplasmSummaryCreator {
                                       allConcepts,
                                       patientNeoplasms );
       attributes.add( biomarker.toNeoplasmAttribute() );
-   }
-
-
-
-   static private String getPercent( final String ki67score ) {
-      final int percentIndex = ki67score.indexOf( '%' );
-      if ( percentIndex < 1 ) {
-         return "";
-      }
-//      String percent = ki67score.substring( Math.max( 0, percentIndex-6 ), percentIndex+1 );
-      String percent = ki67score.substring( 0, percentIndex );
-      percent = percent.replace( "(", "" );
-      percent = percent.replace( "[", "" );
-//      percent = percent.replace( "%", "" );
-      percent = percent.replace( " ", "" );
-      return percent.trim();
-   }
-
-   static private String getPsa( final ConceptAggregate summary ) {
-//      final Collection<String> psas = getRelatedTexts( summary, HAS_PSA_LEVEL );
-//      final Collection<String> elevateds = psas.stream()
-//                                               .filter( p -> p.toLowerCase().contains( "elevated" ) )
-//                                               .collect( Collectors.toList() );
-//      if ( !elevateds.isEmpty() ) {
-//         psas.removeAll( elevateds );
-//         psas.add( "Elevated PSA" );
-//      }
-//      if ( psas.isEmpty() ) {
-//         return "";
-//      }
-//      return psas.stream()
-//                 .map( String::trim )
-//                 .filter( p -> !p.isEmpty() )
-//                 .collect( Collectors.joining( ";" ) );
-      return "";
-   }
-
-
-
-
-
-
-
-
-
-
-
-
-   static private Collection<String> getRelatedUris( final ConceptAggregate conceptAggregate, final String... relations ) {
-      return conceptAggregate.getRelatedUris( relations );
-//      final Collection<String> relateds = new HashSet<>();
-//      for ( String relation : relations ) {
-//         final Collection<String> relatedUris = conceptAggregate.getRelatedUris( relation );
-//         if ( relatedUris != null ) {
-//            relateds.addAll( relatedUris );
-//         }
-//      }
-//      return relateds;
    }
 
 

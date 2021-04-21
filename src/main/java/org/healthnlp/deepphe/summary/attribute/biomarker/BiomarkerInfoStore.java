@@ -1,8 +1,10 @@
 package org.healthnlp.deepphe.summary.attribute.biomarker;
 
+import org.apache.ctakes.core.util.StringUtil;
 import org.healthnlp.deepphe.summary.attribute.infostore.AttributeInfoStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -37,7 +39,14 @@ public class BiomarkerInfoStore extends AttributeInfoStore<BiomarkerUriInfoVisit
    public String getBestCode() {
       return _concepts.stream()
                       .map( ConceptAggregate::getCoveredText )
-                      .collect( Collectors.joining( " ; " ) );
+                     .map( s -> s.replace( '[', ' ' ) )
+                     .map( s -> s.replace( ']', ' ' ) )
+                     .map( String::trim )
+                     .map( String::toLowerCase )
+                     .map( s -> StringUtil.fastSplit( s, ',' ) )
+                     .flatMap( Arrays::stream )
+                     .distinct()
+                      .collect( Collectors.joining( ";" ) );
    }
 
 
