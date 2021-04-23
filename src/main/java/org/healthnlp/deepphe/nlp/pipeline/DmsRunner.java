@@ -106,6 +106,7 @@ public enum DmsRunner implements Closeable {
 
          final Patient patient = new Patient();
          patient.setId( docId );
+         patient.setName( docId );
          patient.setNotes( Collections.singletonList( note ) );
 
          return SummaryEngine.createPatientSummary( patient );
@@ -296,6 +297,7 @@ public enum DmsRunner implements Closeable {
    static private String summarizeNoteAsPatient( final String patientId, final Note note ) {
       final Patient patient = new Patient();
       patient.setId( patientId );
+      patient.setName( patientId );
       patient.setNotes( Collections.singletonList( note ) );
 
       final PatientSummary patientSummary = SummaryEngine.createPatientSummary( patient );
