@@ -20,7 +20,7 @@ public final class PatientCreator implements ObjectCreator<Patient> {
       patient.setBirth( "" );
       patient.setDeath( "" );
       patient.setGender( "" );
-      patient.setName( "" );
+      patient.setName( patientId );
       patient.setNotes( new ArrayList<>() );
       return patient;
    }
