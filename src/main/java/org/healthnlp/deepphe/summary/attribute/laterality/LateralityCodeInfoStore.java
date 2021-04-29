@@ -13,7 +13,7 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
       if ( dependencies.getOrDefault( "topography_major", "" ).startsWith( "C61" ) ) {
-         _bestCode = "";
+         _bestCode = "9";
       } else {
          _bestCode = getBestLateralityCode( uriInfoStore._uriStrengths );
       }
@@ -25,7 +25,7 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
 
    static private String getBestLateralityCode( final Map<String,Integer> uriStrengths ) {
       if ( uriStrengths.isEmpty() ) {
-         return "";
+         return "0";
       }
       final Map<Integer,List<String>> hitCounts = new HashMap<>();
       uriStrengths.forEach( (k,v) -> hitCounts.computeIfAbsent( v, l -> new ArrayList<>() )
@@ -38,12 +38,12 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
                .map( LateralityCodeInfoStore::getBestLateralityCode )
                .filter( n -> !n.isEmpty() )
                .findFirst()
-                      .orElse( "" );
+                      .orElse( "0" );
    }
 
    static public String getBestLateralityCode( final Collection<String> uris ) {
       if ( uris.isEmpty() ) {
-         return "";
+         return "0";
       }
       if ( uris.contains( UriConstants.BILATERAL ) ) {
          return "4";
@@ -65,7 +65,7 @@ public class LateralityCodeInfoStore implements CodeInfoStore {
          }
       }
       // What else could it be?
-      return "";
+      return "0";
    }
 
 
