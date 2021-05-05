@@ -13,6 +13,8 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.healthnlp.deepphe.neo4j.driver.DriverConnection;
+import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
+import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.neo4j.node.Patient;
 import org.healthnlp.deepphe.neo4j.node.PatientSummary;
 import org.healthnlp.deepphe.neo4j.util.JsonUtil;
@@ -22,6 +24,11 @@ import org.healthnlp.deepphe.summary.engine.SummaryEngine;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Transaction;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
@@ -85,6 +92,10 @@ public class NeoplasmNeo4jWriter extends JCasAnnotator_ImplBase {
       writePatient( patient );
    }
 
+   static private final Function<NeoplasmAttribute,NeoplasmAttribute> stripConfidence
+         = a -> {  a.setConfidenceFeatures( Collections.emptyList() );
+         return a; };
+
    static private void writePatient( final Patient patient ) throws AnalysisEngineProcessException {
       final String patientId = patient.getId();
 //      final String patientId = SourceMetadataUtil.getPatientIdentifier( jCas );
@@ -102,7 +113,17 @@ public class NeoplasmNeo4jWriter extends JCasAnnotator_ImplBase {
          // Add the summary just in case some other consumer can utilize it.  e.g. eval file writer.
          PatientSummaryNodeStore.getInstance().add( patientId, patientSummary );
       }
-      final Gson gson = new GsonBuilder().setPrettyPrinting()  .create();
+      final List<NeoplasmSummary> neoplasms = patientSummary.getNeoplasms();
+      for ( NeoplasmSummary neoplasm : neoplasms ) {
+         final List<NeoplasmAttribute> attributes
+               = neoplasm.getAttributes().stream()
+                         .filter( a -> !a.getValue().isEmpty() )
+                         .map( stripConfidence )
+                         .collect( Collectors.toList() );
+         neoplasm.setAttributes( attributes );
+      }
+      patientSummary.setNeoplasms( neoplasms );
+      final Gson gson = new GsonBuilder().setPrettyPrinting().create();
       final String summaryJson = gson.toJson( patientSummary );
       final String neo4jOkJson = JsonUtil.packForNeo4j( summaryJson );
       try ( Session session = driver.session() ) {

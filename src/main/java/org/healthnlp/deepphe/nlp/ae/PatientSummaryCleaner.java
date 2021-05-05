@@ -42,4 +42,14 @@ public class PatientSummaryCleaner extends JCasAnnotator_ImplBase {
       PatientSummaryNodeStore.getInstance().remove( patientId );
    }
 
+   /**
+    * Close the PatientSummaryNodeStore.
+    * {@inheritDoc}
+    */
+   @Override
+   public void collectionProcessComplete() throws AnalysisEngineProcessException {
+      super.collectionProcessComplete();
+      PatientSummaryNodeStore.getInstance().close();
+   }
+
 }
