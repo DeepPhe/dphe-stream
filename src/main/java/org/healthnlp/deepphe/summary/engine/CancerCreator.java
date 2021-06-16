@@ -4,8 +4,9 @@ package org.healthnlp.deepphe.summary.engine;
 import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
+import org.healthnlp.deepphe.neo4j.node.Cancer;
+import org.healthnlp.deepphe.neo4j.node.Fact;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
-import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.summary.attribute.DefaultAttribute;
 import org.healthnlp.deepphe.summary.attribute.behavior.BehaviorCodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.behavior.BehaviorUriInfoVisitor;
@@ -34,23 +35,22 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
-
 /**
  * @author SPF , chip-nlp
  * @version %I%
  * @since 7/15/2020
  */
-final public class NeoplasmSummaryCreator {
+final public class CancerCreator {
 
-   static private final Logger LOGGER = Logger.getLogger( "NeoplasmSummaryCreator" );
+   static private final Logger LOGGER = Logger.getLogger( "CancerCreator" );
 
    static public final StringBuilder DEBUG_SB = new StringBuilder();
 
-   private NeoplasmSummaryCreator() {}
+   private CancerCreator() {}
 
 
-   static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm,
-                                                        final Collection<ConceptAggregate> allConcepts ) {
+   static public Cancer createCancer( final ConceptAggregate neoplasm,
+                                      final Map<ConceptAggregate, Fact> factMap ) {
       DEBUG_SB.append( "=======================================================================\n" )
               .append( neoplasm.getPatientId() )
               .append( "\n" );
@@ -60,38 +60,39 @@ final public class NeoplasmSummaryCreator {
       final Predicate<ConceptAggregate> isNeoplasm = c -> c.getAllUris()
                                                            .stream()
                                                            .anyMatch( massNeoplasmUris::contains );
+      final Collection<ConceptAggregate> allConcepts = factMap.keySet();
       final Collection<ConceptAggregate> patientNeoplasms
             = allConcepts.stream()
                          .filter( isNeoplasm )
                          .collect( Collectors.toList() );
 
-      final NeoplasmSummary summary = new NeoplasmSummary();
-      summary.setId( neoplasm.getUri() + "_" + System.currentTimeMillis() );
-      summary.setClassUri( neoplasm.getUri() );
+      final Cancer cancer = new Cancer();
+      cancer.setId( neoplasm.getUri() + "_" + System.currentTimeMillis() );
+      cancer.setClassUri( neoplasm.getUri() );
+      cancer.setFactIds( Collections.singletonList( factMap.get( neoplasm ).getId() ) );
+      final Map<String,List<String>> factRelations = FactCreator.getFactRelations( factMap, neoplasm );
+      cancer.setRelatedFactIds( factRelations );
+
       final List<NeoplasmAttribute> attributes = new ArrayList<>();
 
-      final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );
-      final String lateralityCode = addLaterality( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
-      addTopoMinor( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode, lateralityCode );
-      addMorphology( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
-      addBehavior( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addGrade( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addStage( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addTnmT( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addTnmN( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addTnmM( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
-      addBiomarkers( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
+      final String topoCode = addTopography( neoplasm, cancer, attributes, allConcepts );
+      final String lateralityCode = addLaterality( neoplasm, cancer, attributes, allConcepts, patientNeoplasms, topoCode );
+      addTopoMinor( neoplasm, cancer, attributes, allConcepts, patientNeoplasms, topoCode, lateralityCode );
+      addMorphology( neoplasm, cancer, attributes, allConcepts, patientNeoplasms, topoCode );
+      addBehavior( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
+      addGrade( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
+      addStage( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
+      addTnmT( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
+      addTnmN( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
+      addTnmM( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
+      addBiomarkers( neoplasm, cancer, attributes, allConcepts, patientNeoplasms );
 
-//      summary.setPathologic_t( getT( neoplasm ) );
-//      summary.setPathologic_n( getN( neoplasm ) );
-//      summary.setPathologic_m( getM( neoplasm ) );
-
-      summary.setAttributes( attributes );
-      return summary;
+      cancer.setAttributes( attributes );
+      return cancer;
    }
 
    static private String addTopography( final ConceptAggregate neoplasm,
-                                      final NeoplasmSummary summary,
+                                      final Cancer cancer,
                                       final List<NeoplasmAttribute> attributes,
                                         final Collection<ConceptAggregate> allConcepts ) {
       final Topography topography = new Topography( neoplasm, allConcepts );
@@ -104,7 +105,7 @@ final public class NeoplasmSummaryCreator {
    }
 
    static private void addTopoMinor( final ConceptAggregate neoplasm,
-                                    final NeoplasmSummary summary,
+                                    final Cancer cancer,
                                     final List<NeoplasmAttribute> attributes,
                                     final Collection<ConceptAggregate> allConcepts,
                                     final Collection<ConceptAggregate> patientNeoplasms,
@@ -125,7 +126,7 @@ final public class NeoplasmSummaryCreator {
    }
 
    static private void addMorphology( final ConceptAggregate neoplasm,
-                                        final NeoplasmSummary summary,
+                                        final Cancer cancer,
                                         final List<NeoplasmAttribute> attributes,
                                         final Collection<ConceptAggregate> allConcepts,
                                       final Collection<ConceptAggregate> patientNeoplasms,
@@ -139,7 +140,7 @@ final public class NeoplasmSummaryCreator {
 
 
    static private void addBehavior( final ConceptAggregate neoplasm,
-                                      final NeoplasmSummary summary,
+                                      final Cancer cancer,
                                       final List<NeoplasmAttribute> attributes,
                                       final Collection<ConceptAggregate> allConcepts,
                                       final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -156,7 +157,7 @@ final public class NeoplasmSummaryCreator {
 
 
    static private String addLaterality( final ConceptAggregate neoplasm,
-                                 final NeoplasmSummary summary,
+                                 final Cancer cancer,
                                  final List<NeoplasmAttribute> attributes,
                                  final Collection<ConceptAggregate> allConcepts,
                                       final Collection<ConceptAggregate> patientNeoplasms,
@@ -177,7 +178,7 @@ final public class NeoplasmSummaryCreator {
 
 
    static private void addGrade( final ConceptAggregate neoplasm,
-                                        final NeoplasmSummary summary,
+                                        final Cancer cancer,
                                         final List<NeoplasmAttribute> attributes,
                                         final Collection<ConceptAggregate> allConcepts,
                                  final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -193,7 +194,7 @@ final public class NeoplasmSummaryCreator {
    }
 
    static private void addStage( final ConceptAggregate neoplasm,
-                                 final NeoplasmSummary summary,
+                                 final Cancer cancer,
                                  final List<NeoplasmAttribute> attributes,
                                  final Collection<ConceptAggregate> allConcepts,
                                  final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -205,14 +206,11 @@ final public class NeoplasmSummaryCreator {
                                       StageUriInfoVisitor::new,
                                       StageCodeInfoStore::new,
                                       Collections.emptyMap() );
-      if ( stage.getBestUri().isEmpty() || stage.getBestCode().isEmpty() ) {
-         return;
-      }
       attributes.add( stage.toNeoplasmAttribute() );
    }
 
    static private void addTnmT( final ConceptAggregate neoplasm,
-                                 final NeoplasmSummary summary,
+                                 final Cancer cancer,
                                  final List<NeoplasmAttribute> attributes,
                                  final Collection<ConceptAggregate> allConcepts,
                                  final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -224,14 +222,11 @@ final public class NeoplasmSummaryCreator {
                                       T_UriInfoVisitor::new,
                                       TnmCodeInfoStore::new,
                                       Collections.emptyMap() );
-      if ( t.getBestUri().isEmpty() || t.getBestCode().isEmpty() ) {
-         return;
-      }
       attributes.add( t.toNeoplasmAttribute() );
    }
 
    static private void addTnmN( final ConceptAggregate neoplasm,
-                                final NeoplasmSummary summary,
+                                final Cancer cancer,
                                 final List<NeoplasmAttribute> attributes,
                                 final Collection<ConceptAggregate> allConcepts,
                                 final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -243,14 +238,11 @@ final public class NeoplasmSummaryCreator {
                                       N_UriInfoVisitor::new,
                                       TnmCodeInfoStore::new,
                                       Collections.emptyMap() );
-      if ( n.getBestUri().isEmpty() || n.getBestCode().isEmpty() ) {
-         return;
-      }
       attributes.add( n.toNeoplasmAttribute() );
    }
 
    static private void addTnmM( final ConceptAggregate neoplasm,
-                                final NeoplasmSummary summary,
+                                final Cancer cancer,
                                 final List<NeoplasmAttribute> attributes,
                                 final Collection<ConceptAggregate> allConcepts,
                                 final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -262,9 +254,6 @@ final public class NeoplasmSummaryCreator {
                                       M_UriInfoVisitor::new,
                                       TnmCodeInfoStore::new,
                                       Collections.emptyMap() );
-      if ( m.getBestUri().isEmpty() || m.getBestCode().isEmpty() ) {
-         return;
-      }
       attributes.add( m.toNeoplasmAttribute() );
    }
 
@@ -303,22 +292,22 @@ final public class NeoplasmSummaryCreator {
 //      return String.join( ";", values );
 //   }
 
-
+   // TODO need PIK3CA  BRAF, NRAS, KIT, CTTNB1, GNA11, and GNAQ
    static private final Collection<String> BIOMARKERS = Arrays.asList(
          "ER_", "PR_", "HER2", "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
          "PDL1", "MSI", "KRAS", "PSA", "PSA_EL" );
 
    static private void addBiomarkers( final ConceptAggregate neoplasm,
-                                     final NeoplasmSummary summary,
+                                     final Cancer cancer,
                                      final List<NeoplasmAttribute> attributes,
                                      final Collection<ConceptAggregate> allConcepts,
                                      final Collection<ConceptAggregate> patientNeoplasms ) {
-       BIOMARKERS.forEach( b -> addBiomarker( b, neoplasm, summary, attributes, allConcepts, patientNeoplasms ) );
+       BIOMARKERS.forEach( b -> addBiomarker( b, neoplasm, cancer, attributes, allConcepts, patientNeoplasms ) );
    }
 
    static private void addBiomarker( final String biomarkerName,
                                        final ConceptAggregate neoplasm,
-                                        final NeoplasmSummary summary,
+                                        final Cancer cancer,
                                         final List<NeoplasmAttribute> attributes,
                                         final Collection<ConceptAggregate> allConcepts,
                                         final Collection<ConceptAggregate> patientNeoplasms ) {
@@ -326,9 +315,6 @@ final public class NeoplasmSummaryCreator {
                                       neoplasm,
                                       allConcepts,
                                       patientNeoplasms );
-      if ( biomarker.getBestUri().isEmpty() || biomarker.getBestCode().isEmpty() ) {
-         return;
-      }
       attributes.add( biomarker.toNeoplasmAttribute() );
    }
 

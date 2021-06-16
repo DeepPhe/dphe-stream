@@ -9,7 +9,7 @@ import java.util.Map;
  * @author SPF , chip-nlp
  * @since {4/9/2021}
  */
-public class BiomarkerCodeInfoStore implements CodeInfoStore {
+final public class BiomarkerCodeInfoStore implements CodeInfoStore {
 
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * @author SPF , chip-nlp
  * @since {4/9/2021}
  */
-public class BiomarkerUriInfoVisitor implements UriInfoVisitor {
+final public class BiomarkerUriInfoVisitor implements UriInfoVisitor {
 
    final private String _biomarkerName;
    private Collection<ConceptAggregate> _biomarkerConcepts;

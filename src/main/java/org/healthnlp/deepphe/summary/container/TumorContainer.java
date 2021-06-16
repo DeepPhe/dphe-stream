@@ -21,7 +21,7 @@ public class TumorContainer extends AbstractNeoplasmContainer {
    static private final org.apache.log4j.Logger LOGGER = Logger.getLogger( "TumorContainer" );
 
 
-   final private Collection<ConceptAggregate> _neoplasms = new HashSet<>();
+   final public Collection<ConceptAggregate> _neoplasms = new HashSet<>();
    final private Map<String, Collection<String>> _relatedUris = new HashMap<>();
 
    public TumorContainer( final ConceptAggregate neoplasm ) {

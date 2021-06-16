@@ -103,8 +103,8 @@ final public class ConceptAggregateMerger {
 
 //      LOGGER.info( "\nTumor Containers by Laterality and Location:" );
 //      tumorContainers.forEach( t -> LOGGER.info( "("
-//                                                 + t._neoplasms.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining(",") ) + ")" ) );
-
+//                                                 + t._neoplasms.stream().map( ConceptAggregate::getUri )
+//                                                               .collect( Collectors.joining( "," ) ) + ")" ) );
 
 
       neoplasms.removeAll( assignedNeoplasms );

@@ -54,5 +54,14 @@ final public class PatientNodeCollector extends JCasAnnotator_ImplBase {
       PatientCreator.addNote( patient, note );
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void collectionProcessComplete() throws AnalysisEngineProcessException {
+      super.collectionProcessComplete();
+      StorageChoices.getInstance().shutdown();
+   }
+
 
 }

@@ -17,7 +17,7 @@ package org.healthnlp.deepphe.core.ae
 add Neo4jEmbeddedConnectAe
 
 // Connect to remote data graph server db
-add Neo4jServerConnectAe
+//////// add Neo4jServerConnectAe    TODO
 
 //  Discover sections.
 package org.healthnlp.deepphe.nlp.ae.section
@@ -27,7 +27,7 @@ add Sectionizer
 add PittHeaderAnnotator
 
 //  Remove sections that should not be used by the rest of the pipeline.
-add SectionRemover
+//add SectionRemover
 
 
 //  Detect sentences using a machine learning model.
@@ -59,7 +59,7 @@ add TokenizerAnnotatorPTB
 add ContextDependentTokenizerAnnotator
 
 // Approximate a document creation time using TimeAnnotation normalization.
-add DocTimeApproximator ApproximateDocTime=True
+//add DocTimeApproximator ApproximateDocTime=True
 
 //  Tag word part of speech.
 addDescription POSTagger
@@ -133,7 +133,7 @@ add MelanomaDocEpisodeTagger
 //  Collect notes for a patient for later summarization.
 //add PatientNoteCollector
 // These collectors can be removed if all of the writers / consumers that need them implement AbstractFileWriter and store the patient/note in their createData method.
-add PatientNodeCollector
+//add PatientNodeCollector
 
 //  Summarize the patient phenotype.
 //add PatientSummarizer
@@ -144,13 +144,16 @@ add PatientNodeCollector
 
 //  Write patient phenotypes to the neo4j graph database.
 //add PatientNeo4jWriter
-add NeoplasmNeo4jWriter
+///////////// add NeoplasmNeo4jWriter  TODO
 
 //add JsonNodeCreator    Duplicate of PatientNodeCollector
 add html.HtmlTextWriter SubDirectory=HTML
 add pretty.plaintext.PrettyTextWriterFit SubDirectory=TEXT
 
 // add PatientJsonFileWriter SubDirectory=JSON
+package org.healthnlp.deepphe.summary.writer
+cli CancerEvalFile=c
+add EvalFileWriterXn SubDirectory=EVAL
 
 addLast PatientSummaryCleaner
 

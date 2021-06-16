@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,10 +39,12 @@ final public class PittHeaderAnnotator extends JCasAnnotator_ImplBase {
    public void process( final JCas jcas ) throws AnalysisEngineProcessException {
       LOGGER.info( "Parsing the Document Header ..." );
       final Collection<Segment> sections = JCasUtil.select( jcas, Segment.class );
+      final Collection<Segment> pghHeaders = new HashSet<>();
       for ( Segment section : sections ) {
          if ( !PittsburghHeader.isThisSectionType( section ) ) {
             continue;
          }
+         pghHeaders.add( section );
          final String text = section.getCoveredText();
          final Matcher dateMatcher = DATE_PATTERN.matcher( text );
          if ( dateMatcher.matches() ) {
@@ -64,8 +67,10 @@ final public class PittHeaderAnnotator extends JCasAnnotator_ImplBase {
             }
             SourceMetadataUtil.getOrCreateSourceData( jcas ).setSourceOriginalDate( sourceDataDate );
          }
-         break;
+//         break;
       }
+      // We don't want the Pitt headers to hang around for the rest of our processing.
+      pghHeaders.forEach( Segment::removeFromIndexes );
       LOGGER.info( "Finished Processing" );
    }
 

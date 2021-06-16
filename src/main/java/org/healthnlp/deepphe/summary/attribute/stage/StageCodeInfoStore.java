@@ -7,7 +7,7 @@ import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 import java.util.Map;
 
 
-public class StageCodeInfoStore implements CodeInfoStore {
+final public class StageCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 

@@ -10,7 +10,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import java.util.*;
 
 
-public class BehaviorCodeInfoStore implements CodeInfoStore {
+final public class BehaviorCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 

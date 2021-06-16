@@ -116,7 +116,7 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
            REGEX_POS_NEG_UNK_NA,
            true ),
 
-      HER2( "(?:HER-? ?2(?: ?\\/-? ?neu)?\\+?-?(?:\\s*ONCOGENE)?(?:\\s*\\(?ERBB2\\)?)?)",
+      HER2( "(?:HER-? ?2(?: ?\\/?-? ?neu)?\\+?-?(?:\\s*ONCOGENE)?(?:\\s*\\(?ERBB2\\)?)?)",
             "",
             REGEX_POS_NEG_UNK_NA ),
 
@@ -444,12 +444,25 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
                                            final int followingAnnotation ) {
       final int sentenceOrAnnotation = Math.min( followingAnnotation, sentenceSpan.getValue2() );
 //      final int windowSize = Math.min( text.length(), biomarkerSpan.getValue2() + biomarker._windowSize );
-      final String nextText = text.substring( biomarkerSpan.getValue2(), sentenceOrAnnotation );
+      String nextText = text.substring( biomarkerSpan.getValue2(), sentenceOrAnnotation );
       // Check for end of paragraph
       final int pIndex = nextText.indexOf( "\n\n" );
       if ( pIndex == 0 ) {
          return "";
       }
+      // Sometimes value sets are in brackets.  e.g.  "ER: [pos;neg;unk] = neg"
+      final int startBracket = nextText.indexOf( '[' );
+      if ( startBracket >= 0 ) {
+         final int endBracket = nextText.indexOf( ']', startBracket );
+         if ( endBracket > 0 ) {
+            final char[] chars = nextText.toCharArray();
+            for ( int i=startBracket+1; i<endBracket; i++ ) {
+               chars[ i ] = 'V';
+            }
+            nextText = new String( chars );
+         }
+      }
+
       if ( pIndex > 0 ) {
          return nextText.substring( 0, pIndex );
       }

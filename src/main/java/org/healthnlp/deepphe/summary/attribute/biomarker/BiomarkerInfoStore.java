@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @author SPF , chip-nlp
  * @since {4/9/2021}
  */
-public class BiomarkerInfoStore extends AttributeInfoStore<BiomarkerUriInfoVisitor, BiomarkerCodeInfoStore> {
+final public class BiomarkerInfoStore extends AttributeInfoStore<BiomarkerUriInfoVisitor, BiomarkerCodeInfoStore> {
 
    public BiomarkerInfoStore( final ConceptAggregate neoplasm,
                               final Supplier<BiomarkerUriInfoVisitor> uriVisitorCreator,

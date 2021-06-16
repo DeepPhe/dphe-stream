@@ -65,9 +65,14 @@ final public class ConceptAggregateHandler {
 //      finalBranches.forEach( c -> LOGGER.info( "Chain: (" + String.join( ",", c ) + ")" ) );
 
 
-      final Map<Mention, Collection<String>> locationUris = new HashMap<>();
+//      final Map<Mention, Collection<String>> locationUris = new HashMap<>();
+//      "Disease_Has_Primary_Anatomic_Site", "Disease_Has_Associated_Anatomic_Site", "Disease_Has_Metastatic_Anatomic_Site",
+//      "Disease_Has_Associated_Region", "Disease_Has_Associated_Cavity",
+//      "Finding_Has_Associated_Site", "Finding_Has_Associated_Region", "Finding_Has_Associated_Cavity"
+      final Map<String,Map<Mention,Collection<String>>> typeLocationUris = new HashMap<>();
       final Map<Mention, Collection<String>> lateralityUris = new HashMap<>();
-      buildPlacements( patientRelations, mentionIdMap, locationUris, lateralityUris );
+//      buildPlacements( patientRelations, mentionIdMap, locationUris, lateralityUris );
+      buildPlacements( patientRelations, mentionIdMap, typeLocationUris, lateralityUris );
 
 
 //      LOGGER.info( "!!!    Determined Locations for all Mentions." );
@@ -89,7 +94,8 @@ final public class ConceptAggregateHandler {
                                                              .flatMap( Collection::stream )
                                                              .collect( Collectors.toSet() );
          final List<List<Mention>> chains = new ArrayList<>();
-         MentionUtil.collateCoref( chains, mentionGroup, locationUris, lateralityUris );
+//         MentionUtil.collateCoref( chains, mentionGroup, locationUris, lateralityUris );
+         MentionUtil.collateCoref( chains, mentionGroup, typeLocationUris, lateralityUris );
          for ( List<Mention> chain : chains ) {
             if ( chain.size() > 1 ) {
                final Map<String, Collection<Mention>> noteIdMentionsMap = new HashMap<>();
@@ -109,7 +115,9 @@ final public class ConceptAggregateHandler {
 
 
 
-//               LOGGER.info( "Created ConceptAggregate " + concept.getUri() + " " + concept.getId() + " scored: " + concept.getUriScore() );
+               LOGGER.info( "Created " + chain.size() + "mention ConceptAggregate " + concept.getUri() + " " + concept.getId() + " "
+                                             + "scored:"
+                            + " " + concept.getUriScore() );
 //               uriRoots.forEach( (k,v) -> LOGGER.info( "URI " + k + " with -unordered- root URIs (" + String.join( ",", v ) + ")" ) );
 
 
@@ -138,7 +146,7 @@ final public class ConceptAggregateHandler {
                            Collections.singletonList( mentionNoteId.getKey() ) ) ) );
 
 
-//         LOGGER.info( "Created Simple ConceptAggregate of " + bestUri );
+         LOGGER.info( "Created Simple ConceptAggregate of " + bestUri );
 
 
       }
@@ -147,8 +155,8 @@ final public class ConceptAggregateHandler {
       addRelations( conceptAggregates.values(), patientRelations );
 
 
-//      LOGGER.info( "\n!!!     All Concept Aggregates:" );
-//      conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
+      LOGGER.info( "\n!!!     All Concept Aggregates:" );
+      conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
 
 
 
@@ -163,13 +171,52 @@ final public class ConceptAggregateHandler {
    }
 
 
-   // TODO Move to AnatomyUtil ?
+//   // TODO Move to AnatomyUtil ?
+//   static private void buildPlacements( final Collection<MentionRelation> relations,
+//                                        final Map<String,Mention> mentionIdMap,
+//                                        final Map<Mention, Collection<String>> locationUris,
+//                                        final Map<Mention, Collection<String>> lateralityUris ) {
+//      for ( MentionRelation relation : relations ) {
+//         if ( isLocationOf( relation ) ) {
+//            final String targetId = relation.getTargetId();
+//            final Mention target = mentionIdMap.get( targetId );
+//            if ( target == null ) {
+//               LOGGER.error( "No Target for relation." );
+//               continue;
+//            }
+//            final String uri = target.getClassUri();
+//            final String sourceId = relation.getSourceId();
+//            final Mention source = mentionIdMap.get( sourceId );
+//            if ( source == null ) {
+//               LOGGER.error( "No Source for relation." );
+//               continue;
+//            }
+//            locationUris.computeIfAbsent( source, a -> new HashSet<>() ).add( uri );
+//         } else if ( relation.getType().equals( RelationConstants.HAS_LATERALITY ) ) {
+//            final String targetId = relation.getTargetId();
+//            final Mention target = mentionIdMap.get( targetId );
+//            if ( target == null ) {
+//               LOGGER.error( "No Target for relation." );
+//               continue;
+//            }
+//            final String uri = target.getClassUri();
+//            final String sourceId = relation.getSourceId();
+//            final Mention source = mentionIdMap.get( sourceId );
+//            if ( source == null ) {
+//               LOGGER.error( "No Source for relation." );
+//               continue;
+//            }
+//            lateralityUris.computeIfAbsent( source, a -> new HashSet<>() ).add( uri );
+//         }
+//      }
+//   }
+
    static private void buildPlacements( final Collection<MentionRelation> relations,
                                         final Map<String,Mention> mentionIdMap,
-                                        final Map<Mention, Collection<String>> locationUris,
+                                        final Map<String,Map<Mention,Collection<String>>> typeLocationUris,
                                         final Map<Mention, Collection<String>> lateralityUris ) {
       for ( MentionRelation relation : relations ) {
-         if ( isLocationOf( relation ) ) {
+         if ( RelationConstants.isHasSiteRelation( relation.getType() ) ) {
             final String targetId = relation.getTargetId();
             final Mention target = mentionIdMap.get( targetId );
             if ( target == null ) {
@@ -183,6 +230,8 @@ final public class ConceptAggregateHandler {
                LOGGER.error( "No Source for relation." );
                continue;
             }
+            Map<Mention,Collection<String>> locationUris
+                  = typeLocationUris.computeIfAbsent( relation.getType(), t -> new HashMap<>() );
             locationUris.computeIfAbsent( source, a -> new HashSet<>() ).add( uri );
          } else if ( relation.getType().equals( RelationConstants.HAS_LATERALITY ) ) {
             final String targetId = relation.getTargetId();
@@ -204,9 +253,6 @@ final public class ConceptAggregateHandler {
    }
 
 
-   static private boolean isLocationOf( final MentionRelation relation ) {
-      return RelationConstants.isHasSiteRelation( relation.getType() );
-   }
 
 
 

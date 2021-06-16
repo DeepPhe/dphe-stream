@@ -7,7 +7,7 @@ import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import java.util.Map;
 
 
-public class GradeCodeInfoStore implements CodeInfoStore {
+final public class GradeCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 

@@ -1,17 +1,13 @@
 package org.healthnlp.deepphe.summary.engine;
 
 import org.apache.log4j.Logger;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
-import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
-import org.healthnlp.deepphe.summary.concept.ConceptAggregateHandler;
-import org.healthnlp.deepphe.summary.concept.ConceptAggregateMerger;
+import org.healthnlp.deepphe.summary.concept.bin.AssertionBin;
+import org.healthnlp.deepphe.summary.concept.bin.BinDistributor;
 import org.healthnlp.deepphe.util.ConceptAggregateUtil;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -26,7 +22,8 @@ final public class MultiSummaryEngine {
 
    static private final Logger LOGGER = Logger.getLogger( "MultiSummaryEngine" );
 
-   static public PatientSummary createPatientSummary( final Patient patient ) {
+   static public PatientSummaryXn createPatientSummaryXn( final Patient patient ) {
+      LOGGER.info( "Creating Patient Summary for " + patient.getId() + " ..." );
       final String patientId = patient.getId();
       final Map<Mention, String> patientMentionNoteIds = new HashMap<>();
       final Collection<MentionRelation> patientRelations = new ArrayList<>();
@@ -46,7 +43,7 @@ final public class MultiSummaryEngine {
 //         note.getCorefs().forEach( c -> LOGGER.info( "Chain: (" + String.join( ",", Arrays.asList( c.getIdChain() ) ) + ")" ) );
       }
 
-      final PatientSummary patientSummary = createPatientSummary( patientId,
+      final PatientSummaryXn patientSummary = createPatientSummaryXn( patientId,
                                                                   patientNotes,
                                                                   patientMentionNoteIds,
                                                                   patientRelations );
@@ -66,10 +63,100 @@ final public class MultiSummaryEngine {
     * @param patientRelations   -
     * @return map of cancer summary to tumor summaries
     */
-   static private PatientSummary createPatientSummary( final String patientId,
-                                                       final Collection<Note> patientNotes,
-                                                       final Map<Mention, String> patientMentionNoteIds,
-                                                       final Collection<MentionRelation> patientRelations ) {
+//   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
+//                                                           final Collection<Note> patientNotes,
+//                                                           final Map<Mention, String> patientMentionNoteIds,
+//                                                           final Collection<MentionRelation> patientRelations ) {
+////      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
+////      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
+////                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
+////      +
+////                   "  Concept Aggregates do not only aggregate cross-document mentions, but will also both aggregate and separate" +
+////                   " mentions in within-document coreference chains." +
+////                   "  So, yes, we could logically remove the coreference annotator from the nlp pipeline." +
+////                   "   I will experiment when I have time.   - 10/14/2020 Done." );
+////      LOGGER.info( "For the patient we have " + patientNotes.size() + " notes, "
+////                   + patientMentionNoteIds.size() + " mentions, "
+////                   + patientRelations.size() + " relations" );
+////                   + patientCorefs.size() + " coref chains." );
+////      final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
+////            = createUriConceptAggregateMap( patientId, patientNotes, patientMentionNoteIds, patientRelations, patientCorefs );
+////            = ConceptAggregateHandler.createUriConceptAggregateMap( patientId, patientMentionNoteIds, patientRelations );
+//
+//      final Collection<Mention> affirmedMentions = BinDistributor.getAffirmedMentions( patientMentionNoteIds.keySet() );
+//      final Map<String,Mention> idToMentionMap = BinDistributor.mapIdToMention( affirmedMentions );
+//
+//      final Map<BinDistributor.MentionType,Collection<Mention>> categorizedMentions =
+//            BinDistributor.categorizeMentions( affirmedMentions );
+//      // Cancers still exist here.
+//categorizedMentions.get( BinDistributor.MentionType.CANCER ).forEach( m -> LOGGER.info( m.getClassUri() ) );
+//
+//      // Put neoplasm mention and relation information in a singleton that can be referenced by multiple classes.
+//      final Map<Mention,Map<String,Collection<Mention>>> cancerRelationsMap
+//            = BinDistributor.mapNeoplasmRelations( categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                                   idToMentionMap,
+//                                                   patientRelations );
+//      NeoplasmStore.getStore( NeoplasmType.CANCER )
+//                   .setNeoplasms( categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                  cancerRelationsMap );
+//
+//      final Map<Mention,Map<String,Collection<Mention>>> tumorRelationsMap
+//            = BinDistributor.mapNeoplasmRelations( categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                                   idToMentionMap,
+//                                                   patientRelations );
+//      NeoplasmStore.getStore( NeoplasmType.TUMOR )
+//                   .setNeoplasms( categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                  tumorRelationsMap );
+//
+//      //
+//      // CREATE CONCEPTS
+//      //
+//
+//      final Map<String,Collection<String>> allUriRoots = BinDistributor.mapUriRoots( affirmedMentions );
+//      final Collection<ConceptAggregate> cancerConcepts
+//            = BinDistributor.createNeoplasmConcepts( patientId,
+//                                                     patientMentionNoteIds,
+//                                                     NeoplasmType.CANCER,
+//                                                     categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                                     cancerRelationsMap,
+//                                                     allUriRoots );
+//      final Collection<ConceptAggregate> tumorConcepts
+//            = BinDistributor.createNeoplasmConcepts( patientId,
+//                                                     patientMentionNoteIds,
+//                                                     NeoplasmType.TUMOR,
+//                                                     categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                                     tumorRelationsMap,
+//                                                     allUriRoots );
+//
+//      final Collection<ConceptAggregate> nonNeoplasmConcepts
+//            = BinDistributor.createNonNeoplasmConcepts( patientId,
+//                                                        patientMentionNoteIds,
+//                                                        categorizedMentions.get( BinDistributor.MentionType.OTHER ),
+//                                                        allUriRoots );
+//
+//      // Expand relations from original mention relations to conceptAggregate relations.
+//      final Collection<ConceptAggregate> allConcepts = new HashSet<>( cancerConcepts );
+//      allConcepts.addAll( tumorConcepts );
+//      allConcepts.addAll( nonNeoplasmConcepts );
+//      final Map<Mention,Collection<ConceptAggregate>> allMentionConcepts
+//            = BinDistributor.mapMentionToConcepts( allConcepts );
+//      BinDistributor.expandNonNeoplasmRelations( patientRelations,
+//                                                 categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                                 categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                                 idToMentionMap,
+//                                                 allMentionConcepts );
+//      BinDistributor.expandNeoplasmRelations( NeoplasmType.CANCER, allMentionConcepts );
+//      BinDistributor.expandNeoplasmRelations( NeoplasmType.TUMOR, allMentionConcepts );
+//
+//      NeoplasmStore.getStore( NeoplasmType.CANCER ).clear();
+//      NeoplasmStore.getStore( NeoplasmType.TUMOR ).clear();
+////      return createPatientSummaryXn( patientId, neoplasmConcepts, allConcepts );
+//      return createPatientSummaryXn( patientId, cancerConcepts, tumorConcepts, allConcepts );
+//   }
+   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
+                                                           final Collection<Note> patientNotes,
+                                                           final Map<Mention, String> patientMentionNoteIds,
+                                                           final Collection<MentionRelation> patientRelations ) {
 //      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
 //      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
 //                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
@@ -82,59 +169,259 @@ final public class MultiSummaryEngine {
 //                   + patientMentionNoteIds.size() + " mentions, "
 //                   + patientRelations.size() + " relations" );
 //                   + patientCorefs.size() + " coref chains." );
-      final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
+//      final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
 //            = createUriConceptAggregateMap( patientId, patientNotes, patientMentionNoteIds, patientRelations, patientCorefs );
-            = ConceptAggregateHandler.createUriConceptAggregateMap( patientId, patientMentionNoteIds, patientRelations );
-      return createPatientSummary( patientId, uriConceptAggregateMap );
+//            = ConceptAggregateHandler.createUriConceptAggregateMap( patientId, patientMentionNoteIds, patientRelations );
+
+      final Collection<Mention> affirmedMentions = AssertionBin.getAffirmedMentions( patientMentionNoteIds.keySet() );
+      final Map<String,Mention> idToMentionMap = BinDistributor.mapIdToMention( affirmedMentions );
+      final Map<Mention,Map<String,Collection<Mention>>> relationsMap
+            = BinDistributor.mapRelations( affirmedMentions, idToMentionMap, patientRelations );
+
+      final AssertionBin affirmedBin = new AssertionBin();
+      // creates cancer and tumor bins, returns non neoplasm mentions
+      final Collection<Mention> nonNeoplasms = affirmedBin.splitMentions( affirmedMentions, relationsMap );
+
+      final Map<String,Collection<String>> allUriRoots = BinDistributor.mapUriRoots( affirmedMentions );
+
+      affirmedBin.distributeSites( allUriRoots );
+
+
+
+//
+//
+//      final Map<BinDistributor.MentionType,Collection<Mention>> categorizedMentions =
+//            BinDistributor.categorizeMentions( affirmedMentions );
+//      // Cancers still exist here.
+//      categorizedMentions.get( BinDistributor.MentionType.CANCER ).forEach( m -> LOGGER.info( m.getClassUri() ) );
+//
+//      // Put neoplasm mention and relation information in a singleton that can be referenced by multiple classes.
+//      final Map<Mention,Map<String,Collection<Mention>>> cancerRelationsMap
+//            = BinDistributor.mapNeoplasmRelations( categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                                   idToMentionMap,
+//                                                   patientRelations );
+//      NeoplasmStore.getStore( NeoplasmType.CANCER )
+//                   .setNeoplasms( categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                  cancerRelationsMap );
+//
+//      final Map<Mention,Map<String,Collection<Mention>>> tumorRelationsMap
+//            = BinDistributor.mapNeoplasmRelations( categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                                   idToMentionMap,
+//                                                   patientRelations );
+//      NeoplasmStore.getStore( NeoplasmType.TUMOR )
+//                   .setNeoplasms( categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                  tumorRelationsMap );
+//
+//      //
+//      // CREATE CONCEPTS
+//      //
+//
+//      final Map<String,Collection<String>> allUriRoots = BinDistributor.mapUriRoots( affirmedMentions );
+//      final Collection<ConceptAggregate> cancerConcepts
+//            = BinDistributor.createNeoplasmConcepts( patientId,
+//                                                     patientMentionNoteIds,
+//                                                     NeoplasmType.CANCER,
+//                                                     categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                                     cancerRelationsMap,
+//                                                     allUriRoots );
+//      final Collection<ConceptAggregate> tumorConcepts
+//            = BinDistributor.createNeoplasmConcepts( patientId,
+//                                                     patientMentionNoteIds,
+//                                                     NeoplasmType.TUMOR,
+//                                                     categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                                     tumorRelationsMap,
+//                                                     allUriRoots );
+//
+//      final Collection<ConceptAggregate> nonNeoplasmConcepts
+//            = BinDistributor.createNonNeoplasmConcepts( patientId,
+//                                                        patientMentionNoteIds,
+//                                                        categorizedMentions.get( BinDistributor.MentionType.OTHER ),
+//                                                        allUriRoots );
+//
+//      // Expand relations from original mention relations to conceptAggregate relations.
+//      final Collection<ConceptAggregate> allConcepts = new HashSet<>( cancerConcepts );
+//      allConcepts.addAll( tumorConcepts );
+//      allConcepts.addAll( nonNeoplasmConcepts );
+//      final Map<Mention,Collection<ConceptAggregate>> allMentionConcepts
+//            = BinDistributor.mapMentionToConcepts( allConcepts );
+//      BinDistributor.expandNonNeoplasmRelations( patientRelations,
+//                                                 categorizedMentions.get( BinDistributor.MentionType.CANCER ),
+//                                                 categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
+//                                                 idToMentionMap,
+//                                                 allMentionConcepts );
+//      BinDistributor.expandNeoplasmRelations( NeoplasmType.CANCER, allMentionConcepts );
+//      BinDistributor.expandNeoplasmRelations( NeoplasmType.TUMOR, allMentionConcepts );
+//
+//      NeoplasmStore.getStore( NeoplasmType.CANCER ).clear();
+//      NeoplasmStore.getStore( NeoplasmType.TUMOR ).clear();
+//      return createPatientSummaryXn( patientId, neoplasmConcepts, allConcepts );
+
+
+//      final Collection<SiteNeoplasmBin> siteNeoplasmBins = affirmedBin.getSiteNeoplasmBins();
+//
+//      final Map<ConceptAggregate,Collection<ConceptAggregate>> cancerTumorConcepts =
+//            BinDistributor.createCancerTumors(  patientId, patientMentionNoteIds, allUriRoots  );
+//
+//      final Map<Mention,Collection<ConceptAggregate>> mentionConceptsMap
+//            = BinDistributor.createNonNeoplasms( nonNeoplasms, patientId, patientMentionNoteIds, allUriRoots );
+//      mentionConceptsMap.putAll( BinDistributor.mapMentionToConcepts( cancerConcepts ) );
+//      mentionConceptsMap.putAll( BinDistributor.mapMentionToConcepts( tumorConcepts ) );
+//
+//      BinDistributor.assignConceptRelations( mentionConceptsMap, relationsMap );
+//
+//
+//      final Collection<ConceptAggregate> allConcepts = mentionConceptsMap.values()
+//                                                                         .stream()
+//                                                                         .flatMap( Collection::stream )
+//                                                                         .collect( Collectors.toSet() );
+//
+//      return createPatientSummaryXn( patientId, cancerConcepts, tumorConcepts, allConcepts );
+      return null;
    }
 
 
-   static private PatientSummary createPatientSummary( final String patientId,
-                                                       final Map<String, Collection<ConceptAggregate>> uriConceptAggregates ) {
-      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
-                                                             .getGraph();
-      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
 
 
-//      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );
-//      LOGGER.info( "We are now using the ConceptAggregates for the patient to create Cancer Summaries." +
-//                   "  For KCR we force this down to a single summary, but that is only for the simplicity of the dataset." +
-//                   "  dPhe Classic does not do this.  I think that this will not be done at some future date for CR." );
+
+//   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
+//                                                       final Collection<Note> patientNotes,
+//                                                       final Map<Mention, String> patientMentionNoteIds,
+//                                                       final Collection<MentionRelation> patientRelations ) {
+////      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
+////      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
+////                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
+////      +
+////                   "  Concept Aggregates do not only aggregate cross-document mentions, but will also both aggregate and separate" +
+////                   " mentions in within-document coreference chains." +
+////                   "  So, yes, we could logically remove the coreference annotator from the nlp pipeline." +
+////                   "   I will experiment when I have time.   - 10/14/2020 Done." );
+////      LOGGER.info( "For the patient we have " + patientNotes.size() + " notes, "
+////                   + patientMentionNoteIds.size() + " mentions, "
+////                   + patientRelations.size() + " relations" );
+////                   + patientCorefs.size() + " coref chains." );
+////      final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
+////            = createUriConceptAggregateMap( patientId, patientNotes, patientMentionNoteIds, patientRelations, patientCorefs );
+////            = ConceptAggregateHandler.createUriConceptAggregateMap( patientId, patientMentionNoteIds, patientRelations );
+//
+//
+//      final Collection<ConceptAggregate> neoplasmConcepts = BinDistributor.createConceptAggregates( patientId,
+//                                                                                            patientMentionNoteIds,
+//                                                                                            patientRelations );
+//      // TODO - convert everything that isn't a neoplasm into ConceptAggregates.
+//      // TODO - Map<Uri,Collection<Mention>> , UriUtil.getAssociatedUris(..), -> ConceptAggregates.
+//      // TODO - set relations on all of the ConceptAggregates.  First Map<Mention,Collection<ConceptAggregate>>
+//      final Map<String,List<ConceptAggregate>> uriConceptsMap
+//            = neoplasmConcepts.stream()
+//                      .collect( Collectors.groupingBy( ConceptAggregate::getUri ) );
+//
+//      return createPatientSummaryXn( patientId, uriConceptsMap );
+//   }
 
 
-      final Collection<ConceptAggregate> allAggregates = new HashSet<>();
-      final Collection<ConceptAggregate> neoplasmAggregates = new HashSet<>();
+//   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
+////                                                       final Map<String, Collection<ConceptAggregate>> uriConceptAggregates ) {
+//                                                           final Map<String, List<ConceptAggregate>> uriConceptsMap ) {
+//      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
+//                                                             .getGraph();
+//      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
+//
+//
+////      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );
+////      LOGGER.info( "We are now using the ConceptAggregates for the patient to create Cancer Summaries." +
+////                   "  For KCR we force this down to a single summary, but that is only for the simplicity of the dataset." +
+////                   "  dPhe Classic does not do this.  I think that this will not be done at some future date for CR." );
+//
+//
+//      final Collection<ConceptAggregate> allAggregates = new HashSet<>();
+//      final Collection<ConceptAggregate> neoplasmAggregates = new HashSet<>();
+//
+//      for ( Map.Entry<String, List<ConceptAggregate>> uriConcepts : uriConceptsMap.entrySet() ) {
+//         allAggregates.addAll( uriConcepts.getValue() );
+//         final String uri = uriConcepts.getKey();
+//         if ( !massNeoplasms.contains( uri ) ) {
+//            continue;
+//         }
+//         for ( ConceptAggregate concept : uriConcepts.getValue() ) {
+//            if ( concept.isWantedForSummary() && concept.hasWantedRelations() ) {
+//               neoplasmAggregates.add( concept );
+//
+//
+////               LOGGER.info( "ConceptAggregate " + concept.getUri() + " " + concept.getId() + " is a neoplasm and
+////               will be used for a Summary." );
+//
+//
+//            }
+//         }
+//      }
+//      return createPatientSummaryXn( patientId, neoplasmAggregates, allAggregates );
+//   }
 
-      for ( Map.Entry<String, Collection<ConceptAggregate>> conceptsEntry : uriConceptAggregates.entrySet() ) {
-         allAggregates.addAll( conceptsEntry.getValue() );
-         final String uri = conceptsEntry.getKey();
-         if ( !massNeoplasms.contains( uri ) ) {
-            continue;
-         }
-         for ( ConceptAggregate concept : conceptsEntry.getValue() ) {
-            if ( concept.isWantedForSummary() && concept.hasWantedRelations() ) {
-               neoplasmAggregates.add( concept );
 
+//   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
+//                                                       final Collection<ConceptAggregate> neoplasmConcepts,
+//                                                       final Collection<ConceptAggregate> allConcepts ) {
+//
+//      // TODO
+//      // TODO
+//      // TODO
+//      // TODO   --->>   This is redoing locations.  Need to merge without doing that.
+//
+//      neoplasmConcepts.forEach( LOGGER::info );
+//
+//
+//
+//      final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap
+//            = ConceptAggregateMerger.mergeNeoplasms( neoplasmConcepts, allConcepts );
+//
+//      // TODO Remove keys (Cancers) with mentions < max mention count / 4 (or some settable number)
+//      final int maxMentions = diagnosisMap.keySet().stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
+//      final Collection<ConceptAggregate> tooSmall =
+//            diagnosisMap.keySet().stream().filter( c -> c.getMentions().size() < maxMentions/3 ).collect(
+//                  Collectors.toList() );
+//      LOGGER.info( "Removing Too Small "
+//                   + tooSmall.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining( ";" ) ) );
+//      diagnosisMap.keySet().removeAll( tooSmall );
+//
+//      return summarizeConceptAggregateMap( patientId, diagnosisMap, allConcepts );
+//   }
 
-//               LOGGER.info( "ConceptAggregate " + concept.getUri() + " " + concept.getId() + " is a neoplasm and
-//               will be used for a Summary." );
+   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
+                                                           final Collection<ConceptAggregate> cancerConcepts,
+                                                           final Collection<ConceptAggregate> tumorConcepts,
+                                                           final Collection<ConceptAggregate> allConcepts ) {
 
+      // TODO
+      // TODO
+      // TODO
+      // TODO   --->>   This is redoing locations.  Need to merge without doing that.
+      LOGGER.info( "!!!  Cancers  !!!" );
+      cancerConcepts.stream()
+                    .sorted( Comparator.comparing( ConceptAggregate::getUri )
+                                       .thenComparing( ConceptAggregate::getId ) )
+                    .forEach( LOGGER::info );
+      LOGGER.info( "!!!  Tumors  !!!" );
+      tumorConcepts.stream()
+                   .sorted( Comparator.comparing( ConceptAggregate::getUri )
+                                      .thenComparing( ConceptAggregate::getId ) )
+                   .forEach( LOGGER::info );
 
-            }
-         }
-      }
-      return createPatientSummary( patientId, neoplasmAggregates, allAggregates );
+//
+//
+//      final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap
+//            = ConceptAggregateMerger.mergeNeoplasms( neoplasmConcepts, allConcepts );
+//
+//      // TODO Remove keys (Cancers) with mentions < max mention count / 4 (or some settable number)
+//      final int maxMentions = diagnosisMap.keySet().stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
+//      final Collection<ConceptAggregate> tooSmall =
+//            diagnosisMap.keySet().stream().filter( c -> c.getMentions().size() < maxMentions/3 ).collect(
+//                  Collectors.toList() );
+//      LOGGER.info( "Removing Too Small "
+//                   + tooSmall.stream().map( ConceptAggregate::getUri ).collect( Collectors.joining( ";" ) ) );
+//      diagnosisMap.keySet().removeAll( tooSmall );
+//
+//      return summarizeConceptAggregateMap( patientId, diagnosisMap, allConcepts );
+      return null;
    }
-
-
-   static private PatientSummary createPatientSummary( final String patientId,
-                                                       final Collection<ConceptAggregate> neoplasmConcepts,
-                                                       final Collection<ConceptAggregate> allConcepts ) {
-      final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap
-            = ConceptAggregateMerger.mergeNeoplasms( neoplasmConcepts, allConcepts );
-      return summarizeConceptAggregateMap( patientId, diagnosisMap, allConcepts );
-   }
-
 
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,18 +438,16 @@ final public class MultiSummaryEngine {
     * @param allConcepts -
     * @return -
     */
-   static private PatientSummary summarizeConceptAggregateMap( final String patientId,
+   static private PatientSummaryXn summarizeConceptAggregateMap( final String patientId,
                                                                final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap,
                                                                final Collection<ConceptAggregate> allConcepts ) {
 
-   /// TODO - Don't Merge
-//      final ConceptAggregate naaccrCancer = ConceptAggregateMerger.createNaaccrCancer( patientId, diagnosisMap, allConcepts );
+      final Map<ConceptAggregate,Fact> factMap = FactCreator.createFactMap( allConcepts );
 
-      final List<NeoplasmSummary> cancers = new ArrayList<>( diagnosisMap.size() );
+      final List<Cancer> cancers = new ArrayList<>( diagnosisMap.size() );
       for ( Map.Entry<ConceptAggregate,Collection<ConceptAggregate>> diagnosisEntry : diagnosisMap.entrySet() ) {
-         final NeoplasmSummary cancer = NeoplasmSummaryCreator.createNeoplasmSummary( diagnosisEntry.getKey(),
-                                                                                      allConcepts );
-         final List<NeoplasmSummary> tumors = new ArrayList<>( diagnosisEntry.getValue().size() );
+         final Cancer cancer = CancerCreator.createCancer( diagnosisEntry.getKey(), factMap );
+         final List<Tumor> tumors = new ArrayList<>( diagnosisEntry.getValue().size() );
          for ( ConceptAggregate cancerTumor : diagnosisEntry.getValue() ) {
             final Map<String,Collection<ConceptAggregate>> related = cancerTumor.getRelatedConceptMap();
             final Collection<String> removals = related.keySet().stream()
@@ -170,13 +455,13 @@ final public class MultiSummaryEngine {
                                                        .collect( Collectors.toList() );
             LOGGER.info( "Cancer Only Removals\n" + String.join( " ; ", removals ) );
             related.keySet().removeAll( removals );
-            tumors.add( NeoplasmSummaryCreator.createNeoplasmSummary( cancerTumor, allConcepts ) );
+            tumors.add( TumorCreator.createTumor( cancerTumor, factMap ) );
          }
-         cancer.setSubSummaries( tumors );
+         cancer.setTumors( tumors.stream()
+                                 .sorted( Comparator.comparing( Tumor::getId ) )
+                                 .collect( Collectors.toList() ) );
          cancers.add( cancer );
       }
-
-      final List<Fact> facts = createFacts( allConcepts );
 
 //      LOGGER.info( "\n===================== NAACCR Cancer =============================" );
 //      LOGGER.info( naaccrCancer );
@@ -184,57 +469,18 @@ final public class MultiSummaryEngine {
 //      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer );
 //      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer, allConcepts );
 
-      final PatientSummary patientSummary = new PatientSummary();
+      final PatientSummaryXn patientSummary = new PatientSummaryXn();
       patientSummary.setId( patientId );
-      patientSummary.setNeoplasms( cancers );
-      patientSummary.setFacts( facts );
+      patientSummary.setCancers( cancers.stream()
+                                       .sorted( Comparator.comparing( Cancer::getId ) )
+                                       .collect( Collectors.toList() ) );
+      patientSummary.setFacts( new ArrayList<>( factMap.values()
+                                                       .stream()
+                                                       .sorted( Comparator.comparing( Fact::getId ) )
+                                                       .collect( Collectors.toList() ) ) );
       return patientSummary;
    }
 
-
-   static private List<Fact> createFacts( final Collection<ConceptAggregate> concepts ) {
-      final Map<ConceptAggregate,Fact> FactMap = createFactMap( concepts );
-      return finalizeFacts( FactMap );
-   }
-
-   static private Map<ConceptAggregate,Fact> createFactMap( final Collection<ConceptAggregate> concepts ) {
-      return concepts.stream()
-                     .collect( Collectors.toMap( Function.identity(), MultiSummaryEngine::initFact ) );
-   }
-
-   static private List<Fact> finalizeFacts( final Map<ConceptAggregate,Fact> FactMap ) {
-      return FactMap.keySet()
-                         .stream()
-                         .map( c -> addFactRelations( FactMap, c ) )
-                         .collect( Collectors.toList() );
-   }
-
-   static private Fact initFact( final ConceptAggregate concept ) {
-      final Fact Fact = new Fact();
-      Fact.setId( concept.getId() );
-      Fact.setClassUri( concept.getUri() );
-      Fact.setName( concept.getPreferredText() );
-      return Fact;
-   }
-
-   static private Fact addFactRelations( final Map<ConceptAggregate,Fact> FactMap,
-                                                   final ConceptAggregate concept ) {
-      final Fact Fact = FactMap.get( concept );
-      if ( Fact == null ) {
-         return null;
-      }
-      Map<String,List<Fact>> FactRelations = new HashMap<>();
-      for ( Map.Entry<String,Collection<ConceptAggregate>> entry : concept.getRelatedConceptMap().entrySet() ) {
-         final List<Fact> facts = entry.getValue()
-                                                  .stream()
-                                                  .map( FactMap::get )
-                                                  .filter( Objects::nonNull )
-                                                  .collect( Collectors.toList() );
-         FactRelations.put( entry.getKey(), facts );
-      }
-      Fact.setRelatedFacts( FactRelations );
-      return Fact;
-   }
 
 
 

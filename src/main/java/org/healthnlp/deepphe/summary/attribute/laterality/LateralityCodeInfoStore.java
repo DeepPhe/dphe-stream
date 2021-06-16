@@ -6,7 +6,7 @@ import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
 import java.util.*;
 
-public class LateralityCodeInfoStore implements CodeInfoStore {
+final public class LateralityCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 
