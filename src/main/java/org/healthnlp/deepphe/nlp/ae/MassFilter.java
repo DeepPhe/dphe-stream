@@ -30,7 +30,7 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
       LOGGER.info( "Removing misidentified Masses ..." );
       // TODO should be able to handle this with pos, but for now brute force
 
-      final String docText = jCas.getDocumentText();
+      final String docText = jCas.getDocumentText().toLowerCase();
       final Collection<IdentifiedAnnotation> annotations = JCasUtil.select( jCas, IdentifiedAnnotation.class );
       final Collection<IdentifiedAnnotation> removals = new ArrayList<>();
 
@@ -66,7 +66,7 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
          }
       }
 
-      LOGGER.info( "Removing unwanted anatomic sites ..." );
+//      LOGGER.info( "Removing unwanted anatomic sites ..." );
 //      final GraphDatabaseService graphDb = Neo4jConnectionFactory.getInstance()
 //                                                                 .getGraph();
 //      Neo4jOntologyConceptUtil.getUriAnnotationsByUris( jCas, UriConstants.getUnwantedAnatomyUris( graphDb ) )
@@ -97,7 +97,6 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
 //                      .collect( Collectors.toSet() );
 //      adh.forEach( IdentifiedAnnotation::removeFromIndexes );
 
-      LOGGER.info( "Finished Processing" );
    }
 
 

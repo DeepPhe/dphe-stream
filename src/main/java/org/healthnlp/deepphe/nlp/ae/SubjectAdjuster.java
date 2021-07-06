@@ -27,7 +27,10 @@ final public class SubjectAdjuster extends JCasAnnotator_ImplBase {
 
    static private final Logger LOGGER = Logger.getLogger( "SubjectAdjuster" );
 
-   static private final String[] FAMILY = { "mother", "father", "sister", "brother", "cousin", "aunt", "uncle" };
+   static private final String[] FAMILY = { " mother", " father", " sister", " brother", " cousin", " aunt", " uncle",
+                                            " grandfather", " grandmother",
+                                            "mother ", "father ", "sister ", "brother ", "cousin ", "aunt ", "uncle ",
+                                            "grandfather ", "grandmother " };
 
    // TODO merge with setSegmentId for speed
    // TODO add section check - family history, patient history for subject and/or historic
@@ -52,8 +55,6 @@ final public class SubjectAdjuster extends JCasAnnotator_ImplBase {
                  .forEach( a -> a.setSubject( CONST.ATTR_SUBJECT_PATIENT ) );
          }
       }
-
-      LOGGER.info( "Finished." );
    }
 
 

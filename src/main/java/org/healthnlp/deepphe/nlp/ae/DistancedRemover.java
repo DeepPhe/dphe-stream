@@ -36,7 +36,6 @@ final public class DistancedRemover extends JCasAnnotator_ImplBase {
       final String documentText = jcas.getDocumentText();
       final Collection<LocationOfTextRelation> locationOfs = JCasUtil.select( jcas, LocationOfTextRelation.class );
       if ( locationOfs == null || locationOfs.isEmpty() ) {
-         LOGGER.info( "Finished Processing" );
          return;
       }
       final Collection<String> neoplasmUris = Collections.singletonList( UriConstants.NEOPLASM );
@@ -46,7 +45,6 @@ final public class DistancedRemover extends JCasAnnotator_ImplBase {
                                                                      .flatMap( Collection::stream )
                                                                      .collect( Collectors.toSet() );
       if ( neoplasms.isEmpty() ) {
-         LOGGER.info( "Finished Processing" );
          return;
       }
       final Collection<LocationOfTextRelation> removals = new HashSet<>();
@@ -68,7 +66,6 @@ final public class DistancedRemover extends JCasAnnotator_ImplBase {
          }
       }
       removals.forEach( LocationOfTextRelation::removeFromIndexes );
-      LOGGER.info( "Finished Processing" );
    }
 
 

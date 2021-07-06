@@ -1,8 +1,15 @@
 package org.healthnlp.deepphe.summary.concept.bin;
 
+import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
+import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
+import org.neo4j.graphdb.GraphDatabaseService;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.*;
@@ -46,13 +53,20 @@ enum SiteType {
       return matches;
    }
 
-   Map<String,Set<Mention>> getMatchingSites( final Map<String,Collection<Mention>> relations ) {
+
+   Collection<String> getMatchingSiteUris( final Map<String,Collection<Mention>> relations ) {
+      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
+      final Collection<String> validLocations = new HashSet<>( UriConstants.getLocationUris( graphDb ) );
+      // TODO - Move this to URI Constants.
+      validLocations.removeAll( Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT ) );
       return relations.entrySet()
                       .stream()
                       .filter( e -> _relationTypes.contains( e.getKey() ) )
                       .map( Map.Entry::getValue )
                       .flatMap( Collection::stream )
-                      .collect( Collectors.groupingBy( Mention::getClassUri, Collectors.toSet() ) );
+                      .map( Mention::getClassUri )
+                      .filter( validLocations::contains )
+                      .collect( Collectors.toSet() );
    }
 
 

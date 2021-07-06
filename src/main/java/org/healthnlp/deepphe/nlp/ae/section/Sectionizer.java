@@ -104,10 +104,14 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
      */
     private static Pattern buildPattern(String[] line) {
         StringBuffer sb = new StringBuffer();
-        for (int i = 1; i < line.length; i++) {
+//        for (int i = 1; i < line.length; i++) {
+        for (int i = 0; i < line.length; i++) {
             // Build the RegEx pattern for each comma delimited header name
             // Suffixed with a aggregator pipe
-            sb.append("\\s*" + line[i].trim() + "(\\n|\\s\\s|\\s:|:|\\s-|-)");
+//            sb.append("\\s*" + line[i].trim() + "(\\n|\\s\\s|\\s:|:|\\s-|-)");
+            sb.append("\\s*" )
+              .append( line[i].trim() )
+              .append( "(\\s?((:|-)?(\\s\\s|\\r?\\n))|(:\\s|-\\s))" );
             if (i != line.length - 1) {
                 sb.append("|");
             }
@@ -135,6 +139,7 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
                 for (int index=begin; index < end; index++) {
                     if (!Character.isWhitespace(text.charAt(index))) {
                         isAllWhiteSpace = false;
+                        break;
                     }
                 }
 
@@ -175,11 +180,7 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
 
         // Need the sections in sorted order to determine the end of the text within the section,
         // which is assumed to be the beginning of the next section header
-        Collections.sort(sections, new Comparator<Segment>() {
-            public int compare(Segment s1, Segment s2) {
-                return s1.getBegin() - (s2.getBegin());
-            }
-        });
+        sections.sort( Comparator.comparingInt( Segment::getBegin ) );
 
         // Fix for missing untitled first section.
        if ( sections.isEmpty() ) {
@@ -257,7 +258,7 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
 
     @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
-
+        LOGGER.info( "Creating Sections ..." );
         final String text = jCas.getDocumentText();
         if (text == null) {
            String docId = DocIdUtil.getDocumentID( jCas );
@@ -266,13 +267,12 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
         }
 
         List<Segment> sectionHeaders = findSectionsHeadersByPattern(jCas, text);
-
         if (sectionHeaders.size() < 2) {
             addSingleSectionToCas(jCas, sectionHeaders);
         } else {
             addMultipleSectionsToCas(jCas, sectionHeaders);
         }
-
+        sectionHeaders.forEach( Segment::removeFromIndexes );
     }
 
 }

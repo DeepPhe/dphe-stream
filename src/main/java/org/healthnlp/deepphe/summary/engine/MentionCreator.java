@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.summary.engine;
 
 import org.apache.ctakes.core.util.annotation.IdentifiedAnnotationUtil;
+import org.apache.ctakes.typesystem.type.constants.CONST;
 import org.apache.ctakes.typesystem.type.refsem.Event;
 import org.apache.ctakes.typesystem.type.refsem.EventProperties;
 import org.apache.ctakes.typesystem.type.textsem.EventMention;
@@ -23,6 +24,7 @@ final public class MentionCreator {
 
    static public Map<IdentifiedAnnotation, Mention> createMentionMap( final Collection<IdentifiedAnnotation> annotations ) {
       return annotations.stream()
+                        .filter( a -> !CONST.ATTR_SUBJECT_FAMILY_MEMBER.equals( a.getSubject() ) )
                         .collect( Collectors.toMap( Function.identity(),
                                                     MentionCreator::createMention ) );
    }

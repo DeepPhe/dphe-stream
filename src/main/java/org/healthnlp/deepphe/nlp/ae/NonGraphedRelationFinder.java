@@ -85,11 +85,12 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
 //         BREAST_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Nipple") );
       }
       if ( QUADRANT_URIS == null ) {
-         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT );
-         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Nipple" );
-         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Areola" );
-         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Central_Portion_Of_The_Breast" );
-         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Subareolar_Region" );
+         QUADRANT_URIS = new HashSet<>( Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT ) );
+         // TODO - Need the following for dphe-cr, but they toss the eval for dphe-xn
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Nipple" ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Areola" ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Central_Portion_Of_The_Breast" ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Subareolar_Region" ) );
       }
       if ( CLOCK_URIS == null ) {
          CLOCK_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.CLOCKFACE );
@@ -125,15 +126,15 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
          final String category = relation.getCategory();
          if ( RelationConstants.isHasSiteRelation( category ) ) {
 //         if ( DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE.equals( category ) ) {
-            final Annotation a1 = relation.getArg1().getArgument();
-            final Annotation a2 = relation.getArg2().getArgument();
-            if ( ( a2 instanceof IdentifiedAnnotation
-                   && QUADRANT_URIS.contains( Neo4jOntologyConceptUtil.getUri( (IdentifiedAnnotation)a2 ) ))
-                 ||
-                 ( a1 instanceof IdentifiedAnnotation
-                   && QUADRANT_URIS.contains( Neo4jOntologyConceptUtil.getUri( (IdentifiedAnnotation)a1 ) )) ) {
-               removals.add( relation );
-            }
+//            final Annotation a1 = relation.getArg1().getArgument();
+//            final Annotation a2 = relation.getArg2().getArgument();
+//            if ( ( a2 instanceof IdentifiedAnnotation
+//                   && QUADRANT_URIS.contains( Neo4jOntologyConceptUtil.getUri( (IdentifiedAnnotation)a2 ) ))
+//                 ||
+//                 ( a1 instanceof IdentifiedAnnotation
+//                   && QUADRANT_URIS.contains( Neo4jOntologyConceptUtil.getUri( (IdentifiedAnnotation)a1 ) )) ) {
+//               removals.add( relation );
+//            }
             // TODO: !!! Is this still right?  Status should have come from ontology and removing here gets rid of it.
          } else if ( HAS_ER_STATUS.equals( category ) || HAS_PR_STATUS.equals( category ) ||
                      HAS_HER2_STATUS.equals( category ) ) {
@@ -221,6 +222,7 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
          final boolean isMicroscopic = SectionType.Microscopic.isThisSectionType( sectionParagraphs.getKey() );
          final boolean isFinding = SectionType.Finding.isThisSectionType( sectionParagraphs.getKey() );
          final boolean isHistology = SectionType.HistologySummary.isThisSectionType( sectionParagraphs.getKey() );
+         final boolean isReview = SectionType.ReviewSystems.isThisSectionType( sectionParagraphs.getKey() );
          for ( Paragraph paragraph : sectionParagraphs.getValue() ) {
             final Collection<IdentifiedAnnotation> annotations = paragraphAnnotationMap.get( paragraph );
             final List<IdentifiedAnnotation> massNeoplasmList
@@ -260,7 +262,7 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                findTnms( jCas, paragraph, massNeoplasmList, allMassNeoplasmList );
             }
 
-            if ( isMicroscopic || isFinding || isHistology ) {
+            if ( isMicroscopic || isFinding || isHistology || isReview ) {
                continue;
             }
             if ( !neoplasmList.isEmpty() ) {
@@ -269,7 +271,7 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                findMetastasis( jCas, neoplasmList, metastasisList );
             }
             if ( !allBreastTumors.isEmpty() ) {
-//               findAllStatus( jCas, paragraph, allMassNeoplasmList, allBreastTumors );
+               findAllStatus( jCas, paragraph, allMassNeoplasmList, allBreastTumors );
                // if there are breast sites then there may be breast site modifiers
 //               final Collection<IdentifiedAnnotation> breasts
 //                     = Neo4jOntologyConceptUtil.getAnnotationsByUriBranch( jCas, paragraph, UriConstants.BREAST );

@@ -10,6 +10,9 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
+import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
+import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.node.NoteNodeCreator;
 import org.healthnlp.deepphe.node.PatientCreator;
@@ -19,12 +22,12 @@ import org.healthnlp.deepphe.summary.engine.FactRelationUtil;
 import org.healthnlp.deepphe.summary.engine.MultiSummaryEngine;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_CLOCKFACE;
+import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_QUADRANT;
 
 /**
  * @author SPF , chip-nlp
@@ -165,139 +168,247 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                           .stream()
                           .collect( Collectors.toMap( Fact::getId, Function.identity() ) );
       final List<Cancer> cancers = patientSummary.getCancers();
+         final Collection<String> cancerLines = new HashSet<>();
+         final Collection<String> tumorLines = new HashSet<>();
+         for ( Cancer cancer : cancers ) {
+            final Collection<NeoplasmAttribute> cancerAttributes = cancer.getAttributes();
+            final Map<String,List<String>> cancerIdRelatedIdMap = cancer.getRelatedFactIds();
+            final Map<String,List<Fact>> cancerRelated = FactRelationUtil.getRelatedFactsMap( cancerIdRelatedIdMap,
+                                                                                             idFactMap );
+            final String cancerSite = getSite( cancerAttributes );
+            cancerLines.add( createCancerLine( patientId, cancer, cancerAttributes, cancerRelated ) );
+            final String cancerId = cancer.getId();
+
+            for ( Tumor tumor : cancer.getTumors() ) {
+               final Collection<NeoplasmAttribute> tumorAttributes = tumor.getAttributes();
+               final Map<String,List<String>> tumorIdRelatedIdMap = tumor.getRelatedFactIds();
+               final Map<String,List<Fact>> tumorRelated = FactRelationUtil.getRelatedFactsMap( tumorIdRelatedIdMap,
+                                                                                             idFactMap );
+
+               tumorLines.add( createTumorLine( patientId, cancerId, tumor, tumorAttributes, tumorRelated,
+                                                cancerAttributes, cancerRelated ) );
+            }
+         }
       try ( Writer cancerWriter = new BufferedWriter( new FileWriter( cancerFile, true ) );
             Writer tumorWriter = new BufferedWriter( new FileWriter( tumorFile, true ) ) ) {
-         for ( Cancer cancer : cancers ) {
-            cancerWriter.write( createCancerLine( patientId, cancer, idFactMap ) );
-            final String cancerId = cancer.getId();
-            for ( Tumor tumor : cancer.getTumors() ) {
-               tumorWriter.write( createTumorLine( patientId, cancerId, tumor, idFactMap ) );
-            }
+         for ( String cancerLine : cancerLines ) {
+            cancerWriter.write( cancerLine );
+         }
+         for ( String tumorLine : tumorLines ) {
+            tumorWriter.write( tumorLine );
          }
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
       }
    }
 
-   static private final String CANCER_HEADER = "Patient_ID|"
-                                               + "Summary_Type|"
-                                               + "Summary_ID|"
-                                               + "Summary_URI|"
-                                               + "hasCancerType|"
-                                               + "hasHistologicType|"
-                                               + "hasHistoricity|"
+   static private final String CANCER_HEADER = "*Patient_ID|"
+                                               + "-Summary_Type|"
+                                               + "-Summary_ID|"
+                                               + "-Summary_URI|"
+                                               + "-hasCancerType|"
+                                               + "-hasHistologicType|"
+                                               + "-hasHistoricity|"
                                                + "hasBodySite|"
                                                + "hasLaterality|"
                                                + "hasCancerStage|"
                                                + "has_Clinical_T|"
                                                + "has_Clinical_N|"
                                                + "has_Clinical_M|"
-                                               + "has_Pathologic_T|"
-                                               + "has_Pathologic_N|"
-                                               + "has_Pathologic_M|"
-                                               + "hasMethod|"
-                                               + "hasTreatment|"
-                                               + "Regimen_Has_Accepted_Use_For_Disease|"
-                                               + "Disease_Has_Normal_Tissue_Origin|"
-                                               + "Disease_Has_Normal_Cell_Origin|"
-                                               + "Disease_Has_Finding|"
-                                               + "Disease_May_Have_Finding|"
-                                               + "has_PSA_Level|"
-                                               + "has_Gleason_Score|\n";
+                                               + "-has_Pathologic_T|"
+                                               + "-has_Pathologic_N|"
+                                               + "-has_Pathologic_M|"
+                                               + "-hasMethod|"
+                                               + "-hasTreatment|"
+                                               + "-Regimen_Has_Accepted_Use_For_Disease|"
+                                               + "-Disease_Has_Normal_Tissue_Origin|"
+                                               + "-Disease_Has_Normal_Cell_Origin|"
+                                               + "-Disease_Has_Finding|"
+                                               + "-Disease_May_Have_Finding|"
+                                               + "-has_PSA_Level|"
+                                               + "-has_Gleason_Score|\n";
 
 
 
    static private String createCancerLine( final String patientId,
                                            final Cancer cancer,
-                                           final Map<String,Fact> idFactMap ) {
-      final Collection<NeoplasmAttribute> attributes = cancer.getAttributes();
-      final Map<String,List<String>> idRelatedIdMap = cancer.getRelatedFactIds();
-      final Map<String,List<Fact>> related = FactRelationUtil.getRelatedFactsMap( idRelatedIdMap, idFactMap );
+                                           final Collection<NeoplasmAttribute> cancerAttributes,
+                                           final Map<String,List<Fact>> cancerRelated ) {
+      if ( cancer.getClassUri().equals( UriConstants.UNKNOWN ) ) {
+         return "";
+      }
       return patientId + "|" + "Cancer|" + cancer.getId() + "|" + cancer.getClassUri() + "|"
-            + getRelatedUri( related, "hasCancerType" ) + "|"
-             + getAttributeValue( attributes, "histology" ) + "|"
-             + getRelatedUri( related, "hasHistoricity" ) + "|"
-             + getAttributeUri( attributes, "topography_major" ) + "|"
-             + getAttributeUri( attributes, "laterality" ) + "|"
-             + getAttributeValue( attributes, "stage" ) + "|"
-             + getAttributeValue( attributes, "t" ) + "|"
-             + getAttributeValue( attributes, "n" ) + "|"
-             + getAttributeValue( attributes, "m" ) + "|"
-             + getAttributeValue( attributes, "t" ) + "|"
-             + getAttributeValue( attributes, "n" ) + "|"
-             + getAttributeValue( attributes, "m" ) + "|"
-             + getRelatedUri( related, "hasMethod" ) + "|"
-             + getRelatedUri( related, "hasTreatment" ) + "|"
-             + getRelatedUri( related, "Regimen_Has_Accepted_Use_For_Disease" ) + "|"
-             + getRelatedUri( related, "Disease_Has_Normal_Tissue_Origin" ) + "|"
-             + getRelatedUri( related, "Disease_Has_Normal_Cell_Origin" ) + "|"
-             + getRelatedUri( related, "Disease_Has_Finding" ) + "|"
-             + getRelatedUri( related, "Disease_May_Have_Finding" ) + "|"
-             + getAttributeValue( attributes, "PSA" ) + "|"
-             + getRelatedUri( related, "hasGleasonScore" ) + "|\n";
+            + getRelatedUri( cancerRelated, "hasCancerType" ) + "|"
+             + getAttributeValue( cancerAttributes, "histology" ) + "|"
+             + getRelatedUri( cancerRelated, "hasHistoricity" ) + "|"
+             + getSite( cancerAttributes ) + "|"
+             + getLaterality( cancerAttributes ) + "|"
+             + getAttributeValue( cancerAttributes, "stage" ) + "|"
+             + getAttributeValue( cancerAttributes, "t" ) + "|"
+             + getAttributeValue( cancerAttributes, "n" ) + "|"
+             + getAttributeValue( cancerAttributes, "m" ) + "|"
+             + getAttributeValue( cancerAttributes, "t" ) + "|"
+             + getAttributeValue( cancerAttributes, "n" ) + "|"
+             + getAttributeValue( cancerAttributes, "m" ) + "|"
+             + getRelatedUri( cancerRelated, "hasMethod" ) + "|"
+             + getRelatedUri( cancerRelated, "hasTreatment" ) + "|"
+             + getRelatedUri( cancerRelated, "Regimen_Has_Accepted_Use_For_Disease" ) + "|"
+             + getRelatedUri( cancerRelated, "Disease_Has_Normal_Tissue_Origin" ) + "|"
+             + getRelatedUri( cancerRelated, "Disease_Has_Normal_Cell_Origin" ) + "|"
+             + getRelatedUri( cancerRelated, "Disease_Has_Finding" ) + "|"
+             + getRelatedUri( cancerRelated, "Disease_May_Have_Finding" ) + "|"
+             + getAttributeValue( cancerAttributes, "PSA" ) + "|"
+             + getRelatedUri( cancerRelated, "hasGleasonScore" ) + "|\n";
    }
 
 
-   static private final String TUMOR_HEADER = "Cancer_ID|"
-                                              + "Patient_ID|"
-                                              + "Summary_Type|"
-                                              + "Summary_ID|"
-                                              + "Summary_URI|"
-                                              + "hasCancerType|"
-                                              + "hasHistologicType|"
-                                              + "hasHistoricity|"
+   static private final String TUMOR_HEADER = "*Patient_ID|"
+                                              + "-Cancer_ID|"
+                                              + "-Summary_Type|"
+                                              + "-Summary_ID|"
+                                              + "-Summary_URI|"
+                                              + "-hasCancerType|"
+                                              + "-hasHistologicType|"
+                                              + "-hasHistoricity|"
                                               + "hasBodySite|"
                                               + "hasLaterality|"
                                               + "hasDiagnosis|"
-                                              + "isMetastasisOf|"
-                                              + "hasTumorType|"
-                                              + "hasTumorExtent|"
-                                              + "hasMethod|"
-                                              + "hasTreatment|"
-                                              + "Disease_Has_Normal_Tissue_Origin|"
-                                              + "Disease_Has_Normal_Cell_Origin|"
-                                              + "hasSize|"
-                                              + "hasCalcification|"
-                                              + "has_Ulceration|"
-                                              + "has_Breslow_Depth|"
+                                              + "-isMetastasisOf|"
+                                              + "-hasTumorType|"
+                                              + "-hasTumorExtent|"
+                                              + "-hasMethod|"
+                                              + "-hasTreatment|"
+                                              + "-Disease_Has_Normal_Tissue_Origin|"
+                                              + "-Disease_Has_Normal_Cell_Origin|"
+                                              + "-hasSize|"
+                                              + "-hasCalcification|"
+                                              + "-has_Ulceration|"
+                                              + "-has_Breslow_Depth|"
                                               + "hasQuadrant|"
                                               + "hasClockface|"
                                               + "has_ER_Status|"
                                               + "has_PR_Status|"
                                               + "has_HER2_Status|\n";
 
+//               tumorLines.add( createTumorLine( patientId, cancerId, tumor, tumorAttributes, tumorRelated,
+//                                                cancerSite, cancerAttributes, cancerRelated ) );
    static private String createTumorLine( final String patientId,
                                           final String cancerId,
                                           final Tumor tumor,
-                                          final Map<String,Fact> idFactMap ) {
-      final Collection<NeoplasmAttribute> attributes = tumor.getAttributes();
-      final Map<String,List<String>> idRelatedIdMap = tumor.getRelatedFactIds();
-      final Map<String,List<Fact>> related = FactRelationUtil.getRelatedFactsMap( idRelatedIdMap, idFactMap );
-      return cancerId + "|" + patientId + "|" + "Tumor|" + tumor.getId() + "|" + tumor.getClassUri() + "|"
-             + getRelatedUri( related, "hasCancerType" ) + "|"
-             + getAttributeValue( attributes, "histology" ) + "|"
-             + getRelatedUri( related, "hasHistoricity" ) + "|"
-             + getAttributeUri( attributes, "topography_major" ) + "|"
-             + getAttributeUri( attributes, "laterality" ) + "|"
-             + getRelatedUri( related, "hasDiagnosis" ) + "|"
-             + getRelatedUri( related, "isMetastasisOf" ) + "|"
-             + getRelatedUri( related, "hasTumorType" ) + "|"
-             + getRelatedUri( related, "hasTumorExtent" ) + "|"
-             + getRelatedUri( related, "hasMethod" ) + "|"
-             + getRelatedUri( related, "hasTreatment" ) + "|"
-             + getRelatedUri( related, "Disease_Has_Normal_Tissue_Origin" ) + "|"
-             + getRelatedUri( related, "Disease_Has_Normal_Cell_Origin" ) + "|"
-             + getRelatedValue( related, "hasSize" ) + "|"
-             + getRelatedUri( related, "hasCalcification" ) + "|"
-             + getRelatedUri( related, "has_Ulceration" ) + "|"
-             + getRelatedUri( related, "has_Breslow_Depth" ) + "|"
-             + getRelatedUri( related, "hasQuadrant" ) + "|"
-             + getRelatedUri( related, "hasClockface" ) + "|"
-             + getAttributeValue( attributes, "ER_" ) + "|"
-             + getAttributeValue( attributes, "PR_" ) + "|"
-             + getAttributeValue( attributes, "HER2" ) + "|\n";
+                                          final Collection<NeoplasmAttribute> tumorAttributes,
+                                          final Map<String,List<Fact>> tumorRelated,
+                                          final Collection<NeoplasmAttribute> cancerAttributes,
+                                          final Map<String,List<Fact>> cancerRelated ) {
+      return patientId + "|" + cancerId + "|" + "Tumor|" + tumor.getId() + "|" + tumor.getClassUri() + "|"
+             + tumor.getClassUri() + "|"
+             + takeFirst( getAttributeValue( tumorAttributes, "histology" ),
+                          getAttributeValue( cancerAttributes, "histology" ) )+ "|"
+             + getRelatedUri( tumorRelated, "hasHistoricity" ) + "|"
+             + takeFirst( getSite( tumorAttributes ), getSite( cancerAttributes ) ) + "|"
+             + takeFirst(  getLaterality( tumorAttributes ),
+                           getLaterality( cancerAttributes ) ) + "|"
+             + takeFirst( getRelatedUri( tumorRelated, "hasDiagnosis" ),
+                          getRelatedUri( cancerRelated, "hasDiagnosis" ) ) + "|"
+             + getRelatedUri( tumorRelated, "isMetastasisOf" ) + "|"
+             + getRelatedUri( tumorRelated, "hasTumorType" ) + "|"
+             + getRelatedUri( tumorRelated, "hasTumorExtent" ) + "|"
+             + getRelatedUri( tumorRelated, "hasMethod" ) + "|"
+             + getRelatedUri( tumorRelated, "hasTreatment" ) + "|"
+             + getRelatedUri( tumorRelated, "Disease_Has_Normal_Tissue_Origin" ) + "|"
+             + getRelatedUri( tumorRelated, "Disease_Has_Normal_Cell_Origin" ) + "|"
+             + getRelatedValue( tumorRelated, "hasSize" ) + "|"
+             + getRelatedUri( tumorRelated, "hasCalcification" ) + "|"
+             + getRelatedUri( tumorRelated, "has_Ulceration" ) + "|"
+             + getRelatedUri( tumorRelated, "has_Breslow_Depth" ) + "|"
+             + takeFirst( getQuadrant( tumorAttributes, tumorRelated ),
+                          getQuadrant( cancerAttributes,  cancerRelated ) ) + "|"
+             + takeFirst( getClockface( tumorAttributes, tumorRelated ),
+                          getClockface( cancerAttributes, cancerRelated ) ) + "|"
+             + takeFirst( getStatus( tumorAttributes, "ER_", tumorRelated, RelationConstants.has_Biomarker, "estro" ),
+                          getStatus( cancerAttributes, "ER_", cancerRelated, RelationConstants.has_Biomarker, "estro" ) )+ "|"
+             + takeFirst( getStatus( tumorAttributes, "PR_", tumorRelated, RelationConstants.has_Biomarker, "progest" ),
+                          getStatus( cancerAttributes, "PR_", cancerRelated, RelationConstants.has_Biomarker, "progest" ) ) + "|"
+             + takeFirst( getStatus( tumorAttributes, "HER2", tumorRelated, RelationConstants.has_Biomarker, "her2" ),
+                          getStatus( cancerAttributes, "HER2", cancerRelated, RelationConstants.has_Biomarker,
+                                     "her2" ) )
+                          + "|\n";
    }
 
+   static private String takeFirst( final String one, final String two ) {
+      if ( !one.isEmpty() ) {
+         return one;
+      }
+      return two;
+   }
+
+
+   static private String getSite( final Collection<NeoplasmAttribute> attributes ) {
+      return getAttributeUri( attributes, "topography_major" ).replace( "DeepPhe", "" );
+   }
+
+   static private String getFacts( final Map<String,List<Fact>> relatedFacts, final String rootUri ) {
+      final Collection<String> uris = Neo4jOntologyConceptUtil.getBranchUris( rootUri );
+      return relatedFacts.values()
+                         .stream()
+                         .flatMap( Collection::stream )
+                         .map( Fact::getClassUri )
+                         .filter( uris::contains )
+                         .distinct().collect( Collectors.joining(";") );
+   }
+
+   static private String getQuadrant( final Collection<NeoplasmAttribute> attributes,
+                                       final Map<String,List<Fact>> relatedFacts ) {
+      final Collection<String> quadrants
+            = new HashSet<>( Arrays.asList( getAttributeUri( attributes, "topography_minor", UriConstants.QUADRANT )
+                                   .split( ";" ) ) );
+      quadrants.addAll( Arrays.asList( getRelatedUri( relatedFacts, HAS_QUADRANT )
+                                          .split( ";" ) ) );
+//      quadrants.addAll( Arrays.asList( getFacts( relatedFacts, UriConstants.QUADRANT ).split( ";" ) ) );
+      return String.join( ";", quadrants );
+   }
+
+   static private String getClockface( final Collection<NeoplasmAttribute> attributes,
+                                       final Map<String,List<Fact>> relatedFacts ) {
+      final Collection<String> clocks
+            = new HashSet<>( Arrays.asList( getAttributeUri( attributes, "topography_minor", UriConstants.CLOCKFACE )
+                                   .split( ";" ) ) );
+      clocks.addAll( Arrays.asList( getRelatedUri( relatedFacts, HAS_CLOCKFACE )
+                                          .split( ";" ) ) );
+      return clocks.stream()
+                   .map( c -> c.startsWith( "_" ) ? c.substring( 1 ) : c )
+                   .collect( Collectors.joining(";") );
+   }
+
+
+   static private String getStatus(  final Collection<NeoplasmAttribute> attributes,
+                                     final String attributeName,
+                                     final Map<String,List<Fact>> relatedFacts,
+                                     final String relationName,
+                                     final String relationUri ) {
+      final Collection<String> status = attributes.stream()
+                                                  .filter( a -> a.getName()
+                                                                 .equalsIgnoreCase( attributeName ) )
+                                                  .map( NeoplasmAttribute::getValue )
+                                                  .collect( Collectors.toSet() );
+      status.addAll( relatedFacts.getOrDefault( relationName, Collections.emptyList() )
+                                                          .stream()
+                                                          .map( Fact::getClassUri )
+                                 .filter( u -> u.toLowerCase().contains( relationUri ) )
+                                                          .collect( Collectors.toSet() ) );
+      return String.join( ";", status );
+   }
+
+   static private String getLaterality( final Collection<NeoplasmAttribute> attributes ) {
+      final String site = getAttributeUri( attributes, "topography_major" );
+      if ( site.startsWith( "Right_" ) ) {
+         return "Right";
+      } else if ( site.startsWith( "Left_" ) ) {
+         return "Left";
+      } else if ( site.startsWith( "Bilateral_" ) ) {
+         return "Bilateral";
+      }
+      return getAttributeUri( attributes, "laterality" );
+   }
 
    static private String getAttributeValue( final Collection<NeoplasmAttribute> attributes,
                                             final String attributeName ) {
@@ -317,6 +428,17 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                        .collect( Collectors.joining( ";" ) );
    }
 
+   static private String getAttributeUri( final Collection<NeoplasmAttribute> attributes,
+                                          final String attributeName, final String rootUri ) {
+      final Collection<String> uris = Neo4jOntologyConceptUtil.getBranchUris( rootUri );
+      return attributes.stream()
+                       .filter( a -> a.getName().equalsIgnoreCase( attributeName ) )
+                       .map( NeoplasmAttribute::getClassUri )
+                       .filter( uris::contains )
+                       .distinct()
+                       .collect( Collectors.joining( ";" ) );
+   }
+
    static private String getRelatedUri( final Map<String,List<Fact>> relatedFacts,
                                         final String relationName ) {
       return relatedFacts.getOrDefault( relationName, Collections.emptyList() )
@@ -326,6 +448,17 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                        .collect( Collectors.joining( ";" ) );
    }
 
+   static private String getRelatedUri( final Map<String,List<Fact>> relatedFacts,
+                                        final String relationName,
+                                        final String rootUri ) {
+      final Collection<String> uris = Neo4jOntologyConceptUtil.getBranchUris( rootUri );
+      return relatedFacts.getOrDefault( relationName, Collections.emptyList() )
+                         .stream()
+                         .map( Fact::getClassUri )
+                         .filter( uris::contains )
+                         .distinct()
+                         .collect( Collectors.joining( ";" ) );
+   }
 
    static private String getRelatedValue( final Map<String,List<Fact>> relatedFacts,
                                           final String relationName ) {

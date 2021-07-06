@@ -89,7 +89,6 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
          }
       }
 
-      LOGGER.info( "Finished." );
    }
 
 

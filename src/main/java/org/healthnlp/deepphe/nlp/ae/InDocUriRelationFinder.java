@@ -78,6 +78,7 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final Pattern WHITESPACE = Pattern.compile( "\\s+" );
 
+//   static private Collection<String> QUADRANT_URIS;
 
 
    static private final Object LOCK = new Object();
@@ -97,6 +98,13 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       super.initialize( context );
       _cacheCleaner = Executors.newScheduledThreadPool( 1 );
       _cacheCleaner.scheduleAtFixedRate( new CacheCleaner(), START, PERIOD, TimeUnit.MILLISECONDS );
+//      if ( QUADRANT_URIS == null ) {
+//         QUADRANT_URIS = new HashSet<>( Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Nipple" ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Areola" ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Central_Portion_Of_The_Breast" ) );
+//         QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Subareolar_Region" ) );
+//      }
    }
 
    public void collectionProcessComplete() throws AnalysisEngineProcessException {
@@ -233,7 +241,8 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
                                            final Map<Paragraph,Map<String,Collection<IdentifiedAnnotation>>> paragraphUriAnnotationsMap ) {
       LOGGER.info( "Finding Locations ..." );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
-      final Collection<String> allLocationUris = UriConstants.getLocationUris( graphDb );
+      final Collection<String> allLocationUris = new HashSet<>( UriConstants.getLocationUris( graphDb ) );
+//      allLocationUris.removeAll( QUADRANT_URIS );
       final Collection<BinaryTextRelation> locations = new HashSet<>();
       final Map<IdentifiedAnnotation, Collection<String>> relationsDone = new HashMap<>();
 
@@ -792,7 +801,10 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       // Are we sure that we don't want to include Findings ???
       final SectionType sectionType = SectionType.getSectionType( section );
       return sectionType == SectionType.Microscopic
+//             || sectionType == SectionType.Examination
+             || sectionType == SectionType.ReviewSystems
 //             || sectionType == SectionType.Finding
+             || sectionType == SectionType.FamilyHistory
              || sectionType == SectionType.HistologySummary
              || sectionType == SectionType.PittsburghHeader;
    }

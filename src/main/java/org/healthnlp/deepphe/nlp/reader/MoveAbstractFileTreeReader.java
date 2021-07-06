@@ -241,7 +241,6 @@ abstract public class MoveAbstractFileTreeReader extends JCasCollectionReader_Im
       if ( jCasBuilder != null ) {
          jCasBuilder.populate( jcas );
       }
-      LOGGER.info( "Finished Reading." );
    }
 
    /**

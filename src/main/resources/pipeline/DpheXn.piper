@@ -32,13 +32,15 @@ add PittHeaderAnnotator
 
 //  Detect sentences using a machine learning model.
 addLogged SentenceDetectorAnnotatorBIO classifierJarPath=/org/apache/ctakes/core/sentdetect/model.jar
-
+//add SentenceDetector
 add MrsDrSentenceJoiner
 
 //  Use the DeepPhe paragraph expressions for paragraph discovery.
 set PARAGRAPH_TYPES_PATH=org/healthnlp/deepphe/paragraph/ParagraphRegex.bsv
 //  Discover paragraphs.
 add ParagraphAnnotator
+
+add WtfSectionFixer
 
 //  Fix sentences so that no sentence spans across two or more paragraphs.
 add ParagraphSentenceFixer
@@ -51,6 +53,7 @@ add ListAnnotator
 //  Fix sentences so that no sentence spans across two or more list entries.
 add ListSentenceFixer
 
+//add EolSentenceFixer
 
 //  Tokenize by penn treebank rules.
 add TokenizerAnnotatorPTB
@@ -77,8 +80,25 @@ add DefaultJCasTermAnnotator
 //  Filter various concepts using context.
 add MassFilter
 
+
 //  Assign such as negation and uncertainty using machine-learning models.
-load WindowedAttributeCleartkSubPipe
+//load WindowedAttributeCleartkSubPipe
+// Commands and parameters to create a default entity attributes processing sub-pipeline.  This is not a full pipeline.
+
+// Add the Dependency parser for use by cleartk
+addDescription ClearNLPDependencyParserAE
+// Add the Semantic Role Labeler parser for use by cleartk
+addLogged ClearNLPSemanticRoleLabelerAE
+
+// Add the cleartk package for cleartk class lookups
+package org.apache.ctakes.assertion.medfacts.cleartk
+package org.apache.ctakes.assertion.medfacts.cleartk.windowed
+
+// Add the cleartk attribute engines, logging for them as a block
+add StartFinishLogger LOGGER_NAME=CleartkAnalysisEngine LOGGER_TASK="Assigning Attributes" IS_START=true
+addDescription PolarityCleartkAnalysisEngineWindowed
+addDescription UncertaintyCleartkAnalysisEngineWindowed
+
 
 //  Assign such as negation and uncertainty using context.
 set MaxRightScopeSize=12
@@ -104,7 +124,7 @@ add SubjectSectionFixer
 
 //add PsaFinder
 
-add GleasonFinder
+//add GleasonFinder
 
 //add Ki67Finder
 
@@ -160,3 +180,4 @@ addLast PatientSummaryCleaner
 //  Alert User that the pipeline is Finished.
 package org.apache.ctakes.core.util.log
 addLast FinishedLogger
+addLast PipelineStopper

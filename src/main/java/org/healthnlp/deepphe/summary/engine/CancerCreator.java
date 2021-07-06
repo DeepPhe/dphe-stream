@@ -206,6 +206,9 @@ final public class CancerCreator {
                                       StageUriInfoVisitor::new,
                                       StageCodeInfoStore::new,
                                       Collections.emptyMap() );
+      if ( stage.getBestUri().isEmpty() || stage.getBestCode().isEmpty() ) {
+         return;
+      }
       attributes.add( stage.toNeoplasmAttribute() );
    }
 
@@ -222,6 +225,9 @@ final public class CancerCreator {
                                       T_UriInfoVisitor::new,
                                       TnmCodeInfoStore::new,
                                       Collections.emptyMap() );
+      if ( t.getBestUri().isEmpty() || t.getBestCode().isEmpty() ) {
+         return;
+      }
       attributes.add( t.toNeoplasmAttribute() );
    }
 
@@ -238,6 +244,9 @@ final public class CancerCreator {
                                       N_UriInfoVisitor::new,
                                       TnmCodeInfoStore::new,
                                       Collections.emptyMap() );
+      if ( n.getBestUri().isEmpty() || n.getBestCode().isEmpty() ) {
+         return;
+      }
       attributes.add( n.toNeoplasmAttribute() );
    }
 
@@ -254,6 +263,9 @@ final public class CancerCreator {
                                       M_UriInfoVisitor::new,
                                       TnmCodeInfoStore::new,
                                       Collections.emptyMap() );
+      if ( m.getBestUri().isEmpty() || m.getBestCode().isEmpty() ) {
+         return;
+      }
       attributes.add( m.toNeoplasmAttribute() );
    }
 
@@ -315,6 +327,9 @@ final public class CancerCreator {
                                       neoplasm,
                                       allConcepts,
                                       patientNeoplasms );
+      if ( biomarker.getBestUri().isEmpty() || biomarker.getBestCode().isEmpty() ) {
+         return;
+      }
       attributes.add( biomarker.toNeoplasmAttribute() );
    }
 

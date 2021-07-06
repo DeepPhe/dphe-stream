@@ -71,7 +71,6 @@ final public class PittHeaderAnnotator extends JCasAnnotator_ImplBase {
       }
       // We don't want the Pitt headers to hang around for the rest of our processing.
       pghHeaders.forEach( Segment::removeFromIndexes );
-      LOGGER.info( "Finished Processing" );
    }
 
 

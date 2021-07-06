@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.summary.attribute.topography.minor;
 
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
+import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 
@@ -20,6 +21,7 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
    static Collection<String> MIDDLE_LOBE_URIS;
    static Collection<String> LOWER_LOBE_URIS;
    static Collection<String> TRACHEA_URIS;
+   static Collection<String> QUADRANT_URIS;
    static private final Predicate<ConceptAggregate> topoUri
          = c -> c.getAllUris()
                  .stream()
@@ -38,6 +40,7 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
          MIDDLE_LOBE_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Middle_Lobe_Of_The_Right_Lung" );
          LOWER_LOBE_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Lower_Lung_Lobe" );
          TRACHEA_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Trachea" );
+         QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT );
       }
       if ( _topoMinorConcepts == null ) {
          final Collection<ConceptAggregate> lungPartConcepts = neoplasms.stream()
@@ -51,6 +54,11 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
                                       .flatMap( Collection::stream )
 //                                                                      .filter( c -> !c.isNegated() )
                                                                       .collect( Collectors.toSet() );
+         breastConcepts.addAll( neoplasms.stream()
+                                         .map( ConceptAggregate::getRelatedSites )
+                                         .flatMap( Collection::stream )
+                                         .filter( c -> QUADRANT_URIS.contains( c.getUri() ) ).collect(
+                     Collectors.toSet() ) );
 //         final Collection<ConceptAggregate> locations = neoplasms.stream()
 //                                                                      .map( ConceptAggregate::getRelatedSites )
 //                                                                      .flatMap( Collection::stream )

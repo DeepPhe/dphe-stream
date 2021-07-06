@@ -7,6 +7,8 @@ import org.healthnlp.deepphe.util.KeyValue;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.healthnlp.deepphe.summary.concept.bin.NeoplasmType.CANCER;
+import static org.healthnlp.deepphe.summary.concept.bin.NeoplasmType.TUMOR;
 import static org.healthnlp.deepphe.summary.concept.bin.SiteType.ALL_SITES;
 import static org.healthnlp.deepphe.summary.concept.bin.SiteType.NO_SITE;
 
@@ -41,6 +43,11 @@ final public class LateralityTypeBin {
       return lateralityTypes;
    }
 
+   void clean() {
+      getOrCreateSiteTypeBins().values()
+                               .forEach( SiteTypeBin::clean );
+   }
+
    void clear() {
       getOrCreateSiteTypeBins().values()
                                .forEach( SiteTypeBin::clear );
@@ -48,16 +55,19 @@ final public class LateralityTypeBin {
 
    void setNeoplasms( final Collection<Mention> cancers,
                       final Collection<Mention> tumors,
+                      final Map<String,Set<Mention>> uriMentionsMap,
                       final Map<Mention,Map<String,Collection<Mention>>> relationsMap ) {
       clear();
       final Map<SiteType,Collection<Mention>> siteTypeCancersMap
-            = SiteTypeBin.getSiteTypes( cancers, relationsMap );
+            = SiteTypeBin.getSiteTypeMentions( cancers, relationsMap );
       final Map<SiteType,Collection<Mention>> siteTypeTumorsMap
-            = SiteTypeBin.getSiteTypes( tumors, relationsMap );
+            = SiteTypeBin.getSiteTypeMentions( tumors, relationsMap );
       for ( SiteType siteType : SiteType.values() ) {
+//         LOGGER.info( "LateralityTypeBin.setNeoplasms Line #65 " + _lateralityType + " " + siteType );
          _siteTypeBins.get( siteType )
                       .setNeoplasms( siteTypeCancersMap.getOrDefault( siteType, new HashSet<>() ),
                                      siteTypeTumorsMap.getOrDefault( siteType, new HashSet<>() ),
+                                     uriMentionsMap,
                                      relationsMap );
 
       }
@@ -80,23 +90,32 @@ final public class LateralityTypeBin {
    }
 
    void distributeSites( final Map<String, Collection<String>> allUriRoots ) {
-      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing Sites !!!" );
-      distributeNoSites( NeoplasmType.CANCER, allUriRoots );
-      distributeNoSites( NeoplasmType.TUMOR, allUriRoots );
+      distributeNoSites( CANCER, allUriRoots );
+      distributeNoSites( TUMOR, allUriRoots );
       _siteTypeBins.get( NO_SITE ).clean();
    }
 
+//   void resolveMentionConflicts() {
+//      _siteTypeBins.values().forEach( b -> b.resolveMentionConflicts( CANCER ) );
+//      _siteTypeBins.values().forEach( b -> b.resolveMentionConflicts( TUMOR ) );
+//   }
+//
+//   void mergeQuadrants() {
+//      _siteTypeBins.get( ALL_SITES ).mergeQuadrants();
+//   }
+
 
    void distributeNoSites( final NeoplasmType neoplasmType, final Map<String, Collection<String>> allUriRoots ) {
-      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing No Sites !!!" );
+//      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing UnSited "
+//                   + neoplasmType.name() + " ..." );
       final SiteTypeBin noSiteBin = _siteTypeBins.get( NO_SITE );
-      final Collection<NeoplasmChain> notLocated = new HashSet<>();
-      final Map<NeoplasmChain, KeyValue<Long,Collection<NeoplasmChain>>> organScores
-            = noSiteBin.scoreBestMatchingNeoplasmChains( _siteTypeBins.get( ALL_SITES ) );
-      final Map<NeoplasmChain,Collection<SiteNeoplasmBin>> neoplasmChainBinsMap = new HashMap<>();
-      for ( SiteNeoplasmBin siteNeoplasmBin : _siteTypeBins.get( ALL_SITES ).getSiteNeoplasmBins() ) {
+      final SiteTypeBin allSiteBin = _siteTypeBins.get( ALL_SITES );
+      final Map<NeoplasmChain, KeyValue<Long,Collection<NeoplasmChain>>> allSiteScores
+            = noSiteBin.scoreBestMatchingNeoplasmChains( neoplasmType, allSiteBin );
+      final Map<NeoplasmChain,Collection<SiteNeoplasmBin>> allSiteChainBinsMap = new HashMap<>();
+      for ( SiteNeoplasmBin siteNeoplasmBin : allSiteBin.getSiteNeoplasmBins() ) {
          siteNeoplasmBin.getNeoplasmChains( neoplasmType )
-                        .forEach( c -> neoplasmChainBinsMap.computeIfAbsent( c, s -> new HashSet<>() )
+                        .forEach( c -> allSiteChainBinsMap.computeIfAbsent( c, s -> new HashSet<>() )
                                                            .add( siteNeoplasmBin ) );
       }
       final Collection<NeoplasmChain> noSiteChains = noSiteBin.getSiteNeoplasmBins()
@@ -104,118 +123,134 @@ final public class LateralityTypeBin {
                                                               .map( b -> b.getNeoplasmChains( neoplasmType ) )
                                                               .flatMap( Collection::stream )
                                                               .collect( Collectors.toSet() );
+      if ( noSiteChains.isEmpty() ) {
+         return;
+      }
       for ( NeoplasmChain noSiteChain : noSiteChains ) {
-         final KeyValue<Long,Collection<NeoplasmChain>> organScore = organScores.get( noSiteChain );
-         boolean located = false;
-         if ( organScore != null && organScore.getKey() > 0 ) {
-               LOGGER.info( "Organ Score " + organScore.getKey() + " for " + noSiteChain.toString() + " vs. organ\n"
-                            + organScore.getValue()
-                                        .stream()
-                                        .map( NeoplasmChain::toString )
-                                        .collect( Collectors.joining("\n  " ) ) );
-            organScore.getValue()
-                      .stream()
-                      .map( neoplasmChainBinsMap::get )
-                      .flatMap( Collection::stream )
-                      .forEach( b -> b.copyNeoplasmChain( neoplasmType, noSiteChain ) );
+         final KeyValue<Long,Collection<NeoplasmChain>> allSiteScore = allSiteScores.get( noSiteChain );
+         if ( allSiteScore != null && allSiteScore.getKey() > 0 ) {
+//               LOGGER.info( _lateralityType.name() + " " + neoplasmType.name()
+//                            + "\n   Standard Score " + allSiteScore.getKey()
+//                            + "\n     for unsited chain\n"
+//                            + noSiteChain.toString()
+//                            + "\n     to sited chains\n"
+//                            + allSiteScore.getValue()
+//                                        .stream()
+//                                        .map( NeoplasmChain::toString )
+//                                        .collect( Collectors.joining("\n    " ) ) );
+
+            boolean copied = false;
+            for ( NeoplasmChain vsAllChain : allSiteScore.getValue() ) {
+               for ( SiteNeoplasmBin vsAllBin : allSiteChainBinsMap.get( vsAllChain ) ) {
+                  copied |= vsAllBin.copyNeoplasmChain( neoplasmType, noSiteChain );
+               }
+            }
+            if ( copied ) {
                noSiteChain.invalidate();
-               located = true;
-         }
-         if ( !located ) {
-            notLocated.add( noSiteChain );
+            }
          }
       }
-      distributeNoSitesByRoots( neoplasmType, notLocated, neoplasmChainBinsMap, allUriRoots );
+      noSiteBin.clean();
+      allSiteBin.clean();
+
+      allSiteBin.resolveMentionConflicts( NeoplasmType.CANCER );
+      allSiteBin.resolveMentionConflicts( TUMOR );
+
+      distributeNoSitesByRoots( neoplasmType, allUriRoots );
+
+      allSiteBin.resolveMentionConflicts( NeoplasmType.CANCER );
+      allSiteBin.resolveMentionConflicts( TUMOR );
+
    }
 
 
    void distributeNoSitesByRoots( final NeoplasmType neoplasmType,
-                                  final Collection<NeoplasmChain> notLocated,
-                                  final Map<NeoplasmChain,Collection<SiteNeoplasmBin>> neoplasmChainBinsMap,
                                   final Map<String, Collection<String>> allUriRoots ) {
-      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing No Sites By Roots !!!" );
+//      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing UnSited By Roots "
+//                   + neoplasmType.name() + " ..." );
       final SiteTypeBin noSiteBin = _siteTypeBins.get( NO_SITE );
-      final Map<NeoplasmChain, KeyValue<Long,Collection<NeoplasmChain>>> organScores
-            = noSiteBin.scoreBestMatchingNeoplasmChains( neoplasmType, _siteTypeBins.get( ALL_SITES ), allUriRoots );
-      for ( NeoplasmChain noSiteChain : notLocated ) {
-         final KeyValue<Long,Collection<NeoplasmChain>> organScore = organScores.get( noSiteChain );
-         if ( organScore != null && organScore.getKey() > 0 ) {
-               LOGGER.info( "Organ Score " + organScore.getKey()  + " for " + noSiteChain.toString() + " vs. organ\n"
-                            + organScore.getValue()
-                                       .stream()
-                                       .map( NeoplasmChain::toString )
-                                       .collect( Collectors.joining("\n  " ) ) );
-            organScore.getValue()
-                      .stream()
-                      .map( neoplasmChainBinsMap::get )
-                      .flatMap( Collection::stream )
-                      .forEach( b -> b.copyNeoplasmChain( neoplasmType, noSiteChain ) );
+      final SiteTypeBin allSiteBin = _siteTypeBins.get( ALL_SITES );
+      final Map<NeoplasmChain,Collection<SiteNeoplasmBin>> allSiteChainBinsMap = new HashMap<>();
+      for ( SiteNeoplasmBin allSiteNeoplasmBin : allSiteBin.getSiteNeoplasmBins() ) {
+         allSiteNeoplasmBin.getNeoplasmChains( neoplasmType )
+                        .forEach( c -> allSiteChainBinsMap.computeIfAbsent( c, s -> new HashSet<>() )
+                                                           .add( allSiteNeoplasmBin ) );
+      }
+      final Map<NeoplasmChain, KeyValue<Long,Collection<NeoplasmChain>>> allSiteScores
+            = noSiteBin.scoreBestMatchingNeoplasmChainsByRoots( neoplasmType, allSiteBin, allUriRoots );
+
+//      allSiteScores.forEach( (k,v) -> LOGGER.info( _lateralityType.name() + " " + neoplasmType.name()
+//                                                   + "\n   By Roots Score1 " + v.getKey()
+//                                                   + "\n     for unsited chain\n"
+//                                                   + k.toString()
+//                                                   + "\n     to sited chains\n"
+//                                                   + v.getValue().stream()
+//                                                                 .map( NeoplasmChain::toString )
+//                                                                 .collect( Collectors.joining("\n    " ) ) ) );
+
+      final Collection<NeoplasmChain> noSiteChains = noSiteBin.getSiteNeoplasmBins()
+                                                              .stream()
+                                                              .map( b -> b.getNeoplasmChains( neoplasmType ) )
+                                                              .flatMap( Collection::stream )
+                                                              .collect( Collectors.toSet() );
+      if ( noSiteChains.isEmpty() ) {
+//         LOGGER.info( "noSiteChains isEmpty." );
+         return;
+      }
+//      LOGGER.info( "No Site Chains:\n  "
+//                   + noSiteChains.stream()
+//                                 .map( NeoplasmChain::toString )
+//                                 .collect( Collectors.joining("\n  ") ) );
+      for ( NeoplasmChain noSiteChain : noSiteChains ) {
+         final KeyValue<Long,Collection<NeoplasmChain>> allSiteScore = allSiteScores.get( noSiteChain );
+         if ( allSiteScore != null && allSiteScore.getKey() > 0 ) {
+//               LOGGER.info(  _lateralityType.name() + " " + neoplasmType.name()
+//                             + "\n   By Roots Score2 " + allSiteScore.getKey()
+//                             + "\n     for unsited chain\n"
+//                             + noSiteChain.toString()
+//                             + "\n     to sited chains\n"
+//                            + allSiteScore.getValue()
+//                                       .stream()
+//                                       .map( NeoplasmChain::toString )
+//                                       .collect( Collectors.joining("\n    " ) ) );
+            boolean copied = false;
+            for ( NeoplasmChain vsAllChain : allSiteScore.getValue() ) {
+               for ( SiteNeoplasmBin vsAllBin : allSiteChainBinsMap.get( vsAllChain ) ) {
+                  copied |= vsAllBin.copyNeoplasmChain( neoplasmType, noSiteChain );
+               }
+            }
+            if ( copied ) {
                noSiteChain.invalidate();
+            }
          }
       }
+      noSiteBin.clean();
+      allSiteBin.clean();
    }
 
+   void mergeExtents( final Map<Mention,Map<String,Collection<Mention>>> mentionRelations ) {
+      final SiteTypeBin noSiteBin = getSiteTypeBin( NO_SITE );
+      final SiteTypeBin allSiteBin = getSiteTypeBin( ALL_SITES );
+      noSiteBin.mergeExtents( mentionRelations );
+      allSiteBin.mergeExtents( mentionRelations );
+      allSiteBin.mergeExtents( noSiteBin, mentionRelations );
+   }
 
-
-
-
-//   static private final int REGION_FACTOR = 3;
-//
-//
-//   void distributeRegions( final Map<String, Collection<String>> allUriRoots ) {
-//      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing Regions !!!" );
-//      final SiteTypeBin regionBin = _siteTypeBins.get( REGION );
-//      final Collection<NeoplasmChain> notLocated = new HashSet<>();
-//      final Map<NeoplasmChain, KeyValue<Long,Collection<NeoplasmChain>>> organScores
-//            = regionBin.scoreBestMatchingNeoplasmChains( _siteTypeBins.get( ORGAN ) );
-//      final Collection<NeoplasmChain> regionChains = regionBin.getSiteNeoplasmBins()
-//                                                              .stream()
-//                                                              .map( SiteNeoplasmBin::getNeoplasmChains )
-//                                                              .flatMap( Collection::stream )
-//                                                              .collect( Collectors.toSet() );
-//      for ( NeoplasmChain regionChain : regionChains ) {
-//         final KeyValue<Long,Collection<NeoplasmChain>> organScore = organScores.get( regionChain );
-//         boolean located = false;
-//         if ( organScore != null && organScore.getKey() > REGION_FACTOR ) {
-//            LOGGER.info( "Organ Score " + organScore.getKey() + " "
-//                         + organScore.getValue()
-//                                    .stream()
-//                                    .map( NeoplasmChain::toString )
-//                                    .collect( Collectors.joining("\n  " ) )
-//                                              + "\nFor\n" + regionChain.toString() );
-//               organScore.getValue().forEach( r -> r.copyInto( regionChain ) );
-//               regionChain.invalidate();
-//               located = true;
-//         }
-//         if ( !located ) {
-//            notLocated.add( regionChain );
-//         }
-//      }
-//      distributeRegionsByRoots( notLocated, allUriRoots );
-//   }
-//
-//
-//   void distributeRegionsByRoots( final Collection<NeoplasmChain> notLocated,
-//                                  final Map<String, Collection<String>> allUriRoots ) {
-//      LOGGER.info( "!!! Laterality Type Bin " + _lateralityType.name() + " Distributing Regions by Roots !!!" );
-//      final SiteTypeBin regionBin = _siteTypeBins.get( REGION );
-//      final Map<NeoplasmChain, KeyValue<Long,Collection<NeoplasmChain>>> organScores
-//            = regionBin.scoreBestMatchingNeoplasmChains( _siteTypeBins.get( ORGAN ), allUriRoots );
-//      for ( NeoplasmChain regionChain : notLocated ) {
-//         final KeyValue<Long,Collection<NeoplasmChain>> organScore = organScores.get( regionChain );
-//         if ( organScore != null && organScore.getKey() > REGION_FACTOR ) {
-//            LOGGER.info( "Organ Score " + organScore.getKey() + " "
-//                         + organScore.getValue()
-//                                     .stream()
-//                                     .map( NeoplasmChain::toString )
-//                                     .collect( Collectors.joining("\n  " ) )
-//                         + "\nFor\n" + regionChain.toString() );
-//            organScore.getValue()
-//                         .forEach( r -> r.copyInto( regionChain ) );
-//            regionChain.invalidate();
-//         }
-//      }
-//   }
+   Map<NeoplasmChain,Map<Integer,Collection<SiteNeoplasmBin>>> scoreBestCancerSites() {
+      final Map<NeoplasmChain,Map<Integer,Collection<SiteNeoplasmBin>>> bestMatchingBinsMap = new HashMap<>();
+      for ( SiteNeoplasmBin siteNeoplasmBin : getSiteNeoplasmBins() ) {
+         int maxBinMentions = 0;
+         for ( NeoplasmChain neoplasmChain : siteNeoplasmBin.getNeoplasmChains( CANCER ) ) {
+            maxBinMentions = Math.max( maxBinMentions, neoplasmChain.getAllMentions().size() );
+         }
+         for ( NeoplasmChain neoplasmChain : siteNeoplasmBin.getNeoplasmChains( CANCER ) ) {
+            bestMatchingBinsMap.computeIfAbsent( neoplasmChain, c -> new HashMap<>() )
+                               .computeIfAbsent( maxBinMentions, m -> new HashSet<>() )
+                               .add( siteNeoplasmBin );
+         }
+      }
+      return bestMatchingBinsMap;
+   }
 
 
 

@@ -1,7 +1,9 @@
 package org.healthnlp.deepphe.summary.concept.bin;
 
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.uri.UriUtil;
+import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.MentionRelation;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -51,12 +53,12 @@ final public class BinDistributor {
    }
 
 
-   static public Map<Mention,Collection<ConceptAggregate>> createNonNeoplasms( final Collection<Mention> nonNeoplasms,
-                                                                              final String patientId,
-                                                                               final Map<Mention, String> patientMentionNoteIds,
-                                                                               final Map<String,Collection<String>> allUriRoots ) {
+   static public Map<Mention,Collection<ConceptAggregate>> createNonNeoplasms(
+          final Collection<Mention> nonNeoplasms,
+         final String patientId,
+          final Map<Mention, String> patientMentionNoteIds,
+          final Map<String,Collection<String>> allUriRoots ) {
       final Map<Mention,Collection<ConceptAggregate>> mentionConceptsMap = new HashMap<>();
-
       final Map<String,Set<Mention>> uriMentionsMap
             = nonNeoplasms.stream()
                           .collect( Collectors.groupingBy( Mention::getClassUri, Collectors.toSet() ) );
@@ -73,6 +75,45 @@ final public class BinDistributor {
       }
       return mentionConceptsMap;
    }
+
+
+
+
+//   static public Map<ConceptAggregate,Collection<ConceptAggregate>> createCancerTumors(
+//         final Collection<SiteNeoplasmBin> siteNeoplasmBins,
+//         final Map<Mention, Map<String, Collection<Mention>>> mentionRelations,
+//         final String patientId,
+//         final Map<Mention, String> patientMentionNoteIds,
+//         final Map<String, Collection<String>> allUriRoots ) {
+//      final Map<NeoplasmChain,Collection<NeoplasmChain>> cancerTumorsMap = new HashMap<>();
+//
+//      final Collection<NeoplasmChain> allCancers = siteNeoplasmBins.stream()
+//                                                                .map( b -> b.getNeoplasmChains(NeoplasmType.CANCER ) )
+//                                                                .flatMap( Collection::stream )
+//                                                                .collect( Collectors.toSet() );
+//      for ( SiteNeoplasmBin siteNeoplasmBin : siteNeoplasmBins ) {
+//         final Collection<NeoplasmChain> cancers = siteNeoplasmBin.getNeoplasmChains( NeoplasmType.CANCER );
+//         cancers.forEach( c -> cancerTumorsMap.computeIfAbsent( c, t -> new HashSet<>() )
+//                                              .addAll( siteNeoplasmBin.getNeoplasmChains( NeoplasmType.TUMOR ) ) );
+//         LOGGER.info( "createCancerTumors, NeoplasmBin:" + siteNeoplasmBin.toString() );
+//      }
+//      final Map<ConceptAggregate,Collection<ConceptAggregate>> diagnosisMap = new HashMap<>();
+//      for ( Map.Entry<NeoplasmChain,Collection<NeoplasmChain>> cancerTumors : cancerTumorsMap.entrySet() ) {
+//         final ConceptAggregate cancer = cancerTumors.getKey()
+//                                               .createConceptAggregate( patientId, patientMentionNoteIds, allUriRoots );
+//         final Collection<ConceptAggregate> tumors =
+//               cancerTumors.getValue()
+//                           .stream()
+//                           .map( c -> c.createConceptAggregate( patientId, patientMentionNoteIds, allUriRoots ) )
+//                           .collect( Collectors.toSet() );
+//         diagnosisMap.put( cancer, tumors );
+//      }
+//      return diagnosisMap;
+//   }
+
+
+
+
 
    static private ConceptAggregate createConceptAggregate( final Map<String,Set<Mention>> uriMentions,
                                             final String patientId,
@@ -98,6 +139,12 @@ final public class BinDistributor {
       return UriUtil.mapUriRoots( allUris );
    }
 
+   static public Map<String,Collection<String>> mapUriBranches( final Collection<String> uris ) {
+      return uris.stream()
+                 .collect( Collectors.toMap( Function.identity(), Neo4jOntologyConceptUtil::getBranchUris ) );
+   }
+
+
    static public Map<Mention,Collection<ConceptAggregate>> mapMentionToConcepts( final Collection<ConceptAggregate> concepts ) {
       final Map<Mention,Collection<ConceptAggregate>> mentionAggregates = new HashMap<>();
          for ( ConceptAggregate concept : concepts ) {
@@ -108,8 +155,37 @@ final public class BinDistributor {
       return mentionAggregates;
    }
 
-   static public void assignConceptRelations( final Map<Mention,Collection<ConceptAggregate>> mentionConceptsMap,
-                                       final Map<Mention,Map<String,Collection<Mention>>> mentionRelationsMap ) {
+//   static public void assignConceptRelations( final Map<Mention,Collection<ConceptAggregate>> mentionConceptsMap,
+//                                       final Map<Mention,Map<String,Collection<Mention>>> mentionRelationsMap ) {
+//      for ( Map.Entry<Mention,Map<String,Collection<Mention>>> mentionRelations : mentionRelationsMap.entrySet() ) {
+//         final Collection<ConceptAggregate> sources = mentionConceptsMap.get( mentionRelations.getKey() );
+//         if ( sources == null || sources.isEmpty() ) {
+//            continue;
+//         }
+//         final Map<String,Collection<Mention>> relations = mentionRelations.getValue();
+//         for ( Map.Entry<String,Collection<Mention>> relation : relations.entrySet() ) {
+//            final Collection<ConceptAggregate> targets = relation.getValue()
+//                                                                 .stream()
+//                                                                 .map( mentionConceptsMap::get )
+//                                                                 .filter( Objects::nonNull )
+//                                                                 .flatMap( Collection::stream )
+//                                                                 .collect( Collectors.toSet() );
+//            for ( ConceptAggregate target : targets ) {
+//               for ( ConceptAggregate source : sources ) {
+//                  if ( !source.equals( target ) ) {
+//                     source.addRelated( relation.getKey(), target );
+//                  }
+//               }
+//            }
+//         }
+//      }
+//   }
+
+
+   static public void assignConceptRelations(
+         final AssertionBin.DiagnosisConcepts diagnosisConcepts,
+         final Map<Mention,Collection<ConceptAggregate>> mentionConceptsMap,
+         final Map<Mention,Map<String,Collection<Mention>>> mentionRelationsMap ) {
       for ( Map.Entry<Mention,Map<String,Collection<Mention>>> mentionRelations : mentionRelationsMap.entrySet() ) {
          final Collection<ConceptAggregate> sources = mentionConceptsMap.get( mentionRelations.getKey() );
          if ( sources == null || sources.isEmpty() ) {
@@ -117,6 +193,8 @@ final public class BinDistributor {
          }
          final Map<String,Collection<Mention>> relations = mentionRelations.getValue();
          for ( Map.Entry<String,Collection<Mention>> relation : relations.entrySet() ) {
+            final boolean isHasSite = ( RelationConstants.isHasSiteRelation( relation.getKey() )
+                 || RelationConstants.HAS_LATERALITY.equals( relation.getKey() ) );
             final Collection<ConceptAggregate> targets = relation.getValue()
                                                                  .stream()
                                                                  .map( mentionConceptsMap::get )
@@ -125,7 +203,8 @@ final public class BinDistributor {
                                                                  .collect( Collectors.toSet() );
             for ( ConceptAggregate target : targets ) {
                for ( ConceptAggregate source : sources ) {
-                  if ( !source.equals( target ) ) {
+                  if ( !source.equals( target )
+                       && (!isHasSite || isValidSite( diagnosisConcepts, source, target ) ) ) {
                      source.addRelated( relation.getKey(), target );
                   }
                }
@@ -134,7 +213,17 @@ final public class BinDistributor {
       }
    }
 
-
+   static private boolean isValidSite(
+         final AssertionBin.DiagnosisConcepts diagnosisConcepts,
+         final ConceptAggregate source,
+         final ConceptAggregate target ) {
+      final Collection<String> validUris
+            = diagnosisConcepts._cancerSiteUrisMap.getOrDefault( source, new HashSet<>() );
+      validUris.addAll( diagnosisConcepts._tumorSiteUrisMap.getOrDefault( source, new HashSet<>() ) );
+      return target.getAllUris()
+                   .stream()
+                   .anyMatch( validUris::contains );
+   }
 
 
 }

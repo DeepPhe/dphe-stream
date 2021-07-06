@@ -14,6 +14,7 @@ add Sectionizer
 //  Detect sentences using a machine learning model.
 addLogged SentenceDetectorAnnotatorBIO classifierJarPath=/org/apache/ctakes/core/sentdetect/model.jar
 
+// Joins sentences improperly split at person titles.
 add MrsDrSentenceJoiner
 
 //  Use the DeepPhe paragraph expressions for paragraph discovery.

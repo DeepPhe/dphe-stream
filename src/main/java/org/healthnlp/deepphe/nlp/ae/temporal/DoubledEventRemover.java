@@ -80,7 +80,6 @@ final public class DoubledEventRemover extends JCasAnnotator_ImplBase {
          }
       }
       removals.forEach( jCas::removeFsFromIndexes );
-      LOGGER.info( "Finished." );
    }
 
    // TODO Copy Relations

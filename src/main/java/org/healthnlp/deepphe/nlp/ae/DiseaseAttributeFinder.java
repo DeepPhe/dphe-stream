@@ -98,7 +98,6 @@ final public class DiseaseAttributeFinder extends JCasAnnotator_ImplBase {
 
       final Collection<Sentence> sentences = JCasUtil.select( jcas, Sentence.class );
       if ( sentences == null || sentences.isEmpty() ) {
-         LOGGER.info( "Finished Processing" );
          return;
       }
       for ( Sentence sentence : sentences ) {
@@ -115,7 +114,6 @@ final public class DiseaseAttributeFinder extends JCasAnnotator_ImplBase {
          processType( diseases, wordTokens );
          processType( findings, wordTokens );
       }
-      LOGGER.info( "Finished Processing" );
    }
 
 
