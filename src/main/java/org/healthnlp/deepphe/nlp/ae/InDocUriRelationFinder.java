@@ -1155,16 +1155,14 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
             bestSite = site;
          }
          if ( bestSite != null ) {
-            sitableMap.computeIfAbsent( sitable, a -> new ArrayList<>() ).add( bestSite );
+            sitableMap.computeIfAbsent( sitable, a -> new HashSet<>() ).add( bestSite );
             assignedSites.add( bestSite );
-
             // Check conjoined, adding a duplicate owner to each conjoined attribute
             final Collection<IdentifiedAnnotation> conjoinedList = conjoinedSites.get( bestSite );
             if ( conjoinedList != null ) {
                for ( IdentifiedAnnotation conjoined : conjoinedList ) {
                   if ( !conjoined.equals( bestSite ) ) {
-                     final IdentifiedAnnotation duplicate = createDuplicate( jcas, sitable );
-                     sitableMap.computeIfAbsent( duplicate, a -> new ArrayList<>() ).add( conjoined );
+                     sitableMap.get( sitable ).add( conjoined );
                   }
                }
             }
@@ -1181,15 +1179,13 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
             bestSite = site;
          }
          if ( bestSite != null ) {
-            sitableMap.computeIfAbsent( sitable, a -> new ArrayList<>() ).add( bestSite );
-
+            sitableMap.computeIfAbsent( sitable, a -> new HashSet<>() ).add( bestSite );
             // Check conjoined, adding a duplicate owner to each conjoined attribute
             final Collection<IdentifiedAnnotation> conjoinedList = conjoinedSites.get( bestSite );
             if ( conjoinedList != null ) {
                for ( IdentifiedAnnotation conjoined : conjoinedList ) {
                   if ( !conjoined.equals( bestSite ) ) {
-                     final IdentifiedAnnotation duplicate = createDuplicate( jcas, sitable );
-                     sitableMap.computeIfAbsent( duplicate, a -> new ArrayList<>() ).add( conjoined );
+                     sitableMap.get( sitable ).add( conjoined );
                   }
                }
             }
@@ -1205,7 +1201,7 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       final Map<IdentifiedAnnotation, Collection<IdentifiedAnnotation>> conjoinedSiteLists = new HashMap<>();
       IdentifiedAnnotation previousSite = null;
       String previousSentenceId = null;
-      Collection<IdentifiedAnnotation> conjoinedSites = new ArrayList<>();
+      List<IdentifiedAnnotation> conjoinedSites = new ArrayList<>();
       for ( IdentifiedAnnotation site : sites ) {
          if ( previousSite == null ) {
             previousSite = site;
@@ -1221,7 +1217,8 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
          if ( !siteSentenceId.equals( previousSentenceId ) ) {
             if ( !conjoinedSites.isEmpty() ) {
                final Collection<IdentifiedAnnotation> conjoined = new ArrayList<>( conjoinedSites );
-               conjoinedSites.forEach( a -> conjoinedSiteLists.put( a, conjoined ) );
+//               conjoinedSites.forEach( a -> conjoinedSiteLists.put( a, conjoined ) );
+               conjoinedSiteLists.put( conjoinedSites.get( conjoinedSites.size()-1 ), conjoined );
                conjoinedSites = new ArrayList<>();
             }
             previousSite = site;
@@ -1239,7 +1236,8 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
          } else {
             if ( !conjoinedSites.isEmpty() ) {
                final Collection<IdentifiedAnnotation> conjoined = new ArrayList<>( conjoinedSites );
-               conjoinedSites.forEach( a -> conjoinedSiteLists.put( a, conjoined ) );
+//               conjoinedSites.forEach( a -> conjoinedSiteLists.put( a, conjoined ) );
+               conjoinedSiteLists.put( conjoinedSites.get( conjoinedSites.size()-1 ), conjoined );
                conjoinedSites = new ArrayList<>();
             }
          }
@@ -1248,7 +1246,8 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       }
       if ( !conjoinedSites.isEmpty() ) {
          final Collection<IdentifiedAnnotation> conjoined = new ArrayList<>( conjoinedSites );
-         conjoinedSites.forEach( a -> conjoinedSiteLists.put( a, conjoined ) );
+//         conjoinedSites.forEach( a -> conjoinedSiteLists.put( a, conjoined ) );
+         conjoinedSiteLists.put( conjoinedSites.get( conjoinedSites.size()-1 ), conjoined );
       }
 
       return conjoinedSiteLists;

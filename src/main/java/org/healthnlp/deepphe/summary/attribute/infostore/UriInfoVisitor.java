@@ -1,8 +1,10 @@
 package org.healthnlp.deepphe.summary.attribute.infostore;
 
+import org.healthnlp.deepphe.core.document.SectionType;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.neo4j.node.Section;
+import org.healthnlp.deepphe.nlp.ae.HistoryAdjuster;
 import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
@@ -167,7 +169,7 @@ public interface UriInfoVisitor {
                                                  .append( "\n" );
                   continue;
                }
-               if ( type.equals( "Final Diagnosis" )
+               if ( type.equals( SectionType.FinalDiagnosis.getName() )
                     || type.equals( "Clinical Diagnosis and History" ) ) {
                   final int sBegin = section.getBegin();
                   final int sEnd = section.getEnd();
@@ -179,10 +181,7 @@ public interface UriInfoVisitor {
                               .forEach( u -> diagnosisUris.compute( u, ( k, v ) -> ( v == null )
                                                                                    ? 1
                                                                                    : v + 1 ) );
-               } else if ( type.equals( "Clinical History" )
-                           || type.equals( "History" )
-                           || type.equals( "History of Present Illness" )
-                           || type.equals( "Past Medical History" ) ) {
+               } else if ( HistoryAdjuster.isHistoric( type ) ) {
                   final int sBegin = section.getBegin();
                   final int sEnd = section.getEnd();
                   noteMentions.getValue()

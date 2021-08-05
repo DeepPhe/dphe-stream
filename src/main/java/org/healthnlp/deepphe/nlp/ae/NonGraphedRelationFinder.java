@@ -223,6 +223,7 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
          final boolean isFinding = SectionType.Finding.isThisSectionType( sectionParagraphs.getKey() );
          final boolean isHistology = SectionType.HistologySummary.isThisSectionType( sectionParagraphs.getKey() );
          final boolean isReview = SectionType.ReviewSystems.isThisSectionType( sectionParagraphs.getKey() );
+         final boolean isFamilyHistory = SectionType.FamilyHistory.isThisSectionType( sectionParagraphs.getKey() );
          for ( Paragraph paragraph : sectionParagraphs.getValue() ) {
             final Collection<IdentifiedAnnotation> annotations = paragraphAnnotationMap.get( paragraph );
             final List<IdentifiedAnnotation> massNeoplasmList
@@ -262,7 +263,7 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                findTnms( jCas, paragraph, massNeoplasmList, allMassNeoplasmList );
             }
 
-            if ( isMicroscopic || isFinding || isHistology || isReview ) {
+            if ( isMicroscopic || isFinding || isHistology || isReview || isFamilyHistory ) {
                continue;
             }
             if ( !neoplasmList.isEmpty() ) {

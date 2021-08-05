@@ -7,6 +7,7 @@ import org.healthnlp.deepphe.util.KeyValue;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.healthnlp.deepphe.summary.concept.bin.LateralityType.NO_LATERALITY;
 import static org.healthnlp.deepphe.summary.concept.bin.NeoplasmType.CANCER;
 import static org.healthnlp.deepphe.summary.concept.bin.NeoplasmType.TUMOR;
 import static org.healthnlp.deepphe.summary.concept.bin.SiteType.ALL_SITES;
@@ -34,12 +35,14 @@ final public class LateralityTypeBin {
          final Collection<Mention> neoplasms,
          final Map<Mention,Map<String,Collection<Mention>>> relationsMap ) {
       final Map<LateralityType,Collection<Mention>> lateralityTypes = new EnumMap<>( LateralityType.class );
-      for ( Mention neoplasm : neoplasms ) {
-         final Map<String, Collection<Mention>> relations = relationsMap.get( neoplasm );
-         LateralityType.getLateralityTypes( relations )
-                 .forEach( l -> lateralityTypes.computeIfAbsent( l, b -> new HashSet<>() )
-                                            .add( neoplasm ) );
-      }
+      lateralityTypes.put( NO_LATERALITY, neoplasms );
+
+//      for ( Mention neoplasm : neoplasms ) {
+//         final Map<String, Collection<Mention>> relations = relationsMap.get( neoplasm );
+//         LateralityType.getLateralityTypes( relations )
+//                 .forEach( l -> lateralityTypes.computeIfAbsent( l, b -> new HashSet<>() )
+//                                            .add( neoplasm ) );
+//      }
       return lateralityTypes;
    }
 
@@ -72,6 +75,29 @@ final public class LateralityTypeBin {
 
       }
    }
+
+   void setNeoplasms( final Collection<Mention> cancers,
+                      final Collection<Mention> tumors,
+                      final Map<String,Set<Mention>> uriMentionsMap,
+                      final Map<String,Collection<String>> associatedSitesMap,
+                      final Map<Mention,Map<String,Collection<Mention>>> relationsMap ) {
+      clear();
+      final Map<SiteType,Collection<Mention>> siteTypeCancersMap
+            = SiteTypeBin.getSiteTypeMentions( cancers, relationsMap );
+      final Map<SiteType,Collection<Mention>> siteTypeTumorsMap
+            = SiteTypeBin.getSiteTypeMentions( tumors, relationsMap );
+      for ( SiteType siteType : SiteType.values() ) {
+//         LOGGER.info( "LateralityTypeBin.setNeoplasms Line #65 " + _lateralityType + " " + siteType );
+         _siteTypeBins.get( siteType )
+                      .setNeoplasms( siteTypeCancersMap.getOrDefault( siteType, new HashSet<>() ),
+                                     siteTypeTumorsMap.getOrDefault( siteType, new HashSet<>() ),
+                                     uriMentionsMap,
+                                     associatedSitesMap,
+                                     relationsMap );
+
+      }
+   }
+
 
    LateralityType getLateralityType() {
       return _lateralityType;

@@ -42,6 +42,9 @@ final public class PittHeaderAnnotator extends JCasAnnotator_ImplBase {
       final Collection<Segment> pghHeaders = new HashSet<>();
       for ( Segment section : sections ) {
          if ( !PittsburghHeader.isThisSectionType( section ) ) {
+            if ( section.getPreferredText().equals( "Signature" ) ) {
+               pghHeaders.add( section );
+            }
             continue;
          }
          pghHeaders.add( section );

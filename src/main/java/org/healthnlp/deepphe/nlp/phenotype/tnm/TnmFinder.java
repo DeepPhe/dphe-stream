@@ -241,6 +241,9 @@ public enum TnmFinder {
       while ( fullMatcher.find() ) {
          final int fullMatchStart = fullMatcher.start();
          final String tnm = lookupWindow.substring( fullMatchStart, fullMatcher.end() );
+         if ( tnm.startsWith( "at " ) || tnm.startsWith( "an " ) || tnm.startsWith( "am " ) ) {
+            continue;
+         }
          char prefix = ' ';
          int pOffset = 0;
          final char pMatch = tnm.charAt( 0 );

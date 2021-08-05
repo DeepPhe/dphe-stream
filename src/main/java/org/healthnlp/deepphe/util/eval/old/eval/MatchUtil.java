@@ -319,6 +319,10 @@ final public class MatchUtil {
            && goldValue.isEmpty() ) {
          return true;
       }
+      if ( (goldValue.contains( "Tx" ) || goldValue.contains( "Nx" ) || goldValue.contains( "Mx" ))
+           && systemValue.isEmpty() ) {
+         return true;
+      }
       for ( String tnmKludge : TNM_MATCHES ) {
          if ( goldValue.contains( tnmKludge ) && systemValue.contains( tnmKludge ) ) {
             return true;
@@ -326,6 +330,12 @@ final public class MatchUtil {
 //         if ( goldValue != null && goldValue.contains( tnmKludge+"_Stage" ) && systemValue != null && systemValue.startsWith( tnmKludge ) ) {
 //            return true;
 //         }
+      }
+      if ( goldValue.equalsIgnoreCase( "high_grade" ) && systemValue.equalsIgnoreCase( "Poorly_Differentiated" ) ) {
+         return true;
+      }
+      if ( goldValue.equals( "Endometrial_Cavity" ) && systemValue.equals( "Uterine_Cavity" ) ) {
+         return true;
       }
       if ( goldValue.replace( "_Not_Otherwise_Specified", "" ).equals( systemValue ) ) {
          return true;
@@ -362,7 +372,8 @@ final public class MatchUtil {
 
       // Last attempt - necessary to facilitate match between old upmc annotations vs new system output
       // Otherwise the mapping is a serious pain.
-      if ( !goldValue.isEmpty() && !systemValue.isEmpty() && (goldValue.contains( systemValue ) || systemValue.contains( goldValue )) ) {
+      if ( !goldValue.isEmpty() && !systemValue.isEmpty()
+           && (goldValue.toLowerCase().contains( systemValue.toLowerCase() ) || systemValue.toLowerCase().contains( goldValue.toLowerCase() )) ) {
          return true;
 //      } else {
 //         System.err.println( goldValue + "    NOT    " + systemValue );
@@ -422,3 +433,23 @@ final public class MatchUtil {
    }
 
 }
+
+// tumor
+//Attribute              TP         FP         FN         TN         Accur %    P          R          Spcfty     F1
+
+//hasBodySite            23         20         30         0           31.51     0.5349     0.4340     0.0000     0
+// .4792
+//hasLaterality          39         15         13         22          68.54     0.7222     0.7500     0.5946     0
+// .7358
+//hasDiagnosis           28         27         25         2           36.59     0.5091     0.5283     0.0690     0
+// .5185
+//hasQuadrant            60         0          0          60         100.00     1.0000     1.0000     1.0000     1
+// .0000
+//hasClockface           60         0          0          60         100.00     1.0000     1.0000     1.0000     1
+// .0000
+//has_ER_Status          48         2          11         46          87.85     0.9600     0.8136     0.9583     0
+// .8807
+//has_PR_Status          54         2          4          51          94.59     0.9643     0.9310     0.9623     0
+// .9474
+//has_HER2_Status        60         0          0          60         100.00     1.0000     1.0000     1.0000     1
+// .0000

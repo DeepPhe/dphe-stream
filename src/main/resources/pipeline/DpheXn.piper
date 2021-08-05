@@ -33,6 +33,7 @@ add PittHeaderAnnotator
 //  Detect sentences using a machine learning model.
 addLogged SentenceDetectorAnnotatorBIO classifierJarPath=/org/apache/ctakes/core/sentdetect/model.jar
 //add SentenceDetector
+
 add MrsDrSentenceJoiner
 
 //  Use the DeepPhe paragraph expressions for paragraph discovery.
@@ -80,25 +81,15 @@ add DefaultJCasTermAnnotator
 //  Filter various concepts using context.
 add MassFilter
 
-
-//  Assign such as negation and uncertainty using machine-learning models.
-//load WindowedAttributeCleartkSubPipe
-// Commands and parameters to create a default entity attributes processing sub-pipeline.  This is not a full pipeline.
-
-// Add the Dependency parser for use by cleartk
-addDescription ClearNLPDependencyParserAE
-// Add the Semantic Role Labeler parser for use by cleartk
-addLogged ClearNLPSemanticRoleLabelerAE
-
 // Add the cleartk package for cleartk class lookups
 package org.apache.ctakes.assertion.medfacts.cleartk
 package org.apache.ctakes.assertion.medfacts.cleartk.windowed
 
+//  Assign such as negation and uncertainty using machine-learning models.
 // Add the cleartk attribute engines, logging for them as a block
 add StartFinishLogger LOGGER_NAME=CleartkAnalysisEngine LOGGER_TASK="Assigning Attributes" IS_START=true
 addDescription PolarityCleartkAnalysisEngineWindowed
 addDescription UncertaintyCleartkAnalysisEngineWindowed
-
 
 //  Assign such as negation and uncertainty using context.
 set MaxRightScopeSize=12
@@ -137,6 +128,9 @@ add SubjectAdjuster
 
 //  Set the section type in which each element was discovered to that element.
 add SectionIdSetter
+
+// Adjust Historic for entities
+add HistoryAdjuster
 
 //  Find relations declared in the ontology.
 add InDocUriRelationFinder

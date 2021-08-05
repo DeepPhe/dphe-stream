@@ -144,6 +144,18 @@ final public class UriScoreUtil {
       return mapUriQuotientsA( uris, uriRootsMap, uriCountsMap );
    }
 
+   static public List<KeyValue<String,Double>> mapUriQuotients( final Collection<String> uris,
+                                                                final Map<String, Collection<String>> uriRootsMap,
+                                                                final Map<String,Collection<Mention>> uriMentions ) {
+      final Collection<Mention> mentions = uris.stream()
+                                               .map( uriMentions::get )
+                                               .filter( Objects::nonNull )
+                                               .flatMap( Collection::stream )
+                                               .collect( Collectors.toSet() );
+      return mapUriQuotients( uris, uriRootsMap, mentions );
+   }
+
+
    static public List<KeyValue<String,Double>> mapUriQuotientsA( final Collection<String> uris,
                                                                 final Map<String, Collection<String>> uriRootsMap,
                                                                 final Map<String,Integer> uriCountsMap ) {

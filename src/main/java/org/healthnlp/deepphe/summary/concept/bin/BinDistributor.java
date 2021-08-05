@@ -62,7 +62,7 @@ final public class BinDistributor {
       final Map<String,Set<Mention>> uriMentionsMap
             = nonNeoplasms.stream()
                           .collect( Collectors.groupingBy( Mention::getClassUri, Collectors.toSet() ) );
-      final Map<String,Collection<String>> uriChainsMap = UriUtil.getAssociatedUriMap( uriMentionsMap.keySet() );
+      final Map<String,Collection<String>> uriChainsMap = UriUtil.getAllAssociatedUriMap( uriMentionsMap.keySet() );
       for ( Collection<String> uriChain : uriChainsMap.values() ) {
          final Map<String,Set<Mention>> uriMentions = new HashMap<>( uriMentionsMap );
          uriMentions.keySet().retainAll( uriChain );

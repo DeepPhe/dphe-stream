@@ -63,6 +63,11 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
                   removals.add( annotation );
                }
             }
+            case "mouth": {
+               if ( begin > 3 && docText.substring( begin - 3, begin - 1 ).contains( "by" ) ) {
+                  removals.add( annotation );
+               }
+            }
          }
       }
 

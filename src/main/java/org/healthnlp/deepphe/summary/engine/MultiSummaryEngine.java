@@ -55,105 +55,7 @@ final public class MultiSummaryEngine {
 
 
 
-   /**
-    * Entry point for new multi-cancer, drools-free summary creation.
-    *
-    * @param patientId   -
-    * @param patientNotes   -
-    * @param patientMentionNoteIds -
-    * @param patientRelations   -
-    * @return map of cancer summary to tumor summaries
-    */
-//   static private PatientSummaryXn createPatientSummaryXn( final String patientId,
-//                                                           final Collection<Note> patientNotes,
-//                                                           final Map<Mention, String> patientMentionNoteIds,
-//                                                           final Collection<MentionRelation> patientRelations ) {
-////      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
-////      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
-////                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
-////      +
-////                   "  Concept Aggregates do not only aggregate cross-document mentions, but will also both aggregate and separate" +
-////                   " mentions in within-document coreference chains." +
-////                   "  So, yes, we could logically remove the coreference annotator from the nlp pipeline." +
-////                   "   I will experiment when I have time.   - 10/14/2020 Done." );
-////      LOGGER.info( "For the patient we have " + patientNotes.size() + " notes, "
-////                   + patientMentionNoteIds.size() + " mentions, "
-////                   + patientRelations.size() + " relations" );
-////                   + patientCorefs.size() + " coref chains." );
-////      final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
-////            = createUriConceptAggregateMap( patientId, patientNotes, patientMentionNoteIds, patientRelations, patientCorefs );
-////            = ConceptAggregateHandler.createUriConceptAggregateMap( patientId, patientMentionNoteIds, patientRelations );
-//
-//      final Collection<Mention> affirmedMentions = BinDistributor.getAffirmedMentions( patientMentionNoteIds.keySet() );
-//      final Map<String,Mention> idToMentionMap = BinDistributor.mapIdToMention( affirmedMentions );
-//
-//      final Map<BinDistributor.MentionType,Collection<Mention>> categorizedMentions =
-//            BinDistributor.categorizeMentions( affirmedMentions );
-//      // Cancers still exist here.
-//categorizedMentions.get( BinDistributor.MentionType.CANCER ).forEach( m -> LOGGER.info( m.getClassUri() ) );
-//
-//      // Put neoplasm mention and relation information in a singleton that can be referenced by multiple classes.
-//      final Map<Mention,Map<String,Collection<Mention>>> cancerRelationsMap
-//            = BinDistributor.mapNeoplasmRelations( categorizedMentions.get( BinDistributor.MentionType.CANCER ),
-//                                                   idToMentionMap,
-//                                                   patientRelations );
-//      NeoplasmStore.getStore( NeoplasmType.CANCER )
-//                   .setNeoplasms( categorizedMentions.get( BinDistributor.MentionType.CANCER ),
-//                                  cancerRelationsMap );
-//
-//      final Map<Mention,Map<String,Collection<Mention>>> tumorRelationsMap
-//            = BinDistributor.mapNeoplasmRelations( categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
-//                                                   idToMentionMap,
-//                                                   patientRelations );
-//      NeoplasmStore.getStore( NeoplasmType.TUMOR )
-//                   .setNeoplasms( categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
-//                                  tumorRelationsMap );
-//
-//      //
-//      // CREATE CONCEPTS
-//      //
-//
-//      final Map<String,Collection<String>> allUriRoots = BinDistributor.mapUriRoots( affirmedMentions );
-//      final Collection<ConceptAggregate> cancerConcepts
-//            = BinDistributor.createNeoplasmConcepts( patientId,
-//                                                     patientMentionNoteIds,
-//                                                     NeoplasmType.CANCER,
-//                                                     categorizedMentions.get( BinDistributor.MentionType.CANCER ),
-//                                                     cancerRelationsMap,
-//                                                     allUriRoots );
-//      final Collection<ConceptAggregate> tumorConcepts
-//            = BinDistributor.createNeoplasmConcepts( patientId,
-//                                                     patientMentionNoteIds,
-//                                                     NeoplasmType.TUMOR,
-//                                                     categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
-//                                                     tumorRelationsMap,
-//                                                     allUriRoots );
-//
-//      final Collection<ConceptAggregate> nonNeoplasmConcepts
-//            = BinDistributor.createNonNeoplasmConcepts( patientId,
-//                                                        patientMentionNoteIds,
-//                                                        categorizedMentions.get( BinDistributor.MentionType.OTHER ),
-//                                                        allUriRoots );
-//
-//      // Expand relations from original mention relations to conceptAggregate relations.
-//      final Collection<ConceptAggregate> allConcepts = new HashSet<>( cancerConcepts );
-//      allConcepts.addAll( tumorConcepts );
-//      allConcepts.addAll( nonNeoplasmConcepts );
-//      final Map<Mention,Collection<ConceptAggregate>> allMentionConcepts
-//            = BinDistributor.mapMentionToConcepts( allConcepts );
-//      BinDistributor.expandNonNeoplasmRelations( patientRelations,
-//                                                 categorizedMentions.get( BinDistributor.MentionType.CANCER ),
-//                                                 categorizedMentions.get( BinDistributor.MentionType.TUMOR ),
-//                                                 idToMentionMap,
-//                                                 allMentionConcepts );
-//      BinDistributor.expandNeoplasmRelations( NeoplasmType.CANCER, allMentionConcepts );
-//      BinDistributor.expandNeoplasmRelations( NeoplasmType.TUMOR, allMentionConcepts );
-//
-//      NeoplasmStore.getStore( NeoplasmType.CANCER ).clear();
-//      NeoplasmStore.getStore( NeoplasmType.TUMOR ).clear();
-////      return createPatientSummaryXn( patientId, neoplasmConcepts, allConcepts );
-//      return createPatientSummaryXn( patientId, cancerConcepts, tumorConcepts, allConcepts );
-//   }
+
    static private PatientSummaryXn createPatientSummaryXn( final String patientId,
                                                            final Collection<Note> patientNotes,
                                                            final Map<Mention, String> patientMentionNoteIds,
@@ -170,35 +72,22 @@ final public class MultiSummaryEngine {
 //                   + patientMentionNoteIds.size() + " mentions, "
 //                   + patientRelations.size() + " relations" );
 //                   + patientCorefs.size() + " coref chains." );
-//      final Map<String, Collection<ConceptAggregate>> uriConceptAggregateMap
-//            = createUriConceptAggregateMap( patientId, patientNotes, patientMentionNoteIds, patientRelations, patientCorefs );
-//            = ConceptAggregateHandler.createUriConceptAggregateMap( patientId, patientMentionNoteIds, patientRelations );
 
       final Collection<Mention> affirmedMentions = AssertionBin.getAffirmedMentions( patientMentionNoteIds.keySet() );
       final Map<String,Mention> idToMentionMap = BinDistributor.mapIdToMention( affirmedMentions );
       final Map<Mention,Map<String,Collection<Mention>>> relationsMap
             = BinDistributor.mapRelations( affirmedMentions, idToMentionMap, patientRelations );
 
-      final AssertionBin affirmedBin = new AssertionBin();
-      // creates cancer and tumor bins, returns non neoplasm mentions.  This sets the neoplasms
-      final Collection<Mention> nonNeoplasms = affirmedBin.splitMentions( affirmedMentions, relationsMap );
-
       final Map<String,Collection<String>> allUriRoots = BinDistributor.mapUriRoots( affirmedMentions );
       final Map<String,Collection<String>> allUriBranches = BinDistributor.mapUriBranches( allUriRoots.keySet() );
 
-            affirmedBin.distributeSites( allUriRoots, allUriBranches );
+      final AssertionBin affirmedBin = new AssertionBin();
+      // creates cancer and tumor bins, returns non neoplasm mentions.  This sets the neoplasms
+      final Collection<Mention> nonNeoplasms = affirmedBin.splitMentions( affirmedMentions, relationsMap, allUriRoots );
+
+      affirmedBin.distributeSites( allUriRoots, allUriBranches );
       affirmedBin.mergeExtents( relationsMap );
       affirmedBin.mergeSiteNeoplasmChains( allUriBranches );
-//      affirmedBin.reduceCancerSites();
-//      affirmedBin.mergeSiteCancerChains();
-
-
-
-//      final Collection<SiteNeoplasmBin> siteNeoplasmBins = affirmedBin.getSiteNeoplasmBins();
-//      final Map<ConceptAggregate,Collection<ConceptAggregate>> cancerTumorConcepts =
-//            BinDistributor.createCancerTumors( siteNeoplasmBins, relationsMap,
-//                                               patientId, patientMentionNoteIds,
-//                                               allUriRoots  );
 
 
       // TODO : Send hasTumorExtent to all SiteNeoplasmBins.
@@ -220,12 +109,6 @@ final public class MultiSummaryEngine {
       final Map<Mention,Collection<ConceptAggregate>> mentionConceptsMap
             = BinDistributor.createNonNeoplasms( nonNeoplasms, patientId, patientMentionNoteIds,
                                                  allUriRoots );
-//      mentionConceptsMap.putAll( BinDistributor.mapMentionToConcepts( cancerTumorConcepts.keySet() ) );
-//      mentionConceptsMap.putAll( BinDistributor.mapMentionToConcepts(
-//            cancerTumorConcepts.values()
-//                               .stream()
-//                               .flatMap( Collection::stream )
-//                               .collect(  Collectors.toSet() ) ) );
 
       mentionConceptsMap.putAll(
             BinDistributor.mapMentionToConcepts( diagnosisConcepts._cancerSiteUrisMap.keySet() ) );
@@ -242,7 +125,6 @@ final public class MultiSummaryEngine {
                                                                          .flatMap( Collection::stream )
                                                                          .collect( Collectors.toSet() );
 
-//      return createPatientSummaryXn( patientId, cancerTumorConcepts, allConcepts );
       return createPatientSummaryXn( patientId,
                                      diagnosisConcepts._cancerTumorsMap,
                                      diagnosisConcepts.getLoneTumors(),
@@ -412,36 +294,36 @@ final public class MultiSummaryEngine {
 //      }
 //      loneTumors.forEach( t -> LOGGER.info( "\n!! Lone Tumor !!\n" + t.toString() ) );
       // TODO Remove keys (Cancers) with mentions < max mention count / 4 (or some settable number)
-      final int maxMentions = diagnosisMap.keySet()
-                                          .stream()
-                                          .mapToInt( c -> c.getMentions().size() )
-                                          .max()
-                                          .orElse( 0 );
-      final Collection<ConceptAggregate> tooSmall = diagnosisMap.keySet()
-                                                                .stream()
-                                                                // TODO for old and busted upmc brca
-                                                                .filter( c -> c.getMentions().size()*3 < maxMentions )
-//                                                                .filter( c -> c.getMentions().size() < maxMentions )
-                                                                .collect( Collectors.toSet() );
-
-      final int maxSites = diagnosisMap.keySet()
-                                          .stream()
-                                       .map( ConceptAggregate::getRelatedSites )
-                                       .flatMap( Collection::stream )
-                                          .mapToInt( c -> c.getMentions().size() )
-                                          .max()
-                                          .orElse( 0 );
-      final Collection<ConceptAggregate> tooFewSites
-            = diagnosisMap.keySet()
-                         .stream()
-                         .filter( c -> c.getRelatedSites()
-                                        .stream()
-                                        .mapToInt( s -> s.getMentions().size() )
-                                        // TODO for old and busted upmc brca
-                                        .sum()*3 < maxSites )
-//                                        .sum() < maxSites )
-                          .collect( Collectors.toSet() );
-      LOGGER.info( "Site Mention Counts ..." );
+//      final int maxMentions = diagnosisMap.keySet()
+//                                          .stream()
+//                                          .mapToInt( c -> c.getMentions().size() )
+//                                          .max()
+//                                          .orElse( 0 );
+//      final Collection<ConceptAggregate> tooSmall = diagnosisMap.keySet()
+//                                                                .stream()
+//                                                                // TODO for old and busted upmc brca
+//                                                                .filter( c -> c.getMentions().size()*3 < maxMentions )
+////                                                                .filter( c -> c.getMentions().size() < maxMentions )
+//                                                                .collect( Collectors.toSet() );
+//
+//      final int maxSites = diagnosisMap.keySet()
+//                                          .stream()
+//                                       .map( ConceptAggregate::getRelatedSites )
+//                                       .flatMap( Collection::stream )
+//                                          .mapToInt( c -> c.getMentions().size() )
+//                                          .max()
+//                                          .orElse( 0 );
+//      final Collection<ConceptAggregate> tooFewSites
+//            = diagnosisMap.keySet()
+//                         .stream()
+//                         .filter( c -> c.getRelatedSites()
+//                                        .stream()
+//                                        .mapToInt( s -> s.getMentions().size() )
+//                                        // TODO for old and busted upmc brca
+//                                        .sum()*3 < maxSites )
+////                                        .sum() < maxSites )
+//                          .collect( Collectors.toSet() );
+//      LOGGER.info( "Site Mention Counts ..." );
       diagnosisMap.keySet()
                   .forEach( c -> LOGGER.info(
                         c.getUri() + " " + String.join( ",", c.getAllUris() )
@@ -456,28 +338,28 @@ final public class MultiSummaryEngine {
                                   .collect( Collectors.joining("\n") )
                          ) );
 
-      LOGGER.info( "Removing Too Few Sites Cancers from max " + maxSites + "/3 :\n"
-                   + tooFewSites.stream()
-                             .map( c -> c.getUri() + " : " + c.getMentions().size() )
-                             .collect( Collectors.joining( "\n" ) ) );
-      diagnosisMap.keySet().removeAll( tooFewSites );
+//      LOGGER.info( "Removing Too Few Sites Cancers from max " + maxSites + "/3 :\n"
+//                   + tooFewSites.stream()
+//                             .map( c -> c.getUri() + " : " + c.getMentions().size() )
+//                             .collect( Collectors.joining( "\n" ) ) );
+//      diagnosisMap.keySet().removeAll( tooFewSites );
+//
+//      LOGGER.info( "Removing Too Small Cancers from max " + maxMentions + "/3 :\n"
+//                   + tooSmall.stream()
+//                             .map( c -> c.getUri() + " : " + c.getMentions().size() )
+//                             .collect( Collectors.joining( "\n" ) ) );
+//      diagnosisMap.keySet().removeAll( tooSmall );
 
-      LOGGER.info( "Removing Too Small Cancers from max " + maxMentions + "/3 :\n"
-                   + tooSmall.stream()
-                             .map( c -> c.getUri() + " : " + c.getMentions().size() )
-                             .collect( Collectors.joining( "\n" ) ) );
-      diagnosisMap.keySet().removeAll( tooSmall );
-
-      final Collection<ConceptAggregate> tooSmallLoners = loneTumors.stream()
-                                                                    // TODO for old and busted upmc brca
-                                                                .filter( c -> c.getMentions().size()*3 < maxMentions )
-//                                                                    .filter( c -> c.getMentions().size() < maxMentions )
-                                                                    .collect( Collectors.toSet() );
-      LOGGER.info( "Removing Too Small Lone Tumors from max " + maxMentions + "/3 :\n"
-                   + tooSmallLoners.stream()
-                             .map( c -> c.getUri() + " : " + c.getMentions().size() )
-                             .collect( Collectors.joining( "\n" ) ) );
-      loneTumors.removeAll( tooSmallLoners );
+//      final Collection<ConceptAggregate> tooSmallLoners = loneTumors.stream()
+//                                                                    // TODO for old and busted upmc brca
+//                                                                .filter( c -> c.getMentions().size()*3 < maxMentions )
+////                                                                    .filter( c -> c.getMentions().size() < maxMentions )
+//                                                                    .collect( Collectors.toSet() );
+//      LOGGER.info( "Removing Too Small Lone Tumors from max " + maxMentions + "/3 :\n"
+//                   + tooSmallLoners.stream()
+//                             .map( c -> c.getUri() + " : " + c.getMentions().size() )
+//                             .collect( Collectors.joining( "\n" ) ) );
+//      loneTumors.removeAll( tooSmallLoners );
 
 //      LOGGER.info( "!!!  Cancers , Tumors !!!" );
       final Collection<ConceptAggregate> cancerList2 = diagnosisMap.keySet()

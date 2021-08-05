@@ -325,6 +325,9 @@ final class ScoreWriter {
          if ( PATIENT_ID.equals( required ) ) {
             continue;
          }
+         if ( !attributeTPs.containsKey( required ) ) {
+            continue;
+         }
          sb.append( getPropertyA_F1( required,
                attributeTPs.get( required ),
                0,
@@ -333,6 +336,9 @@ final class ScoreWriter {
                spanF1, simple ) );
       }
       for ( String scoring : scoringNames ) {
+         if ( !attributeTPs.containsKey( scoring ) ) {
+            continue;
+         }
          sb.append( getPropertyA_F1( scoring,
                attributeTPs.get( scoring ),
                attributeTNs.get( scoring ),

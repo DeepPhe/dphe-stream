@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.ctakes.core.cc.AbstractFileWriter;
 import org.apache.ctakes.core.patient.PatientNoteStore;
+import org.apache.ctakes.core.util.StringUtil;
 import org.apache.ctakes.core.util.doc.SourceMetadataUtil;
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
@@ -148,10 +149,6 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
       if ( patientSummary == null ) {
          // Create PatientSummary
          patientSummary = MultiSummaryEngine.createPatientSummaryXn( patient );
-         if ( patientSummary == null ) {
-            LOGGER.warn( "EvalFileWriterXn #143, null PatientSummary from MultiSummaryEngine.  Need to finish." );
-            return;
-         }
          // Add the summary just in case some other consumer can utilize it.  e.g. eval file writer.
          PatientSummaryXnNodeStore.getInstance().add( patientId, patientSummary );
       }
@@ -175,7 +172,6 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
             final Map<String,List<String>> cancerIdRelatedIdMap = cancer.getRelatedFactIds();
             final Map<String,List<Fact>> cancerRelated = FactRelationUtil.getRelatedFactsMap( cancerIdRelatedIdMap,
                                                                                              idFactMap );
-            final String cancerSite = getSite( cancerAttributes );
             cancerLines.add( createCancerLine( patientId, cancer, cancerAttributes, cancerRelated ) );
             final String cancerId = cancer.getId();
 
@@ -209,7 +205,7 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                                                + "-hasCancerType|"
                                                + "-hasHistologicType|"
                                                + "-hasHistoricity|"
-                                               + "hasBodySite|"
+                                               + "*hasBodySite|"
                                                + "hasLaterality|"
                                                + "hasCancerStage|"
                                                + "has_Clinical_T|"
@@ -237,13 +233,16 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
       if ( cancer.getClassUri().equals( UriConstants.UNKNOWN ) ) {
          return "";
       }
+      if ( getSite( cancerAttributes, cancerRelated ).isEmpty() ) {
+         return "";
+      }
       return patientId + "|" + "Cancer|" + cancer.getId() + "|" + cancer.getClassUri() + "|"
             + getRelatedUri( cancerRelated, "hasCancerType" ) + "|"
              + getAttributeValue( cancerAttributes, "histology" ) + "|"
              + getRelatedUri( cancerRelated, "hasHistoricity" ) + "|"
-             + getSite( cancerAttributes ) + "|"
+             + getSite( cancerAttributes, cancerRelated ) + "|"
              + getLaterality( cancerAttributes ) + "|"
-             + getAttributeValue( cancerAttributes, "stage" ) + "|"
+             + getStage( cancerAttributes, cancerRelated, cancer ) + "|"
              + getAttributeValue( cancerAttributes, "t" ) + "|"
              + getAttributeValue( cancerAttributes, "n" ) + "|"
              + getAttributeValue( cancerAttributes, "m" ) + "|"
@@ -270,7 +269,7 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                                               + "-hasCancerType|"
                                               + "-hasHistologicType|"
                                               + "-hasHistoricity|"
-                                              + "hasBodySite|"
+                                              + "*hasBodySite|"
                                               + "hasLaterality|"
                                               + "hasDiagnosis|"
                                               + "-isMetastasisOf|"
@@ -288,7 +287,8 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                                               + "hasClockface|"
                                               + "has_ER_Status|"
                                               + "has_PR_Status|"
-                                              + "has_HER2_Status|\n";
+                                              + "has_HER2_Status|"
+                                              + "hasGrade|\n";
 
 //               tumorLines.add( createTumorLine( patientId, cancerId, tumor, tumorAttributes, tumorRelated,
 //                                                cancerSite, cancerAttributes, cancerRelated ) );
@@ -299,12 +299,15 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                                           final Map<String,List<Fact>> tumorRelated,
                                           final Collection<NeoplasmAttribute> cancerAttributes,
                                           final Map<String,List<Fact>> cancerRelated ) {
+      if ( takeFirst( getSite( tumorAttributes, tumorRelated ), getSite( cancerAttributes, tumorRelated ) ).isEmpty() ) {
+         return "";
+      }
       return patientId + "|" + cancerId + "|" + "Tumor|" + tumor.getId() + "|" + tumor.getClassUri() + "|"
              + tumor.getClassUri() + "|"
              + takeFirst( getAttributeValue( tumorAttributes, "histology" ),
                           getAttributeValue( cancerAttributes, "histology" ) )+ "|"
              + getRelatedUri( tumorRelated, "hasHistoricity" ) + "|"
-             + takeFirst( getSite( tumorAttributes ), getSite( cancerAttributes ) ) + "|"
+             + takeFirst( getSite( tumorAttributes, tumorRelated ), getSite( cancerAttributes, tumorRelated ) ) + "|"
              + takeFirst(  getLaterality( tumorAttributes ),
                            getLaterality( cancerAttributes ) ) + "|"
              + takeFirst( getRelatedUri( tumorRelated, "hasDiagnosis" ),
@@ -328,9 +331,11 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
                           getStatus( cancerAttributes, "ER_", cancerRelated, RelationConstants.has_Biomarker, "estro" ) )+ "|"
              + takeFirst( getStatus( tumorAttributes, "PR_", tumorRelated, RelationConstants.has_Biomarker, "progest" ),
                           getStatus( cancerAttributes, "PR_", cancerRelated, RelationConstants.has_Biomarker, "progest" ) ) + "|"
-             + takeFirst( getStatus( tumorAttributes, "HER2", tumorRelated, RelationConstants.has_Biomarker, "her2" ),
+             + takeFirst( getStatus( tumorAttributes, "HER2", tumorRelated, RelationConstants.has_Biomarker, "her2" ) ,
                           getStatus( cancerAttributes, "HER2", cancerRelated, RelationConstants.has_Biomarker,
-                                     "her2" ) )
+                                     "her2" ) ) + "|"
+             + takeFirst( getAttributeUri( tumorAttributes, "grade" ),
+                          getAttributeUri( cancerAttributes, "grade" ) )
                           + "|\n";
    }
 
@@ -341,9 +346,59 @@ public class EvalFileWriterXn extends AbstractFileWriter<Patient> {
       return two;
    }
 
+   static private final String[] SITE_RELATIONS = { RelationConstants.DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
+                                                    RelationConstants.DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE,
+                                                    RelationConstants.DISEASE_HAS_METASTATIC_ANATOMIC_SITE,
+                                                    RelationConstants.Disease_Has_Associated_Region,
+                                                    RelationConstants.Disease_Has_Associated_Cavity,
+                                                    RelationConstants.Finding_Has_Associated_Site,
+                                                    RelationConstants.Finding_Has_Associated_Region,
+                                                    RelationConstants.Finding_Has_Associated_Cavity };
 
-   static private String getSite( final Collection<NeoplasmAttribute> attributes ) {
-      return getAttributeUri( attributes, "topography_major" ).replace( "DeepPhe", "" );
+   static private String getSite( final Collection<NeoplasmAttribute> attributes,
+                                  final Map<String,List<Fact>> relatedFacts ) {
+      final String topography_major = getAttributeUri( attributes, "topography_major" ).replace( "DeepPhe", "" );
+      if ( !topography_major.isEmpty() ) {
+         return topography_major;
+      }
+      for ( String siteRelation : SITE_RELATIONS ) {
+         final String siteUri = getRelatedUri( relatedFacts, siteRelation );
+         if ( !siteUri.isEmpty() ) {
+            return siteUri;
+         }
+      }
+      return "";
+   }
+
+   static private String getStage( final Collection<NeoplasmAttribute> attributes,
+                                   final Map<String,List<Fact>> relatedFacts,
+                                  final Cancer cancer ) {
+      final String stage = getAttributeValue( attributes, "stage" );
+      if ( !stage.isEmpty() ) {
+         return stage;
+      }
+      final String uriStage = getDiagnosisStage( cancer.getClassUri() );
+      if ( !uriStage.isEmpty() ) {
+         return uriStage;
+      }
+      final String diagnoses = getRelatedUri( relatedFacts, RelationConstants.HAS_DIAGNOSIS );
+      if ( !diagnoses.isEmpty() ) {
+         final String[] splits = StringUtil.fastSplit( diagnoses, ';' );
+         return Arrays.stream( splits )
+               .map( EvalFileWriterXn::getDiagnosisStage )
+               .filter( s -> !s.isEmpty() ).collect( Collectors.joining(";") );
+      }
+      return "";
+   }
+
+   static private String getDiagnosisStage( final String diagnosis ) {
+      if ( diagnosis.startsWith( "Stage_" ) ) {
+         final int nextScore = diagnosis.indexOf( '_', 6 );
+         if ( nextScore > 6 ) {
+            return diagnosis.substring( 6, nextScore );
+         }
+      }
+      return "";
    }
 
    static private String getFacts( final Map<String,List<Fact>> relatedFacts, final String rootUri ) {

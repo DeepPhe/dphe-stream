@@ -1,6 +1,8 @@
 package org.healthnlp.deepphe.summary.concept.bin;
 
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.core.uri.UriUtil;
+import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
@@ -12,6 +14,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.healthnlp.deepphe.neo4j.constant.UriConstants.*;
+import static org.healthnlp.deepphe.summary.concept.bin.LateralityType.BILATERAL;
+import static org.healthnlp.deepphe.summary.concept.bin.LateralityType.LEFT;
+import static org.healthnlp.deepphe.summary.concept.bin.LateralityType.RIGHT;
 import static org.healthnlp.deepphe.summary.concept.bin.LateralityType.*;
 import static org.healthnlp.deepphe.summary.concept.bin.NeoplasmType.CANCER;
 import static org.healthnlp.deepphe.summary.concept.bin.NeoplasmType.TUMOR;
@@ -52,22 +58,799 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                      .collect( Collectors.toSet() );
    }
 
+   static public Collection<Mention> getAffirmedCurrentMentions( final Collection<Mention> mentions ) {
+      return mentions.stream()
+                     .filter( m -> !m.isNegated() )
+                     .filter( m -> !m.isHistoric() )
+                     .collect( Collectors.toSet() );
+   }
+
+
+   static private final Collection<String> DONT_CULL_NEOPLASM_URIS = Arrays.asList(
+         NEOPLASM, BENIGN_NEOPLASM, MALIGNANT_NEOPLASM, PRIMARY_NEOPLASM, IN_SITU_NEOPLASM,
+         METASTATIC_NEOPLASM, METASTASIS, MASS, RECURRENT_TUMOR, "Carcinoma", "Adenocarcinoma" );
 
    public Collection<Mention> splitMentions( final Collection<Mention> mentions,
-                                             final Map<Mention,Map<String,Collection<Mention>>> relationsMap ) {
+                                             final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+                                             final Map<String,Collection<String>> allUriRoots ) {
       clear();
       final Map<BinDistributor.MentionType,Collection<Mention>> categoryMentionsMap
             = splitMentionTypes( mentions );
-      final Map<String,Set<Mention>> uriMentionsMap
+
+      final Collection<String> acceptedSites = new HashSet<>();
+      trimNeoplasmsBySite( relationsMap, categoryMentionsMap, acceptedSites );
+
+      trimNeoplasmsByUri( BinDistributor.MentionType.CANCER, categoryMentionsMap );
+      trimNeoplasmsByUri( BinDistributor.MentionType.TUMOR, categoryMentionsMap );
+
+//      acceptedSites.clear();
+      trimNeoplasmsBySitedNeoplasm( relationsMap, categoryMentionsMap, acceptedSites );
+
+//      trimNeoplasmsBySite( relationsMap, categoryMentionsMap, acceptedSites );
+
+      final Collection<Mention> remainingNeoplasms
+            = new HashSet<>( categoryMentionsMap.get( BinDistributor.MentionType.CANCER ) );
+      remainingNeoplasms.addAll( categoryMentionsMap.get( BinDistributor.MentionType.TUMOR ) );
+      final Collection<String> remainingSiteUris = new HashSet<>();
+      fillNeoplasmSites( remainingNeoplasms, relationsMap, remainingSiteUris );
+      remainingSiteUris.retainAll( acceptedSites );
+
+      final Map<String,Collection<String>> remainingAssociatedSites
+            = UriUtil.getAllAssociatedUriMap( remainingSiteUris );
+      moveFemaleGenitalia( remainingAssociatedSites );
+      LOGGER.info( "\nAssertionBin.splitMentions line #725, AllAssociatedSites:\n"
+                   + remainingAssociatedSites.entrySet()
+                                       .stream()
+                                       .map( e -> e.getKey() + " : " + String.join( " ", e.getValue() ) )
+                                       .collect( Collectors.joining("\n") ) );
+
+      final Map<String,Set<Mention>> allUriMentionsMap
             = mentions.stream()
                       .collect( Collectors.groupingBy( Mention::getClassUri, Collectors.toSet() ) );
-
       setNeoplasms( categoryMentionsMap.get( BinDistributor.MentionType.CANCER ),
                     categoryMentionsMap.get( BinDistributor.MentionType.TUMOR ),
-                    uriMentionsMap,
+                    allUriMentionsMap,
+                    remainingAssociatedSites,
                     relationsMap  );
       return categoryMentionsMap.get( BinDistributor.MentionType.OTHER );
    }
+
+   static private void fillAllSites( final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+                                     final Map<BinDistributor.MentionType,Collection<Mention>> categoryMentionsMap,
+                                     final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+                                     final Map<String,Collection<Mention>> regionUriNeoplasmMentions,
+                                     final Collection<Mention> noStartingSiteNeoplasms,
+                                     final Map<String,Collection<Mention>> siteUriSiteMentions,
+                                     final Map<String,Collection<Mention>> regionUriRegionMentions ) {
+      final List<Mention> neoplasmMentions
+            = new ArrayList<>( categoryMentionsMap.get( BinDistributor.MentionType.CANCER ) );
+      neoplasmMentions.addAll( categoryMentionsMap.get( BinDistributor.MentionType.TUMOR ) );
+      neoplasmMentions.sort( Comparator.comparing( Mention::getClassUri ) );
+      final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions = new HashMap<>();
+      fillNeoplasmSiteRelations( neoplasmMentions, relationsMap,
+                                 Collections.emptyList(), Collections.emptyList(),
+                                 neoplasmUriNeoplasmMentions,
+                                 noStartingSiteNeoplasms,
+                                 siteUriNeoplasmMentions, regionUriNeoplasmMentions,
+                                 siteUriSiteMentions, regionUriRegionMentions );
+      redistributeRegionsToSites( siteUriNeoplasmMentions, regionUriNeoplasmMentions,
+                                  siteUriSiteMentions, regionUriRegionMentions );
+      LOGGER.info( "\nAssertionBin.splitMentions line #150 Remaining Regions that aren't also sites:\n"
+                   + regionUriNeoplasmMentions.entrySet().stream()
+                                              .sorted( Map.Entry.comparingByKey() )
+                                              .map( e -> e.getKey() + " "
+                                                         + e.getValue().stream().distinct()
+                                                            .sorted( Comparator.comparing( Mention::getClassUri ))
+                                                            .map( m -> m.getClassUri() + " " + m.getId() )
+                                                            .collect( Collectors.joining("\n   ") ) )
+                                              .collect( Collectors.joining("\n") ) );
+   }
+
+   static private void fillAllSitesWithNeoplasms( final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+                                     final Map<BinDistributor.MentionType,Collection<Mention>> categoryMentionsMap,
+                                                  final Collection<Mention> noStartingSiteNeoplasms,
+                                     final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+                                     final Map<String,Collection<Mention>> regionUriNeoplasmMentions ) {
+      final List<Mention> neoplasmMentions
+            = new ArrayList<>( categoryMentionsMap.get( BinDistributor.MentionType.CANCER ) );
+      neoplasmMentions.addAll( categoryMentionsMap.get( BinDistributor.MentionType.TUMOR ) );
+
+      fillNeoplasmSiteRelations( neoplasmMentions, relationsMap, noStartingSiteNeoplasms, siteUriNeoplasmMentions,
+                                 regionUriNeoplasmMentions );
+      redistributeRegionsToSites( siteUriNeoplasmMentions, regionUriNeoplasmMentions );
+      LOGGER.info( "\nAssertionBin.fillAllSitesWithNeoplasms line #150 Remaining Regions that aren't also sites:\n"
+                   + regionUriNeoplasmMentions.entrySet().stream()
+                                              .sorted( Map.Entry.comparingByKey() )
+                                              .map( e -> e.getKey() + " "
+                                                         + e.getValue().stream().distinct()
+                                                            .sorted( Comparator.comparing( Mention::getClassUri ))
+                                                            .map( m -> m.getClassUri() + " " + m.getId() )
+                                                            .collect( Collectors.joining("\n   ") ) )
+                                              .collect( Collectors.joining("\n") ) );
+   }
+
+   static private void trimNeoplasmsBySite(
+         final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+         final Map<BinDistributor.MentionType,Collection<Mention>> categoryMentionsMap,
+         final Collection<String> acceptableSites ) {
+
+       final Map<String,Collection<Mention>> siteUriNeoplasmMentions = new HashMap<>();
+      final Map<String,Collection<Mention>> regionUriNeoplasmMentions = new HashMap<>();
+      final Collection<Mention> noStartingSiteNeoplasms = new HashSet<>();
+      final Map<String,Collection<Mention>> siteUriSiteMentions = new HashMap<>();
+      final Map<String,Collection<Mention>> regionUriRegionMentions = new HashMap<>();
+
+      fillAllSites( relationsMap, categoryMentionsMap, siteUriNeoplasmMentions, regionUriNeoplasmMentions,
+                    noStartingSiteNeoplasms, siteUriSiteMentions, regionUriRegionMentions );
+
+      cullBySiteCount( siteUriSiteMentions, siteUriNeoplasmMentions );
+      cullBySiteCount( regionUriRegionMentions, regionUriNeoplasmMentions );
+
+      acceptableSites.addAll( siteUriSiteMentions.keySet() );
+      acceptableSites.addAll( regionUriRegionMentions.keySet() );
+
+      final List<Mention> remainingNeoplasms = new ArrayList<>();
+      final Map<Mention,Collection<String>> neoplasmMentionSiteUris = new HashMap<>();
+      final Map<Mention,Collection<String>> neoplasmMentionRegionUris = new HashMap<>();
+      fillRemainingNeoplasms( siteUriNeoplasmMentions, remainingNeoplasms, neoplasmMentionSiteUris );
+      fillRemainingNeoplasms( regionUriNeoplasmMentions, remainingNeoplasms, neoplasmMentionRegionUris );
+
+      remainingNeoplasms.sort( Comparator.comparing( Mention::getClassUri )
+                                         .thenComparing( Mention::getId ) );
+      LOGGER.info( "\nsplitMentions Neoplasm Adjusted Remaining Sites and Regions:" );
+      for ( Mention neoplasm : remainingNeoplasms ) {
+         LOGGER.info( neoplasm.getClassUri() + " " + neoplasm.getId()
+                      + " Sites : "
+                      + neoplasmMentionSiteUris.getOrDefault( neoplasm, Collections.emptyList() )
+                                               .stream()
+                                               .sorted()
+                                               .collect( Collectors.joining(" ") ) );
+         LOGGER.info( neoplasm.getClassUri() + " " + neoplasm.getId()
+                      + " Regions : "
+                      + neoplasmMentionRegionUris.getOrDefault( neoplasm, Collections.emptyList() )
+                                                 .stream()
+                                                 .sorted()
+                                                 .collect( Collectors.joining(" ") ) );
+      }
+
+      LOGGER.info( "\nsplitMentions No Starting Sites:\n"
+                   + noStartingSiteNeoplasms.stream()
+                                            .sorted( Comparator.comparing( Mention::getClassUri ) )
+                                            .map( m -> m.getClassUri() + " " + m.getId() )
+                                            .collect( Collectors.joining(" ") ) );
+
+      remainingNeoplasms.addAll( noStartingSiteNeoplasms );
+      categoryMentionsMap.get( BinDistributor.MentionType.CANCER ).retainAll( remainingNeoplasms );
+      categoryMentionsMap.get( BinDistributor.MentionType.TUMOR ).retainAll( remainingNeoplasms );
+   }
+
+
+
+
+   static private void trimNeoplasmsBySitedNeoplasm(
+         final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+         final Map<BinDistributor.MentionType,Collection<Mention>> categoryMentionsMap,
+         final Collection<String> acceptableSites ) {
+      final Map<String,Collection<Mention>> siteUriNeoplasmMentions = new HashMap<>();
+      final Map<String,Collection<Mention>> regionUriNeoplasmMentions = new HashMap<>();
+      final Collection<Mention> noStartingSiteNeoplasms = new HashSet<>();
+      fillAllSitesWithNeoplasms( relationsMap, categoryMentionsMap, noStartingSiteNeoplasms,
+                                 siteUriNeoplasmMentions,
+                                 regionUriNeoplasmMentions );
+      siteUriNeoplasmMentions.keySet().retainAll( acceptableSites );
+      regionUriNeoplasmMentions.keySet().retainAll( acceptableSites );
+
+      cullBySitedNeoplasmCount( siteUriNeoplasmMentions );
+      cullBySitedNeoplasmCount( regionUriNeoplasmMentions );
+
+      final Collection<String> retainSites
+            = acceptableSites.stream()
+                             .filter( u -> siteUriNeoplasmMentions.containsKey( u )
+                                           || regionUriNeoplasmMentions.containsKey( u ) )
+                             .collect( Collectors.toSet() );
+      acceptableSites.retainAll( retainSites );
+
+      final List<Mention> remainingNeoplasms = new ArrayList<>();
+      final Map<Mention,Collection<String>> neoplasmMentionSiteUris = new HashMap<>();
+      final Map<Mention,Collection<String>> neoplasmMentionRegionUris = new HashMap<>();
+      fillRemainingNeoplasms( siteUriNeoplasmMentions, remainingNeoplasms, neoplasmMentionSiteUris );
+      fillRemainingNeoplasms( regionUriNeoplasmMentions, remainingNeoplasms, neoplasmMentionRegionUris );
+
+      remainingNeoplasms.sort( Comparator.comparing( Mention::getClassUri )
+                                         .thenComparing( Mention::getId ) );
+      LOGGER.info( "\ntrimNeoplasmsBySitedNeoplasm Neoplasm Adjusted Remaining Sites and Regions:" );
+      for ( Mention neoplasm : remainingNeoplasms ) {
+         LOGGER.info( neoplasm.getClassUri() + " " + neoplasm.getId()
+                      + " Sites : "
+                      + neoplasmMentionSiteUris.getOrDefault( neoplasm, Collections.emptyList() )
+                                               .stream()
+                                               .sorted()
+                                               .collect( Collectors.joining(" ") ) );
+         LOGGER.info( neoplasm.getClassUri() + " " + neoplasm.getId()
+                      + " Regions : "
+                      + neoplasmMentionRegionUris.getOrDefault( neoplasm, Collections.emptyList() )
+                                                 .stream()
+                                                 .sorted()
+                                                 .collect( Collectors.joining(" ") ) );
+      }
+
+      LOGGER.info( "\ntrimNeoplasmsBySitedNeoplasm No Starting Sites:\n"
+                   + noStartingSiteNeoplasms.stream()
+                                            .sorted( Comparator.comparing( Mention::getClassUri ) )
+                                            .map( m -> m.getClassUri() + " " + m.getId() )
+                                            .collect( Collectors.joining(" ") ) );
+
+      remainingNeoplasms.addAll( noStartingSiteNeoplasms );
+      categoryMentionsMap.get( BinDistributor.MentionType.CANCER ).retainAll( remainingNeoplasms );
+      categoryMentionsMap.get( BinDistributor.MentionType.TUMOR ).retainAll( remainingNeoplasms );
+   }
+
+
+
+
+
+
+   static private void loseSiteUris( final Collection<String> unwantedSiteUris,
+                                     final Collection<Mention> neoplasmMentions,
+                                     final Map<Mention,Map<String,Collection<Mention>>> relationsMap ) {
+      final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions = new HashMap<>();
+      final Map<String,Collection<Mention>> siteUriNeoplasmMentions = new HashMap<>();
+      final Map<String,Collection<Mention>> regionUriNeoplasmMentions = new HashMap<>();
+      final Collection<Mention> noStartingSiteNeoplasms = new HashSet<>();
+      final Map<String,Collection<Mention>> siteUriSiteMentions = new HashMap<>();
+      final Map<String,Collection<Mention>> regionUriRegionMentions = new HashMap<>();
+
+      fillNeoplasmSiteRelations( neoplasmMentions, relationsMap,
+                                 Collections.emptyList(), Collections.emptyList(),
+                                 neoplasmUriNeoplasmMentions,
+                                 noStartingSiteNeoplasms,
+                                 siteUriNeoplasmMentions, regionUriNeoplasmMentions,
+                                 siteUriSiteMentions, regionUriRegionMentions );
+
+      redistributeRegionsToSites( siteUriNeoplasmMentions, regionUriNeoplasmMentions,
+                                  siteUriSiteMentions, regionUriRegionMentions );
+
+      final Collection<String> lostSiteUris = new HashSet<>();
+      for ( Map.Entry<String,Collection<Mention>> siteUriNeoplasms
+            : siteUriNeoplasmMentions.entrySet() ) {
+         final Collection<Mention> wantedMentions
+               = siteUriNeoplasms.getValue()
+                                 .stream()
+                                 .filter( m -> !unwantedSiteUris.contains( m.getClassUri() ) )
+                                 .collect( Collectors.toSet() );
+         siteUriNeoplasms.getValue().retainAll( wantedMentions );
+         if ( siteUriNeoplasms.getValue().isEmpty() ) {
+            lostSiteUris.add( siteUriNeoplasms.getKey() );
+         }
+      }
+      for ( Map.Entry<String,Collection<Mention>> regionUriNeoplasms
+            : regionUriNeoplasmMentions.entrySet() ) {
+         final Collection<Mention> wantedMentions
+               = regionUriNeoplasms.getValue()
+                                   .stream()
+                                   .filter( m -> !unwantedSiteUris.contains( m.getClassUri() ) )
+                                   .collect( Collectors.toSet() );
+         regionUriNeoplasms.getValue().retainAll( wantedMentions );
+         if ( regionUriNeoplasms.getValue().isEmpty() ) {
+            lostSiteUris.add( regionUriNeoplasms.getKey() );
+         }
+      }
+      siteUriSiteMentions.keySet().removeAll( lostSiteUris );
+      siteUriNeoplasmMentions.keySet().removeAll( lostSiteUris );
+      regionUriRegionMentions.keySet().removeAll( lostSiteUris );
+      regionUriNeoplasmMentions.keySet().removeAll( lostSiteUris );
+   }
+
+   static private void trimNeoplasmsByUri(
+         final BinDistributor.MentionType neoplasmType,
+         final Map<BinDistributor.MentionType,Collection<Mention>> categoryMentionsMap ) {
+      final List<Mention> neoplasmMentions
+            = new ArrayList<>( categoryMentionsMap.get( neoplasmType ) );
+      final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions
+            = neoplasmMentions.stream()
+                              .collect( Collectors.groupingBy( Mention::getClassUri,
+                                                               Collectors.toCollection( HashSet::new ) ) );
+      final Map<String,Collection<Mention>> toCullNeoplasmUriNeoplasms
+            = new HashMap<>( neoplasmUriNeoplasmMentions );
+      toCullNeoplasmUriNeoplasms.keySet().removeAll( DONT_CULL_NEOPLASM_URIS );
+
+//      cullByNeoplasmCount( toCullNeoplasmUriNeoplasms, neoplasmUriNeoplasmMentions );
+
+      cullByAssociatedNeoplasmCount( toCullNeoplasmUriNeoplasms, neoplasmUriNeoplasmMentions );
+
+      final Collection<Mention> currentNeoplasms = neoplasmUriNeoplasmMentions.values()
+                                                                              .stream()
+                                                                              .flatMap( Collection::stream )
+                                                                              .collect( Collectors.toSet() );
+       categoryMentionsMap.get( neoplasmType ).retainAll( currentNeoplasms );
+   }
+
+
+   static private void fillNeoplasmSiteRelations(
+         final Collection<Mention> neoplasmMentions,
+         final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+         final Collection<String> acceptableNeoplasmUris,
+         final Collection<String> acceptableSiteUris,
+         final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions,
+         final Collection<Mention> noStartingSiteNeoplasms,
+         final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+         final Map<String,Collection<Mention>> regionUriNeoplasmMentions,
+         final Map<String,Collection<Mention>> siteUriSiteMentions,
+         final Map<String,Collection<Mention>> regionUriRegionMentions ) {
+      for ( Mention neoplasmMention : neoplasmMentions ) {
+         if ( !acceptableNeoplasmUris.isEmpty()
+              && !acceptableNeoplasmUris.contains( neoplasmMention.getClassUri() ) ) {
+            continue;
+         }
+         neoplasmUriNeoplasmMentions.computeIfAbsent( neoplasmMention.getClassUri(), m -> new HashSet<>() )
+                                    .add( neoplasmMention );
+         final Map<String,Collection<Mention>> relations = relationsMap.get( neoplasmMention );
+         if ( relations == null ) {
+            noStartingSiteNeoplasms.add( neoplasmMention );
+            continue;
+         }
+         boolean hasSite = false;
+         for ( Map.Entry<String,Collection<Mention>> relation : relations.entrySet() ) {
+            if ( RelationConstants.isHasSiteRelation( relation.getKey() ) ) {
+               LOGGER.info( "Neoplasm " + neoplasmMention.getClassUri() + " " + neoplasmMention.getId()
+                            + " " + relation.getKey()
+                            + " " + relation.getValue().stream().map( Mention::getClassUri )
+                                            .distinct().collect( Collectors.joining(" ") ) );
+               final String relationType = relation.getKey();
+               if ( relationType.endsWith( "Region" ) || relationType.endsWith( "Cavity" ) ) {
+                  fillNeoplasmSiteRelations( acceptableSiteUris, neoplasmMention,
+                                             relationType, relation.getValue(),
+                                             regionUriNeoplasmMentions,
+                                             regionUriRegionMentions );
+               } else {
+                  fillNeoplasmSiteRelations( acceptableSiteUris, neoplasmMention,
+                                             relationType, relation.getValue(),
+                                             siteUriNeoplasmMentions,
+                                             siteUriSiteMentions );
+               }
+               hasSite = true;
+            }
+         }
+         if ( !hasSite ) {
+            noStartingSiteNeoplasms.add( neoplasmMention );
+         }
+      }
+   }
+
+
+   static private void fillNeoplasmSiteRelations(
+         final Collection<Mention> neoplasmMentions,
+         final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+         final Collection<Mention> noStartingSiteNeoplasms,
+         final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+         final Map<String,Collection<Mention>> regionUriNeoplasmMentions ) {
+      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
+                                                             .getGraph();
+      for ( Mention neoplasmMention : neoplasmMentions ) {
+         final Map<String,Collection<Mention>> relations = relationsMap.get( neoplasmMention );
+         if ( relations == null ) {
+            noStartingSiteNeoplasms.add( neoplasmMention );
+            continue;
+         }
+         boolean hasSite = false;
+         for ( Map.Entry<String,Collection<Mention>> relation : relations.entrySet() ) {
+            if ( RelationConstants.isHasSiteRelation( relation.getKey() ) ) {
+               LOGGER.info( "Neoplasm " + neoplasmMention.getClassUri() + " " + neoplasmMention.getId()
+                            + " " + relation.getKey()
+                            + " " + relation.getValue().stream().map( Mention::getClassUri )
+                                            .distinct().collect( Collectors.joining(" ") ) );
+               final String relationType = relation.getKey();
+               if ( relationType.endsWith( "Region" ) || relationType.endsWith( "Cavity" ) ) {
+                  for ( Mention region : relation.getValue() ) {
+                     if ( !UriConstants.getLocationUris( graphDb ).contains( region.getClassUri() ) ) {
+                        continue;
+                     }
+                     regionUriNeoplasmMentions.computeIfAbsent( region.getClassUri(), u -> new HashSet<>() )
+                           .add( neoplasmMention );
+                  }
+               } else {
+                  for ( Mention site : relation.getValue() ) {
+                     if ( !UriConstants.getLocationUris( graphDb ).contains( site.getClassUri() ) ) {
+                        continue;
+                     }
+                     siteUriNeoplasmMentions.computeIfAbsent( site.getClassUri(), u -> new HashSet<>() )
+                                              .add( neoplasmMention );
+                  }
+               }
+               hasSite = true;
+            }
+         }
+         if ( !hasSite ) {
+            noStartingSiteNeoplasms.add( neoplasmMention );
+         }
+      }
+   }
+
+
+
+   static private void fillNeoplasmSites(
+         final Collection<Mention> neoplasmMentions,
+         final Map<Mention,Map<String,Collection<Mention>>> relationsMap,
+         final Collection<String> siteUris ) {
+      for ( Mention neoplasmMention : neoplasmMentions ) {
+         final Map<String,Collection<Mention>> relations = relationsMap.get( neoplasmMention );
+         if ( relations == null ) {
+            continue;
+         }
+         for ( Map.Entry<String,Collection<Mention>> relation : relations.entrySet() ) {
+            if ( RelationConstants.isHasSiteRelation( relation.getKey() ) ) {
+               relation.getValue().forEach( m -> siteUris.add( m.getClassUri() ) );
+            }
+         }
+      }
+   }
+
+
+
+
+
+
+   static private void fillNeoplasmSiteRelations( final Collection<String> acceptableSiteUris,
+                                                  final Mention neoplasmMention,
+                                                  final String relationType,
+                                                  final Collection<Mention> siteMentions,
+//                                                  final Map<Mention,Map<String,Collection<Mention>>> neoplasmSiteRelations,
+                                                  final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+                                                  final Map<String,Collection<Mention>> siteUriSiteMentions ) {
+      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
+                                                             .getGraph();
+      for ( Mention site : siteMentions ) {
+         final String siteUri = site.getClassUri();
+         if ( !acceptableSiteUris.isEmpty()
+              && !acceptableSiteUris.contains( siteUri ) ) {
+            continue;
+         }
+         if ( !UriConstants.getLocationUris( graphDb ).contains( site.getClassUri() ) ) {
+            continue;
+//         neoplasmSiteRelations.computeIfAbsent( neoplasmMention, m -> new HashMap<>()
+         }
+//                                .computeIfAbsent( relationType, m -> new HashSet<>() )
+//                                .add( site );
+         siteUriNeoplasmMentions.computeIfAbsent( siteUri, s -> new HashSet<>() )
+                                  .add( neoplasmMention );
+         siteUriSiteMentions.computeIfAbsent( siteUri, r -> new HashSet<>() )
+                                .add( site );
+      }
+   }
+
+
+   static private void redistributeRegionsToSites( final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+                                                   final Map<String,Collection<Mention>> regionUriNeoplasmMentions,
+                                                   final Map<String,Collection<Mention>> siteUriSiteMentions,
+                                                   final Map<String,Collection<Mention>> regionUriRegionMentions ) {
+      final Collection<String> removalRegionUris = new HashSet<>();
+      for ( Map.Entry<String,Collection<Mention>> regionUriNeoplasms : regionUriNeoplasmMentions.entrySet() ) {
+         final Collection<Mention> equalSiteNeoplasms = siteUriNeoplasmMentions.get( regionUriNeoplasms.getKey() );
+         if ( equalSiteNeoplasms == null ) {
+            continue;
+         }
+         equalSiteNeoplasms.addAll( regionUriNeoplasms.getValue() );
+         final Collection<Mention> regionRegions = regionUriRegionMentions.get( regionUriNeoplasms.getKey() );
+         final Collection<Mention> equalSiteSites = siteUriSiteMentions.get( regionUriNeoplasms.getKey() );
+         if ( regionRegions == null || equalSiteSites == null ) {
+            LOGGER.error( "redistributeRegionsToSites Regions or Sites are null" );
+         } else {
+            equalSiteSites.addAll( regionRegions );
+         }
+         removalRegionUris.add( regionUriNeoplasms.getKey() );
+      }
+      regionUriNeoplasmMentions.keySet().removeAll( removalRegionUris );
+      regionUriRegionMentions.keySet().removeAll( removalRegionUris );
+   }
+
+   static private void redistributeRegionsToSites( final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+                                                   final Map<String,Collection<Mention>> regionUriNeoplasmMentions ) {
+      final Collection<String> removalRegionUris = new HashSet<>();
+      for ( Map.Entry<String,Collection<Mention>> regionUriNeoplasms : regionUriNeoplasmMentions.entrySet() ) {
+         final Collection<Mention> equalSiteNeoplasms = siteUriNeoplasmMentions.get( regionUriNeoplasms.getKey() );
+         if ( equalSiteNeoplasms == null ) {
+            continue;
+         }
+         equalSiteNeoplasms.addAll( regionUriNeoplasms.getValue() );
+         removalRegionUris.add( regionUriNeoplasms.getKey() );
+      }
+      regionUriNeoplasmMentions.keySet().removeAll( removalRegionUris );
+   }
+
+
+
+   static private void cullBySiteCount( final Map<String,Collection<Mention>> siteUriSiteMentions,
+                                        final Map<String,Collection<Mention>> siteUriNeoplasmMentions ) {
+      final Map<String,Double> loneSiteSiteCounts = new HashMap<>();
+      final double loneSiteSiteCutoff = Math.ceil( getStandardDeviation( siteUriSiteMentions,
+                                                                         loneSiteSiteCounts ) / 2 );
+      final Collection<String> badLoneSiteUris = getCutoffSiteUris( siteUriSiteMentions );
+      LOGGER.info( "\ncullBySiteCount, removing Lone Site Site Uris below " + loneSiteSiteCutoff +
+                   ":\n" + String.join( "\n   ", badLoneSiteUris ) );
+      siteUriSiteMentions.keySet().removeAll( badLoneSiteUris );
+      siteUriNeoplasmMentions.keySet().removeAll( badLoneSiteUris );
+   }
+
+
+   static private void cullBySitedNeoplasmCount( final Map<String,Collection<Mention>> siteUriNeoplasmMentions ) {
+      final Map<String,Double> loneSiteSiteCounts = new HashMap<>();
+      final double loneSiteSiteCutoff = Math.ceil( getStandardDeviation( siteUriNeoplasmMentions,
+                                                                         loneSiteSiteCounts ) );
+      final Collection<String> badLoneSiteUris = getCutoffSiteUris( siteUriNeoplasmMentions );
+      LOGGER.info( "\ncullBySiteCount, removing Lone Site by Neoplasm Uris below " + loneSiteSiteCutoff +
+                   ":\n" + String.join( "\n   ", badLoneSiteUris ) );
+      siteUriNeoplasmMentions.keySet().removeAll( badLoneSiteUris );
+   }
+
+
+   // TODO
+   static private Collection<String> getCutoffSiteUris( final Map<String,Collection<Mention>> siteUriSiteMentions ) {
+      final Map<String,Double> loneSiteSiteCounts = new HashMap<>();
+      final double loneSiteSiteCutoff = Math.ceil( getStandardDeviation( siteUriSiteMentions,
+                                                                         loneSiteSiteCounts ) / 2 );
+      return loneSiteSiteCounts.entrySet()
+                                .stream()
+                                .filter( e -> e.getValue() <= loneSiteSiteCutoff )
+                                .map( Map.Entry::getKey )
+                                .collect( Collectors.toSet() );
+   }
+
+//   static private void cullByNeoplasmCount( final Map<String,Collection<Mention>> toCullNeoplasmUriNeoplasms,
+//                                            final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions,
+//                                            final Map<String,Collection<Mention>> siteUriSiteMentions,
+//                                            final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+//                                            final Map<String,Collection<Mention>> regionUriRegionMentions,
+//                                            final Map<String,Collection<Mention>> regionUriNeoplasmMentions ) {
+//      final Map<String,Double> loneNeoplasmCounts = new HashMap<>();
+//      final double loneNeoplasmCutoff = Math.ceil( getStandardDeviation( toCullNeoplasmUriNeoplasms,
+//                                                                         loneNeoplasmCounts ) / 2 );
+//      final Collection<String> badLoneNeoplasmUris
+//            = loneNeoplasmCounts.entrySet()
+//                                .stream()
+//                                .filter( e -> e.getValue() <= loneNeoplasmCutoff )
+//                                .map( Map.Entry::getKey )
+//                                .collect( Collectors.toSet() );
+//      LOGGER.info( "\ncullByNeoplasmCount, removing Lone Neoplasm Uris below " + loneNeoplasmCutoff +
+//                   ":\n" + String.join( "\n   ", badLoneNeoplasmUris ) );
+//      neoplasmUriNeoplasmMentions.keySet().removeAll( badLoneNeoplasmUris );
+//      final Collection<String> lostSiteUris = new HashSet<>();
+//      for ( Map.Entry<String,Collection<Mention>> siteUriNeoplasms
+//            : siteUriNeoplasmMentions.entrySet() ) {
+//         final Collection<Mention> unwantedMentions
+//               = siteUriNeoplasms.getValue()
+//                                  .stream()
+//                                  .filter( m -> !badLoneNeoplasmUris.contains( m.getClassUri() ) )
+//                                 .collect( Collectors.toSet() );
+//               siteUriNeoplasms.getValue().removeAll( unwantedMentions );
+//         if ( siteUriNeoplasms.getValue().isEmpty() ) {
+//            lostSiteUris.add( siteUriNeoplasms.getKey() );
+//         }
+//      }
+//      for ( Map.Entry<String,Collection<Mention>> regionUriNeoplasms
+//            : regionUriNeoplasmMentions.entrySet() ) {
+//         final Collection<Mention> unwantedMentions
+//               = regionUriNeoplasms.getValue()
+//                                 .stream()
+//                                 .filter( m -> !badLoneNeoplasmUris.contains( m.getClassUri() ) )
+//                                 .collect( Collectors.toSet() );
+//         regionUriNeoplasms.getValue().removeAll( unwantedMentions );
+//         if ( regionUriNeoplasms.getValue().isEmpty() ) {
+//            lostSiteUris.add( regionUriNeoplasms.getKey() );
+//         }
+//      }
+//      siteUriSiteMentions.keySet().removeAll( lostSiteUris );
+//      siteUriNeoplasmMentions.keySet().removeAll( lostSiteUris );
+//      regionUriRegionMentions.keySet().removeAll( lostSiteUris );
+//      regionUriNeoplasmMentions.keySet().removeAll( lostSiteUris );
+//   }
+
+
+   static private void cullByNeoplasmCount( final Map<String,Collection<Mention>> toCullNeoplasmUriNeoplasms,
+                                            final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions ) {
+      final Map<String,Double> loneNeoplasmCounts = new HashMap<>();
+      final double loneNeoplasmCutoff = Math.ceil( getStandardDeviation( toCullNeoplasmUriNeoplasms,
+                                                                         loneNeoplasmCounts ) / 2 );
+      final Collection<String> badLoneNeoplasmUris
+            = loneNeoplasmCounts.entrySet()
+                                .stream()
+                                .filter( e -> e.getValue() <= loneNeoplasmCutoff )
+                                .map( Map.Entry::getKey )
+                                .collect( Collectors.toSet() );
+      LOGGER.info( "\ncullByNeoplasmCount, removing Lone Neoplasm Uris below " + loneNeoplasmCutoff +
+                   ":\n" + String.join( "\n   ", badLoneNeoplasmUris ) );
+      toCullNeoplasmUriNeoplasms.keySet().removeAll( badLoneNeoplasmUris );
+      neoplasmUriNeoplasmMentions.keySet().removeAll( badLoneNeoplasmUris );
+   }
+
+   static void moveFemaleGenitalia(
+         final Map<String,Collection<String>> associatedSites ) {
+      if ( associatedSites.containsKey( "Female_Genitalia" ) && associatedSites.containsKey( "Ovary" ) ) {
+         associatedSites.get( "Ovary" ).addAll( associatedSites.get( "Female_Genitalia" ) );
+         associatedSites.remove( "Female_Genitalia" );
+      }
+      if ( associatedSites.containsKey( "Cervix_Uteri" ) && associatedSites.containsKey( "Uterus" ) ) {
+         associatedSites.get( "Uterus" ).addAll( associatedSites.get( "Cervix_Uteri" ) );
+         associatedSites.remove( "Cervix_Uteri" );
+      }
+   }
+
+   static private void cullByAssociatedNeoplasmCount(
+         final Map<String,Collection<Mention>> toCullNeoplasmUriNeoplasms,
+         final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions ) {
+      final Map<String,Collection<String>> toCullAssociatedNeoplasmUris =
+            UriUtil.getAllAssociatedUriMap( toCullNeoplasmUriNeoplasms.keySet() );
+      final Map<String,Collection<Mention>> toCullAssociatedNeoplasmUriNeoplasms = new HashMap<>();
+      for ( Map.Entry<String,Collection<String>> toCullAssociated : toCullAssociatedNeoplasmUris.entrySet() ) {
+         final Collection<Mention> neoplasms = toCullAssociated.getValue()
+                                                               .stream()
+                                                               .map( toCullNeoplasmUriNeoplasms::get )
+                                                               .flatMap( Collection::stream )
+                                                               .collect( Collectors.toSet() );
+         toCullAssociatedNeoplasmUriNeoplasms.computeIfAbsent( toCullAssociated.getKey(), u -> new HashSet<>() )
+                                             .addAll( neoplasms );
+      }
+      final Map<String,Double> headNeoplasmCounts = new HashMap<>();
+      final double headNeoplasmCutoff = Math.ceil( getStandardDeviation( toCullAssociatedNeoplasmUriNeoplasms,
+                                                                         headNeoplasmCounts ) );
+//                                                                         headNeoplasmCounts ) / 2 );
+      final Collection<String> badAssociatedNeoplasmUris
+            = headNeoplasmCounts.entrySet()
+                                .stream()
+                                .filter( e -> e.getValue() <= headNeoplasmCutoff )
+                                .map( Map.Entry::getKey )
+                                .map( toCullAssociatedNeoplasmUris::get )
+                                .flatMap( Collection::stream )
+                                .collect( Collectors.toSet() );
+      LOGGER.info( "\ncullByAssociatedNeoplasmCount, removing Associated Neoplasm Uris below " + headNeoplasmCutoff +
+                   ":\n" + String.join( "\n   ", badAssociatedNeoplasmUris ) );
+      toCullNeoplasmUriNeoplasms.keySet().removeAll( badAssociatedNeoplasmUris );
+      neoplasmUriNeoplasmMentions.keySet().removeAll( badAssociatedNeoplasmUris );
+   }
+
+
+
+
+
+   static private void cullByAssociatedNeoplasmCount( final Map<String,Collection<Mention>> toCullNeoplasmUriNeoplasms,
+                                            final Map<String,Collection<Mention>> neoplasmUriNeoplasmMentions,
+                                            final Map<String,Collection<Mention>> siteUriSiteMentions,
+                                            final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+                                            final Map<String,Collection<Mention>> regionUriRegionMentions,
+                                            final Map<String,Collection<Mention>> regionUriNeoplasmMentions ) {
+      final Map<String,Collection<String>> toCullAssociatedNeoplasmUris =
+            UriUtil.getAllAssociatedUriMap( toCullNeoplasmUriNeoplasms.keySet() );
+      final Map<String,Collection<Mention>> toCullAssociatedNeoplasmUriNeoplasms = new HashMap<>();
+      for ( Map.Entry<String,Collection<String>> toCullAssociated : toCullAssociatedNeoplasmUris.entrySet() ) {
+         final Collection<Mention> neoplasms = toCullAssociated.getValue()
+                                                               .stream()
+                                                               .map( toCullNeoplasmUriNeoplasms::get )
+                                                               .flatMap( Collection::stream )
+                                                               .collect( Collectors.toSet() );
+         toCullAssociatedNeoplasmUriNeoplasms.computeIfAbsent( toCullAssociated.getKey(), u -> new HashSet<>() )
+                                             .addAll( neoplasms );
+      }
+      final Map<String,Double> loneNeoplasmCounts = new HashMap<>();
+      final double loneNeoplasmCutoff = Math.ceil( getStandardDeviation( toCullAssociatedNeoplasmUriNeoplasms,
+                                                                         loneNeoplasmCounts ) / 2 );
+      final Collection<String> badLoneNeoplasmUris
+            = loneNeoplasmCounts.entrySet()
+                                .stream()
+                                .filter( e -> e.getValue() <= loneNeoplasmCutoff )
+                                .map( Map.Entry::getKey )
+                                .map( toCullAssociatedNeoplasmUris::get )
+                                .flatMap( Collection::stream )
+                                .collect( Collectors.toSet() );
+      LOGGER.info( "\ncullByAssociatedNeoplasmCount, removing Associated Neoplasm Uris below " + loneNeoplasmCutoff +
+                   ":\n" + String.join( "\n   ", badLoneNeoplasmUris ) );
+      neoplasmUriNeoplasmMentions.keySet().removeAll( badLoneNeoplasmUris );
+      final Collection<String> lostSiteUris = new HashSet<>();
+      for ( Map.Entry<String,Collection<Mention>> siteUriNeoplasms : siteUriNeoplasmMentions.entrySet() ) {
+         final Collection<Mention> unwantedMentions
+               = siteUriNeoplasms.getValue()
+                                 .stream()
+                                 .filter( m -> !badLoneNeoplasmUris.contains( m.getClassUri() ) )
+                                 .collect( Collectors.toSet() );
+         siteUriNeoplasms.getValue().removeAll( unwantedMentions );
+         if ( siteUriNeoplasms.getValue().isEmpty() ) {
+            lostSiteUris.add( siteUriNeoplasms.getKey() );
+         }
+      }
+      for ( Map.Entry<String,Collection<Mention>> regionUriNeoplasms
+            : regionUriNeoplasmMentions.entrySet() ) {
+         final Collection<Mention> unwantedMentions
+               = regionUriNeoplasms.getValue()
+                                   .stream()
+                                   .filter( m -> !badLoneNeoplasmUris.contains( m.getClassUri() ) )
+                                   .collect( Collectors.toSet() );
+         regionUriNeoplasms.getValue().removeAll( unwantedMentions );
+         if ( regionUriNeoplasms.getValue().isEmpty() ) {
+            lostSiteUris.add( regionUriNeoplasms.getKey() );
+         }
+      }
+      siteUriSiteMentions.keySet().removeAll( lostSiteUris );
+      siteUriNeoplasmMentions.keySet().removeAll( lostSiteUris );
+      regionUriRegionMentions.keySet().removeAll( lostSiteUris );
+      regionUriNeoplasmMentions.keySet().removeAll( lostSiteUris );
+   }
+
+
+   static private void fillRemainingNeoplasms(
+         final Map<String,Collection<Mention>> siteUriNeoplasmMentions,
+         final Collection<Mention> remainingNeoplasms,
+         final Map<Mention,Collection<String>> neoplasmMentionSiteUris ) {
+      for ( Map.Entry<String,Collection<Mention>> siteNeoplasms : siteUriNeoplasmMentions.entrySet() ) {
+         remainingNeoplasms.addAll( siteNeoplasms.getValue() );
+         siteNeoplasms.getValue()
+                            .forEach( m -> neoplasmMentionSiteUris.computeIfAbsent( m, s -> new HashSet<>() )
+                                                                  .add( siteNeoplasms.getKey() ) );
+      }
+   }
+
+   static double getStandardDeviation( final Map<String,Collection<Mention>> siteUriMentions,
+                                 final Map<String,Collection<String>> allAssociatedSites,
+                                 final Map<String,Double> associatedCounts ) {
+      // Calculate the standard deviation for mentions in associated branches.
+      double sum = 0.0;
+      double deviation = 0.0;
+      for ( Map.Entry<String,Collection<String>> associatedSites : allAssociatedSites.entrySet() ) {
+         double count = 0;
+         for ( String site : associatedSites.getValue() ) {
+            count += siteUriMentions.get( site ).size();
+         }
+         associatedCounts.put( associatedSites.getKey(), count );
+         sum += count;
+      }
+      double mean = sum / associatedCounts.size();
+
+      for( double count : associatedCounts.values() ) {
+         deviation += Math.pow( count - mean, 2 );
+      }
+
+      final double standardDeviation = Math.sqrt( deviation / associatedCounts.size() );
+      LOGGER.info( "\nAssertionBin.getStandardDeviation line #315 Chains:\n"
+                   + allAssociatedSites.entrySet().stream()
+                                       .map( e -> e.getKey() + " : " + String.join( " ", e.getValue() ) )
+                                       .sorted()
+                                       .collect( Collectors.joining("\n") ) );
+      LOGGER.info( "AssertionBin.getStandardDeviation line #320, mean = " + mean
+                   + " deviation = " + standardDeviation
+                   + " Fully Associated Mention Counts:\n"
+                   + associatedCounts.entrySet()
+                                     .stream()
+                                     .map( e -> e.getKey() + " = " + e.getValue() )
+                                     .sorted()
+                                     .collect( Collectors.joining("\n") ) );
+      return standardDeviation;
+   }
+
+   static double getStandardDeviation( final Map<String,Collection<Mention>> siteUriMentions,
+                                       final Map<String,Double> associatedCounts ) {
+      // Calculate the standard deviation for mentions in associated branches.
+      double sum = 0.0;
+      double deviation = 0.0;
+      for ( Map.Entry<String,Collection<Mention>> siteMentions : siteUriMentions.entrySet() ) {
+         double count = siteMentions.getValue().size();
+         associatedCounts.put( siteMentions.getKey(), count );
+         sum += count;
+      }
+      double mean = sum / associatedCounts.size();
+
+      for( double count : associatedCounts.values() ) {
+         deviation += Math.pow( count - mean, 2 );
+      }
+
+      final double standardDeviation = Math.sqrt( deviation / associatedCounts.size() );
+      LOGGER.info( "\nAssertionBin.getStandardDeviation line #350, mean = " + mean
+                   + " deviation = " + standardDeviation
+                   + " Mention Counts:\n"
+                   + associatedCounts.entrySet()
+                                     .stream()
+                                     .map( e -> e.getKey() + " = " + e.getValue() )
+                                     .sorted()
+                                     .collect( Collectors.joining("\n") ) );
+      return standardDeviation;
+   }
+
 
    static Map<BinDistributor.MentionType,Collection<Mention>> splitMentionTypes(
          final Collection<Mention> mentions ) {
@@ -110,6 +893,28 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                                        tumorLateralities.getOrDefault( lateralityType,
                                                                        new HashSet<>( 0 ) ),
                                        uriMentionsMap,
+                                       relationsMap );
+      }
+   }
+
+   void setNeoplasms( final Collection<Mention> cancers,
+                      final Collection<Mention> tumors,
+                      final Map<String,Set<Mention>> uriMentionsMap,
+                      final Map<String,Collection<String>> associatedSitesMap,
+                      final Map<Mention,Map<String,Collection<Mention>>> relationsMap ) {
+      getOrCreateLateralityTypeBins();
+      final Map<LateralityType,Collection<Mention>> cancerLateralities
+            = LateralityTypeBin.getLateralityTypes( cancers, relationsMap );
+      final Map<LateralityType,Collection<Mention>> tumorLateralities
+            = LateralityTypeBin.getLateralityTypes( tumors, relationsMap );
+      for ( LateralityType lateralityType : LateralityType.values() ) {
+         _lateralityBins.get( lateralityType )
+                        .setNeoplasms( cancerLateralities.getOrDefault( lateralityType,
+                                                                        new HashSet<>( 0 ) ),
+                                       tumorLateralities.getOrDefault( lateralityType,
+                                                                       new HashSet<>( 0 ) ),
+                                       uriMentionsMap,
+                                       associatedSitesMap,
                                        relationsMap );
       }
    }
@@ -164,40 +969,40 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
 //      improveLateralities( allUriRoots, allUriBranches );
 
       // Move around lateralities that have no site
-      improveLateralities( LEFT, BILATERAL, NO_SITE, allUriRoots, allUriBranches );
-      improveLateralities( RIGHT, BILATERAL, NO_SITE, allUriRoots, allUriBranches );
-      improveLateralities( LEFT, RIGHT, NO_SITE, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, BILATERAL, NO_SITE, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, LEFT, NO_SITE, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, RIGHT, NO_SITE, allUriRoots, allUriBranches );
-      improveLateralities( LEFT, RIGHT, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, BILATERAL, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( RIGHT, BILATERAL, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, RIGHT, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, BILATERAL, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, LEFT, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, RIGHT, NO_SITE, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, RIGHT, NO_SITE, allUriRoots, allUriBranches );
 
       // Move around lateralities that have a site
-      improveLateralities( LEFT, BILATERAL, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( RIGHT, BILATERAL, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( LEFT, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, BILATERAL, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, LEFT, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( LEFT, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, BILATERAL, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( RIGHT, BILATERAL, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, BILATERAL, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, LEFT, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
 
       // Move Around no sites to sites for each laterality - be careful as this could move bins with sites to bins
       // without sites.
-      improveLateralities( BILATERAL, BILATERAL, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( LEFT, LEFT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( RIGHT, RIGHT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( BILATERAL, BILATERAL, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, LEFT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( RIGHT, RIGHT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
       improveLateralities( NO_LATERALITY, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
 
       // Move Around no sites and no laterality to sites for each laterality - be careful as this could move bins with
       // sites to bins without sites.
-      improveLateralities( NO_LATERALITY, BILATERAL, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, LEFT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( NO_LATERALITY, RIGHT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( BILATERAL, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( LEFT, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-      improveLateralities( RIGHT, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
-
-      improveLateralities( LEFT, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, BILATERAL, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, LEFT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( NO_LATERALITY, RIGHT, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( BILATERAL, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( LEFT, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//      improveLateralities( RIGHT, NO_LATERALITY, NO_SITE, ALL_SITES, allUriRoots, allUriBranches );
+//
+//      improveLateralities( LEFT, RIGHT, ALL_SITES, allUriRoots, allUriBranches );
 
 //      LOGGER.info( "\nAssertionBin.distributeSites Line #150, Post-ImproveLateralities CANCERS\n"
 //                   + getSiteNeoplasmBins().stream()
@@ -939,7 +1744,30 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
    }
 
 
+   // TODO !!!  Merge lateralities that have the same site.
 
+//   void mergeLateralities() {
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final Map<SiteChain>
+//
+//
+//      leftAll.getSiteNeoplasmBins().stream( b -> b)
+//
+//
+//      final SiteTypeBin rightAll = getSiteTypeBin( RIGHT, ALL_SITES );
+//
+//
+//
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//      final SiteTypeBin leftAll = getSiteTypeBin( LEFT, ALL_SITES );
+//   }
 
 
    void improveLateralities( final LateralityType lateralityType1,
@@ -973,17 +1801,17 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
             final int rightScore = rightCount - common;
             if ( leftScore >= SWITCH_FACTOR * rightScore ) {
                // move right to left
-//               LOGGER.info( "\n!! Move Right " + rightScore + "\n" + right.toString() +
-//                            "\nto Left " + leftScore + "\n" + left.toString() );
+               LOGGER.info( "\n!! Move Right " + rightScore + "\n" + right.toString() +
+                            "\nto Left " + leftScore + "\n" + left.toString() );
                toBeMovedMap.computeIfAbsent( right, l -> new HashSet<>() ).add( left );
             } else if ( rightScore >= SWITCH_FACTOR * leftScore ) {
                // move left to right
-//               LOGGER.info( "\n!! Move Left " + leftScore + "\n" + left.toString() +
-//                            "\nto Right " + rightScore + "\n" + right.toString() );
+               LOGGER.info( "\n!! Move Left " + leftScore + "\n" + left.toString() +
+                            "\nto Right " + rightScore + "\n" + right.toString() );
                toBeMovedMap.computeIfAbsent( left, l -> new HashSet<>() ).add( right );
-//            } else {
-//               LOGGER.info( "\n!!!! Not Moving Left " + leftScore + "\n" + left.toString() +
-//                            "\nor Right " + rightScore + "\n" + right.toString() );
+            } else {
+               LOGGER.info( "\n!!!! Not Moving Left " + leftScore + "\n" + left.toString() +
+                            "\nor Right " + rightScore + "\n" + right.toString() );
             }
          }
       }
@@ -1037,17 +1865,17 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
             final int rightScore = rightCount - common;
             if ( leftScore >= ROOTS_SWITCH_FACTOR * rightScore ) {
                // move right to left
-//               LOGGER.info( "\n!! Move Right " + rightScore + "\n" + right.toString() +
-//                            "\nto Left " + leftScore + "\n" + left.toString() );
+               LOGGER.info( "\n!! Move Right " + rightScore + "\n" + right.toString() +
+                            "\nto Left " + leftScore + "\n" + left.toString() );
                toBeMovedMap.computeIfAbsent( right, l -> new HashSet<>() ).add( left );
             } else if ( rightScore >= ROOTS_SWITCH_FACTOR * leftScore ) {
                // move left to right
-//               LOGGER.info( "\n!! Move Left " + leftScore + "\n" + left.toString() +
-//                            "\nto Right " + rightScore + "\n" + right.toString() );
+               LOGGER.info( "\n!! Move Left " + leftScore + "\n" + left.toString() +
+                            "\nto Right " + rightScore + "\n" + right.toString() );
                toBeMovedMap.computeIfAbsent( left, l -> new HashSet<>() ).add( right );
-//            } else {
-//               LOGGER.info( "\n!!!! Not Moving Left " + leftScore + "\n" + left.toString() +
-//                            "\nor Right " + rightScore + "\n" + right.toString() );
+            } else {
+               LOGGER.info( "\n!!!! Not Moving Left " + leftScore + "\n" + left.toString() +
+                            "\nor Right " + rightScore + "\n" + right.toString() );
             }
          }
       }
@@ -1449,10 +2277,10 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
          if ( headChains.isEmpty() ) {
             continue;
          }
-         LOGGER.info( uriSiteChains.getKey() + " Merging equal SiteChains (head) " + headChains
-               .stream()
-               .map( SiteChain::toString )
-               .collect( Collectors.joining( "\n" ) ) );
+//         LOGGER.info( uriSiteChains.getKey() + " Merging equal SiteChains (head) " + headChains
+//               .stream()
+//               .map( SiteChain::toString )
+//               .collect( Collectors.joining( "\n" ) ) );
          final List<SiteChain> siteChainList = new ArrayList<>( headChains );
          for ( int i = 1; i < siteChainList.size(); i++ ) {
             siteChainList.get( 0 )
@@ -1486,14 +2314,14 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                                                                                 .size() >= maxM )
                                                                  .collect( Collectors.toSet() );
          if ( biggerChains.size() == 1 ) {
-            LOGGER.info(  uriSiteChains.getKey() +" Moving by uri mention SiteChains (bigger) " + uriSiteChains.getValue()
-                                                                                                               .stream()
-                                                                                                               .filter( c -> !biggerChains.contains( c ) )
-                                                                                                               .map( SiteChain::toString )
-                                                                                                               .collect( Collectors.joining( "\n" ) )
-                          + " into " + biggerChains.stream()
-                                                   .map( SiteChain::toString )
-                                                   .collect( Collectors.joining( "\n" ) ));
+//            LOGGER.info(  uriSiteChains.getKey() +" Moving by uri mention SiteChains (bigger) " + uriSiteChains.getValue()
+//                                                                                                               .stream()
+//                                                                                                               .filter( c -> !biggerChains.contains( c ) )
+//                                                                                                               .map( SiteChain::toString )
+//                                                                                                               .collect( Collectors.joining( "\n" ) )
+//                          + " into " + biggerChains.stream()
+//                                                   .map( SiteChain::toString )
+//                                                   .collect( Collectors.joining( "\n" ) ));
             uriSiteChains.getValue()
                          .stream()
                          .filter( c -> !biggerChains.contains( c ) )
@@ -1514,14 +2342,14 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                                                                  .filter( c -> c.getChainUris().size() == maxM2 )
                                                                  .collect( Collectors.toSet() );
          if ( biggestChains.size() == 1 ) {
-            LOGGER.info(  uriSiteChains.getKey() +" Moving by mentions SiteChains (biggest) " + uriSiteChains.getValue()
-                                                                                                             .stream()
-                                                                                                             .filter( c -> !biggestChains.contains( c ) )
-                                                                                                             .map( SiteChain::toString )
-                                                                                                             .collect( Collectors.joining( "\n" ) )
-                          + " into " + biggestChains.stream()
-                                                    .map( SiteChain::toString )
-                                                    .collect( Collectors.joining( "\n" ) ));
+//            LOGGER.info(  uriSiteChains.getKey() +" Moving by mentions SiteChains (biggest) " + uriSiteChains.getValue()
+//                                                                                                             .stream()
+//                                                                                                             .filter( c -> !biggestChains.contains( c ) )
+//                                                                                                             .map( SiteChain::toString )
+//                                                                                                             .collect( Collectors.joining( "\n" ) )
+//                          + " into " + biggestChains.stream()
+//                                                    .map( SiteChain::toString )
+//                                                    .collect( Collectors.joining( "\n" ) ));
             uriSiteChains.getValue()
                          .stream()
                          .filter( c -> !biggestChains.contains( c ) )
@@ -1540,14 +2368,14 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                                                               .filter( c -> c.getChainUris().size() == max )
                                                               .collect( Collectors.toSet() );
          if ( bigChains.size() == 1 ) {
-            LOGGER.info(  uriSiteChains.getKey() +" Moving by uri SiteChains (big) " + uriSiteChains.getValue()
-                                                                                                    .stream()
-                                                                                                    .filter( c -> !bigChains.contains( c ) )
-                                                                                                    .map( SiteChain::toString )
-                                                                                                    .collect( Collectors.joining( "\n" ) )
-                          + " into " + bigChains.stream()
-                                                .map( SiteChain::toString )
-                                                .collect( Collectors.joining( "\n" ) ));
+//            LOGGER.info(  uriSiteChains.getKey() +" Moving by uri SiteChains (big) " + uriSiteChains.getValue()
+//                                                                                                    .stream()
+//                                                                                                    .filter( c -> !bigChains.contains( c ) )
+//                                                                                                    .map( SiteChain::toString )
+//                                                                                                    .collect( Collectors.joining( "\n" ) )
+//                          + " into " + bigChains.stream()
+//                                                .map( SiteChain::toString )
+//                                                .collect( Collectors.joining( "\n" ) ));
             uriSiteChains.getValue()
                          .stream()
                          .filter( c -> !bigChains.contains( c ) )
@@ -1567,8 +2395,8 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
 //         }
 //         goodSiteChains.add( siteChainList.get( 0 ) );
       }
-      LOGGER.info( "!!!!!!!!  Site Chains ..." );
-      goodSiteChains.forEach( LOGGER::info );
+//      LOGGER.info( "!!!!!!!!  Site Chains ..." );
+//      goodSiteChains.forEach( LOGGER::info );
       final Map<Mention,Collection<ConceptAggregate>> mentionConcepts = new HashMap<>();
       for ( SiteChain siteChain : goodSiteChains ) {
          final ConceptAggregate site = siteChain.createConceptAggregate( patientId,
