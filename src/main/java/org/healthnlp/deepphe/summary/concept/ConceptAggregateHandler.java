@@ -115,9 +115,9 @@ final public class ConceptAggregateHandler {
 
 
 
-               LOGGER.info( "Created " + chain.size() + "mention ConceptAggregate " + concept.getUri() + " " + concept.getId() + " "
-                                             + "scored:"
-                            + " " + concept.getUriScore() );
+//               LOGGER.info( "Created " + chain.size() + "mention ConceptAggregate " + concept.getUri() + " " + concept.getId() + " "
+//                                             + "scored:"
+//                            + " " + concept.getUriScore() );
 //               uriRoots.forEach( (k,v) -> LOGGER.info( "URI " + k + " with -unordered- root URIs (" + String.join( ",", v ) + ")" ) );
 
 
@@ -146,7 +146,7 @@ final public class ConceptAggregateHandler {
                            Collections.singletonList( mentionNoteId.getKey() ) ) ) );
 
 
-         LOGGER.info( "Created Simple ConceptAggregate of " + bestUri );
+//         LOGGER.info( "Created Simple ConceptAggregate of " + bestUri );
 
 
       }
@@ -155,8 +155,8 @@ final public class ConceptAggregateHandler {
       addRelations( conceptAggregates.values(), patientRelations );
 
 
-      LOGGER.info( "\n!!!     All Concept Aggregates:" );
-      conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
+//      LOGGER.info( "\n!!!     All Concept Aggregates:" );
+//      conceptAggregates.values().stream().flatMap( Collection::stream ).forEach( c -> LOGGER.info( c + "\n" ) );
 
 
 
