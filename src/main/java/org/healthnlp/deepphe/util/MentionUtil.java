@@ -434,8 +434,8 @@ final public class MentionUtil {
       final Map<String, String> bestRoots = UriUtil.getBestRoots( uris );
 
 
-      LOGGER.info( "Best Root URIs for Site URIs: " );
-      bestRoots.forEach( (k,v) -> LOGGER.info( k + " " + v ) );
+//      LOGGER.info( "Best Root URIs for Site URIs: " );
+//      bestRoots.forEach( (k,v) -> LOGGER.info( k + " " + v ) );
 
 
       final Map<String, Collection<String>> rootChildrenMap = new HashMap<>();
