@@ -93,5 +93,5 @@ add InDocUriRelationFinder
 add NonGraphedRelationFinder
 
 add JsonNodeCreator
-add html.HtmlTextWriter OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=HTML
-add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=TEXT
+//add html.HtmlTextWriter OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=HTML
+//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=TEXT
