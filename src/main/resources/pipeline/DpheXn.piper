@@ -162,13 +162,13 @@ add MelanomaDocEpisodeTagger
 ///////////// add NeoplasmNeo4jWriter  TODO
 
 //add JsonNodeCreator    Duplicate of PatientNodeCollector
-add html.HtmlTextWriter SubDirectory=HTML
-add pretty.plaintext.PrettyTextWriterFit SubDirectory=TEXT
+//add html.HtmlTextWriter SubDirectory=HTML
+//add pretty.plaintext.PrettyTextWriterFit SubDirectory=TEXT
 
 // add PatientJsonFileWriter SubDirectory=JSON
-package org.healthnlp.deepphe.summary.writer
-cli CancerEvalFile=c
-add EvalFileWriterXn SubDirectory=EVAL
+//package org.healthnlp.deepphe.summary.writer
+//cli CancerEvalFile=c
+//add EvalFileWriterXn SubDirectory=EVAL
 
 addLast PatientSummaryCleaner
 
