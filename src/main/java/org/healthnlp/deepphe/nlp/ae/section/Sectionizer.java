@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Creates segment aka section annotations based on a sections.txt file.
@@ -103,35 +104,51 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
      * Build a regex pattern from a list of section names. used only during init
      */
     private static Pattern buildPattern(String[] line) {
-        StringBuffer sb = new StringBuffer();
-//        for (int i = 1; i < line.length; i++) {
-        for (int i = 0; i < line.length; i++) {
-            // Build the RegEx pattern for each comma delimited header name
-            // Suffixed with a aggregator pipe
-//            sb.append("\\s*" + line[i].trim() + "(\\n|\\s\\s|\\s:|:|\\s-|-)");
-            sb.append("\\s*" )
-              .append( line[i].trim() )
-              .append( "(\\s?((:|-)?(\\s\\s|\\r?\\n))|(:\\s|-\\s))" );
-            if (i != line.length - 1) {
-                sb.append("|");
-            }
-        }
-        int patternFlags = 0;
-        //patternFlags |= Pattern.CASE_INSENSITIVE;
-        patternFlags |= Pattern.DOTALL;
-        patternFlags |= Pattern.MULTILINE;
-        Pattern p = Pattern.compile("^(" + sb + ")", patternFlags);
-        return p;
+//        StringBuffer sb = new StringBuffer();
+//        for (int i = 0; i < line.length; i++) {
+//            // Build the RegEx pattern for each comma delimited header name
+//            // Suffixed with a aggregator pipe
+//            sb.append( "^[ \\t]*" )
+//              .append( line[i].trim() )
+////              .append( "(\\s?((:|-)?(\\s\\s|\\r?\\n))|(:\\s|-\\s))" );
+//              .append( "[ \\t:-]*\\r?\\n" );
+//            if (i != line.length - 1) {
+//                sb.append( "|" );
+//            }
+//        }
+        final String regex = Arrays.stream( line )
+                                   .map( String::trim )
+                                   .map( e -> "^[ \\t]*" + e + "[ \\t:-]*\\r?\\n" )
+                                   .collect( Collectors.joining( "|" ) );
+//        int patternFlags = 0;
+//        patternFlags |= Pattern.DOTALL;
+//        patternFlags |= Pattern.MULTILINE;
+//        return Pattern.compile("^(" + sb + ")", patternFlags);
+        return Pattern.compile( regex, Pattern.MULTILINE );
     }
 
     static private List<Segment> findSectionsHeadersByPattern(JCas jCas, final String text) {
         final List<Segment> sections = new ArrayList<>();
         for (String patternName : patterns.keySet()) {
             Pattern p = patterns.get(patternName);
-            //System.out.println("Pattern " + p);
             Matcher m = p.matcher(text);
             while (m.find()) {
                 int begin = m.start();
+                int preTitleLines = 0;
+                if ( begin == 0 ) {
+                    preTitleLines = 100;
+                } else {
+                    for ( int i=begin-1; i>=0; i-- ) {
+                        if ( text.charAt( i ) == '\n' ) {
+                            preTitleLines++;
+                        } else if ( !Character.isWhitespace( text.charAt( i ) ) ) {
+                            break;
+                        }
+                    }
+                }
+                if ( preTitleLines < 2 ) {
+                    continue;
+                }
                 int end = m.end();
                 Segment segmentHeader = new Segment(jCas);
                 boolean isAllWhiteSpace = true;

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+   <name>org.apache.ctakes.typesystem.types.TypeSystem</name>
+   <description/>
+   <version>1.0</version>
+   <vendor>DeepPhe</vendor>
+   <types>
+      <typeDescription>
+         <name>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</name>
+         <description>A generic annotation that can have a normalized value.</description>
+         <supertypeName>uima.tcas.Annotation</supertypeName>
+         <features>
+            <featureDescription>
+               <name>id</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>normalizedValue</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>preferredText</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>details</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+         </features>
+      </typeDescription>
+
+      <typeDescription>
+         <name>org.apache.ctakes.typesystem.type.textspan.FormattedListEntry</name>
+         <description>A List found in text of a document.</description>
+         <supertypeName>uima.tcas.Annotation</supertypeName>
+         <features>
+            <featureDescription>
+               <name>id</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>index</name>
+               <description>some index associated with the entry.</description>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>name</name>
+               <description>some name associated with a value in the entry.</description>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>value</name>
+               <description>some value associated with a name in the entry.</description>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>details</name>
+               <description>some details associated with the entry.</description>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</rangeTypeName>
+            </featureDescription>
+         </features>
+      </typeDescription>
+      <typeDescription>
+         <name>org.apache.ctakes.typesystem.type.textspan.FormattedList</name>
+         <description>A List found in text of a document.</description>
+         <supertypeName>uima.tcas.Annotation</supertypeName>
+         <features>
+            <featureDescription>
+               <name>id</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>listType</name>
+               <description>the type of list.</description>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>listEntries</name>
+               <description/>
+               <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+               <elementType>org.apache.ctakes.typesystem.type.textspan.FormattedListEntry</elementType>
+            </featureDescription>
+         </features>
+      </typeDescription>
+      <typeDescription>
+         <name>org.apache.ctakes.typesystem.type.textspan.TreeList</name>
+         <description>A Tree List found in text of a document.</description>
+         <supertypeName>uima.tcas.Annotation</supertypeName>
+         <features>
+            <featureDescription>
+               <name>id</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>treeListType</name>
+               <description>the type of list.</description>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>heading</name>
+               <description>Text in the document indicating the subject of the parent node.</description>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>list</name>
+               <description/>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.FormattedList</rangeTypeName>
+            </featureDescription>
+         </features>
+      </typeDescription>
+      <typeDescription>
+         <name>org.apache.ctakes.typesystem.type.textspan.Topic</name>
+         <description>A subsection pertinent to a particular subject, e.g., Biopsy of Stomach.</description>
+         <supertypeName>uima.tcas.Annotation</supertypeName>
+         <features>
+            <featureDescription>
+               <name>id</name>
+               <description/>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>topicType</name>
+               <description>the type of topic.</description>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>index</name>
+               <description>some index associated with the topic.</description>
+               <rangeTypeName>uima.cas.String</rangeTypeName>
+            </featureDescription>
+            <featureDescription>
+               <name>subject</name>
+               <description>the text in the document indicating the subject of the topic.</description>
+               <rangeTypeName>org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation</rangeTypeName>
+            </featureDescription>
+         </features>
+      </typeDescription>
+   </types>
+</typeSystemDescription>
