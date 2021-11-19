@@ -311,7 +311,10 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase {
                                               spanOffset + matcher.start(),
                                               spanOffset + matcher.end() );
       treeList.setTreeListType( treeListType.__name );
-      treeList.setHeading( createHeading( jCas, spanOffset, matcher ) );
+      final NormalizableAnnotation heading = createHeading( jCas, spanOffset, matcher );
+      if ( heading != null ) {
+         treeList.setHeading( heading );
+      }
       final Pair<Integer> listSpan = RegexUtil.getGroupSpan( matcher, LIST_GROUP );
       if ( RegexUtil.isValidSpan( listSpan ) ) {
          final String listText = spanText.substring( listSpan.getValue1(), listSpan.getValue2() );
@@ -336,9 +339,10 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase {
       if ( !RegexUtil.isValidSpan( span ) ) {
          return null;
       }
+      LOGGER.info( "Creating Normalizable " + HEADING_GROUP + " " + (spanOffset + span.getValue1()) + "-" + (spanOffset + span.getValue2()) );
       final NormalizableAnnotation header = new NormalizableAnnotation( jCas,
-                                            spanOffset + matcher.start(),
-                                            spanOffset + matcher.end() );
+                                            spanOffset + span.getValue1(),
+                                            spanOffset + span.getValue2() );
       final String details = RegexUtil.getGroupText( matcher, REFINEMENT_GROUP );
       if ( !details.isEmpty() ) {
          header.setDetails( details );

@@ -49,16 +49,17 @@ final public class ListEntryFinder {
    }
 
    static private NormalizableAnnotation createNormalizable( final JCas jCas,
-                                                        final int spanOffset,
-                                                        final Matcher matcher,
+                                                             final int spanOffset,
+                                                             final Matcher matcher,
                                                              final String groupName ) {
       final Pair<Integer> span = RegexUtil.getGroupSpan( matcher, groupName );
       if ( !RegexUtil.isValidSpan( span ) ) {
          return null;
       }
+      LOGGER.info( "Creating Normalizable " + groupName + " " + (spanOffset + span.getValue1()) + "-" + (spanOffset + span.getValue2()) );
       final NormalizableAnnotation name = new NormalizableAnnotation( jCas,
-                                                                        spanOffset + matcher.start(),
-                                                                        spanOffset + matcher.end() );
+                                                                        spanOffset + span.getValue1(),
+                                                                        spanOffset + span.getValue2() );
       name.addToIndexes();
       return name;
    }

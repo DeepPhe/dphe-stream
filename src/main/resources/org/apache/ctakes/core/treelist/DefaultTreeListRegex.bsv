@@ -41,8 +41,8 @@ Slash Index Description||(?<List>(?:^[ \t]*[A-Z]\/[0-9][\).:][ \t]+[^\r\n]+\r?\n
 
 
 // An Name : Value on each row, separated by a colon character or some large amount of whitespace.
-Name Colon Value||(?<List>(?:^[^\r\n:0-9][^\r\n:]{2,}:[^\r\n:]+\r?\n(?:^[^:\r\n]+\r?\n)*)+)||^(?<Name>[^\r\n:0-9][^\r\n:]{2,}):(?<Value>[^\r\n]+\r?\n(?:^[^:\r\n]+\r?\n)*)
-Name Space Value||(?<List>(?:^[^ \t0-9\r\n][^:\r\n]{3,}(?:[ ]{2,12}|[\t]{1,3})+[^:\r\n]+\r?\n)+)||^(?<Name>[^0-9\r\n][^:\r\n]{3,})(?:[ ]{2,12}|[\t]{1,3})+(?<Value>[^:\r\n]+)
+Name Colon Value||(?<List>(?:^[ \t]*[A-Z][^\r\n:]{2,}:[^\r\n:]+\r?\n(?:^[^:\r\n]+\r?\n)*)+)||^[ \t]*(?<Name>[A-Z][^\r\n:]{2,}):(?<Value>[^\r\n]+\r?\n(?:^[^:\r\n]+\r?\n)*)
+Name Space Value||(?<List>(?:^[ \t]*[A-Z][^:\r\n]{3,}(?:[ ]{2,12}|[\t]{1,3})+[^:\r\n]+\r?\n)+)||^[ \t]*(?<Name>[A-Z][^:\r\n]{3,})(?:[ ]{2,12}|[\t]{1,3})+(?<Value>[^:\r\n]+)
 
 
 // Mixed Colon Name Colon Value||^(?<Heading>[^\r\n:\(\)]{2,})(?:\((?<Refinement>[^\r\n:]*)\))?:(?<List>(?:[ \t]{2,}(?:[^\r\n:0-9][^\r\n]{2,})\r?\n)(?:^[ \t]{2,}(?:[^\r\n:0-9][^\r\n]{2,})\r?\n)*)||[ \t]{2,}(?:(?<Name>[^\r\n:0-9][^\r\n:]{2,}):)?[ \t]+(?<Value>[^\r\n]+)\r?\n

@@ -1,9 +1,9 @@
 package org.apache.ctakes.core.ae;
 
 import org.apache.ctakes.core.pipeline.PipeBitInfo;
-import org.apache.ctakes.core.resource.FileLocator;
 import org.apache.ctakes.core.util.Pair;
 import org.apache.ctakes.core.util.regex.RegexSpanFinder;
+import org.apache.ctakes.core.util.regex.RegexUtil;
 import org.apache.ctakes.typesystem.type.textspan.Paragraph;
 import org.apache.ctakes.typesystem.type.textspan.Segment;
 import org.apache.log4j.Logger;
@@ -15,9 +15,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -50,7 +48,8 @@ final public class ParagraphFinder extends JCasAnnotator_ImplBase {
    private String _paragraphTypesPath;
 
    // Allows spaces or tabs within the double-eol paragraph separator.
-   static private final String DEFAULT_PARAGRAPH = "Default Paragraph||(?:(?:[\\t ]*\\r?\\n){2,})";
+//   static private final String DEFAULT_PARAGRAPH = "Default Paragraph||(?:(?:[\\t ]*\\r?\\n){2,})";
+   static private final String DEFAULT_SEPARATOR = "(?:^[\\t ]*\\r?\\n)+";
 
    /**
     * Holder for section type as defined in the user's specification bsv file
@@ -59,9 +58,9 @@ final public class ParagraphFinder extends JCasAnnotator_ImplBase {
       private final String __name;
       private final Pattern __separatorPattern;
 
-      private ParagraphType( final String name, final String separatorRegex ) {
+      private ParagraphType( final String name, final Pattern separatorPattern ) {
          __name = name;
-         __separatorPattern = separatorRegex == null ? null : Pattern.compile( separatorRegex, Pattern.MULTILINE );
+         __separatorPattern = separatorPattern;
       }
    }
 
@@ -75,18 +74,19 @@ final public class ParagraphFinder extends JCasAnnotator_ImplBase {
    public void initialize( final UimaContext context ) throws ResourceInitializationException {
       super.initialize( context );
       if ( _paragraphTypesPath == null ) {
-         LOGGER.info( "No " + PARAGRAPH_TYPES_DESC );
-         LOGGER.info( "Using default paragraph separator: two newlines" );
-         parseBsvLine( DEFAULT_PARAGRAPH );
+         LOGGER.info( "No " + PARAGRAPH_TYPES_DESC + ", Using default paragraph separator: two newlines" );
+         _paragraphTypes.add( new ParagraphType( "Default",
+                                                 Pattern.compile( DEFAULT_SEPARATOR, Pattern.MULTILINE ) ) );
          return;
       }
-      LOGGER.info( "Parsing " + _paragraphTypesPath );
-      try ( BufferedReader reader = new BufferedReader( new InputStreamReader( FileLocator
-                                                                                     .getAsStream( _paragraphTypesPath ) ) ) ) {
-         String line = reader.readLine();
-         while ( line != null ) {
-            parseBsvLine( line );
-            line = reader.readLine();
+      try {
+         final List<RegexUtil.RegexItemInfo> itemInfos
+               = RegexUtil.parseBsvFile( _paragraphTypesPath,
+                                         1,
+                                         "Paragraph Separator Type || Separator regular expression" );
+         for ( RegexUtil.RegexItemInfo itemInfo : itemInfos ) {
+            _paragraphTypes.add( new ParagraphType( itemInfo.getName(),
+                                                    itemInfo.getPatternList().get( 0 ) ) );
          }
       } catch ( IOException ioE ) {
          throw new ResourceInitializationException( ioE );
@@ -105,7 +105,6 @@ final public class ParagraphFinder extends JCasAnnotator_ImplBase {
          return;
       }
       createParagraphs( jcas );
-      LOGGER.info( "Finished processing" );
    }
 
 
@@ -188,24 +187,5 @@ final public class ParagraphFinder extends JCasAnnotator_ImplBase {
       }
    }
 
-
-   private void parseBsvLine( final String line ) {
-      if ( line.isEmpty() || line.startsWith( "#" ) || line.startsWith( "//" ) ) {
-         // comment
-         return;
-      }
-      final String[] splits = line.split( "\\|\\|" );
-      if ( splits.length < 2 ) {
-         LOGGER.warn( "Bad Paragraph definition: " + line + " ; please use the following:\n" +
-                      "NAME||SEPARATOR_REGEX" );
-         return;
-      }
-      // paragraph Name is always first
-      final String name = splits[ 0 ].trim();
-      // separator regex
-      String separatorRegex = splits[ 1 ].trim();
-      final ParagraphType paragraphType = new ParagraphType( name, separatorRegex );
-      _paragraphTypes.add( paragraphType );
-   }
 
 }
