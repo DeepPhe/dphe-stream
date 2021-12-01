@@ -56,7 +56,7 @@ final public class ListEntryFinder {
       if ( !RegexUtil.isValidSpan( span ) ) {
          return null;
       }
-      LOGGER.info( "Creating Normalizable " + groupName + " " + (spanOffset + span.getValue1()) + "-" + (spanOffset + span.getValue2()) );
+//      LOGGER.info( "Creating Normalizable " + groupName + " " + (spanOffset + span.getValue1()) + "-" + (spanOffset + span.getValue2()) );
       final NormalizableAnnotation name = new NormalizableAnnotation( jCas,
                                                                         spanOffset + span.getValue1(),
                                                                         spanOffset + span.getValue2() );

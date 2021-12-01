@@ -2,6 +2,7 @@ package org.apache.ctakes.core.ae;
 
 import org.apache.ctakes.core.pipeline.PipeBitInfo;
 import org.apache.ctakes.core.util.Pair;
+import org.apache.ctakes.core.util.TextSpanUtil;
 import org.apache.ctakes.core.util.regex.RegexUtil;
 import org.apache.ctakes.core.util.regex.TimeoutMatcher;
 import org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation;
@@ -289,7 +290,7 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
    // Todo make TextSpanUtil
    static private List<Pair<Integer>> sortAndTrimBounds( final Collection<Pair<Integer>> bounds ) {
       final List<Pair<Integer>> boundsList = new ArrayList<>( bounds );
-      boundsList.sort( new PairIntSorter() );
+      boundsList.sort( new TextSpanUtil.CoveringSpanSorter() );
       final Collection<Pair<Integer>> removalBounds = new HashSet<>();
       for ( int i = 0; i < boundsList.size() - 1; i++ ) {
          final Pair<Integer> pairI = boundsList.get( i );
@@ -516,50 +517,5 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
       return boundsList;
    }
 
-
-//   /**
-//    * @param text -
-//    * @return true if the text to lower case is "true" or "false"
-//    */
-//   static protected boolean isBoolean( final String text ) {
-//      final String text2 = text.trim().toLowerCase();
-//      return text2.equalsIgnoreCase( "true" ) || text2.equalsIgnoreCase( "false" );
-//   }
-
-
-//   /**
-//    * Find line dividers
-//    *
-//    * @param docText -
-//    * @return topic tags mapped to index pairs
-//    */
-//   static private Map<Pair<Integer>, TopicTag> findDividerLines( final String docText ) {
-//      final Function<Pair<Integer>, TopicTag> lineDividerTag = p -> LINE_DIVIDER_TAG;
-//      try ( RegexSpanFinder finder = new RegexSpanFinder( DIVIDER_LINE_PATTERN ) ) {
-//         return finder.findSpans( docText ).stream().collect( Collectors.toMap( Function.identity(), lineDividerTag ) );
-//      } catch ( IllegalArgumentException iaE ) {
-//         return Collections.emptyMap();
-//      }
-//   }
-
-
-   /**
-    * Sorts by first offset, LONGER bounds first:
-    *   |=============|
-    *      |========|
-    *      |====|
-    *        |==============|
-    *                |==============|
-    *                     |========|
-    */
-   static private final class PairIntSorter implements Comparator<Pair<Integer>> {
-      public int compare( final Pair<Integer> p1, final Pair<Integer> p2 ) {
-         final int start = p1.getValue1() - p2.getValue1();
-         if ( start != 0 ) {
-            return start;
-         }
-         return p2.getValue2() - p1.getValue2();
-      }
-   }
 
 }
