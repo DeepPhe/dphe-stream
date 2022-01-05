@@ -1,8 +1,12 @@
 package org.healthnlp.deepphe.nlp.ae;
 
+import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author SPF , chip-nlp
@@ -15,6 +19,11 @@ final public class PipelineStopper extends JCasAnnotator_ImplBase {
 
    public void collectionProcessComplete() throws AnalysisEngineProcessException {
       super.collectionProcessComplete();
+      Logger.getLogger( "PipelineStopper" ).info( "Processing Complete." );
+      final Frame[] frames = Frame.getFrames();
+      if ( frames != null && frames.length > 0 ) {
+         JOptionPane.showMessageDialog( null, "Processing Complete.  Click OK to exit." );
+      }
       System.exit( 0 );
    }
 
