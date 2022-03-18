@@ -233,6 +233,9 @@ final public class MatchUtil {
       if ( systemValue.isEmpty() && (goldValue.equals( "0" ) || goldValue.equals( "9" )) ) {
          return true;
       }
+      if ( goldValue.isEmpty() && (systemValue.equals( "0" ) || systemValue.equals( "9" )) ) {
+         return true;
+      }
       if ( goldValue.equalsIgnoreCase( systemValue ) ) {
          return true;
       }
