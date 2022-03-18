@@ -10,9 +10,19 @@ final public class LateralityCodeInfoStore implements CodeInfoStore {
 
    public String _bestCode;
 
+   //  https://seer.cancer.gov/manuals/primsite.laterality.pdf
+   static private final Collection<String> LATERALITIES = Arrays.asList( "C07", "C08", "C09" );
+   static private final int[] FACILITY = new int[]{
+         30, 31, 34, 38, 40, 41, 44, 47, 49, 50, 56, 57, 62, 63, 64, 65, 66, 69, 70, 71, 72, 74, 75
+   };
+   static {
+      Arrays.stream( FACILITY ).forEach( n -> LATERALITIES.add( "C" + n ) );
+   }
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
-      if ( dependencies.getOrDefault( "topography_major", "" ).startsWith( "C61" ) ) {
+      final String topographyMajor = dependencies.getOrDefault( "topography_major", "" );
+      final boolean noLaterality = LATERALITIES.stream().noneMatch( n -> n.startsWith( topographyMajor ) );
+      if ( noLaterality ) {
          _bestCode = "9";
       } else {
          _bestCode = getBestLateralityCode( uriInfoStore._uriStrengths );
