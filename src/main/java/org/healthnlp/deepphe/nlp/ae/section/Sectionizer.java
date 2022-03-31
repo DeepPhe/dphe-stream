@@ -231,15 +231,21 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
         }
 
         if (sectionHeaders.size()==1) {
-            Segment segment = sectionHeaders.get(0);
-            // segment.setBegin(###); // already set when found  // NOT CORRECTLY IT WASN'T !!!
-            segment.setEnd(text.length()); // since only 1 section header, this section's text goes to end of document
-            // segment.setId(xxxxxxxxxxxxxx); // already set when it was found by pattern
-//            segment.setPreferredText(segment.getId());
-            // segment.setTagText();          // already set when it was found by pattern
+            Segment header = sectionHeaders.get(0);
+            Segment segment = new Segment(cas);
+            segment.setBegin(header.getEnd()); // text of section starts after the section heading
+            segment.setEnd(text.length());
+            segment.setId(header.getId());
+            segment.setPreferredText( header.getPreferredText() );
+            segment.setTagText( header.getTagText() );
+//            Segment segment = sectionHeaders.get( 0 );
+//            // segment.setBegin(###); // already set when found  // NOT CORRECTLY IT WASN'T !!!
+//            segment.setEnd(text.length()); // since only 1 section header, this section's text goes to end of document
+//            // segment.setId(xxxxxxxxxxxxxx); // already set when it was found by pattern
+////            segment.setPreferredText(segment.getId());
+//            // segment.setTagText();          // already set when it was found by pattern
             segment.addToIndexes();
             return;
-
         }
     }
 
