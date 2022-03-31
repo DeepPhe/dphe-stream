@@ -1039,7 +1039,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       return divisionInt0to10( bestUriRelationCounts, sum );
    }
 
-   static private final int TUMOR_SITE_WINDOW = 17;
+   static private final int TUMOR_SITE_WINDOW = 25;
 
    /**
     * We now have most mentioned class upper_limb (4/13), most mentioned branch class forearm (6/13),
