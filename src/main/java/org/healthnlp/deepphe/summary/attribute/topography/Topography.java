@@ -8,6 +8,8 @@ import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
+import org.healthnlp.deepphe.neo4j.node.Note;
+import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.SpecificAttribute;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -1037,6 +1039,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       return divisionInt0to10( bestUriRelationCounts, sum );
    }
 
+   static private final int TUMOR_SITE_WINDOW = 15;
 
    /**
     * We now have most mentioned class upper_limb (4/13), most mentioned branch class forearm (6/13),
@@ -1074,6 +1077,34 @@ static private String toConceptText( final ConceptAggregate concept ) {
       if ( firstConcepts.size() <= 1 ) {
          return firstConcepts;
       }
+
+      //  Added 3/31/2022
+      //  If text contains "tumor site: [site]" for any detected aggregates only those are returned.
+      final Collection<ConceptAggregate> tumorSites = new HashSet<>();
+      for ( ConceptAggregate aggregate : firstConcepts ) {
+         for ( Mention mention : aggregate.getMentions() ) {
+            final int mentionBegin = mention.getBegin();
+            if ( mentionBegin <= TUMOR_SITE_WINDOW ) {
+               continue;
+            }
+            final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
+            if ( note == null ) {
+               LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
+               continue;
+            }
+            if ( note.getText()
+                     .substring( mentionBegin-TUMOR_SITE_WINDOW, mentionBegin )
+                     .toLowerCase()
+                     .contains( "tumor site:" ) ) {
+               tumorSites.add( aggregate );
+               break;
+            }
+         }
+      }
+      if ( !tumorSites.isEmpty() ) {
+         return tumorSites;
+      }
+
 
       //  Added 3-22-2021
       final Collection<String> allUris = firstConcepts.stream()
