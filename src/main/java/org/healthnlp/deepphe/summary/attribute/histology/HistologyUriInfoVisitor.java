@@ -71,10 +71,10 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
 //                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
                   continue;
                }
-               if ( note.getText()
-                        .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
-                        .toLowerCase()
-                        .contains( "histologic type:" ) ) {
+               final String preText = note.getText()
+                                          .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
+                                          .toLowerCase();
+               if ( preText.contains( "histologic type:" ) || preText.contains( "diagnosis:" ) ) {
                   histologies.add( aggregate );
                   break;
                }
