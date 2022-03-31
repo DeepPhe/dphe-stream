@@ -1,7 +1,7 @@
 // The bsv format, with optional named groups is:
 // TreeList Name/Type || Full Regex; Heading, Refinement, List || List Entry Regex; Index, Name, Value, Details
 
-!!!!    ^(?<Header>[A-Z ]{4,})(?<Refinement>[ \t]+\([^\r\n:]*\))?[ ]*\r?\n(?<List>(?:(?:[A-Z][^\r\n:]{2,}):[ \t]+[^\r\n]+\r?\n(?:(?:[ \t]+[^\r\n:]{2,}:)?[ \t]+[^\r\n]+\r?\n)*)+)
+// !!!!    ^(?<Header>[A-Z ]{4,})(?<Refinement>[ \t]+\([^\r\n:]*\))?[ ]*\r?\n(?<List>(?:(?:[A-Z][^\r\n:]{2,}):[ \t]+[^\r\n]+\r?\n(?:(?:[ \t]+[^\r\n:]{2,}:)?[ \t]+[^\r\n]+\r?\n)*)+)
 ////  Will Match  HEADER (Refinement) \n All kinds of lists as long as at least one list line has a colon.
 
 Caps Header Mixed List||^(?<Header>[A-Z ]{4,})(?<Refinement>[ \t]+\([^\r\n:]*\))?[ ]*\r?\n(?<List>(?:[A-Z][^\r\n:]{2,}:[ \t]+[^\r\n]+\r?\n(?:(?:[ \t]+[^\r\n:]{2,}:)?[ \t]+[^\r\n]+\r?\n)*)+)||^(?:(?<Name>[^\r\n:]{2,}):)?[ \t]+(?<Value>[^\r\n]+)\r?\n
@@ -17,11 +17,14 @@ Caps Header Mixed List||^(?<Header>[A-Z ]{4,})(?<Refinement>[ \t]+\([^\r\n:]*\))
 ////    ^(?<Heading>[A-Z][^\r\n\(\):]{2,})(?<Refinement>\([^\r\n:]*\))?:(?<List>[ \t]{2,}[^\r\n:]{2,}:[ \t]+[^\r\n]+\r?\n(?:[ \t]{2,}[^\r\n:]{2,}:[ \t]+[^\r\n]+\r?\n)*)
 ////  Will Match Above plus multiple lines of indented with or without :   {name text}:?{value text}   !!! As Long as at least 1 line has a {name}:{answer}  !!!
 ////    ^(?<Heading>[A-Z][^\r\n\(\):]{2,})(?<Refinement>\([^\r\n:]*\))?:(?<List>[ \t]{2,}[^\r\n:]{2,}:[ \t]+[^\r\n]+\r?\n(?:[ \t]{2,}[^\r\n:]{2,}:?[ \t]+[^\r\n]+\r?\n)*)
-!!!!   So, start with the full expression above.
-!!!!   Will match Name, Value of above
-!!!!    [ \t]{2,}(?:(?<Name>[^\r\n:]{2,}):)?[ \t]+(?<Value>[^\r\n]+)\r?\n
+// !!!!   So, start with the full expression above.
+// !!!!   Will match Name, Value of above
+// !!!!    [ \t]{2,}(?:(?<Name>[^\r\n:]{2,}):)?[ \t]+(?<Value>[^\r\n]+)\r?\n
 
 Header Colon Name Colon Value||^(?<Heading>[A-Z][^\r\n\(\):]{2,})(?<Refinement>\([^\r\n:]*\))?:(?<List>[ \t]{2,}[^\r\n:]{2,}:[ \t]+[^\r\n]+\r?\n(?:[ \t]{2,}[^\r\n:]{2,}:?[ \t]+[^\r\n]+\r?\n)*)||^[ \t]{2,}(?:(?<Name>[^\r\n:]{2,}):)?[ \t]+(?<Value>[^\r\n]+)\r?\n
+
+//// Will Match {Header text}: {Header Value} then an indented list of name : value  -- Not necessary?  Caught by general name:value list
+//Header Colon Value Name Colon Value||^(?<Heading>[A-Z][^\r\n\(\):]{2,})(?<Refinement>\([^\r\n:]*\))?:(?<HeadingValue>[^\r\n]+)?\r?\n(?<List>[ \t]{2,}[^\r\n:]{2,}:[ \t]+[^\r\n]+\r?\n(?:[ \t]{2,}[^\r\n:]{2,}:?[ \t]+[^\r\n]+\r?\n)*)||^[ \t]{2,}(?:(?<Name>[^\r\n:]{2,}):)?[ \t]+(?<Value>[^\r\n]+)\r?\n
 
 
 ////  Will Match {Header text}:\n and then following indented name: value lines
@@ -40,8 +43,9 @@ Header Colon Indented Mixed List||^(?<Header>[A-Z][^\r\n:]{4,}):[ ]*\r?\n(?<List
 Slash Index Description||(?<List>(?:^[ \t]*[A-Z]\/[0-9][\).:][ \t]+[^\r\n]+\r?\n(?:^[^ \r\n][^\/][^\r\n]+\r?\n)*){2,})||^[ \t]*(?<Index>[A-Z]\/[0-9])[\).:][ \t]+(?<Details>[^\r\n]+\r?\n(?:^[^ \r\n][^\/][^\r\n]+\r?\n)*)
 
 
-// An Name : Value on each row, separated by a colon character or some large amount of whitespace.
-Name Colon Value||(?<List>(?:^[ \t]*[A-Z][^\r\n:]{2,}:[^\r\n:]+\r?\n(?:^[^:\r\n]+\r?\n)*)+)||^[ \t]*(?<Name>[A-Z][^\r\n:]{2,}):(?<Value>[^\r\n]+\r?\n(?:^[^:\r\n]+\r?\n)*)
+// An Name : Value on each row, separated by a colon character or some large amount of whitespace.  Can start with '*'
+//Name Colon Value||(?<List>(?:^[ \t]*[A-Z][^\r\n:]{2,}:[^\r\n:]+\r?\n(?:^[^:\r\n]+\r?\n)*)+)||^[ \t]*(?<Name>[A-Z][^\r\n:]{2,}):(?<Value>[^\r\n]+\r?\n(?:^[^:\r\n]+\r?\n)*)
+Name Colon Value||(?<List>(?:^[ \t]*\*?[A-Z][^\r\n:]{2,}:[^\r\n:]+\r?\n(?:^[^:\r\n]+\r?\n)*)+)||^[ \t]*(?<Name>\*?[A-Z][^\r\n:]{2,}):(?<Value>[^\r\n]+\r?\n(?:^[^:\r\n]+\r?\n)*)
 Name Space Value||(?<List>(?:^[ \t]*[A-Z][^:\r\n]{3,}(?:[ ]{2,12}|[\t]{1,3})+[^:\r\n]+\r?\n)+)||^[ \t]*(?<Name>[A-Z][^:\r\n]{3,})(?:[ ]{2,12}|[\t]{1,3})+(?<Value>[^:\r\n]+)
 
 

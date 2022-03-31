@@ -7,7 +7,7 @@ package org.healthnlp.deepphe.core.ae
 // Connect to local ontology graph embedded db.
 add Neo4jEmbeddedConnectAe
 
-//  Discover sections.
+//  Discover sections.   TODO try CrSectionizer instead, which will trim any "REFERENCES:" from the report.
 package org.healthnlp.deepphe.nlp.ae.section
 add Sectionizer
 

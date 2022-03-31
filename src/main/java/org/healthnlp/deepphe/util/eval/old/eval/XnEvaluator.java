@@ -72,12 +72,12 @@ public class XnEvaluator {
    static private void scoreSystem( final String neoplasmType, final File goldFile, final File systemFile,
                                     final Collection<String> patientNames ) {
       // Moved the * and - for required and scoring to NaaccrIcdoBsvWriter so that I don't have to keep changing it in gold
-      final List<String> systemProperties = NaaccrSummaryReader.readHeader( systemFile );
-      final Collection<String> requiredNames = NaaccrSummaryReader.getRequiredNames( systemProperties );
-      final Collection<String> scoringNames = NaaccrSummaryReader.getScoringNames( systemProperties );
-      final Map<String, Integer> systemIndices = NaaccrSummaryReader.mapNameIndices( systemProperties );
-      final List<String> goldProperties = NaaccrSummaryReader.readHeader( goldFile );
-      final Map<String, Integer> goldIndices = NaaccrSummaryReader.mapNameIndices( goldProperties );
+      final List<String> systemProperties = NaaccrSummaryReader.readColumnHeader( systemFile );
+      final Collection<String> requiredNames = NaaccrSummaryReader.getRequiredColumnNames( systemProperties );
+      final Collection<String> scoringNames = NaaccrSummaryReader.getScoringColumnNames( systemProperties );
+      final Map<String, Integer> systemIndices = NaaccrSummaryReader.mapColumnNameIndices( systemProperties );
+      final List<String> goldProperties = NaaccrSummaryReader.readColumnHeader( goldFile );
+      final Map<String, Integer> goldIndices = NaaccrSummaryReader.mapColumnNameIndices( goldProperties );
 
       final Map<String, Collection<NeoplasmSummary>> goldSummaries
             = NaaccrSummaryReader.readSummaries( goldFile, requiredNames, scoringNames, goldIndices, patientNames );

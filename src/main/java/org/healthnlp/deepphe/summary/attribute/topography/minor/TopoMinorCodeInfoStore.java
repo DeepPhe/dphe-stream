@@ -3,7 +3,9 @@ package org.healthnlp.deepphe.summary.attribute.topography.minor;
 import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 
 final public class TopoMinorCodeInfoStore implements CodeInfoStore {
@@ -401,7 +403,7 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
 
 
 
-   static private final Collection<String> MINOR_SITES = Arrays.asList( "C00", "C02", "C03", "C04", "C05", "C06",
+   static private final Collection<String> MAJOR_SITES = Arrays.asList( "C00", "C02", "C03", "C04", "C05", "C06",
                                                                         "C08", "C09" );
    static private final int[] FACILITY = new int[]{
       10, 11, 13, 14, 30, 31, 32, 67, 15, 16, 17, 77, 62, 68, 22, 24, 25, 70, 71, 72,
@@ -413,22 +415,32 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
       44, 51, 60, 63
    };
    static {
-      Arrays.stream( FACILITY ).forEach( n -> MINOR_SITES.add( "C" + n ) );
+      Arrays.stream( FACILITY ).forEach( n -> MAJOR_SITES.add( "C" + n ) );
    }
 
 
-   static private String _lateralityCode = "";
    public String _bestCode;
 
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
       final String topographyMajor = dependencies.getOrDefault( "topography_major", "" );
-      final boolean noMinorSite = MINOR_SITES.stream().noneMatch( n -> n.startsWith( topographyMajor ) );
+      final boolean noMinorSite = MAJOR_SITES.stream().noneMatch( n -> n.startsWith( topographyMajor ) );
       if ( noMinorSite ) {
          _bestCode = "9";
-      } else {
-         _lateralityCode = dependencies.getOrDefault( "laterality", "" );
-         _bestCode = getBestMinorCode( uriInfoStore._uriStrengths );
+         return;
+      }
+      final String lateralityCode = dependencies.getOrDefault( "laterality", "" );
+      switch ( topographyMajor ) {
+         case "C50" : {
+            _bestCode = BreastMinorCodifier.getBestBreast( uriInfoStore._uriStrengths, lateralityCode );
+            return;
+         }
+         case "C18" :
+         case "C21" : {
+            // Don't pass laterality code because for C18 it is always 0.
+            _bestCode = ColonMinorCodifier.getBestColon( uriInfoStore._uriStrengths, topographyMajor );
+            return;
+         }
       }
    }
 
@@ -437,132 +449,6 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
    }
 
 
-   static private String getBestMinorCode( final Map<String,Integer> uriStrengths ) {
-      if ( uriStrengths.isEmpty() ) {
-         return "9";
-      }
-      final Map<Integer, List<String>> hitCounts = new HashMap<>();
-      for ( Map.Entry<String,Integer> uriStrength : uriStrengths.entrySet() ) {
-         hitCounts.computeIfAbsent( uriStrength.getValue(), u -> new ArrayList<>() )
-                  .add( uriStrength.getKey() );
-      }
-      // Prefer lobes over bronchus, quadrants over nipple.
-      final int bestMinorCode = hitCounts.keySet()
-                                         .stream()
-                                         .sorted( Comparator.comparingInt( Integer::intValue )
-                                                            .reversed() )
-                                         .map( hitCounts::get )
-                                         .map( TopoMinorCodeInfoStore::getBestMinorNumber )
-                                         .filter( n -> n >= 0 )
-                                         .findFirst().orElse( -1 );
-      if ( bestMinorCode >= 0 ) {
-         return "" + bestMinorCode;
-      }
-      return "" + hitCounts.keySet()
-                           .stream()
-                           .sorted( Comparator.comparingInt( Integer::intValue )
-                                              .reversed() )
-                           .map( hitCounts::get )
-                           .map( TopoMinorCodeInfoStore::getOtherMinorNumber )
-                           .filter( n -> n >= 0 )
-                           .findFirst()
-                           .orElse( 9 );
-   }
 
-   static private int getBestMinorNumber( final Collection<String> uris ) {
-      return uris.stream()
-                 .mapToInt( TopoMinorCodeInfoStore::getUriMinorNumber )
-                 .max()
-                 .orElse( -1 );
-   }
-
-//   static public int getOtherMinorNumber( final ConceptAggregate behavior ) {
-//      return behavior.getAllUris()
-//                     .stream()
-//                     .mapToInt( TopoMinorCodeInfoStore::getOtherUriMinorNumber )
-//                     .max()
-//                     .orElse( -1 );
-//   }
-
-   static public int getOtherMinorNumber(  final Collection<String> uris ) {
-      return uris.stream()
-                     .mapToInt( TopoMinorCodeInfoStore::getOtherUriMinorNumber )
-                     .max()
-                     .orElse( -1 );
-   }
-
-   static private final Collection<String> CENTERS
-         = Arrays.asList( "_12_O_clock", "_3_O_clock", "_6_O_clock", "_9_O_clock" );
-   static private final Collection<String> C_12_3
-         = Arrays.asList( "_12_30_O_clock", "_1_O_clock", "_1_30_O_clock", "_2_O_clock", "_2_30_O_clock" );
-   static private final Collection<String> C_3_6
-         = Arrays.asList( "_3_30_O_clock", "_4_O_clock", "_4_30_O_clock", "_5_O_clock", "_5_30_O_clock" );
-   static private final Collection<String> C_6_9
-         = Arrays.asList( "_6_30_O_clock", "_7_O_clock", "_7_30_O_clock", "_8_O_clock", "_8_30_O_clock" );
-   static private final Collection<String> C_9_12
-         = Arrays.asList( "_9_30_O_clock", "_10_O_clock", "_10_30_O_clock", "_11_O_clock", "_11_30_O_clock" );
-
-   static public int getUriMinorNumber( final String uri ) {
-//      https://training.seer.cancer.gov/breast/anatomy/quadrants.html
-//      https://training.seer.cancer.gov/breast/abstract-code-stage/codes.html
-      if ( uri.startsWith( "Upper_Inner_Quadrant" ) ) {
-         return 2;
-      } else if ( uri.startsWith( "Lower_Inner_Quadrant" ) ) {
-         return 3;
-      } else if ( uri.startsWith(  "Upper_Outer_Quadrant" ) ) {
-         return 4;
-      } else if ( uri.startsWith(  "Lower_Outer_Quadrant" ) ) {
-         return 5;
-      } else if ( CENTERS.contains( uri ) ) {
-         return 8;
-      } else if ( C_12_3.contains( uri ) ) {
-         if ( _lateralityCode.equals( "1" ) ) {
-            return 2;
-         } else if ( _lateralityCode.equals( "2" ) ) {
-            return 4;
-         }
-      } else if ( C_3_6.contains( uri ) ) {
-         if ( _lateralityCode.equals( "1" ) ) {
-            return 3;
-         } else if ( _lateralityCode.equals( "2" ) ) {
-            return 5;
-         }
-      } else if ( C_6_9.contains( uri ) ) {
-         if ( _lateralityCode.equals( "1" ) ) {
-            return 5;
-         } else if ( _lateralityCode.equals( "2" ) ) {
-            return 3;
-         }
-      } else if ( C_9_12.contains( uri ) ) {
-         if ( _lateralityCode.equals( "1" ) ) {
-            return 4;
-         } else if ( _lateralityCode.equals( "2" ) ) {
-            return 2;
-         }
-      } else if ( TopoMinorUriInfoVisitor.UPPER_LOBE_URIS.contains( uri ) ) {
-         return 1;
-      } else if ( TopoMinorUriInfoVisitor.MIDDLE_LOBE_URIS.contains( uri ) ) {
-         return 2;
-      } else if ( TopoMinorUriInfoVisitor.LOWER_LOBE_URIS.contains( uri ) ) {
-         return 3;
-      }
-      return -1;
-   }
-
-   static public int getOtherUriMinorNumber( final String uri ) {
-//      https://training.seer.cancer.gov/breast/anatomy/quadrants.html
-//      https://training.seer.cancer.gov/breast/abstract-code-stage/codes.html
-      if ( uri.equals( "Nipple" ) ) {
-         return 0;
-      } else if ( uri.startsWith( "Central_Region_Of_" ) || uri.contains( "reola" ) ) {
-         return 1;
-      } else if ( TopoMinorUriInfoVisitor.BRONCHUS_URIS.contains( uri ) ) {
-         return 0;
-      } else if ( TopoMinorUriInfoVisitor.LUNG_URIS.contains( uri )
-                  || TopoMinorUriInfoVisitor.TRACHEA_URIS.contains( uri ) ) {
-         return 9;
-      }
-      return -1;
-   }
 
 }

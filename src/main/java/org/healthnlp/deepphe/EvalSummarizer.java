@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * dphe-cr
  * Run multiple docs and write output for scoring with the eval tool and output for features.
  */
 final public class EvalSummarizer {
@@ -137,7 +138,7 @@ final public class EvalSummarizer {
                                       .getId();
       for ( NeoplasmSummary neoplasm : summary.getNeoplasms() ) {
          writeEval( patientId, neoplasm, evalWriter );
-         writeFeatures( patientId, neoplasm, featureDir );
+//         writeFeatures( patientId, neoplasm, featureDir );
       }
       writeJson( summary, jsonDir );
    }

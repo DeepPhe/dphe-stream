@@ -251,8 +251,9 @@ final public class MatchUtil {
 //            return true;
 //         }
 //      }
-      if ( goldValue.isEmpty()
+      if ( ( goldValue.isEmpty() || goldValue.toLowerCase().contains( "not " ) )
            && ( systemValue.equalsIgnoreCase( "Pending" )
+                || systemValue.toLowerCase().contains( "not " )
                 || systemValue.toLowerCase().contains( "n/a" )
                 || systemValue.toLowerCase().contains( "requested" )
                 || systemValue.toLowerCase().contains( "applicable" )
