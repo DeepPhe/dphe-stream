@@ -1039,7 +1039,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       return divisionInt0to10( bestUriRelationCounts, sum );
    }
 
-   static private final int TUMOR_SITE_WINDOW = 15;
+   static private final int TUMOR_SITE_WINDOW = 17;
 
    /**
     * We now have most mentioned class upper_limb (4/13), most mentioned branch class forearm (6/13),
@@ -1092,10 +1092,10 @@ static private String toConceptText( final ConceptAggregate concept ) {
                LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
                continue;
             }
-            if ( note.getText()
-                     .substring( mentionBegin-TUMOR_SITE_WINDOW, mentionBegin )
-                     .toLowerCase()
-                     .contains( "tumor site:" ) ) {
+            final String preText = note.getText()
+                                       .substring( mentionBegin-TUMOR_SITE_WINDOW, mentionBegin )
+                                       .toLowerCase();
+            if ( preText.contains( "tumor site:" ) || preText.contains( "supportive of" ) ) {
                tumorSites.add( aggregate );
                break;
             }
