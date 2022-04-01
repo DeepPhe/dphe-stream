@@ -5,6 +5,7 @@ import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -403,8 +404,8 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
 
 
 
-   static private final Collection<String> MAJOR_SITES = Arrays.asList( "C00", "C02", "C03", "C04", "C05", "C06",
-                                                                        "C08", "C09" );
+   static private final Collection<String> MAJOR_SITES = new HashSet<>();
+   static private final int[] FACILITY0 = new int[]{ 2, 3, 4, 5, 6, 8, 9 };
    static private final int[] FACILITY = new int[]{
       10, 11, 13, 14, 30, 31, 32, 67, 15, 16, 17, 77, 62, 68, 22, 24, 25, 70, 71, 72,
       18, 21,
@@ -415,6 +416,8 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
       44, 51, 60, 63
    };
    static {
+      MAJOR_SITES.add( "C00" );
+      Arrays.stream( FACILITY0 ).forEach( n -> MAJOR_SITES.add( "C0" + n ) );
       Arrays.stream( FACILITY ).forEach( n -> MAJOR_SITES.add( "C" + n ) );
    }
 
@@ -423,9 +426,9 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
 
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
-      final String topographyMajor = dependencies.getOrDefault( "topography_major", "" );
-      final boolean noMinorSite = MAJOR_SITES.stream().noneMatch( n -> n.startsWith( topographyMajor ) );
-      if ( noMinorSite ) {
+      final String topographyMajor = dependencies.getOrDefault( "topography_major", "" ).toUpperCase();
+      final boolean hasMinorSite = MAJOR_SITES.contains( topographyMajor );
+      if ( !hasMinorSite ) {
          _bestCode = "9";
          return;
       }
