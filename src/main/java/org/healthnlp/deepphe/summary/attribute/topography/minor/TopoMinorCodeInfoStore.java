@@ -3,10 +3,7 @@ package org.healthnlp.deepphe.summary.attribute.topography.minor;
 import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 
 final public class TopoMinorCodeInfoStore implements CodeInfoStore {
@@ -438,13 +435,20 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
             _bestCode = BreastMinorCodifier.getBestBreast( uriInfoStore._uriStrengths, lateralityCode );
             return;
          }
-         case "C18" :
+         case "C18" : {
+            _bestCode = CrcMinorCodifier.getBestColon( uriInfoStore._uriStrengths );
+            return;
+         }
          case "C21" : {
-            // Don't pass laterality code because for C18 it is always 0.
-            _bestCode = ColonMinorCodifier.getBestColon( uriInfoStore._uriStrengths, topographyMajor );
+            _bestCode = CrcMinorCodifier.getBestAnus( uriInfoStore._uriStrengths );
+            return;
+         }
+         case "C34" : {
+            _bestCode = LungMinorCodifier.getBestLung( uriInfoStore._uriStrengths );
             return;
          }
       }
+      _bestCode = "9";
    }
 
    public String getBestCode() {
@@ -452,6 +456,14 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
    }
 
 
+   static Map<Integer, List<String>> getHitCounts( final Map<String,Integer> uriStrengths ) {
+      final Map<Integer, List<String>> hitCounts = new HashMap<>();
+      for ( Map.Entry<String, Integer> uriStrength : uriStrengths.entrySet() ) {
+         hitCounts.computeIfAbsent( uriStrength.getValue(), u -> new ArrayList<>() )
+                  .add( uriStrength.getKey() );
+      }
+      return hitCounts;
+   }
 
 
 }

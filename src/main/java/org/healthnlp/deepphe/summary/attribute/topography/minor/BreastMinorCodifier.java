@@ -1,6 +1,14 @@
 package org.healthnlp.deepphe.summary.attribute.topography.minor;
 
+import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
+import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_CLOCKFACE;
+import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_QUADRANT;
 
 /**
  * @author SPF , chip-nlp
@@ -31,16 +39,37 @@ final public class BreastMinorCodifier {
    static private final Collection<String> C_9_12
          = Arrays.asList( "_9_30_O_clock", "_10_O_clock", "_10_30_O_clock", "_11_O_clock", "_11_30_O_clock" );
 
+   static private Collection<String> QUADRANT_URIS;
+
+   static private void initQuadrantUris() {
+      if ( QUADRANT_URIS != null ) {
+         return;
+      }
+      QUADRANT_URIS = Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT );
+   }
+
+
+   static public Collection<ConceptAggregate> geBreastParts( final Collection<ConceptAggregate> neoplasms ) {
+      initQuadrantUris();
+      final Collection<ConceptAggregate> breastConcepts = neoplasms.stream()
+                                                                   .map( c -> c.getRelated( HAS_CLOCKFACE, HAS_QUADRANT ) )
+                                                                   .flatMap( Collection::stream )
+//                                                                      .filter( c -> !c.isNegated() )
+                                                                   .collect( Collectors.toSet() );
+      breastConcepts.addAll( neoplasms.stream()
+                                      .map( ConceptAggregate::getRelatedSites )
+                                      .flatMap( Collection::stream )
+                                      .filter( c -> QUADRANT_URIS.contains( c.getUri() ) ).collect(
+                  Collectors.toSet() ) );
+      return breastConcepts;
+   }
+
    static String getBestBreast( final Map<String,Integer> uriStrengths, final String lateralityCode ) {
       if ( uriStrengths.isEmpty() ) {
          return "9";
       }
-      final Map<Integer, List<String>> hitCounts = new HashMap<>();
-      for ( Map.Entry<String,Integer> uriStrength : uriStrengths.entrySet() ) {
-         hitCounts.computeIfAbsent( uriStrength.getValue(), u -> new ArrayList<>() )
-                  .add( uriStrength.getKey() );
-      }
-      // Prefer lobes over bronchus, quadrants over nipple.
+      final Map<Integer, List<String>> hitCounts = TopoMinorCodeInfoStore.getHitCounts( uriStrengths );
+      // Prefer quadrants to nipple.
       final int bestMinorCode = hitCounts.keySet()
                                          .stream()
                                          .sorted( Comparator.comparingInt( Integer::intValue )
@@ -69,14 +98,6 @@ final public class BreastMinorCodifier {
                  .max()
                  .orElse( -1 );
    }
-
-//   static public int getOtherMinorNumber( final ConceptAggregate behavior ) {
-//      return behavior.getAllUris()
-//                     .stream()
-//                     .mapToInt( TopoMinorCodeInfoStore::getOtherUriMinorNumber )
-//                     .max()
-//                     .orElse( -1 );
-//   }
 
    static private int getOtherMinorNumber(  final Collection<String> uris ) {
       return uris.stream()
@@ -123,12 +144,6 @@ final public class BreastMinorCodifier {
          } else if ( lateralityCode.equals( "2" ) ) {
             return 2;
          }
-      } else if ( TopoMinorUriInfoVisitor.UPPER_LOBE_URIS.contains( uri ) ) {
-         return 1;
-      } else if ( TopoMinorUriInfoVisitor.MIDDLE_LOBE_URIS.contains( uri ) ) {
-         return 2;
-      } else if ( TopoMinorUriInfoVisitor.LOWER_LOBE_URIS.contains( uri ) ) {
-         return 3;
       }
       return -1;
    }
@@ -140,11 +155,6 @@ final public class BreastMinorCodifier {
          return 0;
       } else if ( uri.startsWith( "Central_Region_Of_" ) || uri.contains( "reola" ) ) {
          return 1;
-      } else if ( TopoMinorUriInfoVisitor.BRONCHUS_URIS.contains( uri ) ) {
-         return 0;
-      } else if ( TopoMinorUriInfoVisitor.LUNG_URIS.contains( uri )
-                  || TopoMinorUriInfoVisitor.TRACHEA_URIS.contains( uri ) ) {
-         return 9;
       }
       return -1;
    }
