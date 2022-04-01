@@ -11,7 +11,7 @@ final public class LateralityCodeInfoStore implements CodeInfoStore {
    public String _bestCode;
 
    //  https://seer.cancer.gov/manuals/primsite.laterality.pdf
-   static private final Collection<String> LATERALITIES = Arrays.asList( "C07", "C08", "C09" );
+   static private final Collection<String> LATERALITIES = new HashSet<>();
    static private final int[] FACILITY0 = new int[]{ 7, 8, 9 };
    static private final int[] FACILITY = new int[]{
          30, 31, 34, 38, 40, 41, 44, 47, 49, 50, 56, 57, 62, 63, 64, 65, 66, 69, 70, 71, 72, 74, 75
