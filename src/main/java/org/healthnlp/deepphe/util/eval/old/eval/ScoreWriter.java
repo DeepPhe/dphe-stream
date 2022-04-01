@@ -114,14 +114,14 @@ final class ScoreWriter {
       for ( String required : requiredNames ) {
          final String goldValue = gold.getAttribute( required );
          final String systemValue = system.getAttribute( required );
-         final EvalUris evalUris = new EvalUris( goldValue, systemValue );
+         final EvalUris evalUris = new EvalUris( required, goldValue, systemValue );
          writer.write( getScoreRow( "*" + required, evalUris ) );
          writer.write( getValueRow( goldValue, systemValue, evalUris ) );
       }
       for ( String scoring : scoringNames ) {
          final String goldValue = gold.getAttribute( scoring );
          final String systemValue = system.getAttribute( scoring );
-         final EvalUris evalUris = new EvalUris( goldValue, systemValue );
+         final EvalUris evalUris = new EvalUris( scoring, goldValue, systemValue );
          writer.write( getScoreRow( scoring, evalUris ) );
          writer.write( getValueRow( goldValue, systemValue, evalUris ) );
          final int nameEnd = Math.min( 30, scoring.length() );
