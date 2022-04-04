@@ -22,10 +22,14 @@ final public class LateralityCodeInfoStore implements CodeInfoStore {
    }
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
-      final String topographyMajor = dependencies.getOrDefault( "topography_major", "" ).toUpperCase();
+      String topographyMajor = dependencies.getOrDefault( "topography_major", "" )
+                                           .toUpperCase();
+      if ( topographyMajor.length() > 3 ) {
+         topographyMajor = topographyMajor.substring( 0, 3 );
+      }
       final boolean hasLaterality = LATERALITIES.contains( topographyMajor );
       if ( !hasLaterality ) {
-         _bestCode = "9";
+         _bestCode = "0";
       } else {
          _bestCode = getBestLateralityCode( uriInfoStore._uriStrengths );
       }
