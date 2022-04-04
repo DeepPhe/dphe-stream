@@ -423,7 +423,11 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
 
 
    public void init( final UriInfoStore uriInfoStore, final Map<String,String> dependencies ) {
-      final String topographyMajor = dependencies.getOrDefault( "topography_major", "" ).toUpperCase();
+      String topographyMajor = dependencies.getOrDefault( "topography_major", "" )
+                                                 .toUpperCase();
+      if ( topographyMajor.length() > 3 ) {
+         topographyMajor = topographyMajor.substring( 0, 3 );
+      }
       final boolean hasMinorSite = MAJOR_SITES.contains( topographyMajor );
       if ( !hasMinorSite ) {
          _bestCode = "9";
