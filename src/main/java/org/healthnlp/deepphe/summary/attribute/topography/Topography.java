@@ -1068,12 +1068,18 @@ static private String toConceptText( final ConceptAggregate concept ) {
 
 
    static private Collection<ConceptAggregate> getFirstSiteConcepts( final ConceptAggregate neoplasm ) {
-      final Collection<ConceptAggregate> firstConcepts = getFirstRelatedConcepts( neoplasm,
-                                      DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
-                                      DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE,
-                                      DISEASE_HAS_METASTATIC_ANATOMIC_SITE,
-                                      Disease_Has_Associated_Region,
-                                      Disease_Has_Associated_Cavity );
+//      final Collection<ConceptAggregate> firstConcepts = getFirstRelatedConcepts( neoplasm,
+//                                      DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
+//                                      DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE,
+//                                      DISEASE_HAS_METASTATIC_ANATOMIC_SITE,
+//                                      Disease_Has_Associated_Region,
+//                                      Disease_Has_Associated_Cavity );
+      final Collection<ConceptAggregate> firstConcepts = getFirstTwoRelatedConcepts( neoplasm,
+                                                                                  DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
+                                                                                     Disease_Has_Associated_Region,
+                                                                                     DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE,
+                                                                                  DISEASE_HAS_METASTATIC_ANATOMIC_SITE,
+                                                                                  Disease_Has_Associated_Cavity );
       if ( firstConcepts.size() <= 1 ) {
          return firstConcepts;
       }
@@ -1095,14 +1101,22 @@ static private String toConceptText( final ConceptAggregate concept ) {
             final String preText = note.getText()
                                        .substring( mentionBegin-TUMOR_SITE_WINDOW, mentionBegin )
                                        .toLowerCase();
+            NeoplasmSummaryCreator.DEBUG_SB.append( "Topography Candidate and pretext "
+                                                    + note.getText().substring( mentionBegin-TUMOR_SITE_WINDOW, mention.getEnd() )
+                                                    + "\n" );
             if ( preText.contains( "tumor site:" ) || preText.contains( "supportive of" ) ) {
+               NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to topography candidate "
+                                                       + aggregate.getCoveredText() + "\n" );
                tumorSites.add( aggregate );
                break;
             }
          }
       }
       if ( !tumorSites.isEmpty() ) {
-         return tumorSites;
+         if ( tumorSites.size() == 1 ) {
+            return tumorSites;
+         }
+         firstConcepts.retainAll( tumorSites );
       }
 
 
@@ -1155,6 +1169,22 @@ static private String toConceptText( final ConceptAggregate concept ) {
       return Collections.emptyList();
    }
 
+   static private Collection<ConceptAggregate> getFirstTwoRelatedConcepts( final ConceptAggregate conceptAggregate,
+                                                                        final String... relationTypes ) {
+      boolean got1 = false;
+      final Collection<ConceptAggregate> firstTwo = new HashSet<>();
+      for ( String type : relationTypes ) {
+         final Collection<ConceptAggregate> relatedConcepts = conceptAggregate.getRelated( type );
+         if ( relatedConcepts != null && !relatedConcepts.isEmpty() ) {
+            firstTwo.addAll( relatedConcepts );
+            if ( got1 ) {
+               return firstTwo;
+            }
+            got1 = true;
+         }
+      }
+      return firstTwo;
+   }
 
    static private Map<String, Integer> mapSiteUriCounts( final ConceptAggregate neoplasm ) {
       return mapSiteUriCounts( neoplasm,

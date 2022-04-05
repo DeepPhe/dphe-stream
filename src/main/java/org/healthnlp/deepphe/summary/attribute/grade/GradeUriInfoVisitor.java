@@ -5,6 +5,7 @@ import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ final public class GradeUriInfoVisitor implements UriInfoVisitor {
 
    private Collection<ConceptAggregate> _gradeConcepts;
 
-   static private final int GRADE_WINDOW = 23;
+   static private final int GRADE_WINDOW = 25;
 
    @Override
    public Collection<ConceptAggregate> getAttributeConcepts( final Collection<ConceptAggregate> neoplasms ) {
@@ -46,10 +47,15 @@ final public class GradeUriInfoVisitor implements UriInfoVisitor {
 //                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
                   continue;
                }
+               NeoplasmSummaryCreator.DEBUG_SB.append( "Grade Candidate and pretext "
+                                                       + note.getText().substring( mentionBegin-GRADE_WINDOW, mention.getEnd() )
+                                                       + "\n" );
                if ( note.getText()
                         .substring( mentionBegin-GRADE_WINDOW, mentionBegin )
                         .toLowerCase()
                         .contains( "histologic grade:" ) ) {
+                  NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to grade candidate "
+                                                          + aggregate.getCoveredText() + "\n" );
                   grades.add( aggregate );
                   break;
                }

@@ -7,6 +7,7 @@ import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.Collection;
@@ -20,7 +21,7 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
 
    private Collection<ConceptAggregate> _histologyConcepts;
 
-   static private final int HISTOLOGY_WINDOW = 23;
+   static private final int HISTOLOGY_WINDOW = 25;
    @Override
    public Collection<ConceptAggregate> getAttributeConcepts( final Collection<ConceptAggregate> neoplasms ) {
       if ( _histologyConcepts == null ) {
@@ -74,7 +75,12 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                final String preText = note.getText()
                                           .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
                                           .toLowerCase();
+               NeoplasmSummaryCreator.DEBUG_SB.append( "Histology Candidate and pretext "
+                                                       + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
+                                                       + "\n" );
                if ( preText.contains( "histologic type:" ) || preText.contains( "diagnosis:" ) ) {
+                  NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to histology candidate "
+                                                          + aggregate.getCoveredText() + "\n" );
                   histologies.add( aggregate );
                   break;
                }
@@ -83,9 +89,6 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
          if ( !histologies.isEmpty() ) {
             _histologyConcepts.retainAll( histologies );
          }
-
-
-
       }
       return _histologyConcepts;
    }
