@@ -1176,8 +1176,17 @@ static private String toConceptText( final ConceptAggregate concept ) {
       for ( String type : relationTypes ) {
          final Collection<ConceptAggregate> relatedConcepts = conceptAggregate.getRelated( type );
          if ( relatedConcepts != null && !relatedConcepts.isEmpty() ) {
+            NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type + " "
+                                                    + relatedConcepts.stream()
+                                                                     .map( ConceptAggregate::getCoveredText )
+                                                                     .collect( Collectors.joining("   ,   " ) ) + "\n" );
+            if ( relatedConcepts.containsAll( firstTwo ) ) {
+               return firstTwo;
+            }
             firstTwo.addAll( relatedConcepts );
-            if ( got1 ) {
+            if ( got1
+                 || firstTwo.size() >= 3
+                 || firstTwo.stream().mapToInt( c -> c.getMentions().size() ).count() >= 10 ) {
                return firstTwo;
             }
             got1 = true;
