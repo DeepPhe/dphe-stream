@@ -1181,6 +1181,11 @@ static private String toConceptText( final ConceptAggregate concept ) {
                                                                      .map( ConceptAggregate::getCoveredText )
                                                                      .collect( Collectors.joining("   ,   " ) ) + "\n" );
             if ( !firstTwo.isEmpty() && relatedConcepts.containsAll( firstTwo ) ) {
+               final int firstMax = firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
+               final int secondMax = relatedConcepts.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
+               if ( firstMax < secondMax ) {
+                  firstTwo.addAll( relatedConcepts );
+               }
                return firstTwo;
             }
             firstTwo.addAll( relatedConcepts );
