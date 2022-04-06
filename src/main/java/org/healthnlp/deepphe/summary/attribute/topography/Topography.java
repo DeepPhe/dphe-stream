@@ -1175,27 +1175,28 @@ static private String toConceptText( final ConceptAggregate concept ) {
       final Collection<ConceptAggregate> firstTwo = new HashSet<>();
       for ( String type : relationTypes ) {
          final Collection<ConceptAggregate> relatedConcepts = conceptAggregate.getRelated( type );
-         if ( relatedConcepts != null && !relatedConcepts.isEmpty() ) {
-            NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type + " "
-                                                    + relatedConcepts.stream()
-                                                                     .map( ConceptAggregate::getCoveredText )
-                                                                     .collect( Collectors.joining("   ,   " ) ) + "\n" );
-            if ( !firstTwo.isEmpty() && relatedConcepts.containsAll( firstTwo ) ) {
-               final int firstMax = firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
-               final int secondMax = relatedConcepts.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
-               if ( firstMax < secondMax ) {
-                  firstTwo.addAll( relatedConcepts );
-               }
-               return firstTwo;
-            }
-            firstTwo.addAll( relatedConcepts );
-            if ( got1
-                 || firstTwo.size() >= 3
-                 || firstTwo.stream().mapToInt( c -> c.getMentions().size() ).count() >= 10 ) {
-               return firstTwo;
-            }
-            got1 = true;
+         if ( relatedConcepts == null || relatedConcepts.isEmpty() ) {
+            continue;
          }
+         NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type + " "
+                                                 + relatedConcepts.stream()
+                                                                  .map( ConceptAggregate::getCoveredText )
+                                                                  .collect( Collectors.joining("   ,   " ) ) + "\n" );
+//         if ( !firstTwo.isEmpty() && relatedConcepts.containsAll( firstTwo ) ) {
+         if ( got1 ) {
+            final int firstMax = firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
+            final int secondMax = relatedConcepts.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
+            if ( firstMax > secondMax ) {
+               return firstTwo;
+            }
+         }
+         firstTwo.addAll( relatedConcepts );
+         if ( got1
+              || firstTwo.size() > 3
+              || firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 ) >= 10 ) {
+            return firstTwo;
+         }
+         got1 = true;
       }
       return firstTwo;
    }
