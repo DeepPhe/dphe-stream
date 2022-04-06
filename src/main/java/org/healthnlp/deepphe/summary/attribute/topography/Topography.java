@@ -1180,7 +1180,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
                                                     + relatedConcepts.stream()
                                                                      .map( ConceptAggregate::getCoveredText )
                                                                      .collect( Collectors.joining("   ,   " ) ) + "\n" );
-            if ( relatedConcepts.containsAll( firstTwo ) ) {
+            if ( !firstTwo.isEmpty() && relatedConcepts.containsAll( firstTwo ) ) {
                return firstTwo;
             }
             firstTwo.addAll( relatedConcepts );
