@@ -12,6 +12,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_DIAGNOSIS;
@@ -20,11 +21,13 @@ import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_TUMOR_E
 final public class HistologyUriInfoVisitor implements UriInfoVisitor {
 
    private Collection<ConceptAggregate> _histologyConcepts;
+   private Collection<String> _exactHistologyUris = new HashSet<>();
 
    static private final int HISTOLOGY_WINDOW = 25;
    @Override
    public Collection<ConceptAggregate> getAttributeConcepts( final Collection<ConceptAggregate> neoplasms ) {
       if ( _histologyConcepts == null ) {
+         _exactHistologyUris.clear();
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                 .getGraph();
          final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
@@ -82,7 +85,7 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                   NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to histology candidate "
                                                           + aggregate.getCoveredText() + "\n" );
                   histologies.add( aggregate );
-                  break;
+                  _exactHistologyUris.add( mention.getClassUri() );
                }
             }
          }
@@ -92,6 +95,28 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
       }
       return _histologyConcepts;
    }
+
+
+   /**
+    * Grade uris are ranked in order of represented grade number regardless of the uri quotients.
+    * @param neoplasms -
+    * @return the histology score as it may be increased by text surrounding a mention.
+    */
+   @Override
+   public Map<String,Integer> getAttributeUriStrengths( final Collection<ConceptAggregate> neoplasms ) {
+      final Map<String,Integer> uriStrengths = UriInfoVisitor.super.getAttributeUriStrengths( neoplasms );
+      if ( _exactHistologyUris.isEmpty() ) {
+         return uriStrengths;
+      }
+      for ( String uri : _exactHistologyUris ) {
+         final int strength = uriStrengths.get( uri );
+         NeoplasmSummaryCreator.DEBUG_SB.append( "Adding 10% strength to Histology Candidate " + uri
+                                                 + " strength " + strength + "\n" );
+         uriStrengths.put( uri, strength + 10 );
+      }
+      return uriStrengths;
+   }
+
 
 
 //   @Override
