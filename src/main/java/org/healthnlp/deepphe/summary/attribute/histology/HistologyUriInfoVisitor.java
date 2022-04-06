@@ -8,11 +8,11 @@ import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
+import org.healthnlp.deepphe.util.KeyValue;
+import org.healthnlp.deepphe.util.UriScoreUtil;
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_DIAGNOSIS;
@@ -97,6 +97,26 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
    }
 
 
+//   /**
+//    * Grade uris are ranked in order of represented grade number regardless of the uri quotients.
+//    * @param neoplasms -
+//    * @return the histology score as it may be increased by text surrounding a mention.
+//    */
+//   @Override
+//   public Map<String,Integer> getAttributeUriStrengths1( final Collection<ConceptAggregate> neoplasms ) {
+//      final Map<String,Integer> uriStrengths = UriInfoVisitor.super.getAttributeUriStrengths( neoplasms );
+//      if ( _exactHistologyUris.isEmpty() ) {
+//         return uriStrengths;
+//      }
+//      for ( String uri : _exactHistologyUris ) {
+//         final int strength = uriStrengths.get( uri );
+//         NeoplasmSummaryCreator.DEBUG_SB.append( "Adding 10% strength to Histology Candidate " + uri
+//                                                 + " strength " + strength + "\n" );
+//         uriStrengths.put( uri, strength + 10 );
+//      }
+//      return uriStrengths;
+//   }
+
    /**
     * Grade uris are ranked in order of represented grade number regardless of the uri quotients.
     * @param neoplasms -
@@ -104,20 +124,60 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
     */
    @Override
    public Map<String,Integer> getAttributeUriStrengths( final Collection<ConceptAggregate> neoplasms ) {
-      final Map<String,Integer> uriStrengths = UriInfoVisitor.super.getAttributeUriStrengths( neoplasms );
-      if ( _exactHistologyUris.isEmpty() ) {
-         return uriStrengths;
+      final Collection<ConceptAggregate> attributes = getAttributeConcepts( neoplasms );
+      if ( attributes.isEmpty() ) {
+         return Collections.emptyMap();
       }
-      for ( String uri : _exactHistologyUris ) {
-         final int strength = uriStrengths.get( uri );
-         NeoplasmSummaryCreator.DEBUG_SB.append( "Adding 10% strength to Histology Candidate " + uri
-                                                 + " strength " + strength + "\n" );
-         uriStrengths.put( uri, strength + 10 );
+      // Switched from getAllUris to uris for affirmed mentions 3/23/2021
+      final Collection<Mention> allMentions = attributes.stream()
+                                                        .map( ConceptAggregate::getMentions )
+                                                        .flatMap( Collection::stream )
+                                                        .filter( m -> ( !m.isNegated()
+                                                                        || _exactHistologyUris.contains( m.getClassUri() ) ) )
+                                                        .collect( Collectors.toSet() );
+//      final Collection<String> allUris = attributes.stream()
+////                                                 .map( ConceptAggregate::getAllUris )
+//                                                   .map( ConceptAggregate::getMentions )
+//                                                   .flatMap( Collection::stream )
+//                                                   .filter( m -> !m.isNegated() )
+//                                                   .map( Mention::getClassUri )
+//                                                   .collect( Collectors.toSet() );
+      final Collection<String> allUris = allMentions.stream()
+                                                    .map( Mention::getClassUri )
+                                                    .collect( Collectors.toSet() );
+      final Map<String,Collection<String>> allUriRoots = new HashMap<>();
+      for ( ConceptAggregate attribute : attributes ) {
+         allUriRoots.putAll( attribute.getUriRootsMap() );
       }
+//      final Map<String,Collection<String>> allUriRoots = attributes.stream()
+//                                                                   .map( ConceptAggregate::getUriRootsMap )
+//                                                                   .map( Map::entrySet )
+//                                                                   .flatMap( Collection::stream )
+//                                                                   .distinct()
+//                                                                   .collect( Collectors.toMap( Map.Entry::getKey,
+//                                                                                               Map.Entry::getValue ) );
+      // Switched from getAllUris to uris for affirmed mentions 3/23/2021
+//      final Collection<Mention> allMentions = attributes.stream()
+//                                                        .map( ConceptAggregate::getMentions )
+//                                                        .flatMap( Collection::stream )
+//                                                        .filter( m -> !m.isNegated() )
+//                                                        .collect( Collectors.toSet() );
+      final List<KeyValue<String, Double>> uriQuotients = UriScoreUtil.mapUriQuotients( allUris,
+                                                                                        allUriRoots,
+                                                                                        allMentions );
+      final Map<String,Integer> uriStrengths = new HashMap<>();
+      for ( KeyValue<String,Double> quotients : uriQuotients ) {
+         final int previousStrength = uriStrengths.getOrDefault( quotients.getKey(), 0 );
+         int strength = (int)Math.ceil( quotients.getValue() * 100 );
+         if ( _exactHistologyUris.contains( quotients.getKey() ) ) {
+            strength += 10;
+         }
+         uriStrengths.put( quotients.getKey(), Math.max( previousStrength, strength ) );
+      }
+      UriInfoVisitor.applySectionAttributeUriStrengths( attributes, uriStrengths );
+      UriInfoVisitor.applyHistoryAttributeUriStrengths( attributes, uriStrengths );
       return uriStrengths;
    }
-
-
 
 //   @Override
 //   public boolean applySectionStrengths() {
