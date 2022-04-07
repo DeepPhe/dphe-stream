@@ -225,6 +225,9 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
          final boolean isReview = SectionType.ReviewSystems.isThisSectionType( sectionParagraphs.getKey() );
          final boolean isFamilyHistory = SectionType.FamilyHistory.isThisSectionType( sectionParagraphs.getKey() );
          for ( Paragraph paragraph : sectionParagraphs.getValue() ) {
+            if ( paragraph.getBegin() < 0 || paragraph.getEnd() <= 0 ) {
+               continue;
+            }
             final Collection<IdentifiedAnnotation> annotations = paragraphAnnotationMap.get( paragraph );
             final List<IdentifiedAnnotation> massNeoplasmList
                   = Neo4jOntologyConceptUtil.getUriAnnotationsByUris( annotations, massNeoplasmUris ).values().stream()
