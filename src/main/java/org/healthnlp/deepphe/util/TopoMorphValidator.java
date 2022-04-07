@@ -65,7 +65,9 @@ INSTANCE;
 //      return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
 //   }
 public Collection<String> getBroadHistoCode( final String morphologyClass ) {
-   return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
+//   return _broadMorphCodes.getOrDefault( morphologyClass, Collections.emptyList() );
+   // Changed 04/07/2022.
+   return Collections.emptyList();
 }
 
    
@@ -108,7 +110,12 @@ public Collection<String> getBroadHistoCode( final String morphologyClass ) {
 //            _histoCodes.put( histoDescription, histology );
             // Ex: "Neoplasm, Malignant", 8000/3
 //            _broadMorphCodes.computeIfAbsent( morphologyBroad, h -> new HashSet<>() ).add( morphologyCode );
-            _broadMorphCodes.computeIfAbsent( morphologyBroad, h -> new HashSet<>() ).add( histology + "0" );
+            // 04/07/2022 Took out the broad morphs.  They are too imprecise to help with a final 4 digit histology.
+//            _broadMorphCodes.computeIfAbsent( morphologyBroad, h -> new HashSet<>() ).add( histology + "0" );
+//            for ( int post=0; post<10; post++ ) {
+//               _broadMorphCodes.computeIfAbsent( morphologyBroad, h -> new HashSet<>() )
+//                               .add( histology + post );
+//            }
             String prev = _exactMorphCodes.put( morphologyExact, morphologyCode );
 //            if ( prev != null && !prev.equals( morphology ) ) {
 //               Logger.getLogger( "TopoMorphValidator" ).warn( "Previous morph " + prev
