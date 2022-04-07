@@ -167,9 +167,10 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                                                                                         allMentions );
       final Map<String,Integer> uriStrengths = new HashMap<>();
       for ( KeyValue<String,Double> quotients : uriQuotients ) {
-         final int previousStrength = uriStrengths.getOrDefault( quotients.getKey(), 0 );
+         int previousStrength = uriStrengths.getOrDefault( quotients.getKey(), 0 );
          int strength = (int)Math.ceil( quotients.getValue() * 100 );
          if ( _exactHistologyUris.contains( quotients.getKey() ) ) {
+            previousStrength += 10;
             strength += 10;
          }
          uriStrengths.put( quotients.getKey(), Math.max( previousStrength, strength ) );

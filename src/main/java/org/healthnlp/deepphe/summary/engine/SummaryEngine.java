@@ -105,11 +105,15 @@ final public class SummaryEngine {
          allAggregates.addAll( conceptsEntry.getValue() );
          final String uri = conceptsEntry.getKey();
          if ( !massNeoplasms.contains( uri ) ) {
+            NeoplasmSummaryCreator.DEBUG_SB.append( "MassNeoplasms URIs do not include " + uri + "\n" );
             continue;
          }
          for ( ConceptAggregate concept : conceptsEntry.getValue() ) {
             if ( concept.isWantedForSummary() && concept.hasWantedRelations() ) {
                neoplasmAggregates.add( concept );
+               NeoplasmSummaryCreator.DEBUG_SB.append( "MassNeoplasm " + uri + " is wanted for summary.\n" );
+            } else {
+               NeoplasmSummaryCreator.DEBUG_SB.append( "MassNeoplasm " + uri + " is not wanted for summary.\n" );
 
 
 //               LOGGER.info( "ConceptAggregate " + concept.getUri() + " " + concept.getId() + " is a neoplasm and will be used for a Summary." );

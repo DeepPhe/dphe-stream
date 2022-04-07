@@ -1176,6 +1176,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       for ( String type : relationTypes ) {
          final Collection<ConceptAggregate> relatedConcepts = conceptAggregate.getRelated( type );
          if ( relatedConcepts == null || relatedConcepts.isEmpty() ) {
+            NeoplasmSummaryCreator.DEBUG_SB.append( "NO Topography relation " + type + "\n" );
             continue;
          }
          NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type + " "
@@ -1187,6 +1188,9 @@ static private String toConceptText( final ConceptAggregate concept ) {
             final int firstMax = firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
             final int secondMax = relatedConcepts.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 );
             if ( firstMax > secondMax ) {
+               NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type
+                                                       + " max " + firstMax + " is larger than second max "
+                                                       + secondMax + "\n" );
                return firstTwo;
             }
          }
@@ -1194,6 +1198,12 @@ static private String toConceptText( final ConceptAggregate concept ) {
          if ( got1
               || firstTwo.size() > 3
               || firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max().orElse( 0 ) >= 10 ) {
+            NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type
+                                                    + " got1 " + got1
+                                                    + " concepts " + firstTwo.size()
+                                                    + " max mentions "
+                                                    + firstTwo.stream().mapToInt( c -> c.getMentions().size() ).max()
+                                                    + "\n" );
             return firstTwo;
          }
          got1 = true;
