@@ -233,7 +233,7 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
         if (sectionHeaders.size()==1) {
             Segment header = sectionHeaders.get(0);
             Segment segment = new Segment(cas);
-            segment.setBegin(header.getEnd()); // text of section starts after the section heading
+            segment.setBegin( Math.max( 0, header.getEnd() ) ); // text of section starts after the section heading
             segment.setEnd(text.length());
             segment.setId(header.getId());
             segment.setPreferredText( header.getPreferredText() );
@@ -245,7 +245,6 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
 ////            segment.setPreferredText(segment.getId());
 //            // segment.setTagText();          // already set when it was found by pattern
             segment.addToIndexes();
-            return;
         }
     }
 
@@ -259,22 +258,24 @@ final public class Sectionizer extends JCasAnnotator_ImplBase {
             if (index + 1 < sectionHeaders.size()) {
                 end = sectionHeaders.get(index + 1).getBegin();
             }
-            Segment segment = new Segment(cas);
-            segment.setBegin(header.getEnd()); // text of section starts after the section heading
-            segment.setEnd(end);
-            segment.setId(header.getId());
-            segment.setPreferredText( header.getPreferredText() );
-            segment.setTagText( header.getTagText() );
+            final int begin = Math.max( 0, header.getEnd() );
             // Only create (add to CAS) a segment if there is some text (at least a new line or any other char).
-            // Ignore the segment header if it is immediately followed by another header or by EOL
-            if (segment.getEnd() > segment.getBegin()) {
+            if ( end > begin ) {
+                Segment segment = new Segment(cas);
+                segment.setBegin( begin ); // text of section starts after the section heading
+                segment.setEnd(end);
+                segment.setId(header.getId());
+                segment.setPreferredText( header.getPreferredText() );
+                segment.setTagText( header.getTagText() );
+                // Ignore the segment header if it is immediately followed by another header or by EOL
                 segment.setId( header.getId() );
                 segment.setPreferredText( header.getPreferredText() );
                 segment.setTagText(header.getTagText());
                 segment.addToIndexes();
 //                LOGGER.info( "Adding " + segment.getPreferredText() + " " + segment.getId() + " " + segment.getTagText() );
             } else {
-                LOGGER.info( "Ignoring " + segment.getPreferredText() + " " + segment.getId() + " " + segment.getTagText() + " " + segment.getBegin() + ", " + segment.getEnd() );
+                LOGGER.info( "Ignoring " + header.getPreferredText() + " " + header.getId() + " "
+                             + header.getTagText() + " " + begin + ", " + end );
             }
         }
     }
