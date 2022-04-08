@@ -20,7 +20,10 @@ add MrsDrSentenceJoiner
 //  Use the DeepPhe paragraph expressions for paragraph discovery.
 set PARAGRAPH_TYPES_PATH=org/healthnlp/deepphe/paragraph/ParagraphRegex.bsv
 //  Discover paragraphs.
-add ParagraphAnnotator
+//add ParagraphAnnotator
+add ParagraphFinder
+
+add WtfSectionFixer
 
 //  Fix sentences so that no sentence spans across two or more paragraphs.
 add ParagraphSentenceFixer
@@ -48,7 +51,17 @@ add DefaultJCasTermAnnotator
 add MassFilter
 
 //  Assign such as negation and uncertainty using machine-learning models.
-load WindowedAttributeCleartkSubPipe
+//load WindowedAttributeCleartkSubPipe
+
+// Add the cleartk package for cleartk class lookups
+package org.apache.ctakes.assertion.medfacts.cleartk
+package org.apache.ctakes.assertion.medfacts.cleartk.windowed
+
+//  Assign such as negation and uncertainty using machine-learning models.
+// Add the cleartk attribute engines, logging for them as a block
+add StartFinishLogger LOGGER_NAME=CleartkAnalysisEngine LOGGER_TASK="Assigning Attributes" IS_START=true
+addDescription PolarityCleartkAnalysisEngineWindowed
+addDescription UncertaintyCleartkAnalysisEngineWindowed
 
 //  Assign such as negation and uncertainty using context.
 set MaxRightScopeSize=12
@@ -71,7 +84,7 @@ add SubjectSectionFixer
 
 //add PsaFinder
 
-add GleasonFinder
+//add GleasonFinder
 
 //add Ki67Finder
 
