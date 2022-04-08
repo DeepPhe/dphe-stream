@@ -177,6 +177,10 @@ final public class ParagraphFinder extends JCasAnnotator_ImplBase {
                // the last paragraph
                paragraphEnd = text.length();
             }
+            if ( paragraphBegin == paragraphEnd ) {
+               // TODO
+               continue;
+            }
             if ( offset + paragraphBegin < 0 || offset + paragraphEnd < 0 ) {
                LOGGER.error( "Paragraph out of bounds " + (offset + paragraphBegin) + "," + (offset + paragraphEnd) );
             } else {
