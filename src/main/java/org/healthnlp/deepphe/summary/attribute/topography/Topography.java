@@ -1039,8 +1039,9 @@ static private String toConceptText( final ConceptAggregate concept ) {
       return divisionInt0to10( bestUriRelationCounts, sum );
    }
 
-   static private final int TUMOR_SITE_WINDOW = 25;
+   static private final int SITE_LEFT_WINDOW = 25;
 
+   static private final int SITE_RIGHT_WINDOW = 10;
    /**
     * We now have most mentioned class upper_limb (4/13), most mentioned branch class forearm (6/13),
     * most 'precise' class tied at {3} and most related class branch finger <5>.
@@ -1189,25 +1190,13 @@ static private String toConceptText( final ConceptAggregate concept ) {
          //  If text contains "tumor site: [site]" for any detected aggregates only those are returned.
          for ( ConceptAggregate concept : relatedConcepts ) {
             for ( Mention mention : concept.getMentions() ) {
-               final int mentionBegin = mention.getBegin();
-               if ( mentionBegin <= TUMOR_SITE_WINDOW ) {
-                  continue;
-               }
                final Note note = NoteNodeStore.getInstance()
                                               .get( mention.getNoteId() );
                if ( note == null ) {
                   LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
                   continue;
                }
-               final String preText = note.getText()
-                                          .substring( mentionBegin - TUMOR_SITE_WINDOW, mentionBegin )
-                                          .toLowerCase();
-               NeoplasmSummaryCreator.DEBUG_SB.append( "Topography firstTwo Candidate and pretext "
-                                                       + note.getText()
-                                                             .substring( mentionBegin - TUMOR_SITE_WINDOW,
-                                                                         mention.getEnd() )
-                                                       + "\n" );
-               if ( preText.contains( "tumor site:" ) || preText.contains( "supportive of" ) ) {
+               if ( hasExactPreText( note, mention ) || hasExactPostText( note, mention ) ) {
                   NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to topography candidate "
                                                           + concept.getCoveredText() + "\n" );
                   exactTumorSites.add( concept );
@@ -1264,6 +1253,39 @@ static private String toConceptText( final ConceptAggregate concept ) {
       }
       return firstTwo;
    }
+
+   static private boolean hasExactPreText( final Note note, final Mention mention ) {
+      final int mentionBegin = mention.getBegin();
+      if ( mentionBegin <= SITE_LEFT_WINDOW ) {
+         return false;
+      }
+      final String preText = note.getText()
+                                 .substring( mentionBegin - SITE_LEFT_WINDOW, mentionBegin )
+                                 .toLowerCase();
+      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography firstTwo Candidate and pretext "
+                                              + note.getText()
+                                                    .substring( mentionBegin - SITE_LEFT_WINDOW,
+                                                                mention.getEnd() )
+                                              + "\n" );
+      return preText.contains( "tumor site:" ) || preText.contains( "supportive of" );
+   }
+
+   static private boolean hasExactPostText( final Note note, final Mention mention ) {
+      final int mentionEnd = mention.getEnd();
+      final String noteText = note.getText();
+      if ( mentionEnd + SITE_RIGHT_WINDOW > noteText.length() ) {
+         return false;
+      }
+      final String postText = noteText
+                                 .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
+                                 .toLowerCase();
+      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography firstTwo Candidate and postext "
+                                              + note.getText()
+                                                    .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
+                                              + "\n" );
+      return postText.contains( "origin" );
+   }
+
 
    static private Map<String, Integer> mapSiteUriCounts( final ConceptAggregate neoplasm ) {
       return mapSiteUriCounts( neoplasm,
