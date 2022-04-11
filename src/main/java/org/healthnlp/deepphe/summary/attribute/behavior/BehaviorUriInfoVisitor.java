@@ -31,7 +31,8 @@ final public class BehaviorUriInfoVisitor implements UriInfoVisitor {
                                                                                          .stream()
                                                                                          .anyMatch( malignantUris::contains ) )
                                                                           .collect( Collectors.toSet() );
-         final Collection<String> metastasisUris = UriConstants.getMetastasisUris( graphDb );
+         final Collection<String> metastasisUris = new HashSet<>( UriConstants.getMetastasisUris( graphDb ) );
+         metastasisUris.add( "Metastasis" );
          final Collection<ConceptAggregate> metastasisConcepts = neoplasms.stream()
 //                                                                          .filter( c -> !c.isNegated() )
                         .filter( c -> c.getAllUris()
