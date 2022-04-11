@@ -21,7 +21,7 @@ import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.HAS_TUMOR_E
 final public class HistologyUriInfoVisitor implements UriInfoVisitor {
 
    private Collection<ConceptAggregate> _histologyConcepts;
-   private Collection<String> _exactHistologyUris = new HashSet<>();
+   final private Collection<String> _exactHistologyUris = new HashSet<>();
 
    static private final int HISTOLOGY_WINDOW = 25;
    @Override
@@ -81,6 +81,7 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                NeoplasmSummaryCreator.DEBUG_SB.append( "Histology Candidate and pretext "
                                                        + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
                                                        + "\n" );
+               //  "Preop diagnosis"?
                if ( preText.contains( "histologic type:" ) || preText.contains( "diagnosis:" ) ) {
                   NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to histology candidate "
                                                           + aggregate.getCoveredText() + "\n" );

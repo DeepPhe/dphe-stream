@@ -4591,6 +4591,7 @@ C339|Trachea|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
+C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/6|Metastatic_Lung_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8042/3|Oat_Cell
 C339|Trachea|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
@@ -4669,6 +4670,7 @@ C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Car
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
+C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/6|Metastatic_Lung_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8042/3|Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
