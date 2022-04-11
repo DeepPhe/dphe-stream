@@ -23,7 +23,7 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
    private Collection<ConceptAggregate> _histologyConcepts;
    final private Collection<String> _exactHistologyUris = new HashSet<>();
 
-   static private final int HISTOLOGY_WINDOW = 25;
+   static private final int HISTOLOGY_WINDOW = 30;
    @Override
    public Collection<ConceptAggregate> getAttributeConcepts( final Collection<ConceptAggregate> neoplasms ) {
       if ( _histologyConcepts == null ) {
@@ -82,7 +82,9 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                                                        + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
                                                        + "\n" );
                //  "Preop diagnosis"?   "positive for"?
-               if ( preText.contains( "histologic type:" ) || preText.contains( "diagnosis:" ) ) {
+               if ( preText.contains( "histologic type:" )
+                    || preText.contains( "diagnosis:" )
+                    || preText.contains( "consistent with" ) ) {
                   NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to histology candidate "
                                                           + aggregate.getCoveredText() + "\n" );
                   histologies.add( aggregate );
