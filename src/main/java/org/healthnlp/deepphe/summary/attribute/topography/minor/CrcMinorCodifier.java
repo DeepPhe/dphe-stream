@@ -53,6 +53,7 @@ final public class CrcMinorCodifier {
    static private Collection<String> SIGMOID_URIS;
    static private Collection<String> COLON_URIS;
 
+
    // C19.9
    static private final String RECTOSIGMOID_URI = "Rectosigmoid_Region";
 
@@ -63,7 +64,7 @@ final public class CrcMinorCodifier {
    static private Collection<String> ALL_ANUS_URIS;
    static private Collection<String> ANAL_CANAL_URIS;
    static private Collection<String> ANUS_URIS;
-//   static private Collection<String> RECTAL_URIS;
+   static private final String ANORECTAL_URI = "Anorectal";
 
    static private void initColonUris() {
       if ( ALL_COLON_URIS != null ) {
@@ -232,6 +233,9 @@ final public class CrcMinorCodifier {
       if ( uriStrengths.keySet().stream().anyMatch( ANAL_CANAL_URIS::contains ) ) {
          // Anal canal is the only thing that we can test at this point.  Otherwise, return anus, NOS.
          return "1";
+      }
+      if ( uriStrengths.containsKey( ANORECTAL_URI ) ) {
+         return "8";
       }
       return "0";
    }

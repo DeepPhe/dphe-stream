@@ -1040,7 +1040,6 @@ static private String toConceptText( final ConceptAggregate concept ) {
    }
 
    static private final int SITE_LEFT_WINDOW = 25;
-
    static private final int SITE_RIGHT_WINDOW = 10;
    /**
     * We now have most mentioned class upper_limb (4/13), most mentioned branch class forearm (6/13),
@@ -1283,7 +1282,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
                                               + note.getText()
                                                     .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
                                               + "\n" );
-      return postText.contains( "origin" );
+      return postText.contains( "origin" ) || postText.contains( "primary" );
    }
 
 
