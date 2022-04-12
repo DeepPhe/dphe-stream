@@ -888,6 +888,7 @@ C110,C112-C113,C118-C119|Nasopharynx|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoi
 C110,C112-C113,C118-C119|Nasopharynx|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C110,C112-C113,C118-C119|Nasopharynx|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C110,C112-C113,C118-C119|Nasopharynx|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C110,C112-C113,C118-C119|Nasopharynx|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C110,C112-C113,C118-C119|Nasopharynx|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C110,C112-C113,C118-C119|Nasopharynx|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C110,C112-C113,C118-C119|Nasopharynx|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -1064,6 +1065,7 @@ C111|Posterior_Wall_Of_The_Nasopharynx|803|Sarcomatoid_Carcinoma|8033/3|Sarcomat
 C111|Posterior_Wall_Of_The_Nasopharynx|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C111|Posterior_Wall_Of_The_Nasopharynx|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C111|Posterior_Wall_Of_The_Nasopharynx|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C111|Posterior_Wall_Of_The_Nasopharynx|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C111|Posterior_Wall_Of_The_Nasopharynx|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C111|Posterior_Wall_Of_The_Nasopharynx|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C111|Posterior_Wall_Of_The_Nasopharynx|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -1493,6 +1495,7 @@ C150-C155,C158-C159|Esophagus|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carci
 C150-C155,C158-C159|Esophagus|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C150-C155,C158-C159|Esophagus|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C150-C155,C158-C159|Esophagus|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C150-C155,C158-C159|Esophagus|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C150-C155,C158-C159|Esophagus|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C150-C155,C158-C159|Esophagus|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C150-C155,C158-C159|Esophagus|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -1624,6 +1627,7 @@ C160-C166,C168-C169|Stomach|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcino
 C160-C166,C168-C169|Stomach|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C160-C166,C168-C169|Stomach|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C160-C166,C168-C169|Stomach|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C160-C166,C168-C169|Stomach|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C160-C166,C168-C169|Stomach|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C160-C166,C168-C169|Stomach|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C160-C166,C168-C169|Stomach|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -1791,6 +1795,7 @@ C170-C173,C178-C179|Small_Intestine|802|Carcinoma|8020/3|Undifferentiated_Carcin
 C170-C173,C178-C179|Small_Intestine|802|Carcinoma|8021/3|Anaplastic_Carcinoma_DNE
 C170-C173,C178-C179|Small_Intestine|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C170-C173,C178-C179|Small_Intestine|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C170-C173,C178-C179|Small_Intestine|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C170-C173,C178-C179|Small_Intestine|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C170-C173,C178-C179|Small_Intestine|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C170-C173,C178-C179|Small_Intestine|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -1955,6 +1960,7 @@ C180, C182-C189, C199|Large_Intestine|803|Sarcomatoid_Carcinoma|8033/3|Sarcomato
 C180, C182-C189, C199|Large_Intestine|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C180, C182-C189, C199|Large_Intestine|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C180, C182-C189, C199|Large_Intestine|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C180, C182-C189, C199|Large_Intestine|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C180, C182-C189, C199|Large_Intestine|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C180, C182-C189, C199|Large_Intestine|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C180, C182-C189, C199|Large_Intestine|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -2144,6 +2150,7 @@ C181|Appendix|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C181|Appendix|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C181|Appendix|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C181|Appendix|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C181|Appendix|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C181|Appendix|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C181|Appendix|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C181|Appendix|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -2334,6 +2341,7 @@ C209|Rectal|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C209|Rectal|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C209|Rectal|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C209|Rectal|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C209|Rectal|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C209|Rectal|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C209|Rectal|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C209|Rectal|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -2536,6 +2544,7 @@ C210-C212,C218|Anal_Canal|802|Carcinoma|8020/3|Undifferentiated_Carcinoma
 C210-C212,C218|Anal_Canal|802|Carcinoma|8021/3|Anaplastic_Carcinoma_DNE
 C210-C212,C218|Anal_Canal|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C210-C212,C218|Anal_Canal|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C210-C212,C218|Anal_Canal|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C210-C212,C218|Anal_Canal|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C210-C212,C218|Anal_Canal|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C210-C212,C218|Anal_Canal|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -2989,6 +2998,7 @@ C239-C241,C248-C249|Extrahepatic_Bile_Duct|802|Carcinoma|8020/3|Undifferentiated
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|802|Carcinoma|8021/3|Anaplastic_Carcinoma_DNE
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C239-C241,C248-C249|Extrahepatic_Bile_Duct|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C239-C241,C248-C249|Extrahepatic_Bile_Duct|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -3152,6 +3162,7 @@ C250-C254,C257-C259|Pancreas|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcin
 C250-C254,C257-C259|Pancreas|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C250-C254,C257-C259|Pancreas|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C250-C254,C257-C259|Pancreas|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C250-C254,C257-C259|Pancreas|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C250-C254,C257-C259|Pancreas|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C250-C254,C257-C259|Pancreas|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C250-C254,C257-C259|Pancreas|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -3349,6 +3360,7 @@ C260,C268-C269|Entire_Digestive_Organ|803|Sarcomatoid_Carcinoma|8033/3|Sarcomato
 C260,C268-C269|Entire_Digestive_Organ|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C260,C268-C269|Entire_Digestive_Organ|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C260,C268-C269|Entire_Digestive_Organ|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C260,C268-C269|Entire_Digestive_Organ|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C260,C268-C269|Entire_Digestive_Organ|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C260,C268-C269|Entire_Digestive_Organ|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -4437,6 +4449,7 @@ C320-C323,C328-C329|Larynx|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinom
 C320-C323,C328-C329|Larynx|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C320-C323,C328-C329|Larynx|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C320-C323,C328-C329|Larynx|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C320-C323,C328-C329|Larynx|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C320-C323,C328-C329|Larynx|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C320-C323,C328-C329|Larynx|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C320-C323,C328-C329|Larynx|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -4593,6 +4606,7 @@ C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/6|Metastatic_Lung_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C339|Trachea|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8042/3|Oat_Cell
 C339|Trachea|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C339|Trachea|804|Small_Cell_Carcinoma|8044/3|Small_Cell_Intermediate_Cell_Carcinoma
@@ -4672,6 +4686,7 @@ C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarci
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/6|Metastatic_Lung_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8042/3|Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8044/3|Small_Cell_Intermediate_Cell_Carcinoma
@@ -5293,6 +5308,7 @@ C390,C398-C399|Respiratory_System|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_C
 C390,C398-C399|Respiratory_System|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C390,C398-C399|Respiratory_System|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C390,C398-C399|Respiratory_System|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C390,C398-C399|Respiratory_System|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C390,C398-C399|Respiratory_System|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C390,C398-C399|Respiratory_System|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C390,C398-C399|Respiratory_System|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -6539,6 +6555,7 @@ C500-C506,C508-C509|Breast|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinom
 C500-C506,C508-C509|Breast|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C500-C506,C508-C509|Breast|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C500-C506,C508-C509|Breast|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C500-C506,C508-C509|Breast|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C500-C506,C508-C509|Breast|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C500-C506,C508-C509|Breast|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C500-C506,C508-C509|Breast|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -6968,6 +6985,7 @@ C519|Vulva|802|Carcinoma|8020/3|Undifferentiated_Carcinoma
 C519|Vulva|802|Carcinoma|8021/3|Anaplastic_Carcinoma_DNE
 C519|Vulva|802|Carcinoma|8022/3|Pleomorphic_Carcinoma
 C519|Vulva|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C519|Vulva|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C519|Vulva|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C519|Vulva|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
 C519|Vulva|805|Papillary_Carcinoma|8051/3|Verrucous_Carcinoma
@@ -7201,6 +7219,7 @@ C530-C531,C538-C539|Cervix_Uteri|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Ca
 C530-C531,C538-C539|Cervix_Uteri|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C530-C531,C538-C539|Cervix_Uteri|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C530-C531,C538-C539|Cervix_Uteri|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C530-C531,C538-C539|Cervix_Uteri|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C530-C531,C538-C539|Cervix_Uteri|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C530-C531,C538-C539|Cervix_Uteri|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -7382,6 +7401,7 @@ C540-C543,C548-C549|Corpus_Uteri|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Ca
 C540-C543,C548-C549|Corpus_Uteri|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C540-C543,C548-C549|Corpus_Uteri|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C540-C543,C548-C549|Corpus_Uteri|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C540-C543,C548-C549|Corpus_Uteri|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C540-C543,C548-C549|Corpus_Uteri|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -7573,6 +7593,7 @@ C559|Uterus|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C559|Uterus|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C559|Uterus|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C559|Uterus|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C559|Uterus|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C559|Uterus|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C559|Uterus|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C559|Uterus|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -7768,6 +7789,7 @@ C569|Ovary|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C569|Ovary|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C569|Ovary|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C569|Ovary|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C569|Ovary|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C569|Ovary|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C569|Ovary|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
 C569|Ovary|805|Papillary_Carcinoma|8051/3|Verrucous_Carcinoma
@@ -8445,6 +8467,7 @@ C619|Prostate|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C619|Prostate|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C619|Prostate|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C619|Prostate|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C619|Prostate|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C619|Prostate|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C619|Prostate|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C619|Prostate|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -8952,6 +8975,7 @@ C649|Kidney|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C649|Kidney|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C649|Kidney|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C649|Kidney|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C649|Kidney|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C649|Kidney|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C649|Kidney|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C649|Kidney|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -9143,6 +9167,7 @@ C659, C669|Renal_Pelvis|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C659, C669|Renal_Pelvis|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C659, C669|Renal_Pelvis|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C659, C669|Renal_Pelvis|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C659, C669|Renal_Pelvis|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C659, C669|Renal_Pelvis|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C659, C669|Renal_Pelvis|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C659, C669|Renal_Pelvis|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -9326,6 +9351,7 @@ C670-C679|Urinary_Bladder|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C670-C679|Urinary_Bladder|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C670-C679|Urinary_Bladder|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C670-C679|Urinary_Bladder|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C670-C679|Urinary_Bladder|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C670-C679|Urinary_Bladder|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C670-C679|Urinary_Bladder|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C670-C679|Urinary_Bladder|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -9495,6 +9521,7 @@ C680-C681,C688-C689|Genitourinary_System|803|Sarcomatoid_Carcinoma|8033/3|Sarcom
 C680-C681,C688-C689|Genitourinary_System|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C680-C681,C688-C689|Genitourinary_System|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C680-C681,C688-C689|Genitourinary_System|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C680-C681,C688-C689|Genitourinary_System|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C680-C681,C688-C689|Genitourinary_System|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C680-C681,C688-C689|Genitourinary_System|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C680-C681,C688-C689|Genitourinary_System|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
@@ -10977,6 +11004,7 @@ C739|Thyroid_Gland|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C739|Thyroid_Gland|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C739|Thyroid_Gland|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
 C739|Thyroid_Gland|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C739|Thyroid_Gland|804|Small_Cell_Carcinoma|8041/6|Metastatic_Small_Cell_Carcinoma
 C739|Thyroid_Gland|804|Small_Cell_Carcinoma|8043/3|Small_Cell_Carcinoma__Fusiform_Cell
 C739|Thyroid_Gland|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C739|Thyroid_Gland|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
