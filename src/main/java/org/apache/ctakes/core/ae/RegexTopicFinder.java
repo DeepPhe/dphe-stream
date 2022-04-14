@@ -5,7 +5,7 @@ import org.apache.ctakes.core.util.Pair;
 import org.apache.ctakes.core.util.TextSpanUtil;
 import org.apache.ctakes.core.util.regex.RegexUtil;
 import org.apache.ctakes.core.util.regex.TimeoutMatcher;
-import org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation;
+import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.ctakes.typesystem.type.textspan.Segment;
 import org.apache.ctakes.typesystem.type.textspan.Topic;
 import org.apache.log4j.Logger;
@@ -163,16 +163,8 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
             LOGGER.info( "No topic tags found in " + section.getPreferredText() );
             continue;
          }
-//         final Collection<Pair<Integer>> subsumedTags = getSubsumedBounds( topicTags.keySet() );
-//         topicTags.keySet().removeAll( subsumedTags );
-
-//         final Map<Pair<Integer>, TopicTag> dividerLines = new HashMap<>();
-//         if ( _tagDividers ) {
-//            dividerLines.putAll( findDividerLines( sectionText ) );
-//         }
-            createTopics( jcas, section.getBegin(), section.getEnd(), topicTags );
+         createTopics( jcas, section.getBegin(), section.getEnd(), topicTags );
       }
-      //      LOGGER.info( "Finished processing" );
    }
 
 //   private List<Topic> findTopics( final JCas jCas, final int windowOffset, final String windowText ) {
@@ -219,94 +211,6 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
 //      }
 //      return topicTags;
 //   }
-
-
-
-
-
-   /**
-    * return subsumed bounds:
-    * |=============|
-    * |xxxxxxxx|
-    * |xxxx|
-    * |===============|
-    * |================|
-    * |xxxxxxxx|
-    */
-   // Todo make TextSpanUtil
-   static private Collection<Pair<Integer>> getSubsumedBounds( final Collection<Pair<Integer>> bounds ) {
-      final List<Pair<Integer>> boundsList = new ArrayList<>( bounds );
-      final Collection<Pair<Integer>> subsumedBounds = new HashSet<>();
-      for ( int i = 0; i < boundsList.size() - 1; i++ ) {
-         final Pair<Integer> pairI = boundsList.get( i );
-         for ( int j = i + 1; j < boundsList.size(); j++ ) {
-            final Pair<Integer> pairJ = boundsList.get( j );
-            if ( pairI.getValue1() <= pairJ.getValue1() && pairJ.getValue2() <= pairI.getValue2() ) {
-               subsumedBounds.add( pairJ );
-            } else if ( pairJ.getValue1() <= pairI.getValue1() && pairI.getValue2() <= pairJ.getValue2() ) {
-               subsumedBounds.add( pairI );
-            }
-         }
-      }
-      return subsumedBounds;
-   }
-
-   /**
-    * return latter overlapped bounds:
-    * |=============|
-    * |xxxxxxxx|
-    * |xxxx|
-    * |xxxxxxxxxxxxxx|
-    * |xxxxxxxxxxxxxxx|
-    * |xxxxxxx|
-    */
-   // Todo make TextSpanUtil
-   static private Collection<Pair<Integer>> getOverlappedBounds( final Collection<Pair<Integer>> bounds ) {
-      final List<Pair<Integer>> boundsList = new ArrayList<>( bounds );
-      final Collection<Pair<Integer>> overlappedBounds = new HashSet<>();
-      for ( int i = 0; i < boundsList.size() - 1; i++ ) {
-         final Pair<Integer> pairI = boundsList.get( i );
-         for ( int j = i + 1; j < boundsList.size(); j++ ) {
-            final Pair<Integer> pairJ = boundsList.get( j );
-            if ( pairI.getValue1() <= pairJ.getValue1() && pairJ.getValue1() <= pairI.getValue2() ) {
-               overlappedBounds.add( pairJ );
-            } else if ( pairJ.getValue1() <= pairI.getValue1() && pairI.getValue1() <= pairJ.getValue2() ) {
-               overlappedBounds.add( pairI );
-            }
-         }
-      }
-      return overlappedBounds;
-   }
-
-   /**
-    * Sorts by first offset, longer bounds first, removing subsumed and latter overlapped bounds:
-    * |=============|
-    * |xxxxxxxx|
-    * |xxxx|
-    * |xxxxxxxxxxxxxx|
-    * |xxxxxxxxxxxxxxx|
-    * |========|
-    */
-   // Todo make TextSpanUtil
-   static private List<Pair<Integer>> sortAndTrimBounds( final Collection<Pair<Integer>> bounds ) {
-      final List<Pair<Integer>> boundsList = new ArrayList<>( bounds );
-      boundsList.sort( new TextSpanUtil.CoveringSpanSorter() );
-      final Collection<Pair<Integer>> removalBounds = new HashSet<>();
-      for ( int i = 0; i < boundsList.size() - 1; i++ ) {
-         final Pair<Integer> pairI = boundsList.get( i );
-         for ( int j = i + 1; j < boundsList.size(); j++ ) {
-            final Pair<Integer> pairJ = boundsList.get( j );
-            if ( pairJ.getValue1() > pairI.getValue2() ) {
-               // pairJ after pairI.  Move on to next pairI
-               break;
-            }
-            // PairI subsumes or overlaps pairJ.  Remove pairJ.
-            removalBounds.add( pairJ );
-         }
-      }
-      boundsList.removeAll( removalBounds );
-      return boundsList;
-   }
 
 
    /**
@@ -424,29 +328,13 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
 //      LOGGER.info( "Topic Tags: " + topicTags.values().stream()
 //                                             .map( t -> t.__typeName ).collect( Collectors.joining( "," ) ) );
       if ( topicTags.isEmpty() ) {
-         // whole text is simple topic
-//         final Topic sectionTopic = new Topic( jcas, sectionBegin, sectionEnd );
-//         sectionTopic.setTopicType( NO_TOPIC );
-//         sectionTopic.addToIndexes();
-//         LOGGER.info( "WHOLE SECTION TOPIC TEXT:\n" + sectionTopic.getCoveredText() );
          return;
       }
       final String sectionText = jcas.getDocumentText().substring( sectionBegin, sectionEnd );
-//      final List<Pair<Integer>> boundsList = createBoundsList( topicTags.keySet() );
-      final List<Pair<Integer>> boundsList = sortAndTrimBounds( topicTags.keySet() );
+      final List<Pair<Integer>> boundsList = TextSpanUtil.subsumeSpans( topicTags.keySet() );
+
       Pair<Integer> leftBounds = boundsList.get( 0 );
       int topicEnd;
-//      if ( leftBounds.getValue1() > 0 ) {
-//         // Add unspecified generic first topic
-//         topicEnd = leftBounds.getValue1();
-//         if ( !sectionText.substring( 0, topicEnd ).trim().isEmpty() ) {
-//            final Topic simpleTopic = new Topic( jcas, sectionBegin, sectionBegin + topicEnd );
-//            simpleTopic.setTopicType( NO_TOPIC );
-////            LOGGER.info( "NO TOPIC TEXT:\n" + simpleTopic.getCoveredText() );
-//            simpleTopic.addToIndexes();
-            // will start the next topic with bounds at 0
-//         }
-//      }
       final int length = boundsList.size();
       // add topics 1 -> n
       for ( int i = 0; i < length; i++ ) {
@@ -458,15 +346,8 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
             // the last topic
             topicEnd = sectionText.length();
          }
-         // TODO Modify this in the sectionizer to remove empty lines only.
-         //  It could remove indentation that is important for lists or tables.
-//         if ( topicEnd > topicBegin && !sectionText.substring( topicBegin, topicEnd ).trim().isEmpty() ) {
-//            while ( sectionText.charAt( topicBegin ) == '\r' || sectionText.charAt( topicBegin ) == '\n' ) {
-//               topicBegin++;
-//            }
-//         }
          final TopicTag leftTag = topicTags.get( leftBounds );
-         final NormalizableAnnotation subject = createSubject( jcas,
+         final IdentifiedAnnotation subject = createSubject( jcas,
                                                                sectionBegin,
                                                                leftBounds );
          subject.addToIndexes();
@@ -480,41 +361,14 @@ abstract public class RegexTopicFinder extends JCasAnnotator_ImplBase {
       }
    }
 
-   static private NormalizableAnnotation createSubject( final JCas jCas,
-                                                        final int spanOffset,
-                                                        final Pair<Integer> span ) {
-      final NormalizableAnnotation subject = new NormalizableAnnotation( jCas,
+   static private IdentifiedAnnotation createSubject( final JCas jCas,
+                                                      final int spanOffset,
+                                                      final Pair<Integer> span ) {
+      final IdentifiedAnnotation subject = new IdentifiedAnnotation( jCas,
                                                                         spanOffset + span.getValue1(),
                                                                         spanOffset + span.getValue2() );
       subject.addToIndexes();
       return subject;
-   }
-
-
-
-   // Todo make TextSpanUtil
-   static private List<Pair<Integer>> createBoundsList( final Collection<Pair<Integer>> bounds ) {
-      final List<Pair<Integer>> boundsList = new ArrayList<>( bounds );
-      boundsList.sort( ( p1, p2 ) -> p1.getValue1() - p2.getValue2() );
-      final Collection<Pair<Integer>> removalBounds = new HashSet<>();
-      for ( int i = 0; i < boundsList.size() - 1; i++ ) {
-         final Pair<Integer> pairI = boundsList.get( i );
-         for ( int j = i + 1; j < boundsList.size(); j++ ) {
-            final Pair<Integer> pairJ = boundsList.get( j );
-            if ( pairJ.getValue1() >= pairI.getValue2() ) {
-               break;
-            }
-            if ( pairI.getValue2() >= pairJ.getValue2() ) {
-               removalBounds.add( pairJ );
-               break;
-            } else if ( pairI.getValue1() >= pairJ.getValue1() ) {
-               removalBounds.add( pairI );
-               break;
-            }
-         }
-      }
-      boundsList.removeAll( removalBounds );
-      return boundsList;
    }
 
 
