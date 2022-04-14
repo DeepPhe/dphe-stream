@@ -3,13 +3,15 @@ package org.apache.ctakes.core.ae;
 import org.apache.ctakes.core.pipeline.PipeBitInfo;
 import org.apache.ctakes.core.util.Pair;
 import org.apache.ctakes.core.util.TextSpanUtil;
-import org.apache.ctakes.core.util.find.WindowFinderUtil;
-import org.apache.ctakes.core.util.find.WindowedFinder;
+import org.apache.ctakes.core.util.annotation.IdentifiedAnnotationBuilder;
 import org.apache.ctakes.core.util.regex.RegexUtil;
 import org.apache.ctakes.core.util.regex.TimeoutMatcher;
+import org.apache.ctakes.core.util.window.InWindowFinder;
+import org.apache.ctakes.core.util.window.InWindowFinderUtil;
+import org.apache.ctakes.typesystem.type.constants.CONST;
+import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.ctakes.typesystem.type.textspan.FormattedList;
-import org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation;
-import org.apache.ctakes.typesystem.type.textspan.TreeList;
+import org.apache.ctakes.typesystem.type.textspan.FormattedListEntry;
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -18,12 +20,14 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
@@ -35,7 +39,7 @@ import java.util.regex.Pattern;
       dependencies = { PipeBitInfo.TypeProduct.SECTION },
       products = { PipeBitInfo.TypeProduct.LIST }
 )
-final public class TreeListFinder extends JCasAnnotator_ImplBase implements WindowedFinder<TreeList> {
+final public class TreeListFinder extends JCasAnnotator_ImplBase implements InWindowFinder<FormattedList> {
 // TODO Replace ctakes ListAnnotator in core.ae with this.
 
    static private final Logger LOGGER = Logger.getLogger( "TreeListFinder" );
@@ -117,23 +121,23 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase implements Wind
       if ( _treeListTypes.isEmpty() ) {
          return;
       }
-      WindowFinderUtil.findInWindows( jcas, LOGGER, "Finding TreeLists", this );
+      InWindowFinderUtil.findInWindows( jcas, LOGGER, "Finding TreeLists", this );
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public List<TreeList> addFound( final JCas jcas, final Integer windowOffset, final String windowText,
-                                   final List<TreeList> foundItems ) {
-      return findTreeLists( jcas, foundItems, windowOffset, windowText );
+   public List<FormattedList> addFound( final JCas jcas, final Integer windowOffset, final String windowText,
+                                   final List<FormattedList> foundItems ) {
+      return findTreeLists( jcas, windowOffset, windowText, foundItems );
    }
 
 
-   private List<TreeList> findTreeLists( final JCas jCas,
-                                         final List<TreeList> treeLists,
+   private List<FormattedList> findTreeLists( final JCas jCas,
                                          final int windowOffset,
-                                         final String windowText ) {
+                                         final String windowText,
+                                         final List<FormattedList> treeLists ) {
       if ( windowText.trim().length() <= 3 ) {
          return treeLists;
       }
@@ -141,7 +145,7 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase implements Wind
       final Collection<Pair<Integer>> windowSpans
             = new HashSet<>( TextSpanUtil.getAvailableSpans( windowOffset, windowLength, treeLists ) );
       for ( TreeListType treeListType : _treeListTypes ) {
-         final List<TreeList> newLists
+         final List<FormattedList> newLists
                = findTreeLists( jCas, windowOffset, windowSpans, windowText, treeListType );
          if ( newLists.isEmpty() ) {
             continue;
@@ -156,12 +160,12 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase implements Wind
       return treeLists;
    }
 
-   static private List<TreeList> findTreeLists( final JCas jCas,
+   static private List<FormattedList> findTreeLists( final JCas jCas,
                                                 final int windowOffset,
                                                 final Collection<Pair<Integer>> windowSpans,
                                                 final String windowText,
                                                 final TreeListType treeListType ) {
-      final List<TreeList> treeLists = new ArrayList<>();
+      final List<FormattedList> treeLists = new ArrayList<>();
       for ( final Pair<Integer> span : windowSpans ) {
          treeLists.addAll(
                findTreeLists( jCas, windowOffset, span.getValue1(), span.getValue2(), windowText, treeListType) );
@@ -170,7 +174,7 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase implements Wind
    }
 
 
-   static private List<TreeList> findTreeLists( final JCas jCas,
+   static private List<FormattedList> findTreeLists( final JCas jCas,
                                                 final int windowOffset,
                                                 final int begin,
                                                 final int end,
@@ -180,11 +184,11 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase implements Wind
       if ( spanText.trim().length() <= 3 ) {
          return Collections.emptyList();
       }
-      final List<TreeList> treeLists = new ArrayList<>();
+      final List<FormattedList> treeLists = new ArrayList<>();
       try ( TimeoutMatcher finder = new TimeoutMatcher( treeListType.__fullPattern, spanText ) ) {
          Matcher matcher = finder.nextMatch();
          while ( matcher != null ) {
-            final TreeList treeList
+            final FormattedList treeList
                   = createTreeList( jCas, windowOffset + begin, spanText, matcher, treeListType );
             treeLists.add( treeList );
             matcher = finder.nextMatch();
@@ -196,50 +200,59 @@ final public class TreeListFinder extends JCasAnnotator_ImplBase implements Wind
    }
 
 
-   static private TreeList createTreeList( final JCas jCas,
-                                           final int spanOffset,
-                                           final String spanText,
-                                           final Matcher matcher,
-                                           final TreeListType treeListType ) {
-      final TreeList treeList = new TreeList( jCas,
-                                              spanOffset + matcher.start(),
-                                              spanOffset + matcher.end() );
-      treeList.setTreeListType( treeListType.__name );
-      final NormalizableAnnotation heading = createHeading( jCas, spanOffset, matcher );
+   static private FormattedList createTreeList( final JCas jCas,
+                                                final int spanOffset,
+                                                final String spanText,
+                                                final Matcher matcher,
+                                                final TreeListType treeListType ) {
+      final FormattedList list = new FormattedList( jCas,
+                                                    spanOffset + matcher.start(),
+                                                    spanOffset + matcher.end() );
+      list.setListType( treeListType.__name );
+      final IdentifiedAnnotation heading = createHeading( jCas, spanOffset, matcher );
       if ( heading != null ) {
-         treeList.setHeading( heading );
+         list.setHeading( heading );
       }
       final Pair<Integer> listSpan = RegexUtil.getGroupSpan( matcher, LIST_GROUP );
       if ( RegexUtil.isValidSpan( listSpan ) ) {
          final String listText = spanText.substring( listSpan.getValue1(), listSpan.getValue2() );
-         final FormattedList list = ListFinder.createList( jCas,
-                                                           spanOffset + listSpan.getValue1(),
-                                                           listText,
-                                                           treeListType.__name,
-                                                           treeListType.__entryPattern );
-         treeList.setList( list );
+         final List<FormattedListEntry> listEntries
+               = ListEntryFinder.createListEntries( jCas, spanOffset + listSpan.getValue1(), listText,
+                                                    treeListType.__entryPattern );
+         final List<FormattedListEntry> entryList =
+               listEntries.stream()
+                          .sorted( Comparator.comparingInt( FormattedListEntry::getBegin ) )
+                          .collect( Collectors.toList() );
+         final FSArray entryArray = new FSArray( jCas, listEntries.size() );
+         for ( int i=0; i < entryList.size(); i++ ) {
+            entryArray.set( i, entryList.get( i ) );
+         }
+         entryArray.addToIndexes();
+         list.setListEntries( entryArray );
       }
-      treeList.addToIndexes();
-      return treeList;
+      list.addToIndexes();
+      return list;
    }
 
-
-   static private NormalizableAnnotation createHeading( final JCas jCas,
-                                                       final int spanOffset,
-                                                       final Matcher matcher ) {
+   static private IdentifiedAnnotation createHeading( final JCas jCas,
+                                                      final int spanOffset,
+                                                      final Matcher matcher ) {
       final Pair<Integer> span = RegexUtil.getGroupSpan( matcher, HEADING_GROUP );
       if ( !RegexUtil.isValidSpan( span ) ) {
          return null;
       }
-//      LOGGER.info( "Creating Normalizable " + HEADING_GROUP + " " + (spanOffset + span.getValue1()) + "-" + (spanOffset + span.getValue2()) );
-      final NormalizableAnnotation header = new NormalizableAnnotation( jCas,
-                                            spanOffset + span.getValue1(),
-                                            spanOffset + span.getValue2() );
+      final IdentifiedAnnotation header
+            = new IdentifiedAnnotationBuilder().span( spanOffset + span.getValue1(),
+                                              spanOffset + span.getValue2() )
+                                               .discoveredBy( CONST.NE_DISCOVERY_TECH_EXPLICIT_AE )
+                                               .generic()
+                                               .build( jCas );
       final String details = RegexUtil.getGroupText( matcher, REFINEMENT_GROUP );
       if ( !details.isEmpty() ) {
-         header.setDetails( details );
+//         header.setDetails( details );
+         // TODO Utilize Details in list header
+         LOGGER.warn( "TODO: Utilize Details in list header" );
       }
-      header.addToIndexes();
       return header;
    }
 

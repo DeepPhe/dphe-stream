@@ -1,8 +1,8 @@
-package org.apache.ctakes.core.util.find;
+package org.apache.ctakes.core.util.window;
 
 import org.apache.ctakes.core.util.Pair;
 import org.apache.ctakes.core.util.TextSpanUtil;
-import org.apache.ctakes.typesystem.type.textspan.NormalizableAnnotation;
+import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.ctakes.typesystem.type.textspan.Paragraph;
 import org.apache.ctakes.typesystem.type.textspan.Segment;
 import org.apache.ctakes.typesystem.type.textspan.Topic;
@@ -20,31 +20,31 @@ import java.util.List;
  * @author SPF , chip-nlp
  * @since {12/1/2021}
  */
-final public class WindowFinderUtil {
+final public class InWindowFinderUtil {
 
-   private WindowFinderUtil() {}
+   private InWindowFinderUtil() {}
 
    static public <A extends Annotation> List<A> findInWindows( final JCas jCas,
-                                                               final WindowedFinder<A> windowedFinder ) {
-      return findInWindows( jCas, null, "", windowedFinder );
+                                                               final InWindowFinder<A> inWindowFinder ) {
+      return findInWindows( jCas, null, "", inWindowFinder );
    }
 
    static public <A extends Annotation> List<A> findInWindows( final JCas jCas,
                                                               final Logger logger,
                                                               final String processName,
-                                                              final WindowedFinder<A> windowedFinder ) {
+                                                              final InWindowFinder<A> inWindowFinder ) {
 
       final List<A> foundItems = new ArrayList<>();
       final List<Pair<Integer>> usedTopicSpans = new ArrayList<>();
-      final Collection<Topic> topics = org.apache.uima.fit.util.JCasUtil.select( jCas, Topic.class );
+      final Collection<Topic> topics = JCasUtil.select( jCas, Topic.class );
       if ( topics != null && !topics.isEmpty() ) {
          if ( logger != null && !processName.isEmpty() ) {
             logger.info( processName + " in Topics ..." );
          }
          for ( Topic topic : topics ) {
             int topicOffset = topic.getBegin();
-            windowedFinder.addFound( jCas, topicOffset, topic.getCoveredText(), foundItems );
-            final NormalizableAnnotation subject = topic.getSubject();
+            inWindowFinder.addFound( jCas, topicOffset, topic.getCoveredText(), foundItems );
+            final IdentifiedAnnotation subject = topic.getSubject();
             if ( subject != null ) {
                usedTopicSpans.add( new Pair<>( Math.min( subject.getBegin(), topicOffset ),
                                                Math.max( subject.getEnd(), topic.getEnd() ) ) );
@@ -54,7 +54,7 @@ final public class WindowFinderUtil {
          }
          usedTopicSpans.sort( Comparator.comparingInt( Pair::getValue1 ) );
       }
-      final Collection<Paragraph> paragraphs = org.apache.uima.fit.util.JCasUtil.select( jCas, Paragraph.class );
+      final Collection<Paragraph> paragraphs = JCasUtil.select( jCas, Paragraph.class );
       if ( paragraphs != null && !paragraphs.isEmpty() ) {
          if ( logger != null && !processName.isEmpty() ) {
             logger.info( processName + " in Paragraphs ..." );
@@ -63,7 +63,7 @@ final public class WindowFinderUtil {
             if ( TextSpanUtil.isAnnotationCovered( usedTopicSpans, paragraph ) ) {
                continue;
             }
-            windowedFinder.addFound( jCas, paragraph.getBegin(), paragraph.getCoveredText(), foundItems );
+            inWindowFinder.addFound( jCas, paragraph.getBegin(), paragraph.getCoveredText(), foundItems );
          }
       } else {
          if ( logger != null && !processName.isEmpty() ) {
@@ -74,7 +74,7 @@ final public class WindowFinderUtil {
             for ( Pair<Integer> span : availableSpans ) {
                final String spanText = jCas.getDocumentText()
                                            .substring( span.getValue1(), span.getValue2() );
-               windowedFinder.addFound( jCas, span.getValue1(), spanText, foundItems );
+               inWindowFinder.addFound( jCas, span.getValue1(), spanText, foundItems );
             }
          }
       }

@@ -73,6 +73,7 @@ public class NaaccrXmlToText {
               && !file.getName().equals( ".DS_Store" ) ) {
             xmlFiles.add( file );
          } else if ( file.isDirectory()
+                     // TODO epath
                      && !file.getName().equals( "naxml" )
                  && !file.getName().startsWith( "emrtext" )
                  && !file.getName().startsWith( "diagrad" ) ) {

@@ -4,7 +4,6 @@ import org.apache.ctakes.core.cc.AbstractFileWriter;
 import org.apache.ctakes.core.pipeline.PipeBitInfo;
 import org.apache.ctakes.typesystem.type.textspan.FormattedList;
 import org.apache.ctakes.typesystem.type.textspan.FormattedListEntry;
-import org.apache.ctakes.typesystem.type.textspan.TreeList;
 import org.apache.log4j.Logger;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
@@ -69,24 +68,23 @@ public class FormattedListsTableFileWriter extends AbstractFileWriter<List<List<
     */
 //   abstract protected List<List<String>> createDataRows( JCas jCas );
    protected List<List<String>> createDataRows( final JCas jCas ) {
-      final Collection<TreeList> treeLists =
-            JCasUtil.select( jCas, TreeList.class ).stream()
-                    .sorted( Comparator.comparingInt( TreeList::getBegin ) )
+      final Collection<FormattedList> lists =
+            JCasUtil.select( jCas, FormattedList.class ).stream()
+                    .sorted( Comparator.comparingInt( FormattedList::getBegin ) )
                     .collect( Collectors.toList() );
       final List<ListEntryRow> rows = new ArrayList<>();
-      for ( TreeList treeList : treeLists ) {
-         rows.addAll( createListEntries( treeList ) );
+      for ( FormattedList list : lists ) {
+         rows.addAll( createListEntries( list ) );
       }
       return rows.stream().map( ListEntryRow::getColumns ).collect( Collectors.toList() );
    }
 
-   static private List<ListEntryRow> createListEntries( final TreeList treeList ) {
-      final FormattedList list = treeList.getList();
+   static private List<ListEntryRow> createListEntries( final FormattedList list ) {
       FSArray entries = list.getListEntries();
       final int size = entries.size();
       final List<ListEntryRow> rows = new ArrayList<>( size );
       for ( int i=0; i<size; i++ ) {
-         rows.add( new ListEntryRow( getAnnotationText( treeList.getHeading() ),
+         rows.add( new ListEntryRow( getAnnotationText( list.getHeading() ),
                                                         (FormattedListEntry)entries.get( i ) ) );
       }
       return rows;

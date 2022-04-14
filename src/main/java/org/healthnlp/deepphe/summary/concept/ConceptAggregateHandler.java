@@ -127,7 +127,7 @@ final public class ConceptAggregateHandler {
             }
          }
       }
-      patientMentionNoteIds.keySet().removeAll( usedMentions );
+      usedMentions.forEach( patientMentionNoteIds.keySet()::remove );
       for ( Map.Entry<Mention, String> mentionNoteId : patientMentionNoteIds.entrySet() ) {
          final String bestUri = mentionNoteId.getKey().getClassUri();
          if ( bestUri.isEmpty() ) {

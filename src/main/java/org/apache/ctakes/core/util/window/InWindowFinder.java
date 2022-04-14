@@ -1,4 +1,4 @@
-package org.apache.ctakes.core.util.find;
+package org.apache.ctakes.core.util.window;
 
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
@@ -13,7 +13,7 @@ import java.util.List;
  * @since {12/1/2021}
  */
 @FunctionalInterface
-public interface WindowedFinder<A extends Annotation> {
+public interface InWindowFinder<A extends Annotation> {
 
    /**
     *

@@ -56,7 +56,7 @@ public final class RegexUtil {
       final String[] splits = line.split( "\\|\\|" );
       if ( splits.length < 1 + regexMin ) {
          LOGGER.warn( "Bad Regex definition: " + line + " ; There must be at least a name plus "
-                      + regexMin + "regular expressions." );
+                      + regexMin + " regular expressions." );
          if ( !columnFormat.isEmpty() ) {
             LOGGER.warn( columnFormat );
          }
