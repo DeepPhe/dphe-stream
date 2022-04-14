@@ -428,6 +428,14 @@ final public class TopoMinorCodeInfoStore implements CodeInfoStore {
       if ( topographyMajor.length() > 3 ) {
          topographyMajor = topographyMajor.substring( 0, 3 );
       }
+
+      // TODO - pass dependencies to UriInfoVisitor so that topo minor can quit early if a minor isn't wanted.
+      // TODO - should also make laterality faster.
+
+      if ( topographyMajor.equals( "C80" ) ) {
+         _bestCode = "3";
+         return;
+      }
       final boolean hasMinorSite = MAJOR_SITES.contains( topographyMajor );
       if ( !hasMinorSite ) {
          _bestCode = "9";
