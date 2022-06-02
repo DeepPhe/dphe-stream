@@ -27,17 +27,25 @@ final public class ForEvalLineCreator {
 
       final List<NeoplasmAttribute> attributes = summary.getAttributes();
       for ( NeoplasmAttribute attribute : attributes ) {
-         String name = attribute.getName();
-         if ( name.charAt( 0 ) == '-' || name.charAt( 0 ) == '*' ) {
-            name = name.substring( 1 );
-         }
-         final int index = attributeNames.indexOf( name );
+         final int index = getAttributeIndex( attribute.getName(), attributeNames );
          if ( index < 0 ) {
             continue;
          }
          values[ index ] = attribute.getValue();
       }
       return Arrays.asList( values );
+   }
+
+   static private int getAttributeIndex( final String name, final List<String> attributeNames ) {
+      int index = attributeNames.indexOf( name );
+      if ( index >= 0 ) {
+         return index;
+      }
+      index = attributeNames.indexOf( '-' + name );
+      if ( index >= 0 ) {
+         return index;
+      }
+      return attributeNames.indexOf( '*' + name );
    }
 
 }

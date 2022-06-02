@@ -3,10 +3,11 @@ package org.healthnlp.deepphe;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
-import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
-import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
-import org.healthnlp.deepphe.neo4j.node.PatientSummary;
+import org.apache.uima.cas.CASRuntimeException;
+import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.nlp.pipeline.DmsRunner;
+import org.healthnlp.deepphe.node.PatientCreator;
+import org.healthnlp.deepphe.node.PatientNodeStore;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.healthnlp.deepphe.util.eval.FeatureFilesAppender;
 import org.healthnlp.deepphe.util.eval.ForEvalLineCreator;
@@ -34,8 +35,8 @@ final public class EvalSummarizerXn {
    static private final List<String> ID_NAMES = Arrays.asList(  "*patient_id", "-record_id" );
 
    static private final List<String> ATTRIBUTE_NAMES
-         = Arrays.asList( "location",
-                          "*topography_major",
+         = Arrays.asList( "*location",
+                          "topography_major",
                          "topography_minor",
                           "clockface",
                           "quadrant",
@@ -128,22 +129,44 @@ final public class EvalSummarizerXn {
       LOGGER.info( "Processing directory " + dir.getPath() );
       final File[] files = dir.listFiles();
       if ( files == null ) {
+         LOGGER.error( "No files in " + dir );
          return;
       }
       for ( File file : files ) {
          if ( file.isDirectory() ) {
-            processDir( file, jsonDir, evalWriter, featureDir );
+            processPatientDir( file, jsonDir, evalWriter, featureDir );
          } else {
-            processDoc( file, jsonDir, evalWriter, featureDir );
+            LOGGER.error( dir.getPath() + " contains a file " + file.getName() );
+            LOGGER.error( "Ignoring " + file.getName() );
          }
       }
    }
 
-   static private void processDoc( final File file,
+   static private void processPatientDir( final File dir,
                                    final File jsonDir,
                                    final Writer evalWriter,
                                    final File featureDir )
          throws IOException {
+      LOGGER.info( "Processing patient " + dir.getPath() );
+      final File[] files = dir.listFiles();
+      if ( files == null ) {
+         return;
+      }
+      final String patientId = dir.getName();
+      for ( File file : files ) {
+         if ( file.isDirectory() ) {
+            LOGGER.error( dir.getPath() + " contains a directory " + file.getName() );
+            LOGGER.error( "Ignoring " + file.getName() );
+         } else {
+            processDoc( patientId, file );
+         }
+      }
+      processPatient( patientId, jsonDir, evalWriter );
+      PatientNodeStore.getInstance().remove( patientId );
+   }
+
+   static private void processDoc( final String patientId,
+                                   final File file ) {
       String docId = file.getName();
       final int dotIndex = docId.lastIndexOf( '.' );
       if ( dotIndex > 0 ) {
@@ -157,14 +180,28 @@ final public class EvalSummarizerXn {
          System.exit( -1 );
       }
       // Process doc text
-      final PatientSummary summary = DmsRunner.getInstance()
-                                      .createPatientSummary( docId, text );
-      if ( summary == null ) {
-         LOGGER.error( "Could not process doc " + docId );
-         return;
+      try {
+         final Note note = DmsRunner.getInstance().runNlp( patientId, docId, text );
+         if ( note == null ) {
+            LOGGER.error( "Processing Failed for file " + file.getPath() );
+            return;
+         }
+         final Patient storedPatient = PatientNodeStore.getInstance().getOrCreate( patientId );
+         PatientCreator.addNote( storedPatient, note );
+      } catch ( CASRuntimeException multE ) {
+         LOGGER.error( multE.getMessage() );
       }
-      final String patientId = summary.getPatient()
-                                      .getId();
+   }
+
+   static private void processPatient( final String patientId,
+                                       final File jsonDir,
+                                       final Writer evalWriter )
+         throws IOException {
+      final PatientSummary summary = DmsRunner.getInstance().createPatientSummary( patientId );
+//      if ( summary == null ) {
+//         LOGGER.error( "Could not process doc " + docId );
+//         return;
+//      }
       for ( NeoplasmSummary neoplasm : summary.getNeoplasms() ) {
          writeEval( patientId, neoplasm, evalWriter );
 //         writeFeatures( patientId, neoplasm, featureDir );

@@ -1,6 +1,8 @@
 package org.healthnlp.deepphe.summary.engine;
 
 
+import org.apache.ctakes.core.resource.FileLocator;
+import org.apache.ctakes.core.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
@@ -30,6 +32,10 @@ import org.healthnlp.deepphe.summary.attribute.topography.minor.TopoMinorUriInfo
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -49,13 +55,36 @@ final public class NeoplasmSummaryCreator {
 
    static public final StringBuilder DEBUG_SB = new StringBuilder();
 
+   static private final Map<String,String> TOPO_MAJOR_MAP = new HashMap<>();
 
    private NeoplasmSummaryCreator() {}
 
+   static private void fillTopoMajorMap() {
+      try {
+         final File topoMajorFile = FileLocator.getFile( "org/healthnlp/deepphe/icdo/DpheMajorSites.bsv" );
+         try ( BufferedReader reader = new BufferedReader( new FileReader( topoMajorFile ) ) ) {
+            String line = reader.readLine();
+            while ( line != null ) {
+               if ( line.isEmpty() ) {
+                  line = reader.readLine();
+                  continue;
+               }
+               final String[] splits = StringUtil.fastSplit( line, '|' );
+               TOPO_MAJOR_MAP.put( splits[ 0 ], splits[ 1 ] );
+               line = reader.readLine();
+            }
+         }
+      } catch ( IOException ioE ) {
+         LOGGER.error( ioE.getMessage() );
+      }
+   }
 
    static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm,
                                                         final Collection<ConceptAggregate> allConcepts,
                                                         final boolean registryOnly ) {
+      if ( TOPO_MAJOR_MAP.isEmpty() ) {
+         fillTopoMajorMap();
+      }
       DEBUG_SB.append( "=======================================================================\n" )
               .append( neoplasm.getPatientId() )
               .append( "\n" );
@@ -76,7 +105,9 @@ final public class NeoplasmSummaryCreator {
       final List<NeoplasmAttribute> attributes = new ArrayList<>();
 
       final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );
-      copyWithUriAsValue( attributes, "topography_major", "location" );
+//      copyWithUriAsValue( attributes, "topography_major", "location" );
+      final String locationUri = TOPO_MAJOR_MAP.getOrDefault( topoCode.substring( 0, 3 ), "Undetermined" );
+      createWithValue( "location", locationUri, locationUri, attributes );
       final String lateralityCode = addLateralityCode( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
       copyWithUriAsValue( attributes, "laterality_code", "laterality" );
       addTopoMinor( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode, lateralityCode );
