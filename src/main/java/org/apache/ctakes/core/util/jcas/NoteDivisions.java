@@ -164,4 +164,9 @@ final public class NoteDivisions {
       return _availableSpans;
    }
 
+   public void resetProcessedSpans() {
+      _processedSpans = new HashSet<>();
+      _availableSpans.clear();
+   }
+
 }

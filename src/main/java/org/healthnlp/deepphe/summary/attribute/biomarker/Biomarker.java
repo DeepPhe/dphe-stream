@@ -9,10 +9,7 @@ import org.healthnlp.deepphe.summary.attribute.infostore.AttributeInfoStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -72,17 +69,18 @@ final public class Biomarker extends DefaultAttribute<BiomarkerUriInfoVisitor, B
       }
       _bestCode = bestCode;
 
-      final List<Integer> features = createFeatures( neoplasm,
-                                                     allConcepts,
-                                                     neoplasmStore,
-                                                     patientStore,
-                                                     allConceptsStore );
-
+      final List<Integer> features
+//            = createFeatures( neoplasm,
+//                                                     allConcepts,
+//                                                     neoplasmStore,
+//                                                     patientStore,
+//                                                     allConceptsStore );
+            = new ArrayList<>();
       final Map<EvidenceLevel, Collection<Mention>> evidence
-            = SpecificAttribute.mapEvidence( neoplasmStore._concepts,
-                                             patientStore._concepts,
-                                             allConceptsStore._concepts );
-
+//            = SpecificAttribute.mapEvidence( neoplasmStore._concepts,
+//                                             patientStore._concepts,
+//                                             allConceptsStore._concepts );
+            = new HashMap<>();
       return SpecificAttribute.createAttribute( name,
                                                 _bestCode,
                                                 _bestUri,

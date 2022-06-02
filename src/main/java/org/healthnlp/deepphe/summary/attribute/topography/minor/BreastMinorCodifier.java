@@ -49,7 +49,7 @@ final public class BreastMinorCodifier {
    }
 
 
-   static public Collection<ConceptAggregate> geBreastParts( final Collection<ConceptAggregate> neoplasms ) {
+   static public Collection<ConceptAggregate> getBreastParts( final Collection<ConceptAggregate> neoplasms ) {
       initQuadrantUris();
       final Collection<ConceptAggregate> breastConcepts = neoplasms.stream()
                                                                    .map( c -> c.getRelated( HAS_CLOCKFACE, HAS_QUADRANT ) )

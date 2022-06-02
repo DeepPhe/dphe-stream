@@ -235,18 +235,20 @@ static private String toConceptText( final ConceptAggregate concept ) {
       final Collection<ConceptAggregate> neoplasmSiteConcepts = neoplasm.getRelatedSites();
       final Collection<ConceptAggregate> patientSiteConcepts = getPatientSiteConcepts( allConcepts );
       final Map<EvidenceLevel, Collection<Mention>> evidence
-            = SpecificAttribute.mapEvidence( getFirstSiteConcepts( neoplasm ), neoplasmSiteConcepts, patientSiteConcepts );
+//            = SpecificAttribute.mapEvidence( getFirstSiteConcepts( neoplasm ), neoplasmSiteConcepts, patientSiteConcepts );
+               = new HashMap<>();
       final List<Mention> directEvidence = new ArrayList<>( evidence.getOrDefault( DIRECT_EVIDENCE,
                                                                                    Collections.emptyList() ) );
 
-      final List<Integer> features = createFeatures( neoplasm,
-                                                     firstSiteConcepts,
-                                                     neoplasmSiteConcepts,
-                                                     _firstSiteMainUris,
-                                                     _firstSiteAllUris,
-                                                     directEvidence,
-                                                     allConcepts );
-
+      final List<Integer> features
+//            = createFeatures( neoplasm,
+//                                                     firstSiteConcepts,
+//                                                     neoplasmSiteConcepts,
+//                                                     _firstSiteMainUris,
+//                                                     _firstSiteAllUris,
+//                                                     directEvidence,
+//                                                     allConcepts );
+            = new ArrayList<>();
       return SpecificAttribute.createAttribute( "topography_major",
                                                 _bestMajorTopoCode,
                                                 _bestUri,

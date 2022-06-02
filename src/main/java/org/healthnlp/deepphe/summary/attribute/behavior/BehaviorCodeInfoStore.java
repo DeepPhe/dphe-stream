@@ -48,15 +48,16 @@ final public class BehaviorCodeInfoStore implements CodeInfoStore {
       return uris.stream()
           .mapToInt( BehaviorCodeInfoStore::getUriBehaviorNumber )
           .max()
-          .orElse( -1 );
+          .orElse( 3 );
    }
 
    static public int getBehaviorNumber( final ConceptAggregate behavior ) {
-      return behavior.getAllUris()
-                  .stream()
-                  .mapToInt( BehaviorCodeInfoStore::getUriBehaviorNumber )
-                  .max()
-                  .orElse( -1 );
+      return getBestBehaviorNumber( behavior.getAllUris() );
+//      return behavior.getAllUris()
+//                  .stream()
+//                  .mapToInt( BehaviorCodeInfoStore::getUriBehaviorNumber )
+//                  .max()
+//                  .orElse( 3 );
    }
 
    static public int getUriBehaviorNumber( final String uri ) {

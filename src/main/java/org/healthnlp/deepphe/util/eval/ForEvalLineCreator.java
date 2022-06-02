@@ -9,7 +9,6 @@ import java.util.List;
 final public class ForEvalLineCreator {
 
    private ForEvalLineCreator() {}
-
    static public String createBsv( final String patientId, final NeoplasmSummary summary,
                                    final List<String> attributeNames ) {
       final StringBuilder sb = new StringBuilder();
@@ -28,7 +27,10 @@ final public class ForEvalLineCreator {
 
       final List<NeoplasmAttribute> attributes = summary.getAttributes();
       for ( NeoplasmAttribute attribute : attributes ) {
-         final String name = attribute.getName();
+         String name = attribute.getName();
+         if ( name.charAt( 0 ) == '-' || name.charAt( 0 ) == '*' ) {
+            name = name.substring( 1 );
+         }
          final int index = attributeNames.indexOf( name );
          if ( index < 0 ) {
             continue;

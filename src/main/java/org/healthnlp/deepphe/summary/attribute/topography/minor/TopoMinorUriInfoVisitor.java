@@ -23,7 +23,7 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
       if ( _topoMinorConcepts == null ) {
          _topoMinorConcepts = new HashSet<>();
          _topoMinorConcepts.addAll( LungMinorCodifier.getLungParts( neoplasms ) );
-         _topoMinorConcepts.addAll( BreastMinorCodifier.geBreastParts( neoplasms ) );
+         _topoMinorConcepts.addAll( BreastMinorCodifier.getBreastParts( neoplasms ) );
          _topoMinorConcepts.addAll( CrcMinorCodifier.getColonParts( neoplasms ) );
          _topoMinorConcepts.addAll( CrcMinorCodifier.getAnusParts( neoplasms ) );
          // Added 4/12/2022
