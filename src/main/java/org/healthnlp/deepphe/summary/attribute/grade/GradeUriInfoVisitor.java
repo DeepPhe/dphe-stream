@@ -47,14 +47,14 @@ final public class GradeUriInfoVisitor implements UriInfoVisitor {
 //                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
                   continue;
                }
-               NeoplasmSummaryCreator.DEBUG_SB.append( "Grade Candidate and pretext "
+               NeoplasmSummaryCreator.addDebug( "Grade Candidate and pretext "
                                                        + note.getText().substring( mentionBegin-GRADE_WINDOW, mention.getEnd() )
                                                        + "\n" );
                if ( note.getText()
                         .substring( mentionBegin-GRADE_WINDOW, mentionBegin )
                         .toLowerCase()
                         .contains( "histologic grade:" ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to grade candidate "
+                  NeoplasmSummaryCreator.addDebug( "Trimming to grade candidate "
                                                           + aggregate.getCoveredText() + "\n" );
                   grades.add( aggregate );
                   break;

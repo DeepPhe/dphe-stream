@@ -41,13 +41,13 @@ public class Histology extends DefaultAttribute<HistologyUriInfoVisitor,Histolog
                                                        final Supplier<HistologyUriInfoVisitor> uriVisitorCreator,
                                                        final Supplier<HistologyCodeInfoStore> codeInfoStoreCreator,
                                                       final Map<String,String> dependencies ) {
-      NeoplasmSummaryCreator.DEBUG_SB.append( "#####  " ).append( name ).append( "  #####\nPatient Store\n" );
+      NeoplasmSummaryCreator.addDebug( "#####  " + name + "  #####\nPatient Store\n" );
       final AttributeInfoStore<HistologyUriInfoVisitor, HistologyCodeInfoStore> patientStore
             = new HistologyInfoStore( patientNeoplasms );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "Neoplasm Store\n" );
+      NeoplasmSummaryCreator.addDebug( "Neoplasm Store\n" );
       final AttributeInfoStore<HistologyUriInfoVisitor, HistologyCodeInfoStore> neoplasmStore
             = new HistologyInfoStore( neoplasm );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "All Concepts Store\n" );
+      NeoplasmSummaryCreator.addDebug( "All Concepts Store\n" );
       final AttributeInfoStore<HistologyUriInfoVisitor, HistologyCodeInfoStore> allConceptsStore
             = new HistologyInfoStore( allConcepts );
 

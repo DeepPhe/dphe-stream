@@ -87,7 +87,7 @@ final public class EvalSummarizer {
                .close();
 
       try ( Writer writer = new FileWriter( new File( debugDir, "EvalDebug.txt" ) ) ) {
-         writer.write( NeoplasmSummaryCreator.DEBUG_SB.toString() );
+         writer.write( NeoplasmSummaryCreator.getDebug() );
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
       }

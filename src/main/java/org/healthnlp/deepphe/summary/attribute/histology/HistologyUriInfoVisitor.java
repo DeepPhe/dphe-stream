@@ -78,14 +78,14 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                final String preText = note.getText()
                                           .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
                                           .toLowerCase();
-//               NeoplasmSummaryCreator.DEBUG_SB.append( "Histology Candidate and pretext "
+//               NeoplasmSummaryCreator.addDebug( "Histology Candidate and pretext "
 //                                                       + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
 //                                                       + "\n" );
                //  "Preop diagnosis"?   "positive for"?
                if ( preText.contains( "histologic type:" )
                     || preText.contains( "diagnosis:" )
                     || preText.contains( "consistent with" ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to histology candidate "
+                  NeoplasmSummaryCreator.addDebug( "Trimming to histology candidate "
                                                           + aggregate.getCoveredText() + "\n" );
                   histologies.add( aggregate );
                   _exactHistologyUris.add( mention.getClassUri() );
@@ -113,7 +113,7 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
 //      }
 //      for ( String uri : _exactHistologyUris ) {
 //         final int strength = uriStrengths.get( uri );
-//         NeoplasmSummaryCreator.DEBUG_SB.append( "Adding 10% strength to Histology Candidate " + uri
+//         NeoplasmSummaryCreator.addDebug( "Adding 10% strength to Histology Candidate " + uri
 //                                                 + " strength " + strength + "\n" );
 //         uriStrengths.put( uri, strength + 10 );
 //      }

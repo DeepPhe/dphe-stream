@@ -21,7 +21,7 @@ import org.healthnlp.deepphe.neo4j.node.PatientSummary;
 import org.healthnlp.deepphe.neo4j.util.JsonUtil;
 import org.healthnlp.deepphe.node.PatientNodeStore;
 import org.healthnlp.deepphe.node.PatientSummaryNodeStore;
-import org.healthnlp.deepphe.summary.engine.SummaryEngine;
+import org.healthnlp.deepphe.summary.engine.DpheXnSummaryEngine;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Transaction;
@@ -126,7 +126,8 @@ public class NeoplasmNeo4jWriter extends JCasAnnotator_ImplBase {
       PatientSummary patientSummary = PatientSummaryNodeStore.getInstance().get( patientId );
       if ( patientSummary == null ) {
          // Create PatientSummary
-         patientSummary = SummaryEngine.createPatientSummary( patient );
+//         patientSummary = SummaryEngine.createPatientSummary( patient );
+         patientSummary =  DpheXnSummaryEngine.createPatientSummary( patient );
          // Add the summary just in case some other consumer can utilize it.  e.g. eval file writer.
          PatientSummaryNodeStore.getInstance().add( patientId, patientSummary );
       }

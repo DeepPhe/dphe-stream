@@ -186,11 +186,11 @@ final public class EvalSummarizerXn {
       PatientNodeStore.getInstance().remove( patientId );
       patient.getNotes().forEach( n -> NoteNodeStore.getInstance().remove( n.getId() ) );
       try ( Writer writer = new FileWriter( new File( debugDir, patientId + "_EvalDebug.txt" ) ) ) {
-         writer.write( NeoplasmSummaryCreator.DEBUG_SB.toString() );
+         writer.write( NeoplasmSummaryCreator.getDebug() );
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
       }
-      NeoplasmSummaryCreator.DEBUG_SB.setLength( 0 );
+      NeoplasmSummaryCreator.resetDebug();
    }
 
    static private void processDoc( final Patient patient,

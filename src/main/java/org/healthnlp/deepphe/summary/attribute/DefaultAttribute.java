@@ -50,13 +50,13 @@ public class DefaultAttribute<V extends UriInfoVisitor,T extends CodeInfoStore> 
                                                        final Supplier<V> uriVisitorCreator,
                                                        final Supplier<T> codeInfoStoreCreator,
                                                       final Map<String,String> dependencies ) {
-      NeoplasmSummaryCreator.DEBUG_SB.append( "#####  " ).append( name ).append( "  #####\nPatient Store\n" );
+      NeoplasmSummaryCreator.addDebug( "#####  " + name + "  #####\nPatient Store\n" );
       final AttributeInfoStore<V,T> patientStore
             = new AttributeInfoStore<V,T>( patientNeoplasms, uriVisitorCreator, codeInfoStoreCreator, dependencies );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "Neoplasm Store\n" );
+      NeoplasmSummaryCreator.addDebug( "Neoplasm Store\n" );
       final AttributeInfoStore<V,T> neoplasmStore
             = new AttributeInfoStore<>( neoplasm, uriVisitorCreator, codeInfoStoreCreator, dependencies );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "All Concepts Store\n" );
+      NeoplasmSummaryCreator.addDebug( "All Concepts Store\n" );
       final AttributeInfoStore<V,T> allConceptsStore
             = new AttributeInfoStore<>( allConcepts, uriVisitorCreator, codeInfoStoreCreator, dependencies );
 

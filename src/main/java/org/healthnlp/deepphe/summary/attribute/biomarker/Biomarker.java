@@ -42,13 +42,13 @@ final public class Biomarker extends DefaultAttribute<BiomarkerUriInfoVisitor, B
                                                         final Supplier<BiomarkerUriInfoVisitor> uriVisitorCreator,
                                                         final Supplier<BiomarkerCodeInfoStore> codeInfoStoreCreator,
                                                         final Map<String,String> dependencies ) {
-      NeoplasmSummaryCreator.DEBUG_SB.append( "#####  " ).append( name ).append( "  #####\nPatient Store\n" );
+      NeoplasmSummaryCreator.addDebug( "#####  " + name + "  #####\nPatient Store\n" );
       final AttributeInfoStore<BiomarkerUriInfoVisitor, BiomarkerCodeInfoStore> patientStore
             = new BiomarkerInfoStore( patientNeoplasms, uriVisitorCreator, codeInfoStoreCreator, dependencies );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "Neoplasm Store\n" );
+      NeoplasmSummaryCreator.addDebug( "Neoplasm Store\n" );
       final AttributeInfoStore<BiomarkerUriInfoVisitor, BiomarkerCodeInfoStore> neoplasmStore
             = new BiomarkerInfoStore( neoplasm, uriVisitorCreator, codeInfoStoreCreator, dependencies );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "All Concepts Store\n" );
+      NeoplasmSummaryCreator.addDebug( "All Concepts Store\n" );
       final AttributeInfoStore<BiomarkerUriInfoVisitor, BiomarkerCodeInfoStore> allConceptsStore
             = new BiomarkerInfoStore( allConcepts, uriVisitorCreator, codeInfoStoreCreator, dependencies );
 

@@ -268,17 +268,17 @@ static private String toConceptText( final ConceptAggregate concept ) {
       allConcepts.stream()
                   .filter( c -> c.getAllUris().contains( UNKNOWN_PRIMARY_URI ) )
                   .forEach( firstSiteConcepts::add );
-      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography Unknown Sites "
+      NeoplasmSummaryCreator.addDebug( "Topography Unknown Sites "
                                               + allConcepts.stream()
                                                            .filter( c -> c.getAllUris().contains( UNKNOWN_PRIMARY_URI ) )
                                                            .map( ConceptAggregate::getCoveredText )
                                                            .collect( Collectors.joining( "   ,   " ) )
                                               + "\n" );
 
-      NeoplasmSummaryCreator.DEBUG_SB.append( "TopoMajor First Sites\n" );
+      NeoplasmSummaryCreator.addDebug( "TopoMajor First Sites\n" );
       firstSiteConcepts.stream()
                        .map( Topography::toConceptText )
-                       .forEach( NeoplasmSummaryCreator.DEBUG_SB::append );
+                       .forEach( NeoplasmSummaryCreator::addDebug );
       _firstSiteMainUris = firstSiteConcepts.stream()
                                         .map( ConceptAggregate::getUri )
                                         .collect( Collectors.toSet() );
@@ -1191,11 +1191,11 @@ static private String toConceptText( final ConceptAggregate concept ) {
 //            final String preText = note.getText()
 //                                       .substring( mentionBegin-TUMOR_SITE_WINDOW, mentionBegin )
 //                                       .toLowerCase();
-//            NeoplasmSummaryCreator.DEBUG_SB.append( "Topography Candidate and pretext "
+//            NeoplasmSummaryCreator.addDebug( "Topography Candidate and pretext "
 //                                                    + note.getText().substring( mentionBegin-TUMOR_SITE_WINDOW, mention.getEnd() )
 //                                                    + "\n" );
 //            if ( preText.contains( "tumor site:" ) || preText.contains( "supportive of" ) ) {
-//               NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to topography candidate "
+//               NeoplasmSummaryCreator.addDebug( "Trimming to topography candidate "
 //                                                       + aggregate.getCoveredText() + "\n" );
 //               tumorSites.add( aggregate );
 //               break;
@@ -1290,10 +1290,10 @@ static private String toConceptText( final ConceptAggregate concept ) {
       for ( String type : relationTypes ) {
          final Collection<ConceptAggregate> relatedConcepts = conceptAggregate.getRelated( type );
          if ( relatedConcepts == null || relatedConcepts.isEmpty() ) {
-            NeoplasmSummaryCreator.DEBUG_SB.append( "No Topography relation " + type + "\n" );
+            NeoplasmSummaryCreator.addDebug( "No Topography relation " + type + "\n" );
             continue;
          }
-         NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type + " "
+         NeoplasmSummaryCreator.addDebug( "Topography relation " + type + " "
                                                  + relatedConcepts.stream()
                                                                   .map( ConceptAggregate::getCoveredText )
                                                                   .collect( Collectors.joining( "   ,   " ) ) + "\n" );
@@ -1311,26 +1311,26 @@ static private String toConceptText( final ConceptAggregate concept ) {
                   continue;
                }
 //               if ( isHeaderText( note, mention ) ) {
-//                  NeoplasmSummaryCreator.DEBUG_SB.append( "Header topography "
+//                  NeoplasmSummaryCreator.addDebug( "Header topography "
 //                                                          + concept.getCoveredText() + "\n" );
 //                  headerTumorSites.add( concept );
 //                  _headerSiteUris.add( mention.getClassUri() );
 //               }
                if ( hasExactPreText( note, mention ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Exact topography "
+                  NeoplasmSummaryCreator.addDebug( "Exact topography "
                                                           + concept.getCoveredText() + "\n" );
                   exactTumorSites.add( concept );
                   _exactSiteUris.add( mention.getClassUri() );
                }
                if ( hasOriginPostText( note, mention ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Origin topography "
+                  NeoplasmSummaryCreator.addDebug( "Origin topography "
                                                           + concept.getCoveredText() + "\n" );
                   originTumorSites.add( concept );
                   _originSiteUris.add( mention.getClassUri() );
                }
 
                if ( hasSupportPreText( note, mention ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Support topography "
+                  NeoplasmSummaryCreator.addDebug( "Support topography "
                                                           + concept.getCoveredText() + "\n" );
                   supportTumorSites.add( concept );
                   _supportSiteUris.add( mention.getClassUri() );
@@ -1367,7 +1367,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
 //                                                    .max()
 //                                                    .orElse( 0 );
 //               if ( firstMax > secondMax ) {
-//                  NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type
+//                  NeoplasmSummaryCreator.addDebug( "Topography relation " + type
 //                                                          + " max " + firstMax + " is larger than second max "
 //                                                          + secondMax + "\n" );
 ////               return firstTwo;
@@ -1382,7 +1382,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
 //                                             .size() )
 //                            .max()
 //                            .orElse( 0 ) >= 10 ) {
-//               NeoplasmSummaryCreator.DEBUG_SB.append( "Topography relation " + type
+//               NeoplasmSummaryCreator.addDebug( "Topography relation " + type
 //                                                       + " onSecondType " + onSecondType
 //                                                       + " concepts " + firstTwo.size()
 //                                                       + " max mentions "
@@ -1441,7 +1441,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
                              .max()
                              .orElse( 0 ) >= 10;
 //      if ( largeEnough ) {
-//         NeoplasmSummaryCreator.DEBUG_SB.append( "Have enough concepts " + concepts.size()
+//         NeoplasmSummaryCreator.addDebug( "Have enough concepts " + concepts.size()
 //                                                 + " max mentions "
 //                                                 + concepts.stream()
 //                                                           .mapToInt( c -> c.getMentions()
@@ -1465,7 +1465,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
                                            .max()
                                            .orElse( 0 );
       if ( firstMax > secondMax ) {
-         NeoplasmSummaryCreator.DEBUG_SB.append( "Topography max " + firstMax + " is larger than second max "
+         NeoplasmSummaryCreator.addDebug( "Topography max " + firstMax + " is larger than second max "
                                                  + secondMax + "\n" );
 
       }
@@ -1504,7 +1504,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       final String preText = note.getText()
                                  .substring( mentionBegin - SITE_LEFT_WINDOW, mentionBegin )
                                  .toLowerCase();
-//      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography exact Candidate and pretext "
+//      NeoplasmSummaryCreator.addDebug( "Topography exact Candidate and pretext "
 //                                              + note.getText()
 //                                                    .substring( mentionBegin - SITE_LEFT_WINDOW,
 //                                                                mention.getEnd() )
@@ -1520,7 +1520,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
 //      final String preText = note.getText()
 //                                 .substring( mentionBegin - META_LEFT_WINDOW, mentionBegin )
 //                                 .toLowerCase();
-//      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography metastatic Candidate and pretext "
+//      NeoplasmSummaryCreator.addDebug( "Topography metastatic Candidate and pretext "
 //                                              + note.getText()
 //                                                    .substring( mentionBegin - SITE_LEFT_WINDOW,
 //                                                                mention.getEnd() )
@@ -1536,7 +1536,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       final String preText = note.getText()
                                  .substring( mentionBegin - SITE_LEFT_WINDOW, mentionBegin )
                                  .toLowerCase();
-//      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography support Candidate and pretext "
+//      NeoplasmSummaryCreator.addDebug( "Topography support Candidate and pretext "
 //                                              + note.getText()
 //                                                    .substring( mentionBegin - SITE_LEFT_WINDOW,
 //                                                                mention.getEnd() )
@@ -1555,7 +1555,7 @@ static private String toConceptText( final ConceptAggregate concept ) {
       final String postText = noteText
                                  .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
                                  .toLowerCase();
-//      NeoplasmSummaryCreator.DEBUG_SB.append( "Topography origin Candidate and postext "
+//      NeoplasmSummaryCreator.addDebug( "Topography origin Candidate and postext "
 //                                              + note.getText()
 //                                                    .substring( mention.getBegin(), mentionEnd + SITE_RIGHT_WINDOW )
 //                                              + "\n" );

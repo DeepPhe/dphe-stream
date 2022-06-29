@@ -55,11 +55,28 @@ final public class NeoplasmSummaryCreator {
 
    static private final Logger LOGGER = Logger.getLogger( "NeoplasmSummaryCreator" );
 
-   static public final StringBuilder DEBUG_SB = new StringBuilder();
+   static private final StringBuilder DEBUG_SB = new StringBuilder();
 
    static private final Map<String,String> TOPO_MAJOR_MAP = new HashMap<>();
 
+   static private final boolean _debug = false;
+
    private NeoplasmSummaryCreator() {}
+
+
+   static public void addDebug( final String text ) {
+      if ( _debug ) {
+         DEBUG_SB.append( text );
+      }
+   }
+
+   static public String getDebug() {
+      return DEBUG_SB.toString();
+   }
+
+   static public void resetDebug() {
+      DEBUG_SB.setLength( 0 );
+   }
 
    static private void fillTopoMajorMap() {
       try {
@@ -88,9 +105,8 @@ final public class NeoplasmSummaryCreator {
       if ( TOPO_MAJOR_MAP.isEmpty() ) {
          fillTopoMajorMap();
       }
-      DEBUG_SB.append( "=======================================================================\n" )
-              .append( neoplasm.getPatientId() )
-              .append( "\n" );
+      addDebug( "=======================================================================\n" +
+              neoplasm.getPatientId() +  "\n" );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
       final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
@@ -145,7 +161,7 @@ final public class NeoplasmSummaryCreator {
                        neoplasm.getRelated( HAS_CALCIFICATION ).isEmpty()
                        ? "false" : "true", attributes );
       // Calcification was removed from the last n versions.
-      DEBUG_SB.append( "Calcifications: " + (neoplasm.getRelated( HAS_CALCIFICATION ).isEmpty()
+      addDebug( "Calcifications: " + (neoplasm.getRelated( HAS_CALCIFICATION ).isEmpty()
                        ? "false" : "true" ) + " ; " + allConcepts.stream()
                                                                   .map( ConceptAggregate::getMentions )
                                                                   .flatMap( Collection::stream )
@@ -274,7 +290,7 @@ final public class NeoplasmSummaryCreator {
                                                                 .collect( Collectors.toSet() );
       final Collection<String> codes = new HashSet<>( uriMentionCounts.keySet() );
       codes.removeAll( lowCountCodes );
-      DEBUG_SB.append( "NeoplasmSummaryCreator.getUrisAboveCutoff: " + cutoff + " "
+      addDebug( "NeoplasmSummaryCreator.getUrisAboveCutoff: " + cutoff + " "
                        + uriMentionCounts.entrySet().stream()
                                          .map( e -> e.getKey() + "," + e.getValue() )
                                          .collect( Collectors.joining(";") ) + "\n");
@@ -330,7 +346,7 @@ final public class NeoplasmSummaryCreator {
                                                     .filter( a -> a.getName().equals( "clockface" ) )
                                                     .findAny()
                                                     .orElse( null );
-      DEBUG_SB.append( "NeoplasmSummaryCreator.addQuadrantByTopoMinor have clockface " + (clockface != null ) + "\n" );
+      addDebug( "NeoplasmSummaryCreator.addQuadrantByTopoMinor have clockface " + (clockface != null ) + "\n" );
       if ( clockface == null || clockface.getValue().isEmpty() ) {
          return;
       }
@@ -339,7 +355,7 @@ final public class NeoplasmSummaryCreator {
                                                 .map( NeoplasmAttribute::getValue )
                                                 .findFirst()
                                                 .orElse( "" );
-      DEBUG_SB.append( "NeoplasmSummaryCreator.addQuadrantByTopoMinor " + topography_minor
+      addDebug( "NeoplasmSummaryCreator.addQuadrantByTopoMinor " + topography_minor
                        + " " + BreastMinorCodifier.getQuadrant( topography_minor ) + "\n" );
       if ( topography_minor.isEmpty() ) {
          return;

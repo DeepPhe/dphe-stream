@@ -43,7 +43,7 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
                   continue;
                }
                if ( hasExactPreText( note, mention ) || hasExactPostText( note, mention ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Trimming to minor candidate "
+                  NeoplasmSummaryCreator.addDebug( "Trimming to minor candidate "
                                                           + concept.getCoveredText() + "\n" );
                   minors.add( concept );
                }
@@ -64,7 +64,7 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
       final String preText = note.getText()
                                  .substring( mentionBegin - SITE_LEFT_WINDOW, mentionBegin )
                                  .toLowerCase();
-      NeoplasmSummaryCreator.DEBUG_SB.append( "minor Candidate and pretext "
+      NeoplasmSummaryCreator.addDebug( "minor Candidate and pretext "
                                               + note.getText()
                                                     .substring( mentionBegin - SITE_LEFT_WINDOW,
                                                                 mention.getEnd() )
@@ -81,7 +81,7 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
       final String postText = noteText
             .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
             .toLowerCase();
-      NeoplasmSummaryCreator.DEBUG_SB.append( "minor Candidate and postext "
+      NeoplasmSummaryCreator.addDebug( "minor Candidate and postext "
                                               + note.getText()
                                                     .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
                                               + "\n" );

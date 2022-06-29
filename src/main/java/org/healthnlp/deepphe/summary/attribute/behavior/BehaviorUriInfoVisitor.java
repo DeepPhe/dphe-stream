@@ -64,12 +64,12 @@ final public class BehaviorUriInfoVisitor implements UriInfoVisitor {
                final String preText = note.getText()
                                           .substring( mentionBegin-BEHAVIOR_WINDOW, mentionBegin )
                                           .toLowerCase();
-               NeoplasmSummaryCreator.DEBUG_SB.append( "Behavior Candidate and pretext "
+               NeoplasmSummaryCreator.addDebug( "Behavior Candidate and pretext "
                                                        + note.getText().substring( mentionBegin-BEHAVIOR_WINDOW,
                                                                                    mention.getEnd() )
                                                        + "\n" );
                if ( preText.contains( "lymph node" ) ) {
-                  NeoplasmSummaryCreator.DEBUG_SB.append( "Tracking Behavior uri "
+                  NeoplasmSummaryCreator.addDebug( "Tracking Behavior uri "
                                                           + mention.getClassUri()+ "\n" );
                   _lymphBehaviorUris.add( mention.getClassUri() );
                }
