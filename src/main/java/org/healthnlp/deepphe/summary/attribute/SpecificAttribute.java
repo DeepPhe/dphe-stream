@@ -54,6 +54,7 @@ public interface SpecificAttribute {
                                           features );
    }
 
+   // Todo  prettyName    prettyValue
    static NeoplasmAttribute createAttributeWithFeatures( final String name, final String value,
                                                          final String uri,
                                                          final List<Mention> directEvidence,

@@ -89,8 +89,10 @@ add SubjectSectionFixer
 //add Ki67Finder
 
 add BiomarkerFinder
+//add division.BiomarkerFinder
 
 add GradeFinder
+//add division.GradeFinder
 
 // Adjust Subjects for entities
 add SubjectAdjuster

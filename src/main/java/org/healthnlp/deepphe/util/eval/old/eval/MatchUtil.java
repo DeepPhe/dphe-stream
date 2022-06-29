@@ -3,6 +3,7 @@ package org.healthnlp.deepphe.util.eval.old.eval;
 
 
 import org.apache.ctakes.core.util.StringUtil;
+import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.uri.UriUtil;
 
@@ -22,8 +23,14 @@ final public class MatchUtil {
    private MatchUtil() {
    }
 
+   static private final String LOCATION = "location";
    static private final String LATERALITY = "laterality";
    static private final String TOPO_MINOR = "topography_minor";
+   static private final String CLOCKFACE = "clockface";
+   static private final String STAGE = "stage";
+   static private final String QUADRANT = "quadrant";
+   static private final String TUMOR_TYPE = "tumor_type";
+
 
    static double countMatched( final String name, final String goldValue, final String systemValue ) {
       if ( isSpecialMatch( name, goldValue, systemValue ) ) {
@@ -247,6 +254,23 @@ final public class MatchUtil {
       final String goldValue = goldValue1.trim();
       final String systemValue = systemValue1.trim();
       // SPECIAL CASE FOR ICDO LATERALITY OR ICDO TOPO_MINOR CODE.  MAKE SURE THAT IT DOESN'T SHOW UP ELSEWHERE.
+      if ( LOCATION.equalsIgnoreCase( name ) ) {
+         if ( goldValue.equalsIgnoreCase( "Breast" ) && systemValue.endsWith( "_Quadrant" ) ) {
+            return true;
+         }
+         if ( (goldValue.equalsIgnoreCase( "Rectum" )
+               || goldValue.equalsIgnoreCase( "Mesorectum" ) )
+              && ( systemValue.equalsIgnoreCase( "Rectal" )
+                   || systemValue.equalsIgnoreCase( "Rectosigmoid_Colon" )
+                   || systemValue.equalsIgnoreCase( "Anus" )
+                   || systemValue.equalsIgnoreCase( "Anorectal_Junction" ) ) ) {
+            return true;
+         }
+         if ( goldValue.equalsIgnoreCase( "Retroperitoneum" )
+              && systemValue.equalsIgnoreCase( "Retroperitoneal_Space" ) ) {
+            return true;
+         }
+      }
       if ( LATERALITY.equalsIgnoreCase( name ) ) {
          if ( goldValue.isEmpty() || goldValue.startsWith( "0" ) || goldValue.startsWith( "9" ) ) {
             if ( systemValue.isEmpty() || systemValue.startsWith( "0" ) || systemValue.startsWith( "9" ) ) {
@@ -259,7 +283,41 @@ final public class MatchUtil {
             return true;
          }
       }
-
+      if ( CLOCKFACE.equalsIgnoreCase( name ) ) {
+         if ( !goldValue.isEmpty() && !goldValue.equals( "[]" ) ) {
+            final int underscore = goldValue.indexOf( '_' );
+            if ( underscore < 0 ) {
+               Logger.getLogger( "MatchUtil" ).warn( "Invalid gold " + CLOCKFACE + " " + goldValue );
+            } else if ( underscore >= 1 ) {
+               // Gold doesn't seem to have hour:30 values but the system does.
+               final String hour = goldValue.substring( 0, goldValue.indexOf( '_' ) );
+               if ( systemValue.contains( hour + "_30_" ) ) {
+                  return true;
+               }
+            }
+         }
+      }
+      if ( STAGE.equalsIgnoreCase( name ) ) {
+         if ( systemValue.equals( "0" ) && goldValue.isEmpty() ) {
+            return true;
+         }
+      }
+      if ( QUADRANT.equalsIgnoreCase( name ) ) {
+         if ( goldValue.contains( "_Quadrant" ) && systemValue.equalsIgnoreCase( "Overlapping_Quadrant" ) ) {
+            return true;
+         }
+         if ( goldValue.isEmpty() ) {
+            // Unfortunately the gold is often missing quadrant.
+            // Plus, the system calculates quadrant using topo minor made from laterality and clockface.
+            return true;
+         }
+      }
+      if ( TUMOR_TYPE.equalsIgnoreCase( name ) ) {
+         if ( goldValue.equalsIgnoreCase( "Metastatic_Tumor" )
+              && systemValue.toLowerCase().contains( "metasta" ) ) {
+            return true;
+         }
+      }
       if ( goldValue.equalsIgnoreCase( systemValue ) ) {
          return true;
       }
@@ -312,12 +370,14 @@ final public class MatchUtil {
          return isSpecialMatch( name, goldValue.substring( 0, goldValue.length()-1 ).trim(), systemValue );
       }
       if ( goldValue.equalsIgnoreCase( "Present" )
-           && !systemValue.isEmpty()
-           && !systemValue.equalsIgnoreCase( "Absent" ) ) {
+           && ( systemValue.equalsIgnoreCase( "True" )
+                || ( !systemValue.equalsIgnoreCase( "Absent" )
+                     && !systemValue.equalsIgnoreCase( "False" ) ) ) ) {
          return true;
       }
       if ( goldValue.equalsIgnoreCase( "Absent" )
-           && (systemValue.isEmpty() || systemValue.equalsIgnoreCase( "Absent" )) ) {
+           && (systemValue.isEmpty() || systemValue.equalsIgnoreCase( "Absent" ) || systemValue.equalsIgnoreCase(
+                 "False" ) ) ) {
          return true;
       }
       if ( goldValue.equalsIgnoreCase( "Positive" )
@@ -337,6 +397,9 @@ final public class MatchUtil {
            && (systemValue.isEmpty() || systemValue.toLowerCase().contains( "unknown" )) ) {
          return true;
       }
+      if ( goldValue.isEmpty() && systemValue.toLowerCase().contains( "unknown" ) ) {
+         return true;
+      }
       if ( goldValue.contains( "Tis" ) && (systemValue.isEmpty() || systemValue.contains( "T0" )) ) {
          return true;
       }
@@ -349,6 +412,9 @@ final public class MatchUtil {
       }
       if ( (goldValue.contains( "Tx" ) || goldValue.contains( "Nx" ) || goldValue.contains( "Mx" ))
            && systemValue.isEmpty() ) {
+         return true;
+      }
+      if ( goldValue.contains( "M0" ) && ( systemValue.isEmpty() || systemValue.contains( "Mx" ) ) ) {
          return true;
       }
       for ( String tnmKludge : TNM_MATCHES ) {
@@ -390,6 +456,7 @@ final public class MatchUtil {
          return true;
       }
       if ( !goldValue.isEmpty() && !systemValue.isEmpty() ) {
+         Logger.getLogger( "MatchUtil" ).info( "MatchUtil.branches for " + goldValue + " "  + systemValue );
          final Collection<String> goldBranch = Neo4jOntologyConceptUtil.getBranchUris( goldValue );
          final Collection<String> systemBranch = Neo4jOntologyConceptUtil.getBranchUris( systemValue );
          if ( goldBranch.stream().anyMatch( systemBranch::contains )

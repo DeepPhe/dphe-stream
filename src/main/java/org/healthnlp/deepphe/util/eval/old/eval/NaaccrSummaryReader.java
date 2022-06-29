@@ -154,5 +154,40 @@ final class NaaccrSummaryReader {
       return map;
    }
 
+   static Collection<String> readPatientNames( final File goldFile, final int patientIndex ) {
+      final Collection<String> patientNames = new HashSet<>();
+//      final int patientIndex = indices.get( "patient ID" );
+//      final int summaryIndex = indices.get( "histology: ICD-O code" );
+//      final int patientIndex = indices.get( "record_id" );
+// id number is a kludge for gold annotations without unique id.
+      int id = 1;
+      try ( BufferedReader reader = new BufferedReader( new FileReader( goldFile ) ) ) {
+         // skip header
+         reader.readLine();
+         String line = reader.readLine();
+         while ( line != null ) {
+            if ( line.startsWith( "//" ) || line.startsWith( "#" ) || line.isEmpty() ) {
+               line = reader.readLine();
+               continue;
+            }
+//            final List<String> values = Arrays.asList( StringUtil.fastSplit( line, '|' ) );
+            final List<String> values = Arrays.asList( line.split( "\\|" ) );
+//            if ( patientIndex >= values.size() || summaryIndex >= values.size() ) {
+            if ( patientIndex >= values.size()  ) {
+               LOGGER.error(
+                     goldFile.getPath() + " is missing either patient ID or histology: ICD-O code on " + line );
+               System.exit( -1 );
+            }
+            final String patientId = values.get( patientIndex ).trim();
+            patientNames.add( patientId.trim() );
+            line = reader.readLine();
+         }
+      } catch ( IOException ioE ) {
+         LOGGER.error( ioE.getMessage() );
+         System.exit( -1 );
+      }
+      return patientNames;
+   }
+
 
 }

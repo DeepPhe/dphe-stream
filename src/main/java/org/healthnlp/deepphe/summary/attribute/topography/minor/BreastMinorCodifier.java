@@ -49,6 +49,25 @@ final public class BreastMinorCodifier {
    }
 
 
+   static public String getQuadrant( final String code ) {
+      if ( code.isEmpty() ) {
+         return "";
+      }
+      switch ( code ) {
+         case "2":
+            return "Upper_Inner_Quadrant";
+         case "3":
+            return "Lower_Inner_Quadrant";
+         case "4":
+            return "Upper_Outer_Quadrant";
+         case "5":
+            return "Lower_Outer_Quadrant";
+         case "8":
+            return "Overlapping_Quadrant";
+      }
+      return "";
+      }
+
    static public Collection<ConceptAggregate> getBreastParts( final Collection<ConceptAggregate> neoplasms ) {
       initQuadrantUris();
       final Collection<ConceptAggregate> breastConcepts = neoplasms.stream()

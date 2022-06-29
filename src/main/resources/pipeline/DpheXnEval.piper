@@ -1,9 +1,3 @@
-//cli OverwriteGraph=n
-cli StartNeo4j=n
-cli StopNeo4j=e
-cli Neo4jUri=r
-cli Neo4jUser=user
-cli Neo4jPass=pass
 
 //  Ignore dos/windows carriage return characters when reading files.
 set CRtoSpace=true
@@ -20,7 +14,7 @@ add Neo4jEmbeddedConnectAe
 // Connect to remote data graph server db
 //////// add Neo4jServerConnectAe    TODO
 
-//  Discover sections.
+//  Discover sections.   TODO try CrSectionizer instead, which will trim any "REFERENCES:" from the report.
 package org.healthnlp.deepphe.nlp.ae.section
 add Sectionizer
 
@@ -40,7 +34,6 @@ add MrsDrSentenceJoiner
 //  Use the DeepPhe paragraph expressions for paragraph discovery.
 set PARAGRAPH_TYPES_PATH=org/healthnlp/deepphe/paragraph/ParagraphRegex.bsv
 //  Discover paragraphs.
-//add ParagraphAnnotator
 add ParagraphFinder
 
 add WtfSectionFixer
@@ -51,15 +44,15 @@ add ParagraphSentenceFixer
 
 set LIST_TYPES_PATH=org/healthnlp/deepphe/list/CancerListRegex.bsv
 //  Discover formatted lists and tables.
-//add ListAnnotator
+add ListAnnotator
 //add ListFinder
-add BsvRegexTopicFinder
-add TreeListFinder
+//add BsvRegexTopicFinder
+//add TreeListFinder
 
 
 //  Fix sentences so that no sentence spans across two or more list entries.
-//add ListSentenceFixer
-add ListSentenceSplitter
+add ListSentenceFixer
+//add ListSentenceSplitter
 
 //add EolSentenceFixer
 
@@ -126,10 +119,11 @@ add SubjectSectionFixer
 
 //add Ki67Finder
 
-add division.BiomarkerFinderNew
+//add division.BiomarkerFinderNew
+add BiomarkerFinder
 
-//add GradeFinder
-add division.GradeFinderNew
+add GradeFinder
+//add division.GradeFinderNew
 
 // Adjust Subjects for entities
 add SubjectAdjuster
@@ -169,23 +163,24 @@ add MelanomaDocEpisodeTagger
 ///////////// add NeoplasmNeo4jWriter  TODO
 
 //add JsonNodeCreator    Duplicate of PatientNodeCollector
-//add html.HtmlTextWriter SubDirectory=HTML
+//add html.HtmlTextWriter OutputDirectory=C:/Spiffy/output/dphe_output/dphe_xn/eval/06_26_2022/crc SubDirectory=HTML
 //add pretty.plaintext.PrettyTextWriterFit SubDirectory=TEXT
-package org.healthnlp.deepphe.nlp.writer
+//package org.healthnlp.deepphe.nlp.writer
 //add ListsTableFileWriter SubDirectory=LISTS TableType=HTML
-add FormattedListsTableFileWriter SubDirectory=LISTS TableType=HTML
+//add FormattedListsTableFileWriter SubDirectory=LISTS TableType=HTML
 
 // add PatientJsonFileWriter SubDirectory=JSON
-package org.healthnlp.deepphe.summary.writer
+//package org.healthnlp.deepphe.summary.writer
 //cli CancerEvalFile=c
 //add EvalFileWriterXn SubDirectory=EVAL
 
 //add DeepPheSummaryWriter SubDirectory=SUMMARY
 
-addLast PatientSummaryCleaner
+// Need to clean patient store
+//addLast PatientSummaryCleaner
 
 //  Alert User that the pipeline is Finished.
 package org.apache.ctakes.core.util.log
 //addLast Neo4jServerShutdownAe
-addLast FinishedLogger
+//addLast FinishedLogger
 addLast PipelineStopper

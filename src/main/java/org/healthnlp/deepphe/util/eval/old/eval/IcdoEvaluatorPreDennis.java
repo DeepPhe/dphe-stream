@@ -10,70 +10,26 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.healthnlp.deepphe.EvalSummarizer.PATIENT_ID;
-import static org.healthnlp.deepphe.util.eval.old.eval.NaaccrSummaryReader.readPatientNames;
-
 
 /**
  * @author SPF , chip-nlp
  * @version %I%
  * @since 3/25/2020
  */
-public class XnEvaluator {
+public class IcdoEvaluatorPreDennis {
 
-   static private final Logger LOGGER = Logger.getLogger( "XnEvaluator" );
+   static private final Logger LOGGER = Logger.getLogger( "IcdoEvaluatorPreDennis" );
 
+   //  Need to capitalize "before" in topo major system output
+   // C:\Spiffy\data\dphe_data\mixed\kcr\mixed_90\pilot\FixFront.bsv
+   // C:\Spiffy\data\dphe_data\mixed\kcr\pilot_91_300\DeepPhe_CR_KCR_91_300_epath_GOLD\DeepPhe_CR_KCR_91_300_epath_GOLD_spf.bsv
+   // C:\Spiffy\data\dphe_data\datasets\KCR\batch_301_600\DeepPhe_CR_KCR_301_600_GOLD_Annotations_v2.bsv
+   // C:\Spiffy\data\dphe_data\datasets\KCR\preexisting_gold_annotations\gold_for_3_cancers_spf.bsv
 
-   static private final String GOLD_CANCER_ROOT =
-         "C:\\Spiffy\\data\\dphe_xn\\gold\\bsv\\cancer_gold_bsv\\cancer_gold_bsv\\bsv\\";
-   static private final String GOLD_TUMOR_ROOT =
-         "C:\\Spiffy\\data\\dphe_xn\\gold\\bsv\\cancer_gold_bsv\\tumor_gold_bsv\\bsv\\";
-
-   static private final String[] GOLD_CANCER_BRCA = {
-         "DeepPhe_brCa_Dev_Set_Phenotype_Annotations_GOLD_v3.bsv",
-         "DeepPhe_brCa_Train_Set_Phenotype_Annotations_GOLD_v3.bsv",
-         "DeepPhe_brCa_Test_Set_Phenotype_Annotations_GOLD_v3.bsv" };
-   static private final String[] GOLD_TUMOR_BRCA = {
-         "DeepPhe_brCa_Dev_Set_Phenotype_Annotations_GOLD_v3_tumor.bsv",
-         "DeepPhe_brCa_Train_Set_Phenotype_Annotations_GOLD_v3_tumor.bsv",
-         "DeepPhe_brCa_Test_Set_Phenotype_Annotations_GOLD_v3_tumor.bsv" };
-
-   static private final String[] GOLD_CANCER_OVCA = {
-         "DeepPhe_ovCa_Dev_Set_Phenotype_Annotations_GOLD_v4.bsv",
-         "DeepPhe_ovCa_Train_Set_Phenotype_Annotations_GOLD_v4.bsv",
-         "DeepPhe_ovCa_Test_Set_Phenotype_Annotations_GOLD_v4.bsv" };
-   static private final String[] GOLD_TUMOR_OVCA = {
-         "DeepPhe_ovCa_Dev_Set_Phenotype_Annotations_GOLD_v4_tumor.bsv",
-         "DeepPhe_ovCa_Train_Set_Phenotype_Annotations_GOLD_v4_tumor.bsv",
-         "DeepPhe_ovCa_Test_Set_Phenotype_Annotations_GOLD_v4_tumor.bsv" };
-
-   static private final String[] GOLD_CANCER_SKIN = {
-         "DeepPhe_melanoma_Dev_Set_Phenotype_Annotations_GOLD_v3.bsv",
-         "DeepPhe_melanoma_Train_Set_Phenotype_Annotations_GOLD_v3.bsv",
-         "DeepPhe_melanoma_Test_Set_Phenotype_Annotations_GOLD_v3.bsv" };
-   static private final String[] GOLD_TUMOR_SKIN = {
-         "DeepPhe_melanoma_Dev_Set_Phenotype_Annotations_GOLD_v3_tumor.bsv",
-//         "DeepPhe_melanoma_Train_Set_Phenotype_Annotations_GOLD_v3_tumor.bsv",
-         "DeepPhe_melanoma_Test_Set_Phenotype_Annotations_GOLD_v3_tumor.bsv" };
-
-   static private final String[] GOLD_CANCER_CRC = {
-         "DeepPhe_gold_Test_annotations_crc_v2.bsv" };
-   static private final String[] GOLD_TUMOR_CRC = {
-         "DeepPhe_gold_Test_annotations_crc_v2_tumor.bsv" };
-
+   // C:\Spiffy\data\dphe_data\CombinedKcrGold.bsv
    public static void main( final String... args ) {
-//      run( args );
-      for ( String gold : GOLD_CANCER_CRC ) {
-         run( GOLD_CANCER_ROOT+gold, args[ 1 ] );
-      }
-      for ( String gold : GOLD_TUMOR_CRC ) {
-         run( GOLD_TUMOR_ROOT+gold, args[ 2 ] );
-      }
-   }
-
-   static private void run( final String... args ) {
       if ( args == null || args.length < 2 ) {
-         System.err.println( "Example: java XnEvaluator <gold_summary_file> <system_summary_file>" );
+         System.err.println( "Example: java IcdoEvaluator <gold_summary_file> <system_summary_file>" );
          System.exit( -1 );
       }
       try {
@@ -85,7 +41,7 @@ public class XnEvaluator {
             scoreSystem( goldFile.getName(), goldFile, systemFile );
          }
          // Combines the features and scores, divvying them into splits
-//         FeatureCranker.main( systemFile.getParent() );
+         FeatureCranker.main( systemFile.getParent() );
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
          System.exit( -1 );
@@ -113,10 +69,8 @@ public class XnEvaluator {
    }
 
    static private void scoreSystem( final String neoplasmType, final File goldFile, final File systemFile ) {
-      scoreSystem( neoplasmType, goldFile, systemFile, new HashSet<>() );
+      scoreSystem( neoplasmType, goldFile, systemFile, Collections.emptyList() );
    }
-
-
 
    static private void scoreSystem( final String neoplasmType, final File goldFile, final File systemFile,
                                     final Collection<String> patientNames ) {
@@ -127,10 +81,6 @@ public class XnEvaluator {
       final Map<String, Integer> systemIndices = NaaccrSummaryReader.mapColumnNameIndices( systemProperties );
       final List<String> goldProperties = NaaccrSummaryReader.readColumnHeader( goldFile );
       final Map<String, Integer> goldIndices = NaaccrSummaryReader.mapColumnNameIndices( goldProperties );
-      if ( patientNames.isEmpty() ) {
-         final int patientIndex = goldIndices.get( PATIENT_ID );
-         patientNames.addAll( readPatientNames( goldFile, patientIndex ) );
-      }
 
       final Map<String, Collection<NeoplasmSummary>> goldSummaries
             = NaaccrSummaryReader.readSummaries( goldFile, requiredNames, scoringNames, goldIndices, patientNames );

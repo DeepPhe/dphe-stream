@@ -78,9 +78,9 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
                final String preText = note.getText()
                                           .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
                                           .toLowerCase();
-               NeoplasmSummaryCreator.DEBUG_SB.append( "Histology Candidate and pretext "
-                                                       + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
-                                                       + "\n" );
+//               NeoplasmSummaryCreator.DEBUG_SB.append( "Histology Candidate and pretext "
+//                                                       + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
+//                                                       + "\n" );
                //  "Preop diagnosis"?   "positive for"?
                if ( preText.contains( "histologic type:" )
                     || preText.contains( "diagnosis:" )

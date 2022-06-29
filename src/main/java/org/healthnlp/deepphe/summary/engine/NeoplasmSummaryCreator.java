@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
+import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmSummary;
 import org.healthnlp.deepphe.summary.attribute.DefaultAttribute;
@@ -27,6 +28,7 @@ import org.healthnlp.deepphe.summary.attribute.tnm.N_UriInfoVisitor;
 import org.healthnlp.deepphe.summary.attribute.tnm.T_UriInfoVisitor;
 import org.healthnlp.deepphe.summary.attribute.tnm.TnmCodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.topography.Topography;
+import org.healthnlp.deepphe.summary.attribute.topography.minor.BreastMinorCodifier;
 import org.healthnlp.deepphe.summary.attribute.topography.minor.TopoMinorCodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.topography.minor.TopoMinorUriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -65,7 +67,7 @@ final public class NeoplasmSummaryCreator {
          try ( BufferedReader reader = new BufferedReader( new FileReader( topoMajorFile ) ) ) {
             String line = reader.readLine();
             while ( line != null ) {
-               if ( line.isEmpty() ) {
+               if ( line.isEmpty() || line.startsWith( "//" ) ) {
                   line = reader.readLine();
                   continue;
                }
@@ -80,6 +82,7 @@ final public class NeoplasmSummaryCreator {
    }
 
    static public NeoplasmSummary createNeoplasmSummary( final ConceptAggregate neoplasm,
+                                                        final boolean isPrimary,
                                                         final Collection<ConceptAggregate> allConcepts,
                                                         final boolean registryOnly ) {
       if ( TOPO_MAJOR_MAP.isEmpty() ) {
@@ -106,31 +109,56 @@ final public class NeoplasmSummaryCreator {
 
       final String topoCode = addTopography( neoplasm, summary, attributes, allConcepts );
 //      copyWithUriAsValue( attributes, "topography_major", "location" );
-      final String locationUri = TOPO_MAJOR_MAP.getOrDefault( topoCode.substring( 0, 3 ), "Undetermined" );
+//      String locationUri = TOPO_MAJOR_MAP.getOrDefault( topoCode, "Undetermined" );
+      final String[] topoCodes = StringUtil.fastSplit( topoCode, ';' );
+      String locationUri = Arrays.stream( topoCodes )
+                                 .map( TOPO_MAJOR_MAP::get )
+                                 .filter( Objects::nonNull )
+                                 .collect( Collectors.joining( ";" ) );
+      if ( locationUri.isEmpty() || locationUri.equals( "Undetermined" ) ) {
+         locationUri = getTopographyUri( attributes );
+      }
       createWithValue( "location", locationUri, locationUri, attributes );
       final String lateralityCode = addLateralityCode( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
       copyWithUriAsValue( attributes, "laterality_code", "laterality" );
-      addTopoMinor( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode, lateralityCode );
+      // tumor has topo minor attributes.
+      addTopoMinor( neoplasm, summary, attributes, allConcepts, patientNeoplasms,
+                                                  topoCode,
+                                lateralityCode );
       addBrCaClockface( neoplasm, attributes );
       addQuadrant( neoplasm, attributes );
+      // tumor has histology, diagnosis, behavior
       addHistology( neoplasm, summary, attributes, allConcepts, patientNeoplasms, topoCode );
-      copyWithUriAsValue( attributes, "morphology", "diagnosis" );
+      //  Gold uses "cancer_type" and "histologic_type" to denote something -like- histology.
+      copyWithUriAsValue( attributes, "histology", "cancer_type" );
+      copyWithUriAsValue( attributes, "histology", "histologic_type" );
+      copyWithUriAsValue( attributes, "histology", "diagnosis" );
       addBehavior( neoplasm, summary, attributes, allConcepts, patientNeoplasms, registryOnly );
-      // TODO cancer_type
-      addTumorType( neoplasm, attributes );
-      // TODO topo_morphed
+      //  "extent" is behavior, nice name.
+      addExtent( attributes );
+      addTumorType( attributes, isPrimary );
+      // TODO topo_morphed ?
 //      createWithValue( "topo_morphed", "generated", "false", attributes );
-      // TODO extent
       createWithValue( "historic", "historic",
                        neoplasm.inPatientHistory() ? "historic" : "current", attributes );
       createWithValue( "calcifications", "calcifications",
                        neoplasm.getRelated( HAS_CALCIFICATION ).isEmpty()
                        ? "false" : "true", attributes );
+      // Calcification was removed from the last n versions.
+      DEBUG_SB.append( "Calcifications: " + (neoplasm.getRelated( HAS_CALCIFICATION ).isEmpty()
+                       ? "false" : "true" ) + " ; " + allConcepts.stream()
+                                                                  .map( ConceptAggregate::getMentions )
+                                                                  .flatMap( Collection::stream )
+                                                                 .map( Mention::getClassUri )
+                                                                 .filter( u -> u.toLowerCase().contains( "calcif" ) )
+                                                                 .collect( Collectors.joining(",") ) + "\n" );
+      // Cancer has grade, stage, tnm
       addGrade( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
       addStage( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
       addTnmT( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
       addTnmN( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
       addTnmM( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
+      // tumor has biomarkers
       // TODO tumor_size, tumor_size_procedure
       addBiomarkers( neoplasm, summary, attributes, allConcepts, patientNeoplasms );
       // TODO treatment (hasTreatment)
@@ -149,7 +177,17 @@ final public class NeoplasmSummaryCreator {
 
       // TODO as NeoplasmAttribute from DefaultAttribute
 
-      return majorTopoAttr.getValue() + "3";
+//      return majorTopoAttr.getValue() + "3";
+      return majorTopoAttr.getValue();
+   }
+
+   static private String getTopographyUri( final List<NeoplasmAttribute> attributes ) {
+      final NeoplasmAttribute sourceAttribute =
+            attributes.stream().filter( a -> a.getName().equals( "behavior" ) ).findFirst().orElse( null );
+      if ( sourceAttribute == null ) {
+         return "Undetermined";
+      }
+      return sourceAttribute.getClassUri();
    }
 
    static private void addTopoMinor( final ConceptAggregate neoplasm,
@@ -173,8 +211,81 @@ final public class NeoplasmSummaryCreator {
       attributes.add( topoMinor.toNeoplasmAttribute() );
    }
 
+   static Collection<ConceptAggregate> getRelatedAboveCutoff(
+         final ConceptAggregate neoplasm,
+         final String relationName,
+         final double cutoff_constant ) {
+      final Collection<ConceptAggregate> related = neoplasm.getRelated( relationName );
+      if ( related.isEmpty() ) {
+         return Collections.emptyList();
+      }
+      if ( related.size() == 1 ) {
+         return related;
+      }
+      final Map<String,Integer> uriMentionCounts = new HashMap<>();
+      int max = 0;
+      for ( ConceptAggregate concept : related ) {
+         final String uri = concept.getUri();
+         int mentions = concept.getMentions().size();
+         final int count = uriMentionCounts.computeIfAbsent( uri, u -> 0 );
+         uriMentionCounts.put( uri, count + mentions );
+         max = Math.max( max, count + mentions );
+      }
+      double cutoff = max * cutoff_constant;
+      final Collection<String> highCountCodes = getUrisAboveCutoff( uriMentionCounts, cutoff );
+      return related.stream().filter( r -> highCountCodes.contains( r.getUri() ) ).collect( Collectors.toList() );
+   }
+
+   static Collection<ConceptAggregate> getLocationsAboveCutoff(
+         final ConceptAggregate neoplasm,
+         final String relationName,
+         final Collection<String> validUris,
+         final double cutoff_constant ) {
+      final Collection<ConceptAggregate> related = new HashSet<>();
+      related.addAll( neoplasm.getRelated( relationName ) );
+      neoplasm.getRelatedSites().stream()
+              .filter( c -> validUris.contains( c.getUri() ) )
+              .forEach( related::add );
+      if ( related.isEmpty() ) {
+         return Collections.emptyList();
+      }
+      if ( related.size() == 1 ) {
+         return related;
+      }
+      final Map<String,Integer> uriMentionCounts = new HashMap<>();
+      int max = 0;
+      for ( ConceptAggregate concept : related ) {
+         final String uri = concept.getUri();
+         int mentions = concept.getMentions().size();
+         final int count = uriMentionCounts.computeIfAbsent( uri, u -> 0 );
+         uriMentionCounts.put( uri, count + mentions );
+         max = Math.max( max, count + mentions );
+      }
+      double cutoff = max * cutoff_constant;
+      final Collection<String> highCountCodes = getUrisAboveCutoff( uriMentionCounts, cutoff );
+      return related.stream().filter( r -> highCountCodes.contains( r.getUri() ) ).collect( Collectors.toList() );
+   }
+
+   static private Collection<String> getUrisAboveCutoff( final Map<String,Integer> uriMentionCounts,
+                                                          final double cutoff ) {
+      final Collection<String> lowCountCodes = uriMentionCounts.entrySet().stream()
+                                                                .filter( e -> e.getValue() < cutoff )
+                                                                .map( Map.Entry::getKey )
+                                                                .collect( Collectors.toSet() );
+      final Collection<String> codes = new HashSet<>( uriMentionCounts.keySet() );
+      codes.removeAll( lowCountCodes );
+      DEBUG_SB.append( "NeoplasmSummaryCreator.getUrisAboveCutoff: " + cutoff + " "
+                       + uriMentionCounts.entrySet().stream()
+                                         .map( e -> e.getKey() + "," + e.getValue() )
+                                         .collect( Collectors.joining(";") ) + "\n");
+      return codes;
+   }
+
+
    static private void addBrCaClockface( final ConceptAggregate neoplasm, final List<NeoplasmAttribute> attributes ) {
-      final String clockface = neoplasm.getRelated( HAS_CLOCKFACE ).stream()
+      final Collection<ConceptAggregate> bestClockfaces = getRelatedAboveCutoff( neoplasm, HAS_CLOCKFACE, 0.4 );
+//      final String clockface = neoplasm.getRelated( HAS_CLOCKFACE ).stream()
+      final String clockface = bestClockfaces.stream()
               .map( ConceptAggregate::getUri )
               .distinct()
             .collect( Collectors.joining( ";" ) );
@@ -193,28 +304,70 @@ final public class NeoplasmSummaryCreator {
 
    static private void addQuadrant( final ConceptAggregate neoplasm, final List<NeoplasmAttribute> attributes ) {
       initQuadrantUris();
-      final Collection<String> quadrants = new HashSet<>();
-      neoplasm.getRelated( HAS_QUADRANT ).stream()
-              .map( ConceptAggregate::getUri )
-              .forEach( quadrants::add );
-      neoplasm.getRelatedSites().stream()
-              .map( ConceptAggregate::getUri )
-              .filter( QUADRANT_URIS::contains )
-              .forEach( quadrants::add );
+      final Collection<ConceptAggregate> bestQuadrants = getLocationsAboveCutoff( neoplasm, HAS_QUADRANT,
+                                                                                  QUADRANT_URIS, 0.4 );
+//      final Collection<String> quadrants = new HashSet<>();
+//      neoplasm.getRelated( HAS_QUADRANT ).stream()
+//              .map( ConceptAggregate::getUri )
+//              .forEach( quadrants::add );
+//      neoplasm.getRelatedSites().stream()
+//              .map( ConceptAggregate::getUri )
+//              .filter( QUADRANT_URIS::contains )
+//              .forEach( quadrants::add );
+      final String quadrants = bestQuadrants.stream()
+                                             .map( ConceptAggregate::getUri )
+                                             .distinct()
+                                             .collect( Collectors.joining( ";" ) );
       if ( !quadrants.isEmpty() ) {
          createWithValue( "quadrant", UriConstants.QUADRANT, String.join( ";", quadrants ), attributes );
+      } else {
+         addQuadrantByTopoMinor( attributes );
       }
    }
 
-   static private void addTumorType( final ConceptAggregate neoplasm, final List<NeoplasmAttribute> attributes ) {
-      final String tumorType = neoplasm.getRelated( HAS_TUMOR_TYPE ).stream()
-                                       .map( ConceptAggregate::getUri )
-                                       .distinct()
-                                       .collect( Collectors.joining( ";" ) );
-      if ( !tumorType.isEmpty() ) {
-         createWithValue( "tumor_type", "tumor_type", tumorType, attributes );
+   static private void addQuadrantByTopoMinor( final Collection<NeoplasmAttribute> attributes ) {
+      final NeoplasmAttribute clockface = attributes.stream()
+                                                    .filter( a -> a.getName().equals( "clockface" ) )
+                                                    .findAny()
+                                                    .orElse( null );
+      DEBUG_SB.append( "NeoplasmSummaryCreator.addQuadrantByTopoMinor have clockface " + (clockface != null ) + "\n" );
+      if ( clockface == null || clockface.getValue().isEmpty() ) {
+         return;
       }
+      final String topography_minor = attributes.stream()
+                                                .filter( a -> a.getName().equals( "topography_minor" ) )
+                                                .map( NeoplasmAttribute::getValue )
+                                                .findFirst()
+                                                .orElse( "" );
+      DEBUG_SB.append( "NeoplasmSummaryCreator.addQuadrantByTopoMinor " + topography_minor
+                       + " " + BreastMinorCodifier.getQuadrant( topography_minor ) + "\n" );
+      if ( topography_minor.isEmpty() ) {
+         return;
+      }
+      final NeoplasmAttribute attribute = new NeoplasmAttribute();
+      final String uri = clockface.getClassUri();
+      attribute.setName( "quadrant" );
+      attribute.setId( "quadrant_" + uri + "_" + System.currentTimeMillis() );
+      attribute.setClassUri( uri );
+      attribute.setValue( BreastMinorCodifier.getQuadrant( topography_minor ) );
+      attribute.setConfidence( clockface.getConfidence() );
+      attribute.setConfidenceFeatures( clockface.getConfidenceFeatures() );
+      attribute.setDirectEvidence( clockface.getDirectEvidence() );
+      attribute.setIndirectEvidence( clockface.getIndirectEvidence() );
+      attribute.setNotEvidence( clockface.getNotEvidence() );
+      attributes.add( attribute );
    }
+
+
+//   static private void addTumorType( final ConceptAggregate neoplasm, final List<NeoplasmAttribute> attributes ) {
+//      final String tumorType = neoplasm.getRelated( HAS_TUMOR_TYPE ).stream()
+//                                       .map( ConceptAggregate::getUri )
+//                                       .distinct()
+//                                       .collect( Collectors.joining( ";" ) );
+//      if ( !tumorType.isEmpty() ) {
+//         createWithValue( "tumor_type", "tumor_type", tumorType, attributes );
+//      }
+//   }
 
 
    static private void addHistology( final ConceptAggregate neoplasm,
@@ -252,6 +405,57 @@ final public class NeoplasmSummaryCreator {
       attributes.add( attribute );
    }
 
+   // Extent is "Invasive_Lesion" or In Situ? Benign?  Seems to always be invasive in gold.
+   static private void addExtent( final List<NeoplasmAttribute> attributes ) {
+      final NeoplasmAttribute sourceAttribute =
+            attributes.stream().filter( a -> a.getName().equals( "behavior" ) ).findFirst().orElse( null );
+      if ( sourceAttribute == null ) {
+         return;
+      }
+      final String value = sourceAttribute.getValue();
+      String extent = "Invasive_Lesion";
+      switch ( value ) {
+         case "0" : extent = "Benign"; break;
+//         case "1" : extent = "Uncertain"; break;
+         case "2" : extent = "In_Situ"; break;
+         case "6" : extent = "Metastatic"; break;
+      }
+      final NeoplasmAttribute attribute = new NeoplasmAttribute();
+      final String uri = sourceAttribute.getClassUri();
+      attribute.setName( "extent" );
+      attribute.setId( uri + "_" + System.currentTimeMillis() );
+      attribute.setClassUri( uri );
+      attribute.setValue( extent );
+      attribute.setConfidence( sourceAttribute.getConfidence() );
+      attribute.setConfidenceFeatures( sourceAttribute.getConfidenceFeatures() );
+      attribute.setDirectEvidence( sourceAttribute.getDirectEvidence() );
+      attribute.setIndirectEvidence( sourceAttribute.getIndirectEvidence() );
+      attribute.setNotEvidence( sourceAttribute.getNotEvidence() );
+      attributes.add( attribute );
+   }
+
+   //      tumor_type is "PrimaryTumor", "Distant_Metastasis", "Regional_Metastasis"
+   // TODO - make this a bit better.
+   static private void addTumorType( final List<NeoplasmAttribute> attributes, final boolean isPrimary ) {
+      final NeoplasmAttribute sourceAttribute =
+            attributes.stream().filter( a -> a.getName().equals( "behavior" ) ).findFirst().orElse( null );
+      if ( sourceAttribute == null ) {
+         return;
+      }
+      final String tumorType = isPrimary ? "PrimaryTumor" : "Distant_Metastasis";
+      final NeoplasmAttribute attribute = new NeoplasmAttribute();
+      final String uri = sourceAttribute.getClassUri();
+      attribute.setName( "tumor_type" );
+      attribute.setId( uri + "_" + System.currentTimeMillis() );
+      attribute.setClassUri( uri );
+      attribute.setValue( tumorType );
+      attribute.setConfidence( sourceAttribute.getConfidence() );
+      attribute.setConfidenceFeatures( sourceAttribute.getConfidenceFeatures() );
+      attribute.setDirectEvidence( sourceAttribute.getDirectEvidence() );
+      attribute.setIndirectEvidence( sourceAttribute.getIndirectEvidence() );
+      attribute.setNotEvidence( sourceAttribute.getNotEvidence() );
+      attributes.add( attribute );
+   }
 
    static private String addLateralityCode( final ConceptAggregate neoplasm,
                                             final NeoplasmSummary summary,
@@ -306,7 +510,11 @@ final public class NeoplasmSummaryCreator {
       if ( stage.getBestUri().isEmpty() || stage.getBestCode().isEmpty() ) {
          return;
       }
-      attributes.add( stage.toNeoplasmAttribute() );
+      final NeoplasmAttribute attribute = stage.toNeoplasmAttribute();
+      if ( attribute.getValue().equals( "0" ) ) {
+         attribute.setValue( "" );
+      }
+      attributes.add( attribute );
    }
 
    static private void addTnmT( final ConceptAggregate neoplasm,
@@ -325,7 +533,11 @@ final public class NeoplasmSummaryCreator {
       if ( t.getBestUri().isEmpty() || t.getBestCode().isEmpty() ) {
          return;
       }
-      attributes.add( t.toNeoplasmAttribute() );
+      final NeoplasmAttribute attribute = t.toNeoplasmAttribute();
+      if ( attribute.getValue().equals( "PT1s" ) ) {
+         attribute.setValue( "PTis" );
+      }
+      attributes.add( attribute );
    }
 
    static private void addTnmN( final ConceptAggregate neoplasm,
@@ -446,6 +658,29 @@ final public class NeoplasmSummaryCreator {
       attribute.setId( uri + "_" + System.currentTimeMillis() );
       attribute.setClassUri( uri );
       attribute.setValue( uri );
+      attribute.setConfidence( sourceAttribute.getConfidence() );
+      attribute.setConfidenceFeatures( sourceAttribute.getConfidenceFeatures() );
+      attribute.setDirectEvidence( sourceAttribute.getDirectEvidence() );
+      attribute.setIndirectEvidence( sourceAttribute.getIndirectEvidence() );
+      attribute.setNotEvidence( sourceAttribute.getNotEvidence() );
+      attributes.add( attribute );
+      return uri;
+   }
+
+   static private String copyWithValueAsValue( final List<NeoplasmAttribute> attributes,
+                                             final String sourceName,
+                                             final String targetName ) {
+      final NeoplasmAttribute sourceAttribute =
+            attributes.stream().filter( a -> a.getName().equals( sourceName ) ).findFirst().orElse( null );
+      if ( sourceAttribute == null ) {
+         return "";
+      }
+      final NeoplasmAttribute attribute = new NeoplasmAttribute();
+      final String uri = sourceAttribute.getClassUri();
+      attribute.setName( targetName );
+      attribute.setId( uri + "_" + System.currentTimeMillis() );
+      attribute.setClassUri( uri );
+      attribute.setValue( sourceAttribute.getValue() );
       attribute.setConfidence( sourceAttribute.getConfidence() );
       attribute.setConfidenceFeatures( sourceAttribute.getConfidenceFeatures() );
       attribute.setDirectEvidence( sourceAttribute.getDirectEvidence() );

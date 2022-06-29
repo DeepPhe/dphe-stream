@@ -1,26 +1,30 @@
 package org.healthnlp.deepphe.summary.engine;
 
-import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateHandler;
-import org.healthnlp.deepphe.summary.concept.ConceptAggregateMerger;
+import org.healthnlp.deepphe.summary.neoplasm.casino.NeoplasmCasino;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
- * @version %I%
- * @since 9/17/2020
+ * @since {6/24/2022}
  */
-final public class SummaryEngine {
+final public class DpheXnSummaryEngine {
 
-   static private final Logger LOGGER = Logger.getLogger( "SummaryEngine" );
+   private DpheXnSummaryEngine() {}
 
+
+   /**
+    *
+    * @param patient -
+    * @return a patient summary with a NeoplasmSummary that represents a cancer and its tumors.
+    */
    static public PatientSummary createPatientSummary( final Patient patient ) {
       final String patientId = patient.getId();
       final Map<Mention, String> patientMentionNoteIds = new HashMap<>();
@@ -42,9 +46,9 @@ final public class SummaryEngine {
       }
 
       final PatientSummary patientSummary = createPatientSummary( patientId,
-            patientNotes,
-            patientMentionNoteIds,
-            patientRelations );
+                                                                  patientNotes,
+                                                                  patientMentionNoteIds,
+                                                                  patientRelations );
       patientSummary.setPatient( patient );
       return patientSummary;
    }
@@ -62,9 +66,9 @@ final public class SummaryEngine {
     * @return map of cancer summary to tumor summaries
     */
    static private PatientSummary createPatientSummary( final String patientId,
-                                                final Collection<Note> patientNotes,
-                                                final Map<Mention, String> patientMentionNoteIds,
-                                                final Collection<MentionRelation> patientRelations ) {
+                                                       final Collection<Note> patientNotes,
+                                                       final Map<Mention, String> patientMentionNoteIds,
+                                                       final Collection<MentionRelation> patientRelations ) {
 //      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
 //      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
 //                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
@@ -86,18 +90,14 @@ final public class SummaryEngine {
 
 
    static private PatientSummary createPatientSummary( final String patientId,
-                                                        final Map<String, Collection<ConceptAggregate>> uriConceptAggregates ) {
+                                                       final Map<String, Collection<ConceptAggregate>> uriConceptAggregates ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
       final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
-
-
 //      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );
 //      LOGGER.info( "We are now using the ConceptAggregates for the patient to create Cancer Summaries." +
 //                   "  For KCR we force this down to a single summary, but that is only for the simplicity of the dataset." +
 //                   "  dPhe Classic does not do this.  I think that this will not be done at some future date for CR." );
-
-
       final Collection<ConceptAggregate> allAggregates = new HashSet<>();
       final Collection<ConceptAggregate> neoplasmAggregates = new HashSet<>();
 
@@ -114,11 +114,7 @@ final public class SummaryEngine {
                NeoplasmSummaryCreator.DEBUG_SB.append( "MassNeoplasm " + uri + " is wanted for summary.\n" );
             } else {
                NeoplasmSummaryCreator.DEBUG_SB.append( "MassNeoplasm " + uri + " is not wanted for summary.\n" );
-
-
 //               LOGGER.info( "ConceptAggregate " + concept.getUri() + " " + concept.getId() + " is a neoplasm and will be used for a Summary." );
-
-
             }
          }
       }
@@ -127,10 +123,12 @@ final public class SummaryEngine {
 
 
    static private PatientSummary createPatientSummary( final String patientId,
-                                                           final Collection<ConceptAggregate> neoplasmConcepts,
-                                                           final Collection<ConceptAggregate> allConcepts ) {
-      final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap
-            = ConceptAggregateMerger.mergeNeoplasms( neoplasmConcepts, allConcepts );
+                                                       final Collection<ConceptAggregate> neoplasmConcepts,
+                                                       final Collection<ConceptAggregate> allConcepts ) {
+//      final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap
+//            = ConceptAggregateMerger.mergeNeoplasms( neoplasmConcepts, allConcepts );
+      final Map<ConceptAggregate,Collection<ConceptAggregate>> diagnosisMap =
+            NeoplasmCasino.splitCancerTumors( patientId, neoplasmConcepts, allConcepts );
       return summarizeConceptAggregateMap( patientId, diagnosisMap, allConcepts );
    }
 
@@ -153,21 +151,38 @@ final public class SummaryEngine {
    static private PatientSummary summarizeConceptAggregateMap( final String patientId,
                                                                final Map<ConceptAggregate, Collection<ConceptAggregate>> diagnosisMap,
                                                                final Collection<ConceptAggregate> allConcepts ) {
-      final ConceptAggregate naaccrCancer = ConceptAggregateMerger.createNaaccrCancer( patientId, diagnosisMap, allConcepts );
-
-
+//      final ConceptAggregate naaccrCancer = ConceptAggregateMerger.createNaaccrCancer( patientId, diagnosisMap, allConcepts );
 //      LOGGER.info( "\n===================== NAACCR Cancer =============================" );
 //      LOGGER.info( naaccrCancer );
 
 //      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer );
-      final NeoplasmSummary neoplasmSummary
-            = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer, true, allConcepts, false );
+//      final NeoplasmSummary neoplasmSummary
+//            = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer, allConcepts, false );
+      final List<NeoplasmSummary> cancerTumors = new ArrayList<>( diagnosisMap.size() );
+      for ( Map.Entry<ConceptAggregate,Collection<ConceptAggregate>> diagnosis : diagnosisMap.entrySet() ) {
+         final ConceptAggregate cancer = diagnosis.getKey();
+         final NeoplasmSummary cancerSummary = NeoplasmSummaryCreator.createNeoplasmSummary( cancer,
+                                                                                             true,
+                                                                                             allConcepts,
+                                                                                             false );
+         final List<NeoplasmSummary> tumorSummaries
+               = diagnosis.getValue().stream()
+                          .map( t -> NeoplasmSummaryCreator.createNeoplasmSummary( t,
+                                                                                   t.equals( cancer ),
+                                                                                   allConcepts,
+                                                                                   false ) )
+                          .collect( Collectors.toList() );
+         cancerSummary.setSubSummaries( tumorSummaries );
+         cancerTumors.add( cancerSummary );
+      }
 
       final PatientSummary patientSummary = new PatientSummary();
       patientSummary.setId( patientId );
-      patientSummary.setNeoplasms( Collections.singletonList( neoplasmSummary ) );
+      patientSummary.setNeoplasms( cancerTumors );
       return patientSummary;
    }
+
+}
 
 
 
@@ -208,7 +223,7 @@ final public class SummaryEngine {
 
 
 
-   // NOT NECESSARY W/O inDoc Coref
+// NOT NECESSARY W/O inDoc Coref
 //   static private Map<String, Collection<String>> mapBestRoots( final Map<String, Collection<String>> associatedUrisMap,
 //                                                                final Map<String, Collection<String>> chainedUrisMap ) {
 //      // Map of uri branches to their best root according to previously determined coreference chains.
@@ -262,12 +277,12 @@ final public class SummaryEngine {
 
 
 
-   // TODO
-   // TODO
-   // TODO                    For annotationConceptInstances run the byUriRelationFinder
-   //  and NonGraphedRelationFinder  (modified)
-   // TODO
-   // TODO
+// TODO
+// TODO
+// TODO                    For annotationConceptInstances run the byUriRelationFinder
+//  and NonGraphedRelationFinder  (modified)
+// TODO
+// TODO
 //   static private void addRelations( final Collection<JCas> docJcases,
 //                                     final Collection<Collection<ConceptAggregate>> conceptAggregateSet,
 //                                     final Collection<MentionRelation> patientRelations ) {
@@ -377,5 +392,3 @@ final public class SummaryEngine {
 //   Grade: 9
 //   TNM:
 
-
-}

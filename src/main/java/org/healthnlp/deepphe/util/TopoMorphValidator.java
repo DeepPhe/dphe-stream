@@ -85,7 +85,7 @@ public Collection<String> getBroadHistoCode( final String morphologyClass ) {
          String line = reader.readLine();
          while ( line != null ) {
             i++;
-            if ( i == 1 || line.isEmpty() ) {
+            if ( i == 1 || line.isEmpty() || line.startsWith( "//" ) ) {
                line = reader.readLine();
                continue;
             }
@@ -102,8 +102,10 @@ public Collection<String> getBroadHistoCode( final String morphologyClass ) {
             final String morphologyExact = splits[ 5 ].trim();
 
             // Ex: C000, LIP
-            topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteClasses.put( c, siteDescription ) );
-            topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteCodes.put( siteDescription, c ) );
+//            topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteClasses.put( c, siteDescription ) );
+//            topoCodes.stream().map( c -> c.substring( 0,3 ) ).distinct().forEach( c -> _siteCodes.put( siteDescription, c ) );
+            topoCodes.stream().distinct().forEach( c -> _siteClasses.put( c, siteDescription ) );
+            topoCodes.stream().distinct().forEach( c -> _siteCodes.put( siteDescription, c ) );
             // Ex: C000, [8000/3,8001/1,8002/3]
             topoCodes.forEach( c -> _topoMorphs.computeIfAbsent( c, n -> new HashSet<>() ).add( morphologyCode ) );
             // Ex: 800, Neoplasm
