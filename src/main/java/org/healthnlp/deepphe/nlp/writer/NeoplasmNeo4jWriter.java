@@ -146,8 +146,8 @@ public class NeoplasmNeo4jWriter extends JCasAnnotator_ImplBase {
       final String neo4jOkJson = JsonUtil.packForNeo4j( summaryJson );
       try ( Session session = driver.session() ) {
          try ( Transaction tx = session.beginTransaction() ) {
-//            tx.run( "CALL deepphe.addPatientSummary(\"" + neo4jOkJson + "\")" );
-            tx.run( "CALL deepphe." + callName + "(\"" + neo4jOkJson + "\")" );
+            tx.run( "CALL deepphe.addPatientSummary(\"" + neo4jOkJson + "\")" );
+//            tx.run( "CALL deepphe." + callName + "(\"" + neo4jOkJson + "\")" );
             tx.commit();
          }
       } catch ( Exception e ) {
