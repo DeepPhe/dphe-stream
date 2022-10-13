@@ -22,11 +22,11 @@
          <version>${project.version}</version>
       </dependency>
 
-<!--      <dependency>-->
-<!--         <groupId>org.apache.ctakes</groupId>-->
-<!--         <artifactId>ctakes-gui</artifactId>-->
-<!--         <version>${ctakes.version}</version>-->
-<!--      </dependency>-->
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-gui</artifactId>
+         <version>${ctakes.version}</version>
+      </dependency>
       <dependency>
          <groupId>org.apache.ctakes</groupId>
          <artifactId>ctakes-utils</artifactId>
