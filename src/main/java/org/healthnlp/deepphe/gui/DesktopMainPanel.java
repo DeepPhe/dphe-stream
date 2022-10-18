@@ -32,8 +32,7 @@ public class DesktopMainPanel extends JPanel {
    static private final Logger LOGGER = Logger.getLogger( "DeepPhe Desktop" );
 
    static private final String DPHE_NAME = "Patient Phenotype Summarizer";
-//   static private final String VIZ_NAME = "DeepPhe Visualizer";
-static private final String VIZ_NAME = "DeepPhe Visualization Tool";
+   static private final String VIZ_NAME = "DeepPhe Visualization Tool";
    static private final String HELP_NAME = "DeepPhe Web Site (Help)";
    static private final String NO_VALUE = "NO_PARAMETER_VALUE_PROVIDED";
    private static final String HTTPS_DEEPPHE_GITHUB_IO = "https://deepphe.github.io/";
@@ -170,7 +169,7 @@ static private final String VIZ_NAME = "DeepPhe Visualization Tool";
       button.setToolTipText( toolTip );
       button.setHorizontalTextPosition( SwingConstants.CENTER );
       button.setVerticalTextPosition( SwingConstants.BOTTOM );
-      button.setFont( new Font("Serif", Font.BOLD, 18 ) );
+      button.setFont( new Font(Font.SERIF, Font.BOLD, 18 ) );
       button.setText( toolTip );
       toolBar.add( button );
       toolBar.addSeparator( new Dimension( 10, 0 ) );
@@ -233,6 +232,7 @@ static private final String VIZ_NAME = "DeepPhe Visualization Tool";
          if ( _helpButton == null ) {
             return;
          }
+         // TODO - just use SystemUtil.openWebPage(..)
          LOGGER.info( "Opening Web Page: " + HTTPS_DEEPPHE_GITHUB_IO + " ...");
          String command = "start \"Browser\" /max " + HTTPS_DEEPPHE_GITHUB_IO;
          final String os = System.getProperty( "os.name" );
@@ -311,7 +311,7 @@ static private final String VIZ_NAME = "DeepPhe Visualization Tool";
       final JPanel panel = new JPanel( new BorderLayout() );
       panel.setBorder( new EmptyBorder( 20, 5, 5, 5 ) );
       final JLabel label = new JLabel( "Desktop Activity Log:" );
-      label.setFont( new Font("Courier", Font.PLAIN, 14 ) );
+      label.setFont( new Font(Font.DIALOG, Font.PLAIN, 14 ) );
       label.setBorder( new EmptyBorder( 5, 20, 5, 5 ) );
       panel.add( label, BorderLayout.NORTH );
       panel.add( LoggerPanel.createLoggerPanel(), BorderLayout.CENTER );
