@@ -36,12 +36,14 @@ public class DesktopMainPanel extends JPanel {
 static private final String VIZ_NAME = "DeepPhe Visualization Tool";
    static private final String HELP_NAME = "DeepPhe Web Site (Help)";
    static private final String NO_VALUE = "NO_PARAMETER_VALUE_PROVIDED";
+   private static final String HTTPS_DEEPPHE_GITHUB_IO = "https://deepphe.github.io/";
    private final Map<String,String> _parameterMap = new HashMap<>();
    private String _parameterFile;
    private JButton _dpheButton;
    private JButton _vizButton;
    private JButton _helpButton;
    private boolean _stop;
+
 
    DesktopMainPanel() {
       super( new BorderLayout() );
@@ -179,6 +181,8 @@ static private final String VIZ_NAME = "DeepPhe Visualization Tool";
       if ( _stop ) {
          return;
       }
+      LOGGER.info( "DIR: " + dir);
+      LOGGER.info( "Command: " + command);
       final SystemUtil.CommandRunner runner = new SystemUtil.CommandRunner( command );
       runner.setLogger( LOGGER );
       if ( dir != null && !dir.isEmpty() ) {
@@ -229,12 +233,12 @@ static private final String VIZ_NAME = "DeepPhe Visualization Tool";
          if ( _helpButton == null ) {
             return;
          }
-         LOGGER.info( "Opening Web Page ..." );
-         String command = "start \"Browser\" /max https://deepphe.github.io/";
+         LOGGER.info( "Opening Web Page: " + HTTPS_DEEPPHE_GITHUB_IO + " ...");
+         String command = "start \"Browser\" /max " + HTTPS_DEEPPHE_GITHUB_IO;
          final String os = System.getProperty( "os.name" );
          if ( !os.toLowerCase()
                  .contains( "windows" ) ) {
-            command = "xdg-open https://deepphe.github.io/ || sensible-browser https://deepphe.github.io/";
+            command = "xdg-open " + HTTPS_DEEPPHE_GITHUB_IO + " || sensible-browser " + HTTPS_DEEPPHE_GITHUB_IO + " || open " + HTTPS_DEEPPHE_GITHUB_IO;
          }
          try {
             SystemUtil.run( command );
