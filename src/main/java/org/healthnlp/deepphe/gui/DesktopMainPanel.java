@@ -180,8 +180,6 @@ public class DesktopMainPanel extends JPanel {
       if ( _stop ) {
          return;
       }
-      LOGGER.info( "DIR: " + dir);
-      LOGGER.info( "Command: " + command);
       final SystemUtil.CommandRunner runner = new SystemUtil.CommandRunner( command );
       runner.setLogger( LOGGER );
       if ( dir != null && !dir.isEmpty() ) {
