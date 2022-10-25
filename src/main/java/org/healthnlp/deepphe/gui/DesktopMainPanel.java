@@ -255,8 +255,8 @@ public class DesktopMainPanel extends JPanel {
       @Override
       public void run() {
          final String dir = "org/healthnlp/deepphe/desktop/icon/";
-         final String dphePng = "StartDphe_144.png";
-         final String vizPng = "StartViz_144_2.png";
+         final String dphePng = "StartPFS_144_4.png";
+         final String vizPng = "StartViz_144_3.png";
          final String helpPng = "Info_144_3.png";
          final Icon dpheIcon = IconLoader.loadIcon( dir + dphePng );
          final Icon vizIcon = IconLoader.loadIcon( dir + vizPng );
