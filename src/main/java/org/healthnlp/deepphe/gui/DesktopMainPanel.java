@@ -256,9 +256,8 @@ public class DesktopMainPanel extends JPanel {
       public void run() {
          final String dir = "org/healthnlp/deepphe/desktop/icon/";
          final String dphePng = "StartDphe_144.png";
-         final String vizPng = "StartViz_144.png";
-//         final String helpPng = "Help_144.png";
-         final String helpPng = "Info_144.png";
+         final String vizPng = "StartViz_144_2.png";
+         final String helpPng = "Info_144_3.png";
          final Icon dpheIcon = IconLoader.loadIcon( dir + dphePng );
          final Icon vizIcon = IconLoader.loadIcon( dir + vizPng );
          final Icon helpIcon = IconLoader.loadIcon( dir + helpPng );
