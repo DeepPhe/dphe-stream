@@ -227,6 +227,7 @@ public class DesktopMainPanel extends JPanel {
             runner.setDirectory( _dir );
          }
          LOGGER.info( "Starting " + _name + " ..." );
+         LOGGER.info( "\n     Initializing may require several seconds.\n     Please Wait.\n" );
          try {
             SystemUtil.run( runner );
          } catch ( IOException ioE ) {
