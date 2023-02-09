@@ -161,7 +161,8 @@ final public class SummaryEngine {
 
 //      final NeoplasmSummary neoplasmSummary = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer );
       final NeoplasmSummary neoplasmSummary
-            = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer, true, allConcepts, false );
+//            = NeoplasmSummaryCreator.createNeoplasmSummary( naaccrCancer, true, allConcepts, false );
+            = NeoplasmSummaryCreator.createNeoplasmSummaryLong( naaccrCancer, true, allConcepts, false );
 
       final PatientSummary patientSummary = new PatientSummary();
       patientSummary.setId( patientId );

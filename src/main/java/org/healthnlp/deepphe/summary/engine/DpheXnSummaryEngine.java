@@ -165,13 +165,24 @@ final public class DpheXnSummaryEngine {
       final List<NeoplasmSummary> cancerTumors = new ArrayList<>( diagnosisMap.size() );
       for ( Map.Entry<ConceptAggregate,Collection<ConceptAggregate>> diagnosis : diagnosisMap.entrySet() ) {
          final ConceptAggregate cancer = diagnosis.getKey();
-         final NeoplasmSummary cancerSummary = NeoplasmSummaryCreator.createNeoplasmSummary( cancer,
+//         final NeoplasmSummary cancerSummary = NeoplasmSummaryCreator.createNeoplasmSummary( cancer,
+//                                                                                             true,
+//                                                                                             allConcepts,
+//                                                                                             false );
+         final NeoplasmSummary cancerSummary = NeoplasmSummaryCreator.createNeoplasmSummaryLong( cancer,
                                                                                              true,
                                                                                              allConcepts,
                                                                                              false );
+//         final List<NeoplasmSummary> tumorSummaries
+//               = diagnosis.getValue().stream()
+//                          .map( t -> NeoplasmSummaryCreator.createNeoplasmSummary( t,
+//                                                                                   t.equals( cancer ),
+//                                                                                   allConcepts,
+//                                                                                   false ) )
+//                          .collect( Collectors.toList() );
          final List<NeoplasmSummary> tumorSummaries
                = diagnosis.getValue().stream()
-                          .map( t -> NeoplasmSummaryCreator.createNeoplasmSummary( t,
+                          .map( t -> NeoplasmSummaryCreator.createNeoplasmSummaryLong( t,
                                                                                    t.equals( cancer ),
                                                                                    allConcepts,
                                                                                    false ) )
