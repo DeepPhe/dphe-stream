@@ -39,9 +39,14 @@ final public class CrEvalSummarizer {
                          "laterality",
                          "grade",
                           "stage",
-                          "t", "n", "m"
-//                          "ER_", "PR_", "HER2", "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
-//                          "PDL1", "MSI", "KRAS", "PSA", "PSA_EL"
+                          "t", "n", "m",
+                          "ER_", "PR_", "HER2",
+//                          "KI67", "BRCA1", "BRCA2", "ALK", "EGFR",
+                          "BRAF",
+//                          "ROS1",
+//                          "PDL1", "MSI",
+                          "KRAS",
+                          "PSA", "PSA_EL"
                         );
    static private final List<String> EVAL_ATTRIBUTE_NAMES
          = Arrays.asList( "*record_id",
@@ -53,9 +58,14 @@ final public class CrEvalSummarizer {
                           "laterality",
                           "grade",
                           "stage",
-                          "t", "n", "m"
-//                          "ER_", "PR_", "HER2", "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
-//                          "PDL1", "MSI", "KRAS", "PSA", "PSA_EL"
+                          "t", "n", "m",
+                          "ER_", "PR_", "HER2",
+//                          "KI67", "BRCA1", "BRCA2", "ALK", "EGFR",
+                          "BRAF",
+//                          "ROS1",
+//                          "PDL1", "MSI",
+                          "KRAS",
+                          "PSA", "PSA_EL"
                         );
 
    public static void main( final String... args ) {

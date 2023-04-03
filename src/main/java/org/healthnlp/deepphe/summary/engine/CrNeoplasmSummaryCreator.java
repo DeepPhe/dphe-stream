@@ -95,7 +95,13 @@ final public class CrNeoplasmSummaryCreator {
       attributes.add( getAttribute( "t", neoplasm, T_InfoCollector::new, TnmNormalizer::new, dependencies ) );
       attributes.add( getAttribute( "n", neoplasm, N_InfoCollector::new, TnmNormalizer::new, dependencies ) );
       attributes.add( getAttribute( "m", neoplasm, M_InfoCollector::new, TnmNormalizer::new, dependencies ) );
-
+      attributes.add( getBiomarker( "ER_", neoplasm, dependencies ) );
+      attributes.add( getBiomarker( "PR_", neoplasm, dependencies ) );
+      attributes.add( getBiomarker( "HER2", neoplasm, dependencies ) );
+      attributes.add( getBiomarker( "BRAF", neoplasm, dependencies ) );
+      attributes.add( getBiomarker( "KRAS", neoplasm, dependencies ) );
+      attributes.add( getBiomarker( "PSA", neoplasm, dependencies ) );
+      attributes.add( getBiomarker( "PSA_EL", neoplasm, dependencies ) );
       summary.setAttributes( attributes );
       return summary;
    }
