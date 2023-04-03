@@ -59,10 +59,14 @@ final public class NeoplasmSummaryCreator {
 
    static private final Map<String,String> TOPO_MAJOR_MAP = new HashMap<>();
 
-   static private final boolean _debug = false;
+   static private boolean _debug = false;
 
    private NeoplasmSummaryCreator() {}
 
+
+   static public void setDebug( final boolean debug ) {
+      _debug = debug;
+   }
 
    static public void addDebug( final String text ) {
       if ( _debug ) {

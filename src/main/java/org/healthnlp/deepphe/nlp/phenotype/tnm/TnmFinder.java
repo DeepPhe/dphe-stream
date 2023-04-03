@@ -186,10 +186,13 @@ public enum TnmFinder {
                            .replace( ")", "" )
                            .replace( " ", "" );
       }
-
+//
       public String getUri() {
          if ( _isPathologic ) {
 //            return "p" + _uriSeed + "_Stage";
+            if ( _uriSeed.equals( "Mx" ) ) {
+               return "PMX_Category";
+            }
             return "P" + _uriSeed + "_Stage";  // As of ontology 62 all class names are capitalized
          }
          return _uriSeed + "_Stage";
@@ -208,6 +211,28 @@ public enum TnmFinder {
          return !uri.equals( "TA" ) && !(prefix == 'a' && uri.equals( "ni" ));
       }
    }
+
+   static public List<IdentifiedAnnotation> addTnms( final JCas jcas ) {
+      final String docText = jcas.getDocumentText();
+      final List<SimpleTnm> tnms = getTnms( docText );
+      if ( tnms.isEmpty() ) {
+         return Collections.emptyList();
+      }
+      final boolean isPathologic = docText.toLowerCase().contains( "patholog" );
+      if ( isPathologic ) {
+         tnms.forEach( SimpleTnm::setPathologic );
+      }
+      final List<IdentifiedAnnotation> tnmAnnotations = new ArrayList<>();
+      for ( SimpleTnm tnm : tnms ) {
+          // Clinical Attribute
+         final Collection<IdentifiedAnnotation> annotations
+               = UriAnnotationFactory.createIdentifiedAnnotations( jcas, tnm._begin, tnm._end, tnm.getUri(),
+                                                                   SemanticGroup.CLINICAL_ATTRIBUTE, "T201" );
+         tnmAnnotations.addAll( annotations );
+      }
+      return tnmAnnotations;
+   }
+
 
    static public List<IdentifiedAnnotation> addTnms( final JCas jcas, final AnnotationFS lookupWindow ) {
       final String windowText = lookupWindow.getCoveredText();

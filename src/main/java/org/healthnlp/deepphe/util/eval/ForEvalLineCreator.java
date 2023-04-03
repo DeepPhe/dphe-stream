@@ -12,8 +12,8 @@ final public class ForEvalLineCreator {
    static public String createBsv( final String patientId, final NeoplasmSummary summary,
                                    final List<String> attributeNames ) {
       final StringBuilder sb = new StringBuilder();
-      sb.append( patientId ).append( '|' );
-      sb.append( summary.getId() ).append( '|' );
+      sb.append( patientId ).append( '|' ).append( '|' );
+      sb.append( summary.getId() ).append( '|' ).append( '|' );
       final List<String> values = createAttributeList( summary, attributeNames );
       values.forEach( v -> sb.append( v ).append( '|' ) );
       sb.append( '\n' );
@@ -31,7 +31,7 @@ final public class ForEvalLineCreator {
          if ( index < 0 ) {
             continue;
          }
-         values[ index ] = attribute.getValue();
+         values[ index ] = attribute.getValue()+"|"+attribute.getConfidence();
       }
       return Arrays.asList( values );
    }

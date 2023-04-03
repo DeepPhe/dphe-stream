@@ -40,6 +40,9 @@ addDescription POSTagger
 //  Add phrase chunkers.
 //load ChunkerSubPipe
 
+// GleasonFinder removes existing annotations, so put it in front of dictionary lookup.
+add GleasonFinder
+
 // Structured (non-prose) text ruins pos entirely.
 set exclusionTags=""
 ///  Set the path to the xml file containing information for dictionary lookup configuration.
@@ -73,7 +76,7 @@ add DiseaseAttributeFinder
 // Adjust attributes by text
 add CancerAttributeAdjuster
 
-// Negate any cancers that are alone in a paragraph and any 1 is negated
+// Negate any cancers that are alone in a paragraph and any 1 is negated --> Good?
 add LonerNegator
 
 //  Fix the Subject type (patient, family member) by section type.
@@ -88,10 +91,18 @@ add SubjectSectionFixer
 
 //add Ki67Finder
 
-add BiomarkerFinder
+// Formerly used in NonGraphedRelationFinder
+add TnmFinderAe
+
+// Formerly used in NonGraphedRelationFinder
+add ClockFaceFinder
+
+// Don't need biomarkers for dphe-cr
+//add BiomarkerFinder
 //add division.BiomarkerFinder
 
-add GradeFinder
+// GradeFinder looks like it is removing things ?  Dictionary lookup should be enough.
+//add GradeFinder
 //add division.GradeFinder
 
 // Adjust Subjects for entities
@@ -101,12 +112,17 @@ add SubjectAdjuster
 add SectionIdSetter
 
 //  Find relations declared in the ontology.
-add InDocUriRelationFinder
+//add InDocUriRelationFinder
+//add GraphRelationFinder DeepPheCR=yes
+add CrRelationFinder
 
 //  Find relations not declared in the ontology by special means.
 //  Modified this to make "v5" faster.
-add NonGraphedRelationFinder
+//add NonGraphedRelationFinder
+// Moved all non-graphrelation things to annotation finders and added relations in CustomUriRelations.
+// CrRelationFinder should be able to make the relations.
+//add CrNonGraphedRelationFinder
 
 add JsonNodeCreator
-//add html.HtmlTextWriter OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=HTML
+add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_03_2023 SubDirectory=HTML
 //add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=TEXT

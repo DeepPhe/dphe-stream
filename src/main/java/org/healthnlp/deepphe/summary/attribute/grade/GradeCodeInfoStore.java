@@ -53,6 +53,7 @@ final public class GradeCodeInfoStore implements CodeInfoStore {
          } else {
             return -1;
          }
+         // There is a Tumor_Grade_G0
       } else if ( uri.equals( "Grade_1" ) || uri.equals( "Tumor_Grade_G1" )
                   || uri.equals( "Low_Grade" )
                   || uri.equals( "Low_Grade_Malignant_Neoplasm" )

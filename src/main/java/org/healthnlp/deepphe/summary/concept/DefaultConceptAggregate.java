@@ -60,7 +60,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
     * @param documentId id of the document with annotation
     * @param date       the date for the document in which the given annotation is found
     */
-   final public void addMention( final Mention mention,
+   public void addMention( final Mention mention,
                                  final String documentId,
                                  final Date date ) {
       _noteIdMap.put( mention, documentId );
@@ -68,6 +68,10 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
          _noteDateMap.put( mention, date );
       }
    }
+
+
+
+
 
    /**
     * @return the url of the instance
@@ -122,7 +126,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
     * {@inheritDoc}
     */
    @Override
-   final public Map<String,Collection<ConceptAggregate>> getRelatedConceptMap() {
+   public Map<String,Collection<ConceptAggregate>> getRelatedConceptMap() {
       return _relatedConceptMap != null ? _relatedConceptMap : Collections.emptyMap();
    }
 
@@ -130,7 +134,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
     * {@inheritDoc}
     */
    @Override
-   final public void addRelated( final String type, final ConceptAggregate related ) {
+   public void addRelated( final String type, final ConceptAggregate related ) {
       if ( related == null ) {
          return;
       }
@@ -144,7 +148,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
     * {@inheritDoc}
     */
    @Override
-   final public void addRelated( final String type, final Collection<ConceptAggregate> related ) {
+   public void addRelated( final String type, final Collection<ConceptAggregate> related ) {
       if ( related == null || related.isEmpty() ) {
          return;
       }
@@ -158,7 +162,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
     * {@inheritDoc}
     */
    @Override
-   final public void clearRelations() {
+   public void clearRelations() {
       if ( _relatedConceptMap != null ) {
          _relatedConceptMap.clear();
       }
@@ -166,7 +170,7 @@ final public class DefaultConceptAggregate implements ConceptAggregate {
 
 
 
-   final public Map<Mention, String> getNoteIdMap() {
+   public Map<Mention, String> getNoteIdMap() {
       return _noteIdMap != null ? _noteIdMap : Collections.emptyMap();
    }
 

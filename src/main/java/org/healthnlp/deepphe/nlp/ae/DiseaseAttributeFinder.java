@@ -71,6 +71,7 @@ final public class DiseaseAttributeFinder extends JCasAnnotator_ImplBase {
       PROSPECTIVE( "prospective" ),
       SUSPECT( "susp(?:ect|icious)" ),
       SEEMS( "\\bseems\\b" ),
+      RULE_OUT("ruled? out" ),
       //      INDICATE( "indicate" ),
       VERSUS( "\\bv(?:ersu)?s.?\\b" );
 

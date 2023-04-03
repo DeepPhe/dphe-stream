@@ -41,7 +41,8 @@ for the sake of ide ease-of-use, the user should be aware of these hsql limitati
 <conceptFactories>
    <conceptFactory>
       <name>ncit_plus_16abConcepts</name>
-      <implementationName>org.apache.ctakes.dictionary.lookup2.concept.AllTuiConceptFactory</implementationName>
+<!--      <implementationName>org.apache.ctakes.dictionary.lookup2.concept.AllTuiConceptFactory</implementationName>-->
+      <implementationName>org.apache.ctakes.dictionary.lookup2.concept.UriConceptFactory</implementationName>
       <properties>
          <property key="jdbcDriver" value="org.hsqldb.jdbcDriver"/>
          <property key="jdbcUrl" value="jdbc:hsqldb:file:resources/org/apache/ctakes/dictionary/lookup/fast/ncit_plus_16ab/ncit_plus_16ab"/>
@@ -68,7 +69,8 @@ for the sake of ide ease-of-use, the user should be aware of these hsql limitati
 <rareWordConsumer>
    <name>Term Consumer</name>
    <!--   <implementationName>org.apache.ctakes.dictionary.lookup2.consumer.AllTuiTermConsumer</implementationName>-->
-   <implementationName>org.apache.ctakes.dictionary.lookup2.consumer.ByTuiTermConsumer</implementationName>
+<!--   <implementationName>org.apache.ctakes.dictionary.lookup2.consumer.ByTuiTermConsumer</implementationName>-->
+   <implementationName>org.apache.ctakes.dictionary.lookup2.consumer.PrecisionTermConsumer</implementationName>
    <properties>
 <!-- Depending upon the consumer, the value of codingScheme may or may not be used.  With the packaged consumers,
 codingScheme is a default value used only for cuis that do not have secondary codes (snomed, rxnorm, etc.)  -->
