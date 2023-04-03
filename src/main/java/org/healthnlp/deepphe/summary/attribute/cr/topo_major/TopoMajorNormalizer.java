@@ -73,15 +73,18 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
       final List<String> codes = new ArrayList<>();
       final Collection<String> allTableCodes = TOPO_MAJOR_MAP_FULL.get( uri );
       if ( allTableCodes != null ) {
-         codes.addAll( allTableCodes );
+         codes.forEach( c -> allTableCodes.add( c.substring( 0,3 ) ) );
+//         codes.addAll( allTableCodes );
       }
       final String tableCode = TOPO_MAJOR_MAP.get( uri );
       if ( tableCode != null ) {
-         codes.add( tableCode );
+//         codes.add( tableCode );
+         codes.add( tableCode.substring( 0, 3 ) );
       }
       final String ontoCode = Neo4jOntologyConceptUtil.getIcdoTopoCode( uri );
       if ( !ontoCode.isEmpty() && !ontoCode.contains( "-" ) ) {
-         codes.add( ontoCode );
+//         codes.add( ontoCode );
+         codes.add( ontoCode.substring( 0, 3 ) );
       }
       return codes;
    }
