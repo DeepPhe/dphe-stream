@@ -31,7 +31,7 @@ final public class ForEvalLineCreator {
          if ( index < 0 ) {
             continue;
          }
-         values[ index ] = attribute.getValue()+"|"+attribute.getConfidence();
+         values[ index ] = attribute.getValue()+"|"+(attribute.getConfidence()/10000d);
       }
       return Arrays.asList( values );
    }

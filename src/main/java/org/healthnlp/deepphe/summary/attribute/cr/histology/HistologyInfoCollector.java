@@ -1,6 +1,5 @@
 package org.healthnlp.deepphe.summary.attribute.cr.histology;
 
-import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.node.NoteNodeStore;
@@ -8,9 +7,10 @@ import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttribute
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
@@ -22,7 +22,8 @@ public class HistologyInfoCollector extends AbstractAttributeInfoCollector {
 
 
    public Collection<String> getRelationTypes() {
-      return Arrays.asList( RelationConstants.HAS_DIAGNOSIS, RelationConstants.HAS_TUMOR_EXTENT );
+//      return Arrays.asList( RelationConstants.HAS_DIAGNOSIS, RelationConstants.HAS_TUMOR_EXTENT );
+      return Collections.emptyList();
    }
 
    // Is this necessary? --> move to normalizer and adjust confidence per aggregate?
@@ -59,6 +60,30 @@ public class HistologyInfoCollector extends AbstractAttributeInfoCollector {
          return statedHistologies;
       }
       return histologies;
+   }
+
+
+   /**
+    *
+    * @return between 0 and 1
+    */
+   public double getConfidence() {
+      if ( getBestAggregates().isEmpty() ) {
+         return 0;
+      }
+      final double best = getBestAggregates().stream()
+                                            .mapToDouble( CrConceptAggregate::getConfidence )
+                                            .sum();
+      final double all = Math.max( 1, getAllAggregates().size() );
+      NeoplasmSummaryCreator.addDebug( "HistologyInfoCollector.getConfidence Aggregates "
+                                       + getBestAggregates()
+                                             .stream()
+                                             .mapToDouble( CrConceptAggregate::getConfidence )
+                                             .sorted()
+                                             .mapToObj( d -> d + "" )
+                                             .collect( Collectors.joining( "," ) )
+                                       + " / " + all + " = " + (best/all) +"\n");
+      return 100 * best / all;
    }
 
 
