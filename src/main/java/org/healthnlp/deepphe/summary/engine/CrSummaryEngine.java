@@ -3,6 +3,7 @@ package org.healthnlp.deepphe.summary.engine;
 import org.apache.ctakes.core.util.annotation.SemanticTui;
 import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
+import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregateCreator;
@@ -26,6 +27,7 @@ final public class CrSummaryEngine {
       final Collection<Note> patientNotes = patient.getNotes();
       for ( Note note : patientNotes ) {
          final String noteId = note.getId();
+         NoteNodeStore.getInstance().add( noteId, note );
          note.getMentions().forEach( m -> patientMentionNoteIds.put( m, noteId ) );
          patientRelations.addAll( note.getRelations() );
 
@@ -43,6 +45,7 @@ final public class CrSummaryEngine {
                                                                   patientMentionNoteIds,
                                                                   patientRelations );
       patientSummary.setPatient( patient );
+      patientNotes.stream().map( Note::getId ).forEach( NoteNodeStore.getInstance()::remove );
       return patientSummary;
    }
 

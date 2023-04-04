@@ -62,12 +62,18 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
 
 //   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|\\+(?:pos)?|overexpression";
 //   static private final String REGEX_NEGATIVE = "\\-?neg(?:ative)?|\\-(?:neg)?|(?:not amplified)|(?:no [a-z] detected)";
-static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpression";
+   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpression";
+   static private final String REGEX_NUM_POSITIVE = "3\\+";
+
    static private final String REGEX_NEGATIVE = "-?neg(?:ative)?|(?:not amplified)|(?:no [a-z] detected)|(?:non-? "
                                                 + "?detected)";
+   static private final String REGEX_NUM_NEGATIVE = "0|1\\+";
+
    static private final String REGEX_UNKNOWN
 //         = "unknown|indeterminate|equivocal|borderline|(?:not assessed|requested|applicable)|\\sN\\/?A\\s";
          = "unknown|indeterminate|equivocal|borderline";
+   static private final String REGEX_NUM_BORDERLINE = "2\\+";
+
    static private final String REGEX_NOT_ASSESSED
          = "(?:not assessed|requested|applicable)|insufficient|pending|\\sN\\/?A";
 
@@ -82,6 +88,14 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
          + ")|(?:" + REGEX_NEGATIVE
          + ")|(?:" + REGEX_UNKNOWN
          + ")|(?:" + REGEX_NOT_ASSESSED + ")";
+   static private final String REGEX_POS_NEG_UNK_NA_NUM
+         = "(?:" + REGEX_POSITIVE
+           + ")|(?:" + REGEX_NUM_POSITIVE
+           + ")|(?:" + REGEX_NEGATIVE
+           + ")|(?:" + REGEX_NUM_NEGATIVE
+           + ")|(?:" + REGEX_UNKNOWN
+           + ")|(?:" + REGEX_NUM_BORDERLINE
+           + ")|(?:" + REGEX_NOT_ASSESSED + ")";
 
    static private final String REGEX_0_9
          = "[0-9]|zero|one|two|three|four|five|six|seven|eight|nine";
@@ -118,7 +132,7 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
 
       HER2( "(?:HER-? ?2(?: ?\\/?-? ?neu)?\\+?-?(?:\\s*ONCOGENE)?(?:\\s*\\(?ERBB2\\)?)?)",
             "",
-            REGEX_POS_NEG_UNK_NA ),
+            REGEX_POS_NEG_UNK_NA_NUM ),
 
       KI67( "M?KI ?-? ?67(?: Antigen)?",
             "",
@@ -303,6 +317,7 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
                                       final Pair<Integer> biomarkerSpan,
                                      final Collection<Pair<Integer>> sentenceSpans,
                                      final Collection<Integer> annotationBegins ) {
+//      LOGGER.info( "Adding Biomarker " + biomarker.name() );
       final Pair<Integer> sentenceSpan = getSentenceSpan( biomarkerSpan, sentenceSpans );
       final int followingAnnotation = getFollowingAnnotation( biomarkerSpan, text.length(), annotationBegins );
       if ( addBioMarkerFollowed( jCas, biomarker, text, biomarkerSpan, sentenceSpan, followingAnnotation ) ) {
@@ -320,6 +335,7 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
                                                 final Pair<Integer> biomarkerSpan,
                                                 final Pair<Integer> sentenceSpan,
                                                 final int followingAnnotation ) {
+//      LOGGER.info( "Add Biomarker Followed " + biomarker.name() );
       if ( biomarker._plusMinus ) {
          final char c = text.charAt( biomarkerSpan.getValue2()-1 );
          if ( (c == '+' || c == '-') && isWholeWord( text, biomarkerSpan ) ) {
@@ -356,6 +372,7 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
                                                 final Pair<Integer> biomarkerSpan,
                                                 final Pair<Integer> sentenceSpan,
                                                 final int precedingAnnotation ) {
+//      LOGGER.info( "Add Biomarker Followed " + biomarker.name() );
       if ( !biomarker._canPrecede ) {
          return false;
       }
@@ -383,12 +400,16 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
    static private void addBiomarker( final JCas jCas,
                                       final Biomarker biomarker,
                                         final int valueSpanBegin, final int valueSpanEnd ) {
+//      LOGGER.info( "Adding Biomarker " + biomarker.name() + " "
+//                   + jCas.getDocumentText().substring( valueSpanBegin,
+//                                                       valueSpanEnd ) );
+      // Uses name as URI, value as span.
       UriAnnotationFactory.createIdentifiedAnnotations( jCas,
                                                         valueSpanBegin,
                                                         valueSpanEnd,
                                                         biomarker.name(),
                                                         SemanticGroup.FINDING,
-                                                        "T184" );
+                                                      "T033" );
    }
 
 
@@ -443,8 +464,9 @@ static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpr
                                            final Pair<Integer> sentenceSpan,
                                            final int followingAnnotation ) {
       final int sentenceOrAnnotation = Math.min( followingAnnotation, sentenceSpan.getValue2() );
-//      final int windowSize = Math.min( text.length(), biomarkerSpan.getValue2() + biomarker._windowSize );
       String nextText = text.substring( biomarkerSpan.getValue2(), sentenceOrAnnotation );
+//      final int windowSize = Math.min( text.length(), biomarkerSpan.getValue2() + biomarker._windowSize );
+//      String nextText = text.substring( biomarkerSpan.getValue2(), windowSize );
       // Check for end of paragraph
       final int pIndex = nextText.indexOf( "\n\n" );
       if ( pIndex == 0 ) {

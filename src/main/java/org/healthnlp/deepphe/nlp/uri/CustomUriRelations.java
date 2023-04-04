@@ -33,9 +33,7 @@ public enum CustomUriRelations {
       NEOPLASM_RELATIONS.put( RelationConstants.HAS_STAGE, getStageUris() );
       NEOPLASM_RELATIONS.put( RelationConstants.HAS_GRADE, getGradeUris() );
       NEOPLASM_RELATIONS.put( RelationConstants.HAS_BEHAVIOR, getBehaviorUris() );
-//         HAS_ER_STATUS.equals( category ) || HAS_PR_STATUS.equals( category ) ||
-//                     HAS_HER2_STATUS.equals( category )
-//
+      NEOPLASM_RELATIONS.put( RelationConstants.has_Biomarker, getBiomarkerUris() );
       return NEOPLASM_RELATIONS;
    }
 
@@ -140,6 +138,19 @@ public enum CustomUriRelations {
 //                                           "Carcinoma", "Adenocarcinoma"
                                          ) );
       return BEHAVIOR_URIS;
+   }
+
+   private final Collection<String> BIOMARKER_URIS = new HashSet<>();
+   public Collection<String> getBiomarkerUris() {
+      if ( !BIOMARKER_URIS.isEmpty() ) {
+         return BIOMARKER_URIS;
+      }
+      // https://training.seer.cancer.gov/coding/guidelines/morphology.html   0, 1, 2, 3, 6 below.
+      // Registries do not use #6 (Invasive), so cast to 3.
+      BIOMARKER_URIS.addAll( Arrays.asList( "ER_", "PR_", "HER2", "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF",
+                                            "ROS1", "PDL1", "MSI", "KRAS", "PSA", "PSA_EL"
+                                         ) );
+      return BIOMARKER_URIS;
    }
 
 

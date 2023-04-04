@@ -28,7 +28,10 @@ import org.healthnlp.deepphe.summary.attribute.cr.topo_major.TopoMajorNormalizer
 import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.TopoMinorTypeSelector;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 
@@ -121,11 +124,6 @@ final public class CrNeoplasmSummaryCreator {
 
 
 
-
-   // TODO ER_amount, ER_procedure, PR_amount, PR_procedure, HER2_amount, HER2_procedure (has_method)
-   static private final Collection<String> BIOMARKERS = Arrays.asList(
-         "ER_", "PR_", "HER2", "KI67", "BRCA1", "BRCA2", "ALK", "EGFR", "BRAF", "ROS1",
-         "PDL1", "MSI", "KRAS", "PSA", "PSA_EL" );
 
    static private NeoplasmAttribute getBiomarker( final String name,
                                                   final CrConceptAggregate neoplasm,

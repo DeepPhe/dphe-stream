@@ -45,6 +45,8 @@ add GleasonFinder
 
 // Structured (non-prose) text ruins pos entirely.
 set exclusionTags=""
+// use minimum span of 2 for lt (left), rt (right), gr (grade n), etc.
+set minimumSpan=2
 ///  Set the path to the xml file containing information for dictionary lookup configuration.
 set LookupXml=org/apache/ctakes/dictionary/lookup/fast/ncit_plus_16ab.xml
 //  Annotate concepts based upon default algorithms.
@@ -97,8 +99,8 @@ add TnmFinderAe
 // Formerly used in NonGraphedRelationFinder
 add ClockFaceFinder
 
-// Don't need biomarkers for dphe-cr
-//add BiomarkerFinder
+// Don't need biomarkers for dphe-cr, but testing with them anyway.
+add BiomarkerFinder
 //add division.BiomarkerFinder
 
 // GradeFinder looks like it is removing things ?  Dictionary lookup should be enough.
@@ -124,5 +126,5 @@ add CrRelationFinder
 //add CrNonGraphedRelationFinder
 
 add JsonNodeCreator
-//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_03_2023 SubDirectory=HTML
+//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_04_2023 SubDirectory=HTML
 //add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:/Spiffy/output/dphe_output/dphe_5/04_21_2021/kcr/combined SubDirectory=TEXT

@@ -181,38 +181,11 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
       return bestRelations;
    }
 
-   private Collection<ConceptAggregateRelation> getBestRelations_( final String type ) {
-      if ( _aggregateRelationMap == null || _aggregateRelationMap.isEmpty() ) {
-         return Collections.emptyList();
-      }
-      final Collection<ConceptAggregateRelation> relations
-            = _aggregateRelationMap.getOrDefault( type, Collections.emptyList() );
-      if ( relations.size() < 2 ) {
-         return relations;
-      }
-      return getBestRelations( relations );
-   }
-
-   public Collection<ConceptAggregateRelation> getBestRelations( final String... types ) {
-      if ( _aggregateRelationMap == null || _aggregateRelationMap.isEmpty() ) {
-         return Collections.emptyList();
-      }
-      return Stream.of( types )
-                   .map( this::getBestRelations_ )
-                   .flatMap( Collection::stream )
-                   .collect( Collectors.toSet() );
-   }
-
    private Collection<ConceptAggregateRelation> getRelations_( final String type ) {
       if ( _aggregateRelationMap == null || _aggregateRelationMap.isEmpty() ) {
          return Collections.emptyList();
       }
-      final Collection<ConceptAggregateRelation> relations
-            = _aggregateRelationMap.getOrDefault( type, Collections.emptyList() );
-      if ( relations.size() < 2 ) {
-         return relations;
-      }
-      return getBestRelations( relations );
+      return _aggregateRelationMap.getOrDefault( type, Collections.emptyList() );
    }
 
    public Collection<ConceptAggregateRelation> getRelations( final String... types ) {

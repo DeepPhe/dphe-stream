@@ -56,15 +56,16 @@ public interface AttributeInfoCollector {
     * @return between 0 and 1
     */
    default double getConfidence() {
-      if ( getBestRelations().isEmpty() ) {
+      final Collection<ConceptAggregateRelation> relations = getBestRelations();
+      if ( relations.isEmpty() ) {
          return 0;
       }
-      final double best = getBestRelations().stream()
+      final double best = relations.stream()
                                             .mapToDouble( ConceptAggregateRelation::getConfidence )
                                             .sum();
-      final double all = getAllRelations().size();
+      final double all = relations.size();
       NeoplasmSummaryCreator.addDebug( "AttributeInfoCollector.getConfidence Relations "
-                                                                        + getBestRelations()
+                                                                        + relations
                                              .stream()
                                              .mapToDouble( ConceptAggregateRelation::getConfidence )
                                                                                             .sorted()

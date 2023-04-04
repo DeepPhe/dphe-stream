@@ -28,6 +28,21 @@ public class BiomarkerInfoCollector extends AbstractAttributeInfoCollector {
    }
 
    public Collection<ConceptAggregateRelation> getAllRelations() {
+//      NeoplasmSummaryCreator.addDebug( "BiomarkerInfoCollector getting relations for "
+//                                       + String.join( ",", _wantedUris ) +
+//                                       " " + getNeoplasm()
+//                                             .getRelations( getRelationTypes()
+//                                                                  .toArray( new String[0] ) )
+//                                             .stream().map( ConceptAggregateRelation::getTarget )
+//                                             .map( CrConceptAggregate::getCoveredText ).collect( Collectors.joining(
+//                                                   ",") ) + "  --> "
+//                                       + getNeoplasm().getRelations( getRelationTypes().toArray( new String[0] ) )
+//                                                     .stream()
+//                                                     .filter( hasWantedUri )
+//                                                      .map( ConceptAggregateRelation::getTarget )
+//                                                      .map( CrConceptAggregate::getCoveredText )
+//                                                     .collect( Collectors.joining(",") )
+//                                                     + "\n" );
       return getNeoplasm().getRelations( getRelationTypes().toArray( new String[0] ) )
                           .stream()
                           .filter( hasWantedUri )

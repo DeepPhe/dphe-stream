@@ -24,6 +24,13 @@ public class BiomarkerNormalizer extends AbstractAttributeNormalizer {
    }
 
    public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+      if ( aggregates.isEmpty() ) {
+         return "";
+      }
+//      NeoplasmSummaryCreator.addDebug( "BiomarkerNormalizer Aggregates "
+//                                       + aggregates.stream()
+//                                                   .map( CrConceptAggregate::getCoveredText )
+//                                                   .collect( Collectors.joining(" , ") ) + "\n" );
       // Map of covered text to the number of times that
       final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
       final Map<String,Long> countMap = confidenceGroup.getBest()
@@ -73,7 +80,40 @@ public class BiomarkerNormalizer extends AbstractAttributeNormalizer {
                                    .replace( ']', ' ' )
                                    .trim()
                                    .toLowerCase();
-      return Arrays.asList( StringUtil.fastSplit( text, ',' ) );
+      return Arrays.stream( StringUtil.fastSplit( text, ',' ) )
+                   .map( String::trim )
+                    .map( NORMAL::getNormal )
+                   .distinct()
+                   .filter( t -> !t.isEmpty() )
+                   .collect( Collectors.toList() );
    }
+
+   private enum NORMAL {
+      Positive( "+", "pos", "positive", "positivity", "overexpression", "3+" ),
+      Negative( "-", "neg", "negative", "not amplified", "non detected", "non-detected", "0", "1+" ),
+      Elevated( "rising", "increasing", "elevated", "elvtd", "raised", "increased", "strong", "amplified" ),
+      Unknown( "unknown", "indeterminate", "equivocal", "borderline", "2+" ),
+      Not_Assessed( "not assessed", "not requested", "not applicable", "insufficient", "pending", "n/a" );
+
+      private final Collection<String> _text;
+      NORMAL( final String ... text ) {
+         _text = new HashSet<>( Arrays.asList( text ) );
+      }
+      static private String getNormal( final String text ) {
+         if ( text.isEmpty() ) {
+            return "";
+         }
+         for ( NORMAL normal : values() ) {
+            if ( normal._text.contains( text ) ) {
+               return normal.name().replace( '_', ' ' );
+            }
+         }
+         if ( text.startsWith( "no " ) && text.endsWith( " detected" ) ) {
+            return Negative.name();
+         }
+         return text;
+      }
+   }
+
 
 }

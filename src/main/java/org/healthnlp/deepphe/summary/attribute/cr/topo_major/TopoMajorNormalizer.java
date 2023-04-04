@@ -38,6 +38,10 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
    }
 
    public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+      if ( aggregates.isEmpty() ) {
+         return "C80";
+      }
+      setAllCodesCount( aggregates.size() );
       final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
       final Map<String,Long> countMap = confidenceGroup.getBest()
                                                            .stream()
@@ -47,15 +51,43 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
                                                            .map( c -> c.substring( 0,3 ) )
                                                            .collect( Collectors.groupingBy( Function.identity(),
                                                                                             Collectors.counting() ) );
+      if ( !countMap.isEmpty() ) {
+         final String code = getBestCode( countMap );
+         if ( !code.isEmpty() ) {
+            return code;
+         }
+      }
+      final Map<String,Long> countMap2 = confidenceGroup.getNext()
+                                                       .stream()
+                                                       .map( CrConceptAggregate::getUri )
+                                                       .map( this::getCodes )
+                                                       .flatMap( Collection::stream )
+                                                       .map( c -> c.substring( 0,3 ) )
+                                                       .collect( Collectors.groupingBy( Function.identity(),
+                                                                                        Collectors.counting() ) );
+      if ( !countMap2.isEmpty() ) {
+         final String code = getBestCode( countMap2 );
+         if ( !code.isEmpty() ) {
+            return code;
+         }
+      }
+      NeoplasmSummaryCreator.addDebug( "No codes for " + confidenceGroup.getTopmost()
+                                                                        .stream()
+                                                                        .map( CrConceptAggregate::getUri )
+                                                                        .collect( Collectors.joining(",") ) );
+      return "C80";
+   }
+
+   private String getBestCode( final Map<String,Long> countMap ) {
       final List<String> codeList = new ArrayList<>( countMap.keySet() );
       codeList.sort( Comparator.reverseOrder() );
       final String bestCode = codeList.get( 0 );
       if ( bestCode.isEmpty() ) {
          return "";
       }
-      long bestCount = countMap.get( bestCode );
+      final long bestCount = countMap.get( bestCode );
       setBestCodesCount( (int)bestCount );
-      setAllCodesCount( aggregates.size() );
+//      setAllCodesCount( aggregates.size() );
       setUniqueCodeCount( countMap.size() );
       NeoplasmSummaryCreator.addDebug( "TopoMajorNormalizer "
                                        + countMap.entrySet().stream()
@@ -65,6 +97,7 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
       return bestCode;
    }
 
+
    public String getCode( final String uri ) {
       return String.join( ";", getCodes( uri ) );
    }
@@ -73,17 +106,14 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
       final List<String> codes = new ArrayList<>();
       final Collection<String> allTableCodes = TOPO_MAJOR_MAP_FULL.get( uri );
       if ( allTableCodes != null ) {
-         codes.forEach( c -> allTableCodes.add( c.substring( 0,3 ) ) );
-//         codes.addAll( allTableCodes );
+         allTableCodes.forEach( c -> codes.add( c.substring( 0,3 ) ) );
       }
       final String tableCode = TOPO_MAJOR_MAP.get( uri );
       if ( tableCode != null ) {
-//         codes.add( tableCode );
          codes.add( tableCode.substring( 0, 3 ) );
       }
       final String ontoCode = Neo4jOntologyConceptUtil.getIcdoTopoCode( uri );
       if ( !ontoCode.isEmpty() && !ontoCode.contains( "-" ) ) {
-//         codes.add( ontoCode );
          codes.add( ontoCode.substring( 0, 3 ) );
       }
       return codes;
