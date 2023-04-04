@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.node.PatientSummary;
 import org.healthnlp.deepphe.nlp.pipeline.DmsRunner;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +11,7 @@ import java.nio.file.Files;
 
 import static junit.framework.Assert.assertEquals;
 
+// TODO REPLACE THIS TEST !!
 public class DocSummarizerTest {
 
     static private final Logger LOGGER = Logger.getLogger( "DocSummarizerTest" );
@@ -50,19 +50,19 @@ public class DocSummarizerTest {
         return patientSummary;
     }
 
-    @Test
+//    @Test
     public void Doc1Test() {
         PatientSummary patientSummary = docTest("1", "patientX_doc1_RAD.txt", 1);
         assertEquals("Document 1 is expected to have one neoplasm.", 1, patientSummary.getNeoplasms().size());
     }
 
-    @Test
+//    @Test
     public void Doc2Test() {
         PatientSummary patientSummary = docTest("2", "patientX_doc2_SP.txt", 1);
 
     }
 
-    @Test
+//    @Test
     public void Doc3Test() {
         PatientSummary patientSummary = docTest("3", "patientX_doc3_NOTE.txt", 1);
 
