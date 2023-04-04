@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
       description = "Creates text relations.",
       role = PipeBitInfo.Role.ANNOTATOR
 )
-public class CrRelationFinder extends JCasAnnotator_ImplBase {
+final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final Logger LOGGER = Logger.getLogger( "CrRelationFinder" );
 
@@ -94,6 +94,7 @@ public class CrRelationFinder extends JCasAnnotator_ImplBase {
             i++;
          }
          final String docText = jCas.getDocumentText();
+         final int docLength = docText.length();
 
          // Loop through URIs and Annotations.
          for ( Map.Entry<String,Collection<IdentifiedAnnotation>> uriSourceAnnotations : uriAnnotationsMap.entrySet() ) {
@@ -133,7 +134,7 @@ public class CrRelationFinder extends JCasAnnotator_ImplBase {
                         final double distanceScore = getPlacementScore( sourceAnnotation, targetAnnotation,
                                                                        tokenBeginToTokenNums,
                                                                        tokenEndToTokenNums,
-                                                                       paragraphBounds );
+                                                                       paragraphBounds, docLength );
                         final TargetAnnotationScore targetScore = new TargetAnnotationScore( targetAnnotation,
                                                                                             uriRelationScore,
                                                                                             distanceScore,
@@ -311,8 +312,9 @@ public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                             final IdentifiedAnnotation target,
                                             final Map<Integer,Integer> tokenBeginToTokenNum,
                                             final Map<Integer,Integer> tokenEndToTokenNum,
-                                            final Collection<Pair<Integer>> paragraphBounds ) {
-      final double tokenDistance = getTokenDistance( source, target, tokenBeginToTokenNum, tokenEndToTokenNum );
+                                            final Collection<Pair<Integer>> paragraphBounds,
+                                            final int docLength ) {
+      final double tokenDistance = getTokenDistance( source, target, tokenBeginToTokenNum, tokenEndToTokenNum, docLength );
       final Pair<Double> penalty = getSectionPenalty( source, target, paragraphBounds );
       NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
                                        + penalty.getValue1() + " + " + penalty.getValue2()
@@ -332,18 +334,54 @@ public class CrRelationFinder extends JCasAnnotator_ImplBase {
    static private double getTokenDistance( final IdentifiedAnnotation source,
                                         final IdentifiedAnnotation target,
                                         final Map<Integer,Integer> tokenBeginToTokenNum,
-                                        final Map<Integer,Integer> tokenEndToTokenNum ) {
-      final int sourceBeginToken = tokenBeginToTokenNum.get( source.getBegin() );
-      final int sourceEndToken = tokenEndToTokenNum.get( source.getEnd() );
-      final double sourceCenter = (sourceBeginToken + sourceEndToken)/2d;
-      final int targetBeginToken = tokenBeginToTokenNum.get( target.getBegin() );
-      final int targetEndToken = tokenEndToTokenNum.get( target.getEnd() );
-      final double targetCenter = (targetBeginToken + targetEndToken)/2d;
+                                        final Map<Integer,Integer> tokenEndToTokenNum,
+                                           final int docLength ) {
+      final int sourceBeginToken = getBeginTokenNum( source.getBegin(), tokenBeginToTokenNum );
+      final int sourceEndToken = getEndTokenNum( source.getEnd(), tokenEndToTokenNum, docLength );
+//      final double sourceCenter = (sourceBeginToken + sourceEndToken)/2d;
+      final int targetBeginToken = getBeginTokenNum( target.getBegin(), tokenBeginToTokenNum );
+      final int targetEndToken = getEndTokenNum( target.getEnd(), tokenEndToTokenNum, docLength );
+//      final double targetCenter = (targetBeginToken + targetEndToken)/2d;
+//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getTokenDistance source, target: "
+//                                       + source.getCoveredText() + "," + target.getCoveredText() + " "
+//                                       + sourceCenter + "," + targetCenter + " Diff = "
+//                                       + Math.abs( sourceCenter - targetCenter ) +"\n" );
+//      return Math.floor( Math.abs( sourceCenter - targetCenter ) );
       NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getTokenDistance source, target: "
                                        + source.getCoveredText() + "," + target.getCoveredText() + " "
-                                       + sourceCenter + "," + targetCenter + " Diff = "
-                                       + Math.abs( sourceCenter - targetCenter ) +"\n" );
-      return Math.floor( Math.abs( sourceCenter - targetCenter ) );
+                                       + sourceBeginToken + "," + sourceEndToken + " to "
+                                       + targetBeginToken + "," + targetEndToken + " Distance = "
+                                       + getDistance( sourceBeginToken, sourceEndToken,
+                                                      targetBeginToken, targetEndToken ) +"\n" );
+      return getDistance( sourceBeginToken, sourceEndToken, targetBeginToken, targetEndToken );
+   }
+
+   static private int getBeginTokenNum( final int annotationBegin, final Map<Integer,Integer> tokenBeginToTokenNum ) {
+      for ( int i=annotationBegin; i>=0; i-- ) {
+         if ( tokenBeginToTokenNum.containsKey( i ) ) {
+            return tokenBeginToTokenNum.get( i );
+         }
+      }
+      return 0;
+   }
+
+   static private int getEndTokenNum( final int annotationEnd, final Map<Integer,Integer> tokenEndToTokenNum,
+                                      final int docLength ) {
+      for ( int i=annotationEnd; i<docLength; i++ ) {
+         if ( tokenEndToTokenNum.containsKey( i ) ) {
+            return tokenEndToTokenNum.get( i );
+         }
+      }
+      return tokenEndToTokenNum.size()-1;
+   }
+
+   static private int getDistance( final int begin1, final int end1, final int begin2, final int end2 ) {
+      if ( end1 < begin2 ) {
+         return begin2 - end1;
+      } else if ( end2 < begin1 ) {
+         return begin1 - end2;
+      }
+      return 0;
    }
 
 
