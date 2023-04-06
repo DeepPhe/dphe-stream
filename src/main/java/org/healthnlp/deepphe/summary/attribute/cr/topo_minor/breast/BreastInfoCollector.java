@@ -1,6 +1,7 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.breast;
 
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.AbstractTopoMinorInfoCollector;
 
 import java.util.Arrays;
 import java.util.Collection;

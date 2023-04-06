@@ -414,6 +414,9 @@ final public class MatchUtil {
            && systemValue.isEmpty() ) {
          return true;
       }
+      if ( goldValue.contains( "0(i" ) && ( systemValue.isEmpty() || systemValue.contains( "0" ) ) ) {
+         return true;
+      }
       if ( goldValue.contains( "M0" ) && ( systemValue.isEmpty() || systemValue.contains( "Mx" ) ) ) {
          return true;
       }

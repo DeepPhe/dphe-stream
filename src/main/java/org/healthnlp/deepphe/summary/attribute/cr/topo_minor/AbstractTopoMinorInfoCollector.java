@@ -22,7 +22,9 @@ abstract public class AbstractTopoMinorInfoCollector extends AbstractAttributeIn
    // Is this necessary?
    public Collection<CrConceptAggregate> getBestAggregates() {
       final Collection<CrConceptAggregate> statedMinors = new HashSet<>();
-      for ( CrConceptAggregate aggregate : super.getBestAggregates() ) {
+//      final Collection<CrConceptAggregate> aggregates = super.getBestAggregates();
+      final Collection<CrConceptAggregate> aggregates = getAllAggregates();
+      for ( CrConceptAggregate aggregate : aggregates ) {
          for ( Mention mention : aggregate.getMentions() ) {
             if ( hasExactText( mention ) ) {
                statedMinors.add( aggregate );
@@ -35,7 +37,7 @@ abstract public class AbstractTopoMinorInfoCollector extends AbstractAttributeIn
       if ( !statedMinors.isEmpty() ) {
          return statedMinors;
       }
-      return super.getBestAggregates();
+      return aggregates;
    }
 
 

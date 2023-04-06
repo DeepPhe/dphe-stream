@@ -97,7 +97,14 @@ public enum UriInfoCache {
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
          // Finding by default
          SemanticTui semantic = SemanticTui.T033;
-         if ( UriConstants.getMassNeoplasmUris( graphDb ).contains( uri ) ) {
+         // We don't want mass or Metastasis to be "Neoplastic Process"
+         if ( UriConstants.getMassUris( graphDb ).contains( uri )
+              || UriConstants.getMetastasisUris( graphDb ).contains( uri ) ) {
+            // Mass (including Tumor) is Sign or Symptom.
+            // Metastasis should be T047 D/D, but for now make it a S/S for Semantic Cleaning in Dictionary Lookup.
+            // UriConstants.getCancerUris(..)  DOES  contain metastases.
+            semantic = SemanticTui.T184;
+         } else if ( UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
             // Neoplastic Process
             semantic = SemanticTui.T191;
          } else if ( UriConstants.getPositiveValueUris( graphDb ).contains( uri )
@@ -246,7 +253,7 @@ public enum UriInfoCache {
                                .addAll( relation.getValue() );
             }
          }
-         nonSiteRelations.putAll( CustomUriRelations.getInstance().getNeoplasmRelations( uri, graphDb ) );
+         nonSiteRelations.putAll( CustomUriRelations.getInstance().getCancerRelations( uri, graphDb ) );
          final UriNode node = new UriNode( uri, nonSiteRelations, siteRelations );
          _timeMap.put( uri, millis );
          _uriNodeMap.put( uri, node );

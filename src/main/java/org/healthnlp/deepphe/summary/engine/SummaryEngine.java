@@ -89,7 +89,10 @@ final public class SummaryEngine {
                                                         final Map<String, Collection<ConceptAggregate>> uriConceptAggregates ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
+//      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
+      // v6
+      final Collection<String> massNeoplasms = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
+      massNeoplasms.addAll( UriConstants.getMassUris( graphDb ) );
 
 
 //      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );

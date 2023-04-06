@@ -2,6 +2,15 @@ package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
 
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeNormalizer;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.brain.*;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.breast.BreastInfoCollector;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.breast.BreastNormalizer;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc.AnusInfoCollector;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc.AnusNormalizer;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc.ColonInfoCollector;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc.ColonNormalizer;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung.LungInfoCollector;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung.LungNormalizer;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 
 import java.util.*;
@@ -16,7 +25,8 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
    static private final Collection<String> MAJOR_SITES = new HashSet<>();
    static private final int[] FACILITY0 = new int[]{ 2, 3, 4, 5, 6, 8, 9 };
    static private final int[] FACILITY = new int[]{
-         10, 11, 13, 14, 30, 31, 32, 67, 15, 16, 17, 77, 62, 68, 22, 24, 25, 70, 71, 72,
+         10, 11, 13, 14, 30, 31, 32, 67, 15, 16, 17, 77, 62, 68, 22, 24, 25,
+         70, 71, 72,
          18, 21,
          34,
          50,
@@ -61,6 +71,12 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
             return AnusInfoCollector::new;
          case "C34" :
             return LungInfoCollector::new;
+         case "C70" :
+            return MeningesInfoCollector::new;
+         case "C71" :
+            return BrainInfoCollector::new;
+         case "C72" :
+            return NerveInfoCollector::new;
       }
       return TopoMinorTypeSelector::new;
    }
@@ -83,6 +99,12 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
             return AnusNormalizer::new;
          case "C34" :
             return LungNormalizer::new;
+         case "C70" :
+            return MeningesNormalizer::new;
+         case "C71" :
+            return BrainNormalizer::new;
+         case "C72" :
+            return NerveNormalizer::new;
       }
       return TopoMinorTypeSelector::new;
    }

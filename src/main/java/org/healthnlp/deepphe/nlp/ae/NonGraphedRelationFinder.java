@@ -22,6 +22,7 @@ import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.nlp.phenotype.receptor.StatusFinder;
 import org.healthnlp.deepphe.nlp.phenotype.tnm.TnmFinder;
+import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
@@ -146,8 +147,12 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
       LOGGER.info( "Finding Relations not defined in the Ontology ..." );
       // Get all hasBodySite relations in the document.
       final Collection<String> massUris = UriConstants.getMassUris( graphDb );
-      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
-      final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
+//      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
+//      final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
+      // v6
+      final Collection<String> neoplasmUris = UriConstants.getCancerUris( graphDb );
+      final Collection<String> massNeoplasmUris = new HashSet<>( massUris ) ;
+      massNeoplasmUris.addAll( neoplasmUris );
       final Collection<String> metastasisUris = UriConstants.getMetastasisUris( graphDb );
 
       final Collection<BinaryTextRelation> hasBodySites
@@ -354,8 +359,11 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
                                       final List<IdentifiedAnnotation> allNeoplasms ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                  .getGraph();
-      final List<IdentifiedAnnotation> stageList
-            = getAnnotationList( windowAnnotations, UriConstants.getCancerStages( graphDb ) );
+      final List<IdentifiedAnnotation> stageList = getAnnotationList( windowAnnotations,
+//                                                                      UriConstants.getCancerStages( graphDb ) );
+                                                                  // v6
+                                                                   CustomUriRelations.getInstance().getStageUris() );
+
       if ( stageList.isEmpty() ) {
          return;
       }

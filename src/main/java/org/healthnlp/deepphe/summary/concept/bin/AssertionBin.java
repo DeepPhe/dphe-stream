@@ -860,7 +860,9 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
       final Collection<Mention> others = categoryMap.computeIfAbsent( BinDistributor.MentionType.OTHER, c -> new HashSet<>() );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
+//      final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
+      // v6
+      final Collection<String> neoplasmUris = UriConstants.getCancerUris( graphDb );
       final Collection<String> massUris = UriConstants.getMassUris( graphDb );
       for ( Mention mention : mentions ) {
          final String uri = mention.getClassUri();

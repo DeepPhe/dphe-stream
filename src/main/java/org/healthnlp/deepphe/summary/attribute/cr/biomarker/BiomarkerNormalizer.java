@@ -89,8 +89,9 @@ public class BiomarkerNormalizer extends AbstractAttributeNormalizer {
    }
 
    private enum NORMAL {
-      Positive( "+", "pos", "positive", "positivity", "overexpression", "3+" ),
-      Negative( "-", "neg", "negative", "not amplified", "non detected", "non-detected", "0", "1+" ),
+      Positive( "+", "pos", "positive", "positivity", "express", "overexpression", "3+" ),
+      Negative( "-", "neg", "negative", "unamplified", "not amplified", "non detected", "non-detected",
+                "not express", "0", "1+" ),
       Elevated( "rising", "increasing", "elevated", "elvtd", "raised", "increased", "strong", "amplified" ),
       Unknown( "unknown", "indeterminate", "equivocal", "borderline", "2+" ),
       Not_Assessed( "not assessed", "not requested", "not applicable", "insufficient", "pending", "n/a" );

@@ -62,11 +62,11 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
 
 //   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|\\+(?:pos)?|overexpression";
 //   static private final String REGEX_NEGATIVE = "\\-?neg(?:ative)?|\\-(?:neg)?|(?:not amplified)|(?:no [a-z] detected)";
-   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpression";
+   static private final String REGEX_POSITIVE = "\\+?pos(?:itive|itivity)?|overexpression|express";
    static private final String REGEX_NUM_POSITIVE = "3\\+";
 
-   static private final String REGEX_NEGATIVE = "-?neg(?:ative)?|(?:not amplified)|(?:no [a-z] detected)|(?:non-? "
-                                                + "?detected)";
+   static private final String REGEX_NEGATIVE = "-?neg(?:ative)?|unamplified|(?:not amplified)|(?:no [a-z] detected)|"
+                                                + "(?:non-? ?detected)|(?:not express)";
    static private final String REGEX_NUM_NEGATIVE = "0|1\\+";
 
    static private final String REGEX_UNKNOWN

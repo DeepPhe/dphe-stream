@@ -97,7 +97,10 @@ final public class DpheXnSummaryEngine {
                                                        final Map<String, Collection<ConceptAggregate>> uriConceptAggregates ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
+//      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
+      // v6
+      final Collection<String> massNeoplasms = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
+      massNeoplasms.addAll( UriConstants.getMassUris( graphDb ) );
 //      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );
 //      LOGGER.info( "We are now using the ConceptAggregates for the patient to create Cancer Summaries." +
 //                   "  For KCR we force this down to a single summary, but that is only for the simplicity of the dataset." +

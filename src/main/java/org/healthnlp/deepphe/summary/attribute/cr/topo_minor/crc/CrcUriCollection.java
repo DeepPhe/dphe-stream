@@ -1,4 +1,4 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc;
 
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 
@@ -70,6 +70,10 @@ public enum CrcUriCollection {
       initAnusUris();
    }
 
+   CrcUriCollection() {
+      initColonUris();
+   }
+
    private void initAnusUris() {
 //      RECTAL_URIS = Neo4jOntologyConceptUtil.getBranchUris( "Rectal" );
 //      // Rectosigmoid is C19.9, so we don't want it here.
@@ -87,9 +91,6 @@ public enum CrcUriCollection {
       _anusUris.removeAll( _analCanalUris );
    }
 
-   CrcUriCollection() {
-      initColonUris();
-   }
 
    public Collection<String> getAllColonUris() {
       return _allColonUris;

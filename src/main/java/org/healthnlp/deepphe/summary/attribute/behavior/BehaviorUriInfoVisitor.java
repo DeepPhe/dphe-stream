@@ -30,7 +30,9 @@ final public class BehaviorUriInfoVisitor implements UriInfoVisitor {
          _lymphBehaviorUris.clear();
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                 .getGraph();
-         final Collection<String> malignantUris = new HashSet<>( UriConstants.getMalignantTumorUris( graphDb ) );
+//         final Collection<String> malignantUris = new HashSet<>( UriConstants.getMalignantTumorUris( graphDb ) );
+         // v6
+         final Collection<String> malignantUris = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
          // The registry (KY) uses carcinoma as proof of invasion
          malignantUris.add( "Carcinoma" );
          malignantUris.add( "Adenocarcinoma" );

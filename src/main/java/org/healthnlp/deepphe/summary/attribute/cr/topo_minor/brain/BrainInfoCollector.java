@@ -1,6 +1,7 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.brain;
 
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.AbstractTopoMinorInfoCollector;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
 
 import java.util.Collection;
@@ -9,9 +10,9 @@ import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
- * @since {3/28/2023}
+ * @since {4/5/2023}
  */
-public class ColonInfoCollector extends AbstractTopoMinorInfoCollector {
+public class BrainInfoCollector extends AbstractTopoMinorInfoCollector {
 
 
    public Collection<String> getRelationTypes() {
@@ -21,13 +22,13 @@ public class ColonInfoCollector extends AbstractTopoMinorInfoCollector {
    public Collection<ConceptAggregateRelation> getAllRelations() {
       return getNeoplasm().getRelations( getRelationTypes().toArray( new String[0] ) )
                           .stream()
-                  .filter( ColonInfoCollector::isColonRelation )
-                  .collect( Collectors.toSet() );
+                          .filter( BrainInfoCollector::hasBrainTarget )
+                          .collect( Collectors.toSet() );
    }
 
-   static private boolean isColonRelation( final ConceptAggregateRelation relation ) {
+   static private boolean hasBrainTarget( final ConceptAggregateRelation relation ) {
       final String uri = relation.getTarget().getUri();
-      return CrcUriCollection.getInstance().getAllColonUris().contains( uri );
+      return BrainUriCollection.getInstance().getBrainUris().contains( uri );
    }
 
 }

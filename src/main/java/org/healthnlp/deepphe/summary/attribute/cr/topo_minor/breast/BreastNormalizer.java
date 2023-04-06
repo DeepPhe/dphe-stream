@@ -1,4 +1,4 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.breast;
 
 import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
@@ -48,9 +48,9 @@ public class BreastNormalizer extends AbstractAttributeNormalizer {
          return "9";
       }
       final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
-      final List<Integer> codeList = new ArrayList<>( intCountMap.keySet() );
-      codeList.sort( Comparator.reverseOrder() );
-      final int bestIntCode = codeList.get( 0 );
+      final List<Integer> bestCodes = getBestIntCodes( intCountMap );
+      bestCodes.sort( Comparator.reverseOrder() );
+      final int bestIntCode = bestCodes.get( 0 );
       long bestCount = intCountMap.get( bestIntCode );
       setBestCodesCount( (int)bestCount );
       setAllCodesCount( aggregates.size() );

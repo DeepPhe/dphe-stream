@@ -3,10 +3,8 @@ package org.healthnlp.deepphe.util;
 import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.uri.UriUtil;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
-import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
+import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -338,9 +336,11 @@ final public class ConceptAggregateUtil {
    }
 
    static private String getValue( final String uri ) {
-      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
-                                                                 .getGraph();
-      if ( UriConstants.getCancerStages( graphDb ).contains( uri ) ) {
+//      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
+//                                                                 .getGraph();
+//      if ( UriConstants.getCancerStages( graphDb ).contains( uri ) ) {
+      // v6
+      if ( CustomUriRelations.getInstance().getStageUris().contains( uri ) ) {
          return getStageText( uri );
       }
       if ( uri.endsWith( "_Positive" ) ) {
@@ -358,9 +358,11 @@ final public class ConceptAggregateUtil {
    }
 
    static private String getValueKey( final String uri, final String valueText ) {
-      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
-                                                                 .getGraph();
-      if ( UriConstants.getCancerStages( graphDb ).contains( uri ) ) {
+//      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
+//                                                                 .getGraph();
+//      if ( UriConstants.getCancerStages( graphDb ).contains( uri ) ) {
+      // v6
+      if ( CustomUriRelations.getInstance().getStageUris().contains( uri ) ) {
          return "Summary Stage";
       }
       if ( uri.endsWith( "_Stage_Finding" ) ) {

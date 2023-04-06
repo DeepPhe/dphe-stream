@@ -1,11 +1,14 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc;
 
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +29,9 @@ public class AnusNormalizer extends AbstractAttributeNormalizer {
          return "0";
       }
       final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
-      final List<Integer> codeList = new ArrayList<>( intCountMap.keySet() );
-      codeList.sort( Comparator.reverseOrder() );
-      final int bestIntCode = codeList.get( 0 );
+      final List<Integer> bestCodes = getBestIntCodes( intCountMap );
+      bestCodes.sort( Comparator.reverseOrder() );
+      final int bestIntCode = bestCodes.get( 0 );
       long bestCount = intCountMap.get( bestIntCode );
       setBestCodesCount( (int)bestCount );
       setAllCodesCount( aggregates.size() );

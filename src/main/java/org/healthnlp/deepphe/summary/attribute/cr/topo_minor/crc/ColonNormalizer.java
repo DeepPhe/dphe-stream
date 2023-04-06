@@ -1,4 +1,4 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc;
 
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
@@ -6,7 +6,10 @@ import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,9 +41,9 @@ public class ColonNormalizer extends AbstractAttributeNormalizer {
                               .filter( c -> c >= 0 )
                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
       if ( !bestCountMap.isEmpty() ) {
-         final List<Integer> codeList = new ArrayList<>( bestCountMap.keySet() );
-         codeList.sort( Comparator.reverseOrder() );
-         bestIntCode = codeList.get( 0 );
+         final List<Integer> bestCodes = getBestIntCodes( bestCountMap );
+         bestCodes.sort( Comparator.reverseOrder() );
+         bestIntCode = bestCodes.get( 0 );
          bestCount = bestCountMap.get( bestIntCode );
          uniqueCount += bestCountMap.size();
       }
@@ -52,9 +55,9 @@ public class ColonNormalizer extends AbstractAttributeNormalizer {
                                                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
       if ( !otherCountMap.isEmpty() ) {
          if ( bestIntCode < 0 ) {
-            final List<Integer> codeList = new ArrayList<>( otherCountMap.keySet() );
-            codeList.sort( Comparator.reverseOrder() );
-            bestIntCode = codeList.get( 0 );
+            final List<Integer> bestCodes = getBestIntCodes( otherCountMap );
+            bestCodes.sort( Comparator.reverseOrder() );
+            bestIntCode = bestCodes.get( 0 );
             bestCount = otherCountMap.get( bestIntCode );
          }
          uniqueCount += otherCountMap.size();
@@ -67,9 +70,9 @@ public class ColonNormalizer extends AbstractAttributeNormalizer {
                                                              .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
       if ( !finalCountMap.isEmpty() ) {
          if ( bestIntCode < 0 ) {
-            final List<Integer> codeList = new ArrayList<>( finalCountMap.keySet() );
-            codeList.sort( Comparator.reverseOrder() );
-            bestIntCode = codeList.get( 0 );
+            final List<Integer> bestCodes = getBestIntCodes( finalCountMap );
+            bestCodes.sort( Comparator.reverseOrder() );
+            bestIntCode = bestCodes.get( 0 );
             bestCount = finalCountMap.get( bestIntCode );
          }
          uniqueCount += finalCountMap.size();

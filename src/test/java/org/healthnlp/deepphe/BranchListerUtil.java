@@ -17,7 +17,7 @@ final public class BranchListerUtil {
       EmbeddedConnection.getInstance().connectToGraph();
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
 
-      final String ROOT_URI  = "Pathologic_M";
+      final String ROOT_URI  = "Neoplastic_Cell";
 
       final Collection<String> rootUris = SearchUtil.getRootUris( graphDb, ROOT_URI );
       System.out.println( "Root Uris for " + ROOT_URI );

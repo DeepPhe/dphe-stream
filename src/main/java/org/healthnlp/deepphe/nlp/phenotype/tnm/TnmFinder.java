@@ -33,10 +33,17 @@ public enum TnmFinder {
 
    static private final Collection<Character> PREFIX_CHARS = Arrays.asList( 'c', 'C', 'p', 'P', 'y', 'r', 'a', 'u' );
    static private final String PREFIX_REGEX = "[cpyrau]?";
+//   static private final String T_REGEX
+//         = "T=? {0,2}\\t?(?:x|is|a|(?: ?n\\/a)|(?:[I]{1,3}V?)|(?:[0-4][a-z]?))(?![- ](?:weighted|axial))(?:\\((?:m|\\d+)?,?(?:is)?\\))?";
+//   static private final String N_REGEX = "N=? {0,2}\\t?(?:x|(?: ?n\\/a)|(?:[I]{1,3})|(?:[0-3][a-z]?))";
+//   static private final String M_REGEX = "M=? {0,2}\\t?(?:x|I|(?: ?n\\/a)|(?:[0-1][a-z]?))";
+   // v6
    static private final String T_REGEX
-         = "T=? {0,2}\\t?(?:x|is|a|(?: ?n\\/a)|(?:[I]{1,3}V?)|(?:[0-4][a-z]?))(?![- ](?:weighted|axial))(?:\\((?:m|\\d+)?,?(?:is)?\\))?";
-   static private final String N_REGEX = "N=? {0,2}\\t?(?:x|(?: ?n\\/a)|(?:[I]{1,3})|(?:[0-3][a-z]?))";
+         = "T=? {0,2}\\t?(?:x|is|a|(?: ?n\\/a)|(?:[I]{1,3}V?)|(?:[0-4](?:[a-d]|mi)?))(?![- ](?:weighted|axial))(?:\\("
+           + "(?:m|\\d+)?,?(?:is)?\\))?";
+   static private final String N_REGEX = "N=? {0,2}\\t?(?:x|(?: ?n\\/a)|(?:[I]{1,3})|(?:[0-3](?:[a-c]|mi)?))";
    static private final String M_REGEX = "M=? {0,2}\\t?(?:x|I|(?: ?n\\/a)|(?:[0-1][a-z]?))";
+
 
    static private final String FULL_T_REGEX = "\\b(?:" + PREFIX_REGEX + T_REGEX + ")"
          + "(?:" + PREFIX_REGEX + N_REGEX + ")?"

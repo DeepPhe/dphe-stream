@@ -8,6 +8,7 @@ import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
+import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.util.KeyValue;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -400,7 +401,8 @@ public interface ConceptAggregate {
       }
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> stages = UriConstants.getCancerStages( graphDb );
+//      final Collection<String> stages = UriConstants.getCancerStages( graphDb );
+      final Collection<String> stages = CustomUriRelations.getInstance().getStageUris();
       if ( getRelatedUris( HAS_STAGE ).stream().anyMatch( stages::contains ) ) {
 //         LOGGER.info( "neoplasm " + getUri() + " "  + getId() + " is Primary by having a Stage." );
          return PRIMARY;

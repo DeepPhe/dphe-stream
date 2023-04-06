@@ -18,23 +18,23 @@ public enum CustomUriRelations {
       return INSTANCE;
    }
 
-   private final Map<String, Collection<String>> NEOPLASM_RELATIONS = new HashMap<>();
-   public Map<String,Collection<String>> getNeoplasmRelations( final String uri,
-                                                                final GraphDatabaseService graphDb ) {
-      if ( !UriConstants.getMassNeoplasmUris( graphDb ).contains( uri ) ) {
+   private final Map<String, Collection<String>> CANCER_RELATIONS = new HashMap<>();
+   public Map<String,Collection<String>> getCancerRelations( final String uri,
+                                                             final GraphDatabaseService graphDb ) {
+      if ( !UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
          return Collections.emptyMap();
       }
-      if ( !NEOPLASM_RELATIONS.isEmpty() ) {
-         return NEOPLASM_RELATIONS;
+      if ( !CANCER_RELATIONS.isEmpty() ) {
+         return CANCER_RELATIONS;
       }
-      NEOPLASM_RELATIONS.putAll( CLOCKFACE_RELATIONS );
-      NEOPLASM_RELATIONS.put( RelationConstants.HAS_QUADRANT, getQuadrantUris() );
-      NEOPLASM_RELATIONS.putAll( getTnmRelations() );
-      NEOPLASM_RELATIONS.put( RelationConstants.HAS_STAGE, getStageUris() );
-      NEOPLASM_RELATIONS.put( RelationConstants.HAS_GRADE, getGradeUris() );
-      NEOPLASM_RELATIONS.put( RelationConstants.HAS_BEHAVIOR, getBehaviorUris() );
-      NEOPLASM_RELATIONS.put( RelationConstants.has_Biomarker, getBiomarkerUris() );
-      return NEOPLASM_RELATIONS;
+      CANCER_RELATIONS.putAll( CLOCKFACE_RELATIONS );
+      CANCER_RELATIONS.put( RelationConstants.HAS_QUADRANT, getQuadrantUris() );
+      CANCER_RELATIONS.putAll( getTnmRelations() );
+      CANCER_RELATIONS.put( RelationConstants.HAS_STAGE, getStageUris() );
+      CANCER_RELATIONS.put( RelationConstants.HAS_GRADE, getGradeUris() );
+      CANCER_RELATIONS.put( RelationConstants.HAS_BEHAVIOR, getBehaviorUris() );
+      CANCER_RELATIONS.put( RelationConstants.has_Biomarker, getBiomarkerUris() );
+      return CANCER_RELATIONS;
    }
 
    static private final Map<String,Collection<String>> CLOCKFACE_RELATIONS = new HashMap<>( 6 );

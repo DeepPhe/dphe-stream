@@ -4,10 +4,7 @@ import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -70,35 +67,75 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
 
    public double getConfidenceMultiplier() {
       return (double)getBestCodesCount() / getAllCodesCount();
-//      if ( _totalCodes > 1 ) {
-//         return 1d / _totalCodes;
-//      }
-//      return 1.0;
    }
 
    protected int getIntCode( final CrConceptAggregate aggregate ) {
       return getIntCode( aggregate.getUri() );
    }
+
    protected int getIntCode( final String uri ) {
       return -1;
    }
 
    protected Map<Integer,Long> createIntCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
-      return confidenceGroup.getBest()
-                            .stream()
-                            .map( this::getIntCode )
-                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+      return createAllIntCodeCountMap( new ConfidenceGroup<>( aggregates ).getBest() );
    }
 
    protected Map<String,Long> createCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
-      return confidenceGroup.getBest()
-                             .stream()
-                             .map( this::getCode )
-                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+      return createAllCodeCountMap( new ConfidenceGroup<>( aggregates ).getBest() );
    }
 
+   protected Map<Integer,Long> createAllIntCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+      return aggregates.stream()
+                         .map( this::getIntCode )
+                         .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+   }
+
+   protected Map<String,Long> createAllCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+      return aggregates.stream()
+                      .map( this::getCode )
+                      .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+   }
+
+   /**
+    *
+    * @param codeCountMap - map of codes and the number of times those codes appear
+    * @return a collection of the best codes, and a pair representing the count of those codes and number of codes.
+    */
+   protected List<Integer> getBestIntCodes( final Map<Integer,Long> codeCountMap ) {
+      final List<Integer> bestCodes = new ArrayList<>();
+      long maxCount = 0;
+      for ( Map.Entry<Integer,Long> codeCount : codeCountMap.entrySet() ) {
+         if ( codeCount.getValue() == maxCount ) {
+            bestCodes.add( codeCount.getKey() );
+         } else if ( codeCount.getValue() > maxCount ) {
+            bestCodes.clear();
+            bestCodes.add( codeCount.getKey() );
+            maxCount = codeCount.getValue();
+         }
+      }
+      return bestCodes;
+   }
+
+   /**
+    *
+    * @param codeCountMap - map of codes and the number of times those codes appear
+    * @return a collection of the best codes, and a pair representing the count of those codes and number of codes.
+    */
+   protected List<String> getBestCodes( final Map<String,Long> codeCountMap ) {
+      final List<String> bestCodes = new ArrayList<>();
+      long maxCount = 0;
+      for ( Map.Entry<String,Long> codeCount : codeCountMap.entrySet() ) {
+         if ( codeCount.getValue() == maxCount ) {
+            bestCodes.add( codeCount.getKey() );
+         } else if ( codeCount.getValue() > maxCount ) {
+            bestCodes.clear();
+            bestCodes.add( codeCount.getKey() );
+            maxCount = codeCount.getValue();
+         }
+      }
+      return bestCodes;
+   }
 
    public Collection<Mention> getDirectEvidence() {
       return _evidenceMap.getOrDefault( EvidenceLevel.DIRECT_EVIDENCE, Collections.emptyList() );

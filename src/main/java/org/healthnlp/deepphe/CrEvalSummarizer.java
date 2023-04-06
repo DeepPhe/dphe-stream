@@ -69,7 +69,7 @@ final public class CrEvalSummarizer {
                         );
 
    public static void main( final String... args ) {
-      NeoplasmSummaryCreator.setDebug(  false  );
+      NeoplasmSummaryCreator.setDebug(  true  );
       LOGGER.info( "Initializing ..." );
       CrDmsRunner.getInstance();
       LOGGER.info( "Reading docs in " + args[ 0 ] + " writing Output for Eval to " + args[ 1 ] );

@@ -15,8 +15,8 @@ import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -42,9 +42,10 @@ final public class LonerNegator extends JCasAnnotator_ImplBase {
 
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> massNeoplasmUris = new ArrayList<>( UriConstants.getMassNeoplasmUris( graphDb ) );
-
-
+//      final Collection<String> massNeoplasmUris = new ArrayList<>( UriConstants.getMassNeoplasmUris( graphDb ) );
+      // v6
+      final Collection<String> massNeoplasmUris = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
+      massNeoplasmUris.addAll( UriConstants.getMassUris( graphDb ) );
       final Map<Paragraph, Collection<IdentifiedAnnotation>> mentionMap
             = JCasUtil.indexCovered( jCas, Paragraph.class, IdentifiedAnnotation.class );
 
@@ -52,13 +53,18 @@ final public class LonerNegator extends JCasAnnotator_ImplBase {
          if ( mentions.size() <= 1 || mentions.size() > 4 ) {
             continue;
          }
-         final Map<String,Collection<IdentifiedAnnotation>> uriMentions = Neo4jOntologyConceptUtil.getUriAnnotationsByUris( mentions, massNeoplasmUris );
+         final Map<String,Collection<IdentifiedAnnotation>> uriMentions
+               = Neo4jOntologyConceptUtil.getUriAnnotationsByUris( mentions, massNeoplasmUris );
          if ( uriMentions.size() != 1 ) {
             continue;
          }
-         final boolean negated = uriMentions.values().stream().flatMap( Collection::stream ).anyMatch( IdentifiedAnnotationUtil::isNegated );
+         final boolean negated = uriMentions.values().stream()
+                                            .flatMap( Collection::stream )
+                                            .anyMatch( IdentifiedAnnotationUtil::isNegated );
          if ( negated ) {
-            uriMentions.values().stream().flatMap( Collection::stream ).forEach( m -> m.setPolarity( CONST.NE_POLARITY_NEGATION_PRESENT ) );
+            uriMentions.values().stream()
+                       .flatMap( Collection::stream )
+                       .forEach( m -> m.setPolarity( CONST.NE_POLARITY_NEGATION_PRESENT ) );
          }
       }
    }

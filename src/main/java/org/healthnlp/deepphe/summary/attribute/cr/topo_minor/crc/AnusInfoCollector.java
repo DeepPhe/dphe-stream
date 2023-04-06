@@ -1,6 +1,7 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc;
 
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.AbstractTopoMinorInfoCollector;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
 
 import java.util.Collection;
@@ -22,11 +23,11 @@ public class AnusInfoCollector extends AbstractTopoMinorInfoCollector {
    public Collection<ConceptAggregateRelation> getAllRelations() {
       return getNeoplasm().getRelations( getRelationTypes().toArray( new String[0] ) )
                           .stream()
-                  .filter( AnusInfoCollector::isAnusRelation )
+                  .filter( AnusInfoCollector::hasAnusTarget )
                   .collect( Collectors.toSet() );
    }
 
-   static private boolean isAnusRelation( final ConceptAggregateRelation relation ) {
+   static private boolean hasAnusTarget( final ConceptAggregateRelation relation ) {
       final String uri = relation.getTarget().getUri();
       return CrcUriCollection.getInstance().getAllAnusUris().contains( uri );
    }

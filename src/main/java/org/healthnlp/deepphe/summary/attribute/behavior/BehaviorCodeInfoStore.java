@@ -2,6 +2,7 @@ package org.healthnlp.deepphe.summary.attribute.behavior;
 
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
+import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoStore;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -70,7 +71,10 @@ final public class BehaviorCodeInfoStore implements CodeInfoStore {
       if ( metastasisUris.contains( uri ) ) {
          return 6;
       }
-      final Collection<String> malignantUris = UriConstants.getMalignantTumorUris( graphDb );
+//      final Collection<String> malignantUris = UriConstants.getMalignantTumorUris( graphDb );
+      // v6
+      final Collection<String> malignantUris = CustomUriRelations.getInstance()
+                                                                 .getBehaviorUris();
       if ( malignantUris.contains( uri ) ) {
          return 3;
       }

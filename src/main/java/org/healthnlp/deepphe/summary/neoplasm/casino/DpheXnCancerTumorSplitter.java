@@ -50,7 +50,8 @@ public class DpheXnCancerTumorSplitter {
             = siteNeoplasms.getOrDefault( SiteTable.TOPOGRAPHY_LYMPH_NODE, NULL_AGGREGATE );
 
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
-      final Collection<String> cancerUris = UriConstants.getNeoplasmUris( graphDb );
+//      final Collection<String> cancerUris = UriConstants.getNeoplasmUris( graphDb );
+      final Collection<String> cancerUris = UriConstants.getCancerUris( graphDb );
       final Collection<String> primaryUris = UriConstants.getPrimaryUris( graphDb );
 
       final Collection<String> secondaryUris = UriConstants.getMetastasisUris( graphDb );

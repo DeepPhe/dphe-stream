@@ -30,7 +30,8 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
          _exactHistologyUris.clear();
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                 .getGraph();
-         final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
+//         final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
+         final Collection<String> neoplasmUris = UriConstants.getCancerUris( graphDb );
          final Collection<ConceptAggregate> certainNeoplasm = neoplasms.stream()
 //                                                                         .filter( c -> !c.isNegated() )
                                                                          .filter( c -> c.getAllUris()

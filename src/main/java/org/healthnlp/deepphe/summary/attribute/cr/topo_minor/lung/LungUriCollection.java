@@ -1,4 +1,4 @@
-package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
+package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung;
 
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 
@@ -22,6 +22,10 @@ public enum LungUriCollection {
    private Collection<String> _lowerLobeUris;
    private Collection<String> _tracheaUris;
 
+   LungUriCollection() {
+      initLungUris();
+   }
+
    private void initLungUris() {
       if ( _lungUris != null ) {
          return;
@@ -34,9 +38,6 @@ public enum LungUriCollection {
       _tracheaUris = Neo4jOntologyConceptUtil.getBranchUris( "Trachea" );
    }
 
-   LungUriCollection() {
-      initLungUris();
-   }
 
    public Collection<String> getLungUris() {
       return _lungUris;

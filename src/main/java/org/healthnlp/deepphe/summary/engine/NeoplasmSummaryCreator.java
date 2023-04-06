@@ -113,7 +113,9 @@ final public class NeoplasmSummaryCreator {
               neoplasm.getPatientId() +  "\n" );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
+//      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
+      // v6
+      final Collection<String> massNeoplasmUris = UriConstants.getCancerUris( graphDb );
       final Predicate<ConceptAggregate> isNeoplasm = c -> c.getAllUris()
                                                            .stream()
                                                            .anyMatch( massNeoplasmUris::contains );
@@ -204,7 +206,9 @@ final public class NeoplasmSummaryCreator {
                 neoplasm.getPatientId() +  "\n" );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
+//      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
+      // v6
+      final Collection<String> massNeoplasmUris = UriConstants.getCancerUris( graphDb );
       final Predicate<ConceptAggregate> isNeoplasm = c -> c.getAllUris()
                                                            .stream()
                                                            .anyMatch( massNeoplasmUris::contains );
