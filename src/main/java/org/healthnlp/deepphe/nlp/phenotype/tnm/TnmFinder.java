@@ -32,7 +32,7 @@ public enum TnmFinder {
 
 
    static private final Collection<Character> PREFIX_CHARS = Arrays.asList( 'c', 'C', 'p', 'P', 'y', 'r', 'a', 'u' );
-   static private final String PREFIX_REGEX = "[cpyrau]?";
+   static private final String PREFIX_REGEX = "y?[cprau]?";
 //   static private final String T_REGEX
 //         = "T=? {0,2}\\t?(?:x|is|a|(?: ?n\\/a)|(?:[I]{1,3}V?)|(?:[0-4][a-z]?))(?![- ](?:weighted|axial))(?:\\((?:m|\\d+)?,?(?:is)?\\))?";
 //   static private final String N_REGEX = "N=? {0,2}\\t?(?:x|(?: ?n\\/a)|(?:[I]{1,3})|(?:[0-3][a-z]?))";
@@ -271,10 +271,14 @@ public enum TnmFinder {
       final List<SimpleTnm> tnms = new ArrayList<>();
       final Matcher fullMatcher = FULL_PATTERN.matcher( lookupWindow );
       while ( fullMatcher.find() ) {
-         final int fullMatchStart = fullMatcher.start();
-         final String tnm = lookupWindow.substring( fullMatchStart, fullMatcher.end() );
+         int fullMatchStart = fullMatcher.start();
+         String tnm = lookupWindow.substring( fullMatchStart, fullMatcher.end() );
          if ( tnm.startsWith( "at " ) || tnm.startsWith( "an " ) || tnm.startsWith( "am " ) ) {
             continue;
+         }
+         if ( tnm.charAt( 0 ) == 'y' ) {
+            tnm = tnm.substring( 1 );
+            fullMatchStart += 1;
          }
          char prefix = ' ';
          int pOffset = 0;

@@ -14,7 +14,6 @@ import java.util.Collections;
  */
 public class TopoMajorInfoCollector extends AbstractAttributeInfoCollector {
 
-   static private final String UNKNOWN_PRIMARY_URI = "Whole_Body";
 
    static private final int SITE_LEFT_WINDOW = 25;
    static private final int SITE_RIGHT_WINDOW = 10;

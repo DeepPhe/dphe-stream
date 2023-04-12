@@ -25,12 +25,15 @@ import java.util.stream.Collectors;
 public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
 
 
-   static private final Map<String,String> TOPO_MAJOR_MAP = new HashMap<>();
+   static private final Map<String,String> URI_MAJOR_MINOR_MAP = new HashMap<>();
    static private final Map<String,Collection<String>> TOPO_MAJOR_MAP_FULL = new HashMap<>();
-
+   static private final String UNDETERMINED = "C80";
+   static private final String ILL_DEFINED = "C76";
+   static private final String SKIN = "C44";
+   static private final String BODY_TISSUE = "C49";
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
-      if ( TOPO_MAJOR_MAP.isEmpty() ) {
+      if ( URI_MAJOR_MINOR_MAP.isEmpty() ) {
          fillTopoMajorMaps();
       }
       super.init( infoCollector, dependencies );
@@ -39,7 +42,7 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
 
    public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
       if ( aggregates.isEmpty() ) {
-         return "C80";
+         return UNDETERMINED;
       }
       setAllCodesCount( aggregates.size() );
       final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
@@ -53,7 +56,22 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
                                                                                             Collectors.counting() ) );
       if ( !countMap.isEmpty() ) {
          final String code = getBestCode( countMap );
-         if ( !code.isEmpty() ) {
+         if ( !code.isEmpty() && isSpecificCode( code ) ) {
+            return code;
+         }
+      }
+      final Map<String,Long> countsMap = confidenceGroup.getBest()
+                                                       .stream()
+                                                       .map( CrConceptAggregate::getAllUris )
+                                                      .flatMap( Collection::stream )
+                                                       .map( this::getCodes )
+                                                       .flatMap( Collection::stream )
+                                                       .map( c -> c.substring( 0,3 ) )
+                                                       .collect( Collectors.groupingBy( Function.identity(),
+                                                                                        Collectors.counting() ) );
+      if ( !countsMap.isEmpty() ) {
+         final String code = getBestCode( countsMap );
+         if ( !code.isEmpty() && isSpecificCode( code ) ) {
             return code;
          }
       }
@@ -75,11 +93,12 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
                                                                         .stream()
                                                                         .map( CrConceptAggregate::getUri )
                                                                         .collect( Collectors.joining(",") ) );
-      return "C80";
+      return UNDETERMINED;
    }
 
    private String getBestCode( final Map<String,Long> countMap ) {
-      final List<String> codeList = new ArrayList<>( countMap.keySet() );
+//      final List<String> codeList = new ArrayList<>( countMap.keySet() );
+      final List<String> codeList = new ArrayList<>( getBestCodes( countMap ) );
       codeList.sort( Comparator.reverseOrder() );
       final String bestCode = codeList.get( 0 );
       if ( bestCode.isEmpty() ) {
@@ -108,7 +127,7 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
       if ( allTableCodes != null ) {
          allTableCodes.forEach( c -> codes.add( c.substring( 0,3 ) ) );
       }
-      final String tableCode = TOPO_MAJOR_MAP.get( uri );
+      final String tableCode = URI_MAJOR_MINOR_MAP.get( uri );
       if ( tableCode != null ) {
          codes.add( tableCode.substring( 0, 3 ) );
       }
@@ -132,7 +151,7 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
                }
                final String[] splits = StringUtil.fastSplit( line, '|' );
                // URI : Code
-               TOPO_MAJOR_MAP.put( splits[ 1 ], splits[ 0 ] );
+               URI_MAJOR_MINOR_MAP.put( splits[ 1 ], splits[ 0 ] );
                final String code = splits[ 0 ];
                final String uri = splits[ 1 ];
                TOPO_MAJOR_MAP_FULL.computeIfAbsent( uri, c -> new HashSet<>() ).add( code );
@@ -147,5 +166,10 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
       }
    }
 
+
+   static private boolean isSpecificCode( final String code ) {
+      return !code.equals( UNDETERMINED ) && !code.equals( ILL_DEFINED )
+             && !code.equals( SKIN ) && !code.equals( BODY_TISSUE );
+   }
 
 }

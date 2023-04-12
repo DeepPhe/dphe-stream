@@ -24,36 +24,60 @@ public class CrConceptAggregateCreator {
                                       final Collection<String> applicableUris,
                                       final Map<String, List<Mention>> uriMentionsMap,
                                       final Map<String, Collection<CrConceptAggregate>> conceptAggregates ) {
-      final Map<String,Collection<String>> uriUrisMap = UriUtil.getAssociatedUriMap( applicableUris );
-      final Collection<String> neoplasmUris
-            = uriUrisMap.keySet()
-                                .stream()
-                                .filter( u -> UriInfoCache.getInstance()
-                                                          .getSemanticTui( u ) == SemanticTui.T191 )
-                                .collect( Collectors.toSet() );
-      final Collection<String> otherUris = new HashSet<>( uriUrisMap.keySet() );
-      if ( !neoplasmUris.isEmpty() ) {
-         // For Cancer Registries we just want a single neoplasm.
-         final CrConceptAggregate neoplasmAggregate = createNeoplasmAggregate( patientId,
-                                                                             patientMentionNoteIds,
-                                                                             neoplasmUris,
-                                                                             uriUrisMap,
-                                                                             uriMentionsMap );
-         conceptAggregates.computeIfAbsent( neoplasmAggregate.getUri(), ci -> new ArrayList<>() )
-                          .add( neoplasmAggregate );
-         otherUris.removeAll( neoplasmUris );
-      }
-      if ( !otherUris.isEmpty() ) {
-         for ( String uri : otherUris ) {
-            final CrConceptAggregate otherAggregate = createOtherAggregate( patientId,
-                                                                          patientMentionNoteIds,
-                                                                          uri,
-                                                                          uriUrisMap.get( uri ),
-                                                                          uriMentionsMap );
-            conceptAggregates.computeIfAbsent( otherAggregate.getUri(), ci -> new ArrayList<>() )
-                             .add( otherAggregate );
+      final Map<SemanticTui,List<String>> semanticUrisMap
+            = applicableUris.stream()
+                            .collect( Collectors.groupingBy( u -> UriInfoCache.getInstance().getSemanticTui( u ) ) );
+      for ( Map.Entry<SemanticTui,List<String>> semanticUris : semanticUrisMap.entrySet() ) {
+         final Collection<String> uris = semanticUris.getValue();
+         if ( semanticUris.getKey()
+                          .equals( SemanticTui.T191 ) ) {
+            final CrConceptAggregate neoplasmAggregate = createAggregate( patientId, patientMentionNoteIds,
+                                                                          uris, uriMentionsMap );
+            conceptAggregates.computeIfAbsent( neoplasmAggregate.getUri(), ci -> new ArrayList<>() )
+                             .add( neoplasmAggregate );
+         } else {
+            final Map<String, Collection<String>> uriUrisMap = UriUtil.getAssociatedUriMap( uris );
+            for ( Map.Entry<String,Collection<String>> uriUris : uriUrisMap.entrySet() ) {
+               final CrConceptAggregate otherAggregate = createOtherAggregate( patientId,
+                                                                               patientMentionNoteIds,
+                                                                               uriUris.getKey(),
+                                                                               uriUris.getValue(),
+                                                                               uriMentionsMap );
+               conceptAggregates.computeIfAbsent( otherAggregate.getUri(), ci -> new ArrayList<>() )
+                                .add( otherAggregate );
+            }
          }
       }
+//      final Map<String,Collection<String>> uriUrisMap = UriUtil.getAssociatedUriMap( applicableUris );
+//      final Collection<String> neoplasmUris
+//            = uriUrisMap.keySet()
+//                                .stream()
+//                                .filter( u -> UriInfoCache.getInstance()
+//                                                          .getSemanticTui( u ) == SemanticTui.T191 )
+//                                .collect( Collectors.toSet() );
+//      final Collection<String> otherUris = new HashSet<>( uriUrisMap.keySet() );
+//      if ( !neoplasmUris.isEmpty() ) {
+//         // For Cancer Registries we just want a single neoplasm.
+//         final CrConceptAggregate neoplasmAggregate = createNeoplasmAggregate( patientId,
+//                                                                             patientMentionNoteIds,
+//                                                                             neoplasmUris,
+//                                                                             uriUrisMap,
+//                                                                             uriMentionsMap );
+//         conceptAggregates.computeIfAbsent( neoplasmAggregate.getUri(), ci -> new ArrayList<>() )
+//                          .add( neoplasmAggregate );
+//         otherUris.removeAll( neoplasmUris );
+//      }
+//      if ( !otherUris.isEmpty() ) {
+//         for ( String uri : otherUris ) {
+//            final CrConceptAggregate otherAggregate = createOtherAggregate( patientId,
+//                                                                          patientMentionNoteIds,
+//                                                                          uri,
+//                                                                          uriUrisMap.get( uri ),
+//                                                                          uriMentionsMap );
+//            conceptAggregates.computeIfAbsent( otherAggregate.getUri(), ci -> new ArrayList<>() )
+//                             .add( otherAggregate );
+//         }
+//      }
    }
 
 
@@ -116,15 +140,15 @@ public class CrConceptAggregateCreator {
       affirmedUris.removeAll( negatedUris );
       // Map of unique xDoc URIs to URIs that are associated (e.g. same branch).
       // Has nothing to do with previously determined in-doc coreference chains.
-      final Map<String, Collection<CrConceptAggregate>> conceptAggregates = new HashMap<>();
+      final Map<String, Collection<CrConceptAggregate>> aggregates = new HashMap<>();
       if ( !affirmedUris.isEmpty() ) {
-         addAggregates( patientId, patientMentionNoteIds, affirmedUris, uriMentionsMap, conceptAggregates );
+         addAggregates( patientId, patientMentionNoteIds, affirmedUris, uriMentionsMap, aggregates );
       }
       if ( !negatedUris.isEmpty() ) {
-         addAggregates( patientId, patientMentionNoteIds, negatedUris, uriMentionsMap, conceptAggregates );
+         addAggregates( patientId, patientMentionNoteIds, negatedUris, uriMentionsMap, aggregates );
       }
-      addRelations( conceptAggregates.values(), patientRelations );
-      return conceptAggregates;
+      addRelations( aggregates.values(), patientRelations );
+      return aggregates;
    }
 
    static private void addRelations( final Collection<Collection<CrConceptAggregate>> aggregates,
@@ -163,7 +187,7 @@ public class CrConceptAggregateCreator {
    }
 
    /**
-    * We want to combine primary site and associated site.  That way anything in both counts as 2.
+    * We want to combine primary site and associated site.  Anything in both counts as 2.
     */
    static private final Function<MentionRelation,String> getRelationType
          = mentionRelation -> mentionRelation.getType().equals( UriInfoCache.PRIMARY_SITE )

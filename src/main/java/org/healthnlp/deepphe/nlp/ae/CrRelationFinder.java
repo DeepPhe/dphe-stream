@@ -19,6 +19,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
+import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
@@ -119,18 +120,15 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                   final Map<String,Collection<TargetAnnotationScore>> relatedAnnotationScoresMap = new HashMap<>();
                   final double sourceAssertionPenalty = getAssertionPenalty( sourceAnnotation );
                   for ( IdentifiedAnnotation targetAnnotation : uriTargetAnnotations.getValue() ) {
-                     if ( !isSiteActual( docText, targetAnnotation ) ) {
-                        // TODO Check
-                        continue;
-                     }
                      final double targetAssertionPenalty = getAssertionPenalty( targetAnnotation );
                      for ( Map.Entry<String,Double> relationScores : relationScoresMap.entrySet() ) {
                         final String relationName = relationScores.getKey();
+                        if ( (relationName.equals( RelationConstants.DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE )
+                              || relationName.equals( RelationConstants.DISEASE_HAS_PRIMARY_ANATOMIC_SITE ) )
+                             && !isDirectSite( docText, targetAnnotation ) ) {
+                           continue;
+                        }
                         final double uriRelationScore = relationScores.getValue();
-//                        final double distanceScore = getDistanceScore( sourceAnnotation, targetAnnotation,
-//                                                                       tokenBeginToTokenNums,
-//                                                                       tokenEndToTokenNums,
-//                                                                       paragraphBounds );
                         final double distanceScore = getPlacementScore( sourceAnnotation, targetAnnotation,
                                                                        tokenBeginToTokenNums,
                                                                        tokenEndToTokenNums,
@@ -315,11 +313,15 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                             final Collection<Pair<Integer>> paragraphBounds,
                                             final int docLength ) {
       final double tokenDistance = getTokenDistance( source, target, tokenBeginToTokenNum, tokenEndToTokenNum, docLength );
+      if ( tokenDistance == 0 ) {
+//         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 0 distance!\n" );
+         return 100;
+      }
       final Pair<Double> penalty = getSectionPenalty( source, target, paragraphBounds );
-      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
-                                       + penalty.getValue1() + " + " + penalty.getValue2()
-                                       + " * " + tokenDistance + ") = "
-                                       + (100 - (penalty.getValue1() + penalty.getValue2() * tokenDistance)) + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
+//                                       + penalty.getValue1() + " + " + penalty.getValue2()
+//                                       + " * " + tokenDistance + ") = "
+//                                       + (100 - (penalty.getValue1() + penalty.getValue2() * tokenDistance)) + "\n" );
       return Math.max( MIN_PLACEMENT_SCORE, 100 - (penalty.getValue1() + penalty.getValue2() * tokenDistance) );
    }
 
@@ -347,13 +349,13 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 //                                       + sourceCenter + "," + targetCenter + " Diff = "
 //                                       + Math.abs( sourceCenter - targetCenter ) +"\n" );
 //      return Math.floor( Math.abs( sourceCenter - targetCenter ) );
-      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getTokenDistance source, target: "
-                                       + source.getCoveredText() + "," + target.getCoveredText() + " "
-                                       + sourceBeginToken + "," + sourceEndToken + " to "
-                                       + targetBeginToken + "," + targetEndToken + " Distance = "
-                                       + getDistance( sourceBeginToken, sourceEndToken,
-                                                      targetBeginToken, targetEndToken ) +"\n" );
-      return getDistance( sourceBeginToken, sourceEndToken, targetBeginToken, targetEndToken );
+      final double distance = getDistance( sourceBeginToken, sourceEndToken, targetBeginToken, targetEndToken );
+//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getTokenDistance source, target: "
+//                                       + source.getCoveredText() + "," + target.getCoveredText() + " "
+//                                       + sourceBeginToken + "," + sourceEndToken + " to "
+//                                       + targetBeginToken + "," + targetEndToken + " Distance = "
+//                                       + distance +"\n" );
+      return distance;
    }
 
    static private int getBeginTokenNum( final int annotationBegin, final Map<Integer,Integer> tokenBeginToTokenNum ) {
@@ -423,46 +425,46 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    }
 
 
-   static private double getDistanceScore( final IdentifiedAnnotation source,
-                                           final IdentifiedAnnotation target,
-                                           final Map<Integer,Integer> tokenBeginToTokenNum,
-                                           final Map<Integer,Integer> tokenEndToTokenNum,
-                                           final Collection<Pair<Integer>> paragraphBounds ) {
-      final double offsetScore = getOffsetScore( source, target, tokenBeginToTokenNum, tokenEndToTokenNum );
-      if ( offsetScore > 99 ) {
-         return offsetScore;
-      }
-      final double windowPenalty = getWindowPenalty( source, target,  paragraphBounds );
-      return Math.max( 0, offsetScore - windowPenalty );
-   }
-
-   static private double getOffsetScore( final IdentifiedAnnotation source,
-                                         final IdentifiedAnnotation target,
-                                         final Map<Integer,Integer> tokenBeginToTokenNum,
-                                         final Map<Integer,Integer> tokenEndToTokenNum ) {
-      final int sourceBeginToken = tokenBeginToTokenNum.get( source.getBegin() );
-      final int targetBeginToken = tokenBeginToTokenNum.get( target.getBegin() );
-      if ( sourceBeginToken == targetBeginToken ) {
-         // Overlap.
-         return 100;
-      }
-      final int sourceEndToken = tokenEndToTokenNum.get( source.getEnd() );
-      if ( sourceBeginToken < targetBeginToken ) {
-         // source begin is before the target in the text.
-         if ( sourceEndToken >= targetBeginToken ) {
-            // Overlap.
-            return 100;
-         }
-         return Math.max( 1, 100 - (targetBeginToken - sourceEndToken) );
-      }
-      // target begin is before the source in the text.
-      final int targetEndToken = tokenEndToTokenNum.get( target.getEnd() );
-      if ( targetEndToken >= sourceBeginToken ) {
-         // Overlap.
-         return 100;
-      }
-      return Math.max( 1, 100 - (sourceBeginToken - targetEndToken) );
-   }
+//   static private double getDistanceScore( final IdentifiedAnnotation source,
+//                                           final IdentifiedAnnotation target,
+//                                           final Map<Integer,Integer> tokenBeginToTokenNum,
+//                                           final Map<Integer,Integer> tokenEndToTokenNum,
+//                                           final Collection<Pair<Integer>> paragraphBounds ) {
+//      final double offsetScore = getOffsetScore( source, target, tokenBeginToTokenNum, tokenEndToTokenNum );
+//      if ( offsetScore > 99 ) {
+//         return offsetScore;
+//      }
+//      final double windowPenalty = getWindowPenalty( source, target,  paragraphBounds );
+//      return Math.max( 0, offsetScore - windowPenalty );
+//   }
+//
+//   static private double getOffsetScore( final IdentifiedAnnotation source,
+//                                         final IdentifiedAnnotation target,
+//                                         final Map<Integer,Integer> tokenBeginToTokenNum,
+//                                         final Map<Integer,Integer> tokenEndToTokenNum ) {
+//      final int sourceBeginToken = tokenBeginToTokenNum.get( source.getBegin() );
+//      final int targetBeginToken = tokenBeginToTokenNum.get( target.getBegin() );
+//      if ( sourceBeginToken == targetBeginToken ) {
+//         // Overlap.
+//         return 100;
+//      }
+//      final int sourceEndToken = tokenEndToTokenNum.get( source.getEnd() );
+//      if ( sourceBeginToken < targetBeginToken ) {
+//         // source begin is before the target in the text.
+//         if ( sourceEndToken >= targetBeginToken ) {
+//            // Overlap.
+//            return 100;
+//         }
+//         return Math.max( 1, 100 - (targetBeginToken - sourceEndToken) );
+//      }
+//      // target begin is before the source in the text.
+//      final int targetEndToken = tokenEndToTokenNum.get( target.getEnd() );
+//      if ( targetEndToken >= sourceBeginToken ) {
+//         // Overlap.
+//         return 100;
+//      }
+//      return Math.max( 1, 100 - (sourceBeginToken - targetEndToken) );
+//   }
 
 
    static private final double SENTENCE_PENALTY = 0;
@@ -529,7 +531,7 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          "superior to "
                                                                                                   ) );
 
-   static private boolean isSiteActual( final String docText, final IdentifiedAnnotation site ) {
+   static private boolean isDirectSite( final String docText, final IdentifiedAnnotation site ) {
       final int begin = Math.max( 0, site.getBegin() - 40 );
       final String preceding = docText.substring( begin, site.getBegin() ).toLowerCase();
       return UNWANTED_SITE_PRECEDENTS.stream().noneMatch( preceding::contains );

@@ -18,17 +18,21 @@ final public class ConfidenceCalculator {
    static public double calculateAggregateRelation( final Collection<MentionRelation> mentionRelations ) {
       final List<Double> confidences = mentionRelations.stream()
                                                              .map( MentionRelation::getConfidence )
-                                                             .collect( Collectors.toList() );
+//                                                         .map( ConfidenceCalculator::getBumpedPerfection )
+                                                          .collect( Collectors.toList() );
       NeoplasmSummaryCreator.addDebug( "ConfidenceCalculator.calculateAggregateRelation:  " +
                                        mentionRelations
                                              .stream()
                                              .map( MentionRelation::getConfidence )
+//                                             .map( ConfidenceCalculator::getBumpedPerfection )
                                              .sorted()
                                              .map( d -> ""+d )
                                              .collect( Collectors.joining( "," ) )
-                                       + " : " + getStandardNumerator( confidences ) + "/"
-                                       + getStandardDenominator( confidences.size() )
-                                       + " = " + getStandardConfidence( confidences ) +"\n");
+                                       + " :\n(" + confidences.size() + ") "
+                                       + getStandardNumerator( confidences ) + "/"
+                                       + getHighDenominator( confidences.size() )
+                                       + " = " + getStandardConfidence( confidences )
+                                       +"\n" );
       return getStandardConfidence( confidences );
    }
 
@@ -37,9 +41,11 @@ final public class ConfidenceCalculator {
                                        + confidences.stream().sorted()
                                                                   .map( d -> d+"" )
                                                                   .collect( Collectors.joining(",") )
-                                       + " : " + getStandardNumerator( confidences ) + "/"
-                                       + getStandardDenominator( confidences.size() )
-                                       + " = " + getStandardConfidence( confidences ) +"\n");
+                                       + " :\n(" + confidences.size() + ") "
+                                       + getStandardNumerator( confidences ) + "/"
+                                       + getHighDenominator( confidences.size() )
+                                       + " = " + getStandardConfidence( confidences )
+                                       +"\n" );
       return getStandardConfidence( confidences );
    }
 
@@ -48,34 +54,30 @@ final public class ConfidenceCalculator {
          return 0;
       }
       final double numerator = getStandardNumerator( values );
-      final double denominator = getStandardDenominator( values.size() );
-      return Math.min( 100, (numerator / denominator) );
+      final double denominator = getHighDenominator( values.size() );
+      return numerator / denominator;
    }
 
-   static public double getStandardNumerator( final Collection<Double> values ) {
+   static private double getStandardNumerator( final Collection<Double> values ) {
       // Value larger numbers much more than smaller numbers.
-//      return values.stream().mapToDouble( d -> d*d/100 ).sum();
       return values.stream().mapToDouble( d -> d*d/100 ).sum();
    }
 
-   static public double getStandardDenominator( final int count ) {
+   static private double getStandardDenominator( final int count ) {
       return count/2d + Math.sqrt( count );
    }
 
-   static public double getBy100StandardConfidence( final List<Double> values ) {
-      if ( values.isEmpty() ) {
-         return 0;
-      }
-      final double numerator = getStandardNumerator( values );
-      final double denominator = getStandardDenominator( values.size() );
-      return Math.min( 1, (numerator / denominator) / 100 );
+   static private double getHighDenominator( final int count ) {
+      return 2 * Math.sqrt( count );
    }
 
-   static public double getBy100StandardNumerator( final Collection<Double> values ) {
-      // Value larger numbers much more than smaller numbers.
-//      return values.stream().mapToDouble( d -> d*d/100 ).sum();
-      return values.stream().mapToDouble( d -> 100*d ).map( d -> d*d/100 ).sum();
+   /**
+    *
+    * @param relation mention relation in aggregate relation
+    * @return mention relation confidence OR mention relation confidence + 10 if mention relation confidence >= 100.
+    */
+   static private double getBumpedPerfection( final MentionRelation relation ) {
+      return relation.getConfidence() >= 100 ? relation.getConfidence() + 10 : relation.getConfidence();
    }
-
 
 }

@@ -371,27 +371,28 @@ C698|Lacrimal_Gland
 // Actually Eye, NOS
 C699|Eye
 
-C700|Meninges
-C701|Meninges
+C700|Cerebral_Meninges
+C701|Spinal_Meninges
 C709|Meninges
 
 // Should be Brain, Cranial Nerves and Spinal Cord
-C710|Cranial_Nerve
-C711|Cranial_Nerve
-C712|Cranial_Nerve
-C713|Cranial_Nerve
-C714|Cranial_Nerve
-C715|Heart_Ventricle
+C71*|Brain
+C710|Supratentorial_Brain
+C711|Forehead
+C712|Temporal_Lobe
+C713|Parietal_Lobe
+C714|Occipital_Lobe
+C715|Brain_Ventricle
 C716|Cerebellum
-C717|Cranial_Nerve
-C718|Cranial_Nerve
-C719|Cranial_Nerve
+C717|Brain_Stem
+C718|Corpus_Callosum
+C719|Intracranial
 
-C720|Cranial_Nerve
-C721|Cranial_Nerve
-C722|Cranial_Nerve
-C723|Cranial_Nerve
-C724|Cranial_Nerve
+C720|Spinal_Cord
+C721|Cauda_Equina
+C722|Olfactory_Nerve
+C723|Optic_Nerve
+C724|Acoustic_Nerve
 C725|Cranial_Nerve
 // Other Nervous System
 C728|Central_Nervous_System

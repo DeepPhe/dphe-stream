@@ -95,25 +95,19 @@ final public class CrEvalSummarizer {
          }
          evalWriter.write( "\n" );
          evalWriter.flush();
-         processDir( new File( args[ 0 ] ), jsonDir, evalWriter, featuresDir );
+         processDir( new File( args[ 0 ] ), jsonDir, evalWriter, debugDir, featuresDir );
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
       }
       CrDmsRunner.getInstance()
                .close();
-
-      try ( Writer writer = new FileWriter( new File( debugDir, "EvalDebug.txt" ) ) ) {
-         writer.write( NeoplasmSummaryCreator.getDebug() );
-      } catch ( IOException ioE ) {
-         LOGGER.error( ioE.getMessage() );
-      }
-
       System.exit( 0 );
    }
 
    static private void processDir( final File dir,
                                    final File jsonDir,
                                    final Writer evalWriter,
+                                   final File debugDir,
                                    final File featureDir )
          throws IOException {
       LOGGER.info( "Processing directory " + dir.getPath() );
@@ -123,9 +117,9 @@ final public class CrEvalSummarizer {
       }
       for ( File file : files ) {
          if ( file.isDirectory() ) {
-            processDir( file, jsonDir, evalWriter, featureDir );
+            processDir( file, jsonDir, evalWriter, debugDir, featureDir );
          } else {
-            processDoc( file, jsonDir, evalWriter, featureDir );
+            processDoc( file, jsonDir, evalWriter, debugDir, featureDir );
          }
       }
    }
@@ -133,6 +127,7 @@ final public class CrEvalSummarizer {
    static private void processDoc( final File file,
                                    final File jsonDir,
                                    final Writer evalWriter,
+                                   final File debugDir,
                                    final File featureDir )
          throws IOException {
       String docId = file.getName();
@@ -161,6 +156,12 @@ final public class CrEvalSummarizer {
 //         writeFeatures( patientId, neoplasm, featureDir );
       }
       writeJson( summary, jsonDir );
+      try ( Writer writer = new FileWriter( new File( debugDir, "EvalDebug.txt" ), true ) ) {
+         writer.write( NeoplasmSummaryCreator.getDebug() );
+      } catch ( IOException ioE ) {
+         LOGGER.error( ioE.getMessage() );
+      }
+      NeoplasmSummaryCreator.resetDebug();
    }
 
    static private void writeEval( final String patientId,

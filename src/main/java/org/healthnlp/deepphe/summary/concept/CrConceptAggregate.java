@@ -93,6 +93,11 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
       return _uri;
    }
 
+   /**
+    * This is the relative score of the best uri for this aggregate.
+    * It is NOT an indicator of overall aggregate strength, confidence, etc.
+    * @return  NEVER USED FOR CrConceptAggregate
+    */
    @Override
    public double getUriScore() {
       return _uriScore;
@@ -295,13 +300,11 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
       // Subtract 20 for negation and 5 for uncertainty ?
 //      final double assertionBump = isNegated() ? 20 : (isUncertain() ? 5 : 0);
       final double assertionBump = isNegated() ? 0.20 : (isUncertain() ? 0.05 : 0);
-      // There is either a relationConfidence or an AsTargetConfidence, so just need to divide by 2.
-//      _confidence = ( 10*_uriScore + computeRelationConfidence() + getAsTargetConfidence() ) / 2 - assertionBump;
+      // There is either a relationConfidence or an AsTargetConfidence.
       final double relationConfidence = Math.max( computeRelationConfidence(), getAsTargetConfidence() );
-      _confidence = ( _uriScore + relationConfidence ) / 2 - assertionBump;
-      _confidence = Math.max( 0.05, _confidence );
+      _confidence = Math.max( 0.05, relationConfidence - assertionBump );
       NeoplasmSummaryCreator.addDebug( "CrConceptAggregate.getConfidence for " + getUri()
-                                       + ": (" + _uriScore + "+" + relationConfidence + ") / 2 - "
+                                       + ": " + relationConfidence + " - "
                                        + assertionBump + " = " + _confidence +"\n");
       return _confidence;
    }
@@ -324,9 +327,9 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
       }
       NeoplasmSummaryCreator.addDebug( "CrConceptAttribute.computeRelationConfidence "
                                        + confidences.stream().sorted().map( d -> d+"" ).collect(
-            Collectors.joining(",") ) + "\n" );
-      // Only want the strict mean.
-      return ConfidenceCalculator.getBy100StandardConfidence( confidences );
+            Collectors.joining(",") ) + " = "
+                                       + (ConfidenceCalculator.getStandardConfidence( confidences )/100) + "\n" );
+      return ConfidenceCalculator.getStandardConfidence( confidences )/100;
    }
 
 

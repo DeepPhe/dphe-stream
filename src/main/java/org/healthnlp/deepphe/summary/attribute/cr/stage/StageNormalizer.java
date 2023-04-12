@@ -74,6 +74,10 @@ public class StageNormalizer extends AbstractAttributeNormalizer {
                return "V";
          }
       }
+      if ( uri.length() < 8 ) {
+         NeoplasmSummaryCreator.addDebug( "BAD STAGE? " + uri + "\n" );
+         return "Not Found";
+      }
       final String subUri = uri.substring( 0, 8 );
       switch ( subUri ) {
          case "Stage_Un":

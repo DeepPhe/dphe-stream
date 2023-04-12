@@ -6,6 +6,7 @@ import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.util.Neo4jRelationUtil;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
@@ -41,7 +43,7 @@ public enum UriInfoCache {
    private final Map<String, Long> _timeMap = new ConcurrentHashMap<>();
    private final Map<String, SemanticTui> _uriSemanticMap = new ConcurrentHashMap<>();
    private final Map<String, Collection<String>> _uriBranchMap = new ConcurrentHashMap<>();
-   private final Map<String, Integer> _uriBranchSizeMap = new ConcurrentHashMap<>();
+//   private final Map<String, Integer> _uriBranchSizeMap = new ConcurrentHashMap<>();
    private final Map<String, Collection<String>> _uriRootMap = new ConcurrentHashMap<>();
    private final Map<String, Integer> _uriLevelMap = new ConcurrentHashMap<>();
    private final Map<String, Double> _uriMidLevelMap = new ConcurrentHashMap<>();
@@ -66,7 +68,7 @@ public enum UriInfoCache {
       final Map<String,UriNode> uriNodes = new HashMap<>( uris.size() );
       for ( String uri : uris ) {
          getUriBranch( uri );
-         getUriBranchSize( uri );
+//         getUriBranchSize( uri );
          getUriRoots( uri );
          getUriLevel( uri );
          getUriMidLevel( uri );
@@ -157,17 +159,17 @@ public enum UriInfoCache {
       }
    }
 
-   public int getUriBranchSize( final String uri ) {
-      synchronized ( LOCK ) {
-         final Integer cachedBranchSize = _uriBranchSizeMap.get( uri );
-         if ( cachedBranchSize != null ) {
-            return cachedBranchSize;
-         }
-         final int branchSize =  getUriBranch( uri ).size();
-         _uriBranchSizeMap.put( uri, branchSize );
-         return branchSize;
-      }
-   }
+//   public int getUriBranchSize( final String uri ) {
+//      synchronized ( LOCK ) {
+//         final Integer cachedBranchSize = _uriBranchSizeMap.get( uri );
+//         if ( cachedBranchSize != null ) {
+//            return cachedBranchSize;
+//         }
+//         final int branchSize =  getUriBranch( uri ).size();
+//         _uriBranchSizeMap.put( uri, branchSize );
+//         return branchSize;
+//      }
+//   }
 
    /**
     *
@@ -221,8 +223,9 @@ public enum UriInfoCache {
                                              .mapToInt( UriInfoCache.this::getUriLevel )
                                              .max()
                                              .orElse( 0 ) + 1;
-         _uriMidLevelMap.put( uri, (level+maxLevel) / 2d );
-         return level;
+         final double mean = (level+maxLevel) / 2d;
+         _uriMidLevelMap.put( uri, mean );
+         return mean;
       }
    }
 
@@ -235,13 +238,22 @@ public enum UriInfoCache {
             _timeMap.put( uri, millis );
             return cachedNode;
          }
-         // TODO - cache relations ?
+         final boolean isCancer = UriInfoCache.getInstance().getSemanticTui( uri ) == SemanticTui.T191;
+         if ( !isCancer ) {
+            final UriNode node = new UriNode( uri, Collections.emptyMap(), Collections.emptyMap() );
+            _timeMap.put( uri, millis );
+            _uriNodeMap.put( uri, node );
+            return node;
+         }
+            // TODO - cache relations ?
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
          final Map<String, Collection<String>> uriRelations = Neo4jRelationUtil.getRelatedClassUris( graphDb, uri );
          final Map<String,Collection<String>> siteRelations = new HashMap<>();
          final Map<String,Collection<String>> nonSiteRelations = new HashMap<>();
          for ( Map.Entry<String,Collection<String>> relation : uriRelations.entrySet() ) {
             if ( RelationConstants.isHasSiteRelation( relation.getKey() ) ) {
+               NeoplasmSummaryCreator.addDebug( "URI SITE: " + uri + " " + relation.getKey() + " : "
+                                             + String.join( ",", relation.getValue() ) + "\n");
                String siteRelation = PRIMARY_SITE;
                if ( relation.getKey().toLowerCase().contains( "associated" ) ) {
                   siteRelation = ASSOCIATED_SITE;
@@ -265,7 +277,8 @@ public enum UriInfoCache {
 
    public class UriNode {
       final private String _uri;
-      final private double _uriMidLevel;
+//      final private double _uriMidLevel;
+//      final private int _uriLevel;
       final private Map<String, Collection<String>> _siteRelations = new HashMap<>();
       final private Map<String, Collection<String>> _nonSiteRelations = new HashMap<>();
 
@@ -273,7 +286,8 @@ public enum UriInfoCache {
                         final Map<String, Collection<String>> nonSiteRelations,
                        final Map<String,Collection<String>> siteRelations ) {
          _uri = uri;
-         _uriMidLevel = getUriMidLevel( uri );
+//         _uriMidLevel = getUriMidLevel( uri );
+//         _uriLevel = getUriLevel( uri );
          _nonSiteRelations.putAll( nonSiteRelations );
          _siteRelations.putAll( siteRelations );
       }
@@ -286,51 +300,90 @@ public enum UriInfoCache {
          return _nonSiteRelations.isEmpty() && _siteRelations.isEmpty();
       }
 
-      public Map<String, Double> getRelationScores( final String targetUri ) {
-         final Map<String, Double> relationScores = new HashMap<>();
+//      public Map<String, Double> getRelationScores( final String targetUri ) {
+//         final Map<String, Double> relationScores = new HashMap<>();
+//         final Collection<String> targetRoots = getUriRoots( targetUri );
+//         final double targetMidLevel = getUriMidLevel( targetUri );
+//         if ( getInstance().getSemanticTui( targetUri ) == SemanticTui.T023 ) {
+//            fillRelationScores( targetRoots, targetMidLevel, _siteRelations, relationScores );
+//         } else {
+//            fillRelationScores( targetRoots, targetMidLevel, _nonSiteRelations, relationScores );
+//            // Special case for quadrants (e.g. Nipple)
+//            if ( CustomUriRelations.getInstance().getQuadrantUris().contains( targetUri ) ) {
+//               fillRelationScores( targetRoots, targetMidLevel, _siteRelations, relationScores );
+//            }
+//         }
+//         return relationScores;
+//      }
+//
+//      private void fillRelationScores( final Collection<String> targetRoots,
+//                         final double targetMidLevel,
+//                         final Map<String, Collection<String>> relationsMap,
+//                         final Map<String, Double> relationScores ) {
+//         for ( Map.Entry<String, Collection<String>> relatedUris : relationsMap.entrySet() ) {
+//            double maxScore = 0d;
+//            for ( String relatedUri : relatedUris.getValue() ) {
+//               if ( targetRoots.contains( relatedUri ) ) {
+//                  maxScore = Math.max( maxScore, getTargetUriScore( relatedUri, targetMidLevel ) );
+//               }
+//            }
+//            if ( maxScore > 10d ) {
+//               relationScores.put( relatedUris.getKey(), maxScore );
+//            }
+//         }
+//      }
+//
+//      private double getTargetUriScore( final String relatedUri, final double targetMidLevel ) {
+//         final double relatedMidLevel = getUriMidLevel( relatedUri );
+//         //  If a relatedUri has few children then give it a bump in value.  e.g. laterality.
+////         final int branchSize = getUriBranchSize( relatedUri );
+////         final double bump = branchSize > 10 ? 0 : 20;
+//         // The most important thing is the level of the related uri.  The depth of the target is secondary.
+//         return Math.min( 100,
+//                          10d * _uriMidLevel
+//                          + 10d * relatedMidLevel
+////                          + bump
+//                          + 2d * ( targetMidLevel - relatedMidLevel ) );
+//      }
+//   }
+
+   public Map<String,Double> getRelationScores( final String targetUri ) {
+         final Map<String,Double> relationScores = new HashMap<>();
          final Collection<String> targetRoots = getUriRoots( targetUri );
-         final double targetMidLevel = getUriMidLevel( targetUri );
          if ( getInstance().getSemanticTui( targetUri ) == SemanticTui.T023 ) {
-            fillRelationScores( targetRoots, targetMidLevel, _siteRelations, relationScores );
+            fillRelationScores( targetRoots, _siteRelations, relationScores );
          } else {
-            fillRelationScores( targetRoots, targetMidLevel, _nonSiteRelations, relationScores );
+            fillRelationScores( targetRoots, _nonSiteRelations, relationScores );
             // Special case for quadrants (e.g. Nipple)
             if ( CustomUriRelations.getInstance().getQuadrantUris().contains( targetUri ) ) {
-               fillRelationScores( targetRoots, targetMidLevel, _siteRelations, relationScores );
+               fillRelationScores( targetRoots, _siteRelations, relationScores );
             }
+         }
+         if ( !relationScores.isEmpty() ) {
+            NeoplasmSummaryCreator.addDebug( "Relation Scores " + _uri + " " + targetUri + " : "
+                                             + relationScores.entrySet()
+                                                             .stream()
+                                                             .map( e -> e.getKey() + " " + e.getValue() )
+                                                             .collect(
+                                                                   Collectors.joining( " ; " ) ) + "\n" );
          }
          return relationScores;
       }
-
       private void fillRelationScores( final Collection<String> targetRoots,
-                         final double targetMidLevel,
-                         final Map<String, Collection<String>> relationsMap,
-                         final Map<String, Double> relationScores ) {
+                                       final Map<String, Collection<String>> relationsMap,
+                                       final Map<String,Double> relationScores ) {
          for ( Map.Entry<String, Collection<String>> relatedUris : relationsMap.entrySet() ) {
-            double maxScore = 0d;
-            for ( String relatedUri : relatedUris.getValue() ) {
-               if ( targetRoots.contains( relatedUri ) ) {
-                  maxScore = Math.max( maxScore, getTargetUriScore( relatedUri, targetMidLevel ) );
-               }
-            }
-            if ( maxScore > 10d ) {
-               relationScores.put( relatedUris.getKey(), maxScore );
+            final double sum = relatedUris.getValue()
+                       .stream()
+                       .filter( targetRoots::contains )
+                       .mapToDouble( UriInfoCache.this::getUriLevel )
+                       .sum();
+            if ( sum > 0 ) {
+               relationScores.put( relatedUris.getKey(), 10 * sum );
             }
          }
       }
 
-      private double getTargetUriScore( final String relatedUri, final double targetMidLevel ) {
-         final double relatedMidLevel = getUriMidLevel( relatedUri );
-         //  If a relatedUri has few children then give it a bump in value.  e.g. laterality.
-         final int branchSize = getUriBranchSize( relatedUri );
-         final double bump = branchSize > 10 ? 0 : 20;
-         // The most important thing is the level of the related uri.  The depth of the target is secondary.
-         return Math.min( 100,
-                          10d * _uriMidLevel
-                          + 10d * relatedMidLevel
-                          + bump
-                          + 2d * ( targetMidLevel - relatedMidLevel ) );
-      }
    }
 
 
@@ -347,7 +400,7 @@ public enum UriInfoCache {
             for ( String removal : removals ) {
                _timeMap.remove( removal );
                _uriBranchMap.remove( removal );
-               _uriBranchSizeMap.remove( removal );
+//               _uriBranchSizeMap.remove( removal );
                _uriRootMap.remove( removal );
                _uriLevelMap.remove( removal );
                _uriMidLevelMap.remove( removal );

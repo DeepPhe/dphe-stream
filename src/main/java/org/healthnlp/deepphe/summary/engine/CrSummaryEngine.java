@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.summary.engine;
 
 import org.apache.ctakes.core.util.annotation.SemanticTui;
+import org.apache.log4j.Logger;
 import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
 import org.healthnlp.deepphe.node.NoteNodeStore;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
  * @since {3/12/2023}
  */
 final public class CrSummaryEngine {
+
+   static private final Logger LOGGER = Logger.getLogger( "CrSummaryEngine" );
 
    private CrSummaryEngine() {}
 
@@ -73,22 +76,40 @@ final public class CrSummaryEngine {
 //                   + patientMentionNoteIds.size() + " mentions, "
 //                   + patientRelations.size() + " relations" );
 //                   + patientCorefs.size() + " coref chains." );
-NeoplasmSummaryCreator.addDebug( "CreatePatientSummary: " + patientId + "\n" );
-      final Map<String,Collection<CrConceptAggregate>> uriCrAggregateMap
+      NeoplasmSummaryCreator.addDebug( "CreatePatientSummary: " + patientId + "\n" );
+      final Map<String, Collection<CrConceptAggregate>> uriCrAggregateMap
             = CrConceptAggregateCreator.createUriConceptAggregateMap( patientId,
                                                                       patientMentionNoteIds,
                                                                       patientRelations );
 //      final Collection<ConceptAggregate> allConcepts
 //            = uriCrAggregateMap.values().stream().flatMap( Collection::stream ).collect( Collectors.toSet() );
 
-      final Collection<CrConceptAggregate> neoplasms
+      Collection<CrConceptAggregate> neoplasms
             = uriCrAggregateMap.entrySet()
                                .stream()
-                               .filter( e -> UriInfoCache.getInstance().getSemanticTui( e.getKey() ) == SemanticTui.T191 )
+                               .filter( e -> UriInfoCache.getInstance()
+                                                         .getSemanticTui( e.getKey() ) == SemanticTui.T191 )
                                .map( Map.Entry::getValue )
                                .flatMap( Collection::stream )
                                .collect( Collectors.toSet() );
 
+      if ( neoplasms.isEmpty() ) {
+         LOGGER.warn( "No Cancer found for Patient " + patientId );
+         neoplasms
+               = uriCrAggregateMap.entrySet()
+                                  .stream()
+                                  .filter( e -> UriInfoCache.getInstance()
+                                                            .getSemanticTui( e.getKey() ) == SemanticTui.T184 )
+                                  .map( Map.Entry::getValue )
+                                  .flatMap( Collection::stream )
+                                  .collect( Collectors.toSet() );
+      }
+      if ( neoplasms.isEmpty() ) {
+         LOGGER.warn( "No Mass/Tumor found for Patient " + patientId );
+         neoplasms = Collections.singletonList( new CrConceptAggregate( patientId,
+                                                                        Collections.emptyMap(),
+                                                                        Collections.emptyMap() ) );
+      }
       Collection<CrConceptAggregate> summaryNeoplasms = neoplasms.stream()
                                                                    .filter( CrSummaryEngine::mostlyAffirmed )
                                                                    .collect( Collectors.toList() );

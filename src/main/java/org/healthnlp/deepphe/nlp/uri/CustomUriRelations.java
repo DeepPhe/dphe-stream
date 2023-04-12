@@ -1,5 +1,6 @@
 package org.healthnlp.deepphe.nlp.uri;
 
+import org.apache.ctakes.core.util.annotation.SemanticTui;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
@@ -21,7 +22,8 @@ public enum CustomUriRelations {
    private final Map<String, Collection<String>> CANCER_RELATIONS = new HashMap<>();
    public Map<String,Collection<String>> getCancerRelations( final String uri,
                                                              final GraphDatabaseService graphDb ) {
-      if ( !UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
+//      if ( !UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
+      if ( UriInfoCache.getInstance().getSemanticTui( uri ) != SemanticTui.T191 ) {
          return Collections.emptyMap();
       }
       if ( !CANCER_RELATIONS.isEmpty() ) {
