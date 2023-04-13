@@ -184,7 +184,7 @@ public enum UriInfoCache {
             _timeMap.put( uri, millis );
             return cachedRoots;
          }
-         final Collection<String> roots =  Neo4jOntologyConceptUtil.getRootUris( uri );
+         final Collection<String> roots = Neo4jOntologyConceptUtil.getRootUris( uri );
          roots.remove( "Thing" );
          roots.remove( "DeepPhe" );
          _timeMap.put( uri, millis );

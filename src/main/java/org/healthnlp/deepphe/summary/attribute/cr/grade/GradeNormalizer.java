@@ -84,8 +84,8 @@ public class GradeNormalizer extends AbstractAttributeNormalizer {
                   || uri.equals( "Poorly_Differentiated" ) ) {
          return 3;
       } else if ( uri.equals( "Grade_4" ) || uri.equals( "G4_Grade" )
-                  || uri.equals( "Undifferentiated" )
-                  || uri.equals( "Anaplastic" )) {
+                  || uri.equals( "Undifferentiated" ) ) {
+//                  || uri.equals( "Anaplastic" ))
          return 4;
       } else if ( uri.equals( "Grade_5" ) ) {
          return 5;

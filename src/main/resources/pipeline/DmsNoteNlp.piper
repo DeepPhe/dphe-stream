@@ -31,8 +31,8 @@ add ParagraphSentenceFixer
 //  Tokenize by penn treebank rules.
 add TokenizerAnnotatorPTB
 
-// Tokenize multi-token types such as dates, fractions and measurements.
-add ContextDependentTokenizerAnnotator
+// Tokenize multi-token types such as dates, fractions and measurements.  Don't use this!
+//add ContextDependentTokenizerAnnotator
 
 //  Tag word part of speech.
 addDescription POSTagger
@@ -79,7 +79,7 @@ add DiseaseAttributeFinder
 add CancerAttributeAdjuster
 
 // Negate any cancers that are alone in a paragraph and any 1 is negated --> Good?
-add LonerNegator
+//add LonerNegator
 
 //  Fix the Subject type (patient, family member) by section type.
 add SubjectSectionFixer
@@ -127,4 +127,4 @@ add CrRelationFinder
 
 add JsonNodeCreator
 //add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_10_2023\all_crc SubDirectory=HTML
-//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_12_2023\all_crc SubDirectory=TEXT
+//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_13_2023\all_lung SubDirectory=TEXT

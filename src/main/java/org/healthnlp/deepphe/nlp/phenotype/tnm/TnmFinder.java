@@ -225,12 +225,15 @@ public enum TnmFinder {
       if ( tnms.isEmpty() ) {
          return Collections.emptyList();
       }
-      final boolean isPathologic = docText.toLowerCase().contains( "patholog" );
-      if ( isPathologic ) {
-         tnms.forEach( SimpleTnm::setPathologic );
-      }
+//      final boolean isPathologic = docText.toLowerCase().contains( "patholog" );
+//      if ( isPathologic ) {
+//         tnms.forEach( SimpleTnm::setPathologic );
+//      }
       final List<IdentifiedAnnotation> tnmAnnotations = new ArrayList<>();
       for ( SimpleTnm tnm : tnms ) {
+         if ( isParenthetic( docText, tnm ) ) {
+            continue;
+         }
           // Clinical Attribute
          final Collection<IdentifiedAnnotation> annotations
                = UriAnnotationFactory.createIdentifiedAnnotations( jcas, tnm._begin, tnm._end, tnm.getUri(),
@@ -238,6 +241,19 @@ public enum TnmFinder {
          tnmAnnotations.addAll( annotations );
       }
       return tnmAnnotations;
+   }
+
+
+   // Check to see if it is actually a lymph node number (N1) or a category label (pt):
+   static private boolean isParenthetic( final String docText, SimpleTnm tnm ) {
+      if ( tnm._begin == 0 || tnm._end == docText.length() || tnm._end - tnm._begin != 2 ) {
+         return false;
+      }
+      if ( docText.charAt( tnm._begin-1 ) != '(' || docText.charAt( tnm._end ) != ')' ) {
+         return false;
+      }
+      final String subText = docText.substring( tnm._begin, tnm._end );
+      return subText.startsWith( "n" ) || subText.startsWith( "p" );
    }
 
 

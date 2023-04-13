@@ -6983,9 +6983,8 @@ C500-C506,C508-C509|Breast|844|Cystadenocarcinoma|8440/3|Cystadenocarcinoma
 C500-C506,C508-C509|Breast|848|Mucinous_Adenocarcinoma|8480/3|Mucinous_Adenocarcinoma
 C500-C506,C508-C509|Breast|848|Mucinous_Adenocarcinoma|8481/3|Mucin_Producing_Adenocarcinoma
 C500-C506,C508-C509|Breast|849|Signet_Ring_Cell_Carcinoma|8490/3|Signet_Ring_Cell_Carcinoma
-C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/1|Ductal_Carcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/2|Ductal_Breast_Carcinoma_In_Situ
-C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/3|Invasive_Breast_Carcinoma
+C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8500/3|Invasive_Carcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8501/2|Comedocarcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8501/3|Comedocarcinoma
 C500-C506,C508-C509|Breast|850|Ductal_Carcinoma|8502/3|Secretory_Breast_Carcinoma

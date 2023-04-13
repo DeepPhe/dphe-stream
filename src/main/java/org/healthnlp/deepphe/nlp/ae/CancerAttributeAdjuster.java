@@ -1,7 +1,6 @@
 package org.healthnlp.deepphe.nlp.ae;
 
 import org.apache.ctakes.core.pipeline.PipeBitInfo;
-import org.apache.ctakes.core.util.annotation.IdentifiedAnnotationUtil;
 import org.apache.ctakes.core.util.annotation.SemanticTui;
 import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
 import org.apache.log4j.Logger;
@@ -11,10 +10,13 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
+import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.apache.ctakes.core.util.annotation.SemanticTui.T023;
+import static org.apache.ctakes.core.util.annotation.SemanticTui.T082;
 import static org.apache.ctakes.typesystem.type.constants.CONST.*;
 
 /**
@@ -30,12 +32,25 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
 
    static private final Logger LOGGER = Logger.getLogger( "CancerAttributeAdjuster" );
 
-   static private boolean hasNeoplasmType( final IdentifiedAnnotation annotation ) {
-      final Collection<SemanticTui> tuis = IdentifiedAnnotationUtil.getSemanticTuis( annotation );
-      return tuis.contains( SemanticTui.T191 )
+//   static private boolean hasNeoplasmType( final IdentifiedAnnotation annotation ) {
+//      final Collection<SemanticTui> tuis = IdentifiedAnnotationUtil.getSemanticTuis( annotation );
+//      return tuis.contains( SemanticTui.T191 )
+//             || CustomUriRelations.getInstance()
+//                                  .getBehaviorUris()
+//                                  .contains( Neo4jOntologyConceptUtil.getUri( annotation ) );
+//   }
+
+   static private boolean isNeoplasmType( final String uri ) {
+      return UriInfoCache.getInstance().getSemanticTui( uri )
+                         .equals( SemanticTui.T191 )
              || CustomUriRelations.getInstance()
                                   .getBehaviorUris()
-                                  .contains( Neo4jOntologyConceptUtil.getUri( annotation ) );
+                                  .contains( uri );
+   }
+
+   static private boolean isTopoType( final String uri ) {
+      final SemanticTui semantic = UriInfoCache.getInstance().getSemanticTui( uri );
+      return semantic == T023 || semantic == T082;
    }
 
    /**
@@ -50,12 +65,15 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
 //      final Collection<IdentifiedAnnotation> allTumors = Neo4jOntologyConceptUtil.getAnnotationsByUris( jCas, massNeoplasmUris );
       final Collection<IdentifiedAnnotation> assertables = new ArrayList<>();
       for ( IdentifiedAnnotation annotation : JCasUtil.select( jCas, IdentifiedAnnotation.class ) ) {
-         final Collection<SemanticTui> tuis = IdentifiedAnnotationUtil.getSemanticTuis( annotation );
-         if ( tuis.contains( SemanticTui.T023 ) || tuis.contains( SemanticTui.T082 ) ) {
+         final String uri = Neo4jOntologyConceptUtil.getUri( annotation );
+         if ( uri.isEmpty() ) {
+            continue;
+         }
+         if ( isTopoType( uri ) ) {
             // Major or Minor Topography
             annotation.setPolarity( NE_POLARITY_NEGATION_ABSENT );
             annotation.setUncertainty( NE_UNCERTAINTY_ABSENT );
-         } else if ( hasNeoplasmType( annotation ) ) {
+         } else if ( isNeoplasmType( uri ) ) {
             assertables.add( annotation );
          }
       }
@@ -104,10 +122,20 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
          }
          if ( end + 35 < docText.length() ) {
             final String following = docText.substring( end, end + 35 ).toLowerCase();
-            if ( following.contains( "not otherwise" ) || following.contains( "not metasta" )) {
+            if ( following.contains( "not otherwise" ) || following.contains( "not metasta" )
+                 || following.contains( "no spec") ) {
                tumor.setPolarity( NE_POLARITY_NEGATION_ABSENT );
-            } else if ( following.contains( "not ident" ) || following.contains( "none ident" ) ) {
+            } else if ( following.contains( "not ident" ) || following.contains( "none ident" )
+                        || following.contains( "should be excluded" )) {
                tumor.setPolarity( NE_POLARITY_NEGATION_PRESENT );
+            }
+            if ( begin > 2 ) {
+               final String preceding = docText.substring( begin - 3, begin )
+                                               .toLowerCase()
+                                               .replaceAll( "\\s+", " " );
+               if ( following.contains( "is present" ) && !preceding.contains( "no" ) ) {
+                  tumor.setPolarity( NE_POLARITY_NEGATION_ABSENT );
+               }
             }
          }
       }

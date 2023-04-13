@@ -3,6 +3,7 @@ package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author SPF , chip-nlp
@@ -32,9 +33,12 @@ public enum LungUriCollection {
       }
       _lungUris = Neo4jOntologyConceptUtil.getBranchUris( "Lung" );
       _bronchusUris = Neo4jOntologyConceptUtil.getBranchUris( "Bronchus" );
-      _upperLobeUris = Neo4jOntologyConceptUtil.getBranchUris( "Upper_Lobe_Of_The_Lung" );
-      _middleLobeUris = Neo4jOntologyConceptUtil.getBranchUris( "Middle_Lobe_Of_The_Right_Lung" );
-      _lowerLobeUris = Neo4jOntologyConceptUtil.getBranchUris( "Lower_Lung_Lobe" );
+      _upperLobeUris = new HashSet<>( Neo4jOntologyConceptUtil.getBranchUris( "Upper_Lobe_Of_The_Lung" ) );
+      _upperLobeUris.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Upper_Zone_Of_Lung" ) );
+      _middleLobeUris = new HashSet<>( Neo4jOntologyConceptUtil.getBranchUris( "Middle_Lobe_Of_The_Right_Lung" ) );
+      _middleLobeUris.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Middle_Zone_Of_Right_Lung" ) );
+      _lowerLobeUris = new HashSet<>( Neo4jOntologyConceptUtil.getBranchUris( "Lower_Lung_Lobe" ) );  //  Zone
+      _lowerLobeUris.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Lower_Zone_Of_Lung" ) );
       _tracheaUris = Neo4jOntologyConceptUtil.getBranchUris( "Trachea" );
    }
 
