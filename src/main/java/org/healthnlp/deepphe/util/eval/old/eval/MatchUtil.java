@@ -477,10 +477,9 @@ final public class MatchUtil {
 //         System.err.println( goldValue + "    NOT    " + systemValue );
 
       }
-      if ( goldValue.contains(".")) {
-         if (goldValue.indexOf(".") != 0){
-            return isSpecialMatch( name, goldValue.substring(0,goldValue.indexOf(".")), systemValue);
-         }
+      final int dotIndex = goldValue.indexOf(".");
+      if ( dotIndex> 0 ) {
+         return isSpecialMatch( name, goldValue.substring(0,dotIndex), systemValue);
       }
       return false;
    }
