@@ -475,6 +475,12 @@ final public class MatchUtil {
          return true;
 //      } else {
 //         System.err.println( goldValue + "    NOT    " + systemValue );
+
+      }
+      if ( goldValue.contains(".")) {
+         if (goldValue.indexOf(".") != 0){
+            return isSpecialMatch( name, goldValue.substring(0,goldValue.indexOf(".")), systemValue);
+         }
       }
       return false;
    }
