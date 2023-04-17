@@ -1,5 +1,6 @@
 package org.healthnlp.deepphe.summary.attribute.cr.topo_minor;
 
+import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
 import org.healthnlp.deepphe.node.NoteNodeStore;
@@ -8,6 +9,7 @@ import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -18,6 +20,10 @@ abstract public class AbstractTopoMinorInfoCollector extends AbstractAttributeIn
 
    static private final int SITE_LEFT_WINDOW = 25;
    static private final int SITE_RIGHT_WINDOW = 10;
+
+   public Collection<String> getRelationTypes() {
+      return Collections.singletonList( RelationConstants.DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE );
+   }
 
    // Is this necessary?
    public Collection<CrConceptAggregate> getBestAggregates() {

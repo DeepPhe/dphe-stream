@@ -16,5 +16,28 @@ public class LateralityInfoCollector extends AbstractAttributeInfoCollector {
       return Collections.singletonList( RelationConstants.HAS_LATERALITY );
    }
 
+//   public Collection<CrConceptAggregate> getBestAggregates() {
+//      final Collection<ConceptAggregateRelation> aggregateRelations = getAllRelations();
+//      if ( aggregateRelations.size() <= 1 ) {
+//         return getAllAggregates();
+//      }
+//
+//      final CrConceptAggregate neoplasm = getNeoplasm();
+//
+//      final String uri = neoplasm.getUri();
+//      // Only use quotients >= 0.5 ?
+//      neoplasm.getUriQuotients();
+//
+//
+//
+//
+//
+//
+//      return getBestRelations().stream()
+//                               .map( ConceptAggregateRelation::getTarget )
+//                               .collect( Collectors.toSet() );
+//   }
+//
+//
 
 }

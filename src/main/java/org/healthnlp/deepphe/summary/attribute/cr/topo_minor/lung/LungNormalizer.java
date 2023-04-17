@@ -14,6 +14,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * C34.0	Main bronchus
+ * C34.1	Upper lobe, lung
+ * C34.2	Middle lobe, lung (right lung only)
+ * C34.3	Lower lobe, lung
+ * C34.8	Overlapping lesion of lung
+ * C34.9	Lung, NOS
  * @author SPF , chip-nlp
  * @since {3/28/2023}
  */
@@ -107,24 +113,11 @@ public class LungNormalizer extends AbstractAttributeNormalizer {
    static private int getOtherUriLungNumber( final String uri ) {
       if ( LungUriCollection.getInstance().getBronchusUris().contains( uri ) ) {
          return 0;
-//      } else if ( LungUriCollection.getInstance().getLungUris().contains( uri )
-//                  || LungUriCollection.getInstance().getTracheaUris().contains( uri ) ) {
+//      } else if ( LungUriCollection.getInstance().getLungUris().contains( uri ) ) {
 //         return 9;
       }
       return -1;
    }
 
-
-
-//   Lung = pneumo-, pulmono-, broncho-, bronchiolo-, alveolar, hilar, Breathing = -pnea
-//
-//ICD-O-2/3	Term
-//C34.0	Main bronchus
-//C34.1	Upper lobe, lung
-//C34.2	Middle lobe, lung (right lung only)
-//C34.3	Lower lobe, lung
-//C34.8	Overlapping lesion of lung
-//C34.9	Lung, NOS
-//C33.9	Trachea, NOS
 
 }

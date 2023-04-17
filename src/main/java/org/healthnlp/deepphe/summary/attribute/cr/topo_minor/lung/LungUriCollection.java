@@ -21,7 +21,6 @@ public enum LungUriCollection {
    private Collection<String> _upperLobeUris;
    private Collection<String> _middleLobeUris;
    private Collection<String> _lowerLobeUris;
-   private Collection<String> _tracheaUris;
 
    LungUriCollection() {
       initLungUris();
@@ -39,7 +38,6 @@ public enum LungUriCollection {
       _middleLobeUris.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Middle_Zone_Of_Right_Lung" ) );
       _lowerLobeUris = new HashSet<>( Neo4jOntologyConceptUtil.getBranchUris( "Lower_Lung_Lobe" ) );  //  Zone
       _lowerLobeUris.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Lower_Zone_Of_Lung" ) );
-      _tracheaUris = Neo4jOntologyConceptUtil.getBranchUris( "Trachea" );
    }
 
 
@@ -63,8 +61,5 @@ public enum LungUriCollection {
       return _lowerLobeUris;
    }
 
-   public Collection<String> getTracheaUris() {
-      return _tracheaUris;
-   }
 
 }

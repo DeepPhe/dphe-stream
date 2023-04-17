@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.healthnlp.deepphe.nlp.uri.UriAnnotationFactory;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -234,7 +235,11 @@ public enum TnmFinder {
          if ( isParenthetic( docText, tnm ) ) {
             continue;
          }
-          // Clinical Attribute
+
+         NeoplasmSummaryCreator.addDebug( "TnmFinder.addTnms " + tnm.getUri()
+                                          + " " + docText.substring( tnm._begin, tnm._end ) + " " + tnm._begin + "\n" );
+
+         // Clinical Attribute
          final Collection<IdentifiedAnnotation> annotations
                = UriAnnotationFactory.createIdentifiedAnnotations( jcas, tnm._begin, tnm._end, tnm.getUri(),
                                                                    SemanticGroup.CLINICAL_ATTRIBUTE, "T201" );

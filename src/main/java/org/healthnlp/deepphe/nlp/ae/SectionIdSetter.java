@@ -51,7 +51,7 @@ final public class SectionIdSetter extends JCasAnnotator_ImplBase {
        for ( Map.Entry<Sentence, Collection<IdentifiedAnnotation>> sentenceAnnotations : sentenceMap.entrySet() ) {
           final Sentence sentence = sentenceAnnotations.getKey();
           sentence.setSentenceNumber( i );
-          final String sentenceId = "Sentence_" + i;
+          final String sentenceId = "" + i;
           sentenceAnnotations.getValue().forEach( a -> a.setSentenceID( sentenceId ) );
           i++;
        }
@@ -73,7 +73,7 @@ final public class SectionIdSetter extends JCasAnnotator_ImplBase {
       for ( Map.Entry<Sentence, Collection<IdentifiedAnnotation>> sentenceAnnotations : sentenceMap.entrySet() ) {
          final Sentence sentence = sentenceAnnotations.getKey();
          final int sentenceNumber = sentence.getSentenceNumber();
-         final String sentenceId = "Sentence_" + sentenceNumber;
+         final String sentenceId = "" + sentenceNumber;
          sentenceAnnotations.getValue().stream()
                             .filter( annotations::contains )
                             .forEach( a -> a.setSentenceID( sentenceId ) );

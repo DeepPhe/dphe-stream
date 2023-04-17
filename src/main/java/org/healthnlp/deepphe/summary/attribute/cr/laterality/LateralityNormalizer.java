@@ -30,6 +30,8 @@ public class LateralityNormalizer extends AbstractAttributeNormalizer {
       Arrays.stream( FACILITY ).forEach( n -> LATERALITIES.add( "C" + n ) );
    }
 
+   static private final double CONFIDENCE_CUTOFF = 0.2;
+
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
       String topographyMajor = dependencies.getOrDefault( "topography_major", "" )
@@ -41,6 +43,12 @@ public class LateralityNormalizer extends AbstractAttributeNormalizer {
       if ( !hasLaterality ) {
          // 0 is "Not a paired Site"
          setBestCode( "0" );
+         fillEvidenceMap( infoCollector, dependencies );
+      } else if ( infoCollector.getConfidence() < CONFIDENCE_CUTOFF ) {
+         // TODO - Math.abs( left confidence - right confidence )
+         // A "Paired Site, but no confident information on laterality"
+         setBestCode( "9" );
+         fillEvidenceMap( infoCollector, dependencies );
       } else {
          super.init( infoCollector, dependencies );
       }
@@ -50,7 +58,6 @@ public class LateralityNormalizer extends AbstractAttributeNormalizer {
 
    public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
       if ( aggregates.isEmpty() ) {
-         // 9 is "Paired Site, but no information on laterality"
          return "9";
       }
       final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );

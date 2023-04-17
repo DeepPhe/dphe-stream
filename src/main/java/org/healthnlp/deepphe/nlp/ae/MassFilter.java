@@ -27,7 +27,7 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
     */
    @Override
    public void process( final JCas jCas ) throws AnalysisEngineProcessException {
-      LOGGER.info( "Removing misidentified Masses ..." );
+      LOGGER.info( "Removing misidentified Annotations ..." );
       // TODO should be able to handle this with pos, but for now brute force
 
       final String docText = jCas.getDocumentText().toLowerCase();
@@ -39,6 +39,12 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
          final int end = annotation.getEnd();
          final String text = annotation.getCoveredText().toLowerCase();
          switch ( text ) {
+            case "ca": {
+               // Calcium 125 is a biomarker.
+               if ( end < docText.length() - 10 && docText.substring( end + 1, end + 9 ).contains( "125" ) ) {
+                  removals.add( annotation );
+               }
+            }
             case "mass": {
                if ( begin > 5 && docText.substring( begin - 5, begin - 1 ).contains( "body" ) ) {
                   removals.add( annotation );
@@ -58,11 +64,11 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
                   removals.add( annotation );
                }
             }
-            case "duct": {
-               if ( end < docText.length() - 15 && docText.substring( end + 1, end + 15 ).contains( "carcinoma" ) ) {
-                  removals.add( annotation );
-               }
-            }
+//            case "duct": {
+//               if ( end < docText.length() - 15 && docText.substring( end + 1, end + 15 ).contains( "carcinoma" ) ) {
+//                  removals.add( annotation );
+//               }
+//            }
             case "mouth": {
                if ( begin > 3 && docText.substring( begin - 3, begin - 1 ).contains( "by" ) ) {
                   removals.add( annotation );

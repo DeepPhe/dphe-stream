@@ -179,11 +179,11 @@ C339|Trachea
 
 // Actually Lung and Bronchus
 C340|Bronchus
-C341|Bronchus
-C342|Bronchus
-C343|Bronchus
-C348|Bronchus
-C349|Bronchus
+C341|Upper_Lobe_Of_The_Lung
+C342|Middle_Lobe_Of_The_Right_Lung
+C343|Lower_Lung_Lobe
+C348|Lung
+C349|Lung
 
 C379|Thymus_Gland
 
@@ -243,10 +243,10 @@ C478|Peripheral_Nerve
 C479|Peripheral_Nerve
 
 // Actually Retroperitoneum and Peritoneum
-C480|Retroperitoneal_Space
-C481|Retroperitoneal_Space
-C482|Retroperitoneal_Space
-C488|Retroperitoneal_Space
+C480|Peritoneum
+C481|Peritoneum
+C482|Peritoneum
+C488|Retroperitoneum
 
 // Actually Connective and Soft Tissue
 C490|Body_Tissue
@@ -299,13 +299,13 @@ C569|Ovary
 
 C570|Fallopian_Tube
 // Should be Other Female Genitalia excluding Fallopian Tube
-C571|Fallopian_Tube
-C572|Fallopian_Tube
-C573|Fallopian_Tube
-C574|Fallopian_Tube
-C577|Fallopian_Tube
-C578|Fallopian_Tube
-C579|Fallopian_Tube
+C571|Broad_Ligament
+C572|Round_Ligament
+C573|Parametrium
+C574|Appendage_Of_The_Uterus
+C577|Female_Genitalia
+C578|Female_Genitalia
+C579|Female_Genitalia
 
 C589|Placenta_Part
 
