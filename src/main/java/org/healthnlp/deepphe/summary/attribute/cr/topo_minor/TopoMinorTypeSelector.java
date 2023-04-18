@@ -16,6 +16,7 @@ import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.GenitaliaNorm
 import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.PeritoneumInfoCollector;
 import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.PeritoneumNormalizer;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -59,6 +60,7 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
 
    static public Supplier<AttributeInfoCollector> getAttributeInfoCollector( final Map<String,String> dependencies ) {
       final String topoMajor = getTopoMajor( dependencies );
+      NeoplasmSummaryCreator.addDebug( "TopoMinorSelector TopoMajor=" + topoMajor + "\n" );
       if ( topoMajor.equals( "C80" ) ) {
          return TopoMinorTypeSelector::new;
       }
@@ -66,24 +68,24 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
       if ( !hasMinorSite ) {
          return TopoMinorTypeSelector::new;
       }
-      switch ( topoMajor ) {
-         case "C50" :
-            return BreastInfoCollector::new;
-         case "C18" :
+      // For some reason a switch on topoMajor does not work!  It thinks every case/value is the first case/value.
+      if ( topoMajor.equals( "C50" ) ) {
+         return BreastInfoCollector::new;
+      } else if ( topoMajor.equals( "C18" ) ) {
             return ColonInfoCollector::new;
-         case "C21" :
+      } else if ( topoMajor.equals( "C21" ) ) {
             return AnusInfoCollector::new;
-         case "C34" :
+      } else if ( topoMajor.equals( "C34" ) ) {
             return LungInfoCollector::new;
-         case "C70" :
+      } else if ( topoMajor.equals( "C70" ) ) {
             return MeningesInfoCollector::new;
-         case "C71" :
+      } else if ( topoMajor.equals( "C71" ) ) {
             return BrainInfoCollector::new;
-         case "C72" :
+      } else if ( topoMajor.equals( "C72" ) ) {
             return NerveInfoCollector::new;
-         case "48" :
+      } else if ( topoMajor.equals( "C48" ) ) {
             return PeritoneumInfoCollector::new;
-         case "57" :
+      } else if ( topoMajor.equals( "C57" ) ) {
             return GenitaliaInfoCollector::new;
       }
       return TopoMinorTypeSelector::new;
@@ -98,25 +100,24 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
       if ( !hasMinorSite ) {
          return TopoMinorTypeSelector::new;
       }
-      switch ( topoMajor ) {
-         case "C50" :
-            return BreastNormalizer::new;
-         case "C18" :
-            return ColonNormalizer::new;
-         case "C21" :
-            return AnusNormalizer::new;
-         case "C34" :
-            return LungNormalizer::new;
-         case "C70" :
-            return MeningesNormalizer::new;
-         case "C71" :
-            return BrainNormalizer::new;
-         case "C72" :
-            return NerveNormalizer::new;
-         case "48" :
-            return PeritoneumNormalizer::new;
-         case "57" :
-            return GenitaliaNormalizer::new;
+      if ( topoMajor.equals( "C50" ) ) {
+         return BreastNormalizer::new;
+      } else if ( topoMajor.equals( "C18" ) ) {
+         return ColonNormalizer::new;
+      } else if ( topoMajor.equals( "C21" ) ) {
+         return AnusNormalizer::new;
+      } else if ( topoMajor.equals( "C34" ) ) {
+         return LungNormalizer::new;
+      } else if ( topoMajor.equals( "C70" ) ) {
+         return MeningesNormalizer::new;
+      } else if ( topoMajor.equals( "C71" ) ) {
+         return BrainNormalizer::new;
+      } else if ( topoMajor.equals( "C72" ) ) {
+         return NerveNormalizer::new;
+      } else if ( topoMajor.equals( "C48" ) ) {
+         return PeritoneumNormalizer::new;
+      } else if ( topoMajor.equals( "C57" ) ) {
+         return GenitaliaNormalizer::new;
       }
       return TopoMinorTypeSelector::new;
    }

@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.healthnlp.deepphe.nlp.uri.UriAnnotationFactory;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -235,10 +234,8 @@ public enum TnmFinder {
          if ( isParenthetic( docText, tnm ) ) {
             continue;
          }
-
-         NeoplasmSummaryCreator.addDebug( "TnmFinder.addTnms " + tnm.getUri()
-                                          + " " + docText.substring( tnm._begin, tnm._end ) + " " + tnm._begin + "\n" );
-
+//         NeoplasmSummaryCreator.addDebug( "TnmFinder.addTnms " + tnm.getUri()
+//                                          + " " + docText.substring( tnm._begin, tnm._end ) + " " + tnm._begin + "\n" );
          // Clinical Attribute
          final Collection<IdentifiedAnnotation> annotations
                = UriAnnotationFactory.createIdentifiedAnnotations( jcas, tnm._begin, tnm._end, tnm.getUri(),
@@ -294,16 +291,21 @@ public enum TnmFinder {
       while ( fullMatcher.find() ) {
          int fullMatchStart = fullMatcher.start();
          String tnm = lookupWindow.substring( fullMatchStart, fullMatcher.end() );
-         if ( tnm.startsWith( "at " ) || tnm.startsWith( "an " ) || tnm.startsWith( "am " ) ) {
+         final String lowTnm = tnm.toLowerCase();
+         if ( lowTnm.startsWith( "at " ) || lowTnm.startsWith( "an " ) || lowTnm.startsWith( "am " )
+              || lowTnm.startsWith( "ct a" ) || lowTnm.equals( "tx" ) ) {
             continue;
          }
-
-         NeoplasmSummaryCreator.addDebug( "TnmFinder.getTnms fullMatch: "
-                                          + lookupWindow.substring( Math.max( 0, fullMatchStart-3 ),
-                                                                    Math.min( lookupWindow.length(),
-                                                                              fullMatcher.end()+3 ) ) + "\n" );
-
-         if ( tnm.charAt( 0 ) == 'y' ) {
+         if ( lowTnm.equals( "cta" )
+              && lookupWindow.length() > fullMatcher.end()+1
+              && lookupWindow.charAt( fullMatcher.end() ) == '/' ) {
+            continue;
+         }
+//         NeoplasmSummaryCreator.addDebug( "TnmFinder.getTnms fullMatch: "
+//                                          + lookupWindow.substring( Math.max( 0, fullMatchStart-3 ),
+//                                                                    Math.min( lookupWindow.length(),
+//                                                                              fullMatcher.end()+3 ) ) + "\n" );
+         if ( lowTnm.charAt( 0 ) == 'y' ) {
             tnm = tnm.substring( 1 );
             fullMatchStart += 1;
          }

@@ -76,6 +76,7 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
             }
          }
       }
+      removals.forEach( IdentifiedAnnotation::removeFromIndexes );
 
 //      LOGGER.info( "Removing unwanted anatomic sites ..." );
 //      final GraphDatabaseService graphDb = Neo4jConnectionFactory.getInstance()

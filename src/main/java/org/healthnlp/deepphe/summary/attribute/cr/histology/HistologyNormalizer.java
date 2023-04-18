@@ -219,7 +219,8 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
          final int strength = uriStrengths.get( uri );
 //         final Collection<String> codes = getOntoMorphCodes( uri );
          NeoplasmSummaryCreator.addDebug( uriOntoMorphCodeList.isEmpty()
-                                          ? "" : ("  Onto " + uri + " " + uriOntoMorphCodeList + "\n") );
+                                          ? "" : ("  Onto " + uri + " " + String.join( ",",uriOntoMorphCodeList )+
+                                                  "\n") );
          for ( String code : uriOntoMorphCodeList ) {
 //            final int previousStrength = ontoMorphStrengths.getOrDefault( code, 0 );
 //            ontoMorphStrengths.put( code, previousStrength + strength );
@@ -238,7 +239,8 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
          final int strength = uriStrengths.get( uri );
 //         final Collection<String> codes = TopoMorphValidator.getInstance().getBroadMorphCode( uri );
          NeoplasmSummaryCreator.addDebug( uriBroadMorphCodeList.isEmpty()
-                                          ? "" : ("  Broad " + uri + " " + uriBroadMorphCodeList + "\n") );
+                                          ? "" : ("  Broad " + uri + " " + String.join( ",",uriBroadMorphCodeList ) +
+                                                  "\n") );
          for ( String code : uriBroadMorphCodeList ) {
 //            final int previousStrength = ontoMorphStrengths.getOrDefault( code, 0 );
 //            ontoMorphStrengths.put( code, previousStrength + strength );
@@ -257,7 +259,9 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
          final int strength = uriStrengths.get( uri );
 //         final String code = TopoMorphValidator.getInstance().getExactMorphCode( uri );
          NeoplasmSummaryCreator.addDebug( uriExactMorphCodeList.isEmpty()
-                                          ? "" : ("  Exact " + uri + " " + uriExactMorphCodeList + "\n") );
+                                          ? "" : ("  Exact " + uri + " "
+                                                  + String.join( ",", uriExactMorphCodeList ) +
+                                                                                             "\n") );
          for ( String code : uriExactMorphCodeList ) {
 //            final int previousStrength = ontoMorphStrengths.getOrDefault( code, 0 );
 //            ontoMorphStrengths.put( code, previousStrength + strength );

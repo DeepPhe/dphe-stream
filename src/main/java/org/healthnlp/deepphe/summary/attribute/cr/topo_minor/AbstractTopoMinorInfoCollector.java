@@ -64,11 +64,11 @@ abstract public class AbstractTopoMinorInfoCollector extends AbstractAttributeIn
       final String preText = note.getText()
                                  .substring( mentionBegin - SITE_LEFT_WINDOW, mentionBegin )
                                  .toLowerCase();
-      NeoplasmSummaryCreator.addDebug( "minor Candidate and pretext "
-                                       + note.getText()
-                                             .substring( mentionBegin - SITE_LEFT_WINDOW,
-                                                         mention.getEnd() )
-                                       + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "minor Candidate and pretext "
+//                                       + note.getText()
+//                                             .substring( mentionBegin - SITE_LEFT_WINDOW,
+//                                                         mention.getEnd() )
+//                                       + "\n" );
       return preText.contains( "tumor site:" ) || preText.contains( "supportive of" );
    }
 
@@ -81,10 +81,10 @@ abstract public class AbstractTopoMinorInfoCollector extends AbstractAttributeIn
       final String postText = noteText
             .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
             .toLowerCase();
-      NeoplasmSummaryCreator.addDebug( "minor Candidate and postext "
-                                       + note.getText()
-                                             .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
-                                       + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "minor Candidate and postext "
+//                                       + note.getText()
+//                                             .substring( mentionEnd, mentionEnd + SITE_RIGHT_WINDOW )
+//                                       + "\n" );
       return postText.contains( "origin" ) || postText.contains( "primary" );
    }
 

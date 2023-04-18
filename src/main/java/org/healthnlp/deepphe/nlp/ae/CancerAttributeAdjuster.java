@@ -11,6 +11,7 @@ import org.apache.uima.jcas.JCas;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,6 +71,8 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
             continue;
          }
          if ( isTopoType( uri ) ) {
+            NeoplasmSummaryCreator.addDebug( "CancerAttributeAdjuster topo " + annotation.getCoveredText() + " is "
+                                             + "neg " + annotation.getPolarity() + " uncertain " + annotation.getUncertainty() + "\n" );
             // Major or Minor Topography
             annotation.setPolarity( NE_POLARITY_NEGATION_ABSENT );
             annotation.setUncertainty( NE_UNCERTAINTY_ABSENT );
