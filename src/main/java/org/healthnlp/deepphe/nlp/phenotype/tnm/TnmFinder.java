@@ -297,6 +297,12 @@ public enum TnmFinder {
          if ( tnm.startsWith( "at " ) || tnm.startsWith( "an " ) || tnm.startsWith( "am " ) ) {
             continue;
          }
+
+         NeoplasmSummaryCreator.addDebug( "TnmFinder.getTnms fullMatch: "
+                                          + lookupWindow.substring( Math.max( 0, fullMatchStart-3 ),
+                                                                    Math.min( lookupWindow.length(),
+                                                                              fullMatcher.end()+3 ) ) + "\n" );
+
          if ( tnm.charAt( 0 ) == 'y' ) {
             tnm = tnm.substring( 1 );
             fullMatchStart += 1;

@@ -30,7 +30,8 @@ public class LateralityNormalizer extends AbstractAttributeNormalizer {
       Arrays.stream( FACILITY ).forEach( n -> LATERALITIES.add( "C" + n ) );
    }
 
-   static private final double CONFIDENCE_CUTOFF = 0.2;
+//   static private final double CONFIDENCE_CUTOFF = 0.2;
+static private final double CONFIDENCE_CUTOFF = 0.1;
 
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {

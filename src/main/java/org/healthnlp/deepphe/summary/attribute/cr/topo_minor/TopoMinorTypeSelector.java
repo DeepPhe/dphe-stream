@@ -11,6 +11,10 @@ import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc.ColonInfoCollec
 import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc.ColonNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung.LungInfoCollector;
 import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung.LungNormalizer;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.GenitaliaInfoCollector;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.GenitaliaNormalizer;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.PeritoneumInfoCollector;
+import org.healthnlp.deepphe.summary.attribute.cr.topo_minor.ovary.PeritoneumNormalizer;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 
 import java.util.*;
@@ -77,6 +81,10 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
             return BrainInfoCollector::new;
          case "C72" :
             return NerveInfoCollector::new;
+         case "48" :
+            return PeritoneumInfoCollector::new;
+         case "57" :
+            return GenitaliaInfoCollector::new;
       }
       return TopoMinorTypeSelector::new;
    }
@@ -105,6 +113,10 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
             return BrainNormalizer::new;
          case "C72" :
             return NerveNormalizer::new;
+         case "48" :
+            return PeritoneumNormalizer::new;
+         case "57" :
+            return GenitaliaNormalizer::new;
       }
       return TopoMinorTypeSelector::new;
    }
