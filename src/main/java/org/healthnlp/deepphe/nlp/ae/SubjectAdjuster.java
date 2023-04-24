@@ -30,7 +30,10 @@ final public class SubjectAdjuster extends JCasAnnotator_ImplBase {
    static private final String[] FAMILY = { " mother", " father", " sister", " brother", " cousin", " aunt", " uncle",
                                             " grandfather", " grandmother",
                                             "mother ", "father ", "sister ", "brother ", "cousin ", "aunt ", "uncle ",
-                                            "grandfather ", "grandmother " };
+                                            "grandfather ", "grandmother ",
+                                            "(mother)", "(father)", "(sister)", "(brother)", "(cousin)", "(aunt)",
+                                            "(uncle)",
+                                            "(grandfather)", "(grandmother)" };
 
    // TODO merge with setSegmentId for speed
    // TODO add section check - family history, patient history for subject and/or historic

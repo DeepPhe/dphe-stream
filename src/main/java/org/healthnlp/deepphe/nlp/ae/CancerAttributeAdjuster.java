@@ -8,12 +8,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.apache.ctakes.core.util.annotation.SemanticTui.T023;
@@ -60,26 +57,27 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
    @Override
    public void process( final JCas jCas ) throws AnalysisEngineProcessException {
       LOGGER.info( "Adjusting Assertion attributes ..." );
-//      final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
-//                                                             .getGraph();
-//      final Collection<String> massNeoplasmUris = new ArrayList<>( UriConstants.getMassNeoplasmUris( graphDb ) );
-//      final Collection<IdentifiedAnnotation> allTumors = Neo4jOntologyConceptUtil.getAnnotationsByUris( jCas, massNeoplasmUris );
-      final Collection<IdentifiedAnnotation> assertables = new ArrayList<>();
-      for ( IdentifiedAnnotation annotation : JCasUtil.select( jCas, IdentifiedAnnotation.class ) ) {
-         final String uri = Neo4jOntologyConceptUtil.getUri( annotation );
-         if ( uri.isEmpty() ) {
-            continue;
-         }
-         if ( isTopoType( uri ) ) {
-            NeoplasmSummaryCreator.addDebug( "CancerAttributeAdjuster topo " + annotation.getCoveredText() + " is "
-                                             + "neg " + annotation.getPolarity() + " uncertain " + annotation.getUncertainty() + "\n" );
-            // Major or Minor Topography
-            annotation.setPolarity( NE_POLARITY_NEGATION_ABSENT );
-            annotation.setUncertainty( NE_UNCERTAINTY_ABSENT );
-         } else if ( isNeoplasmType( uri ) ) {
-            assertables.add( annotation );
-         }
-      }
+//      final Collection<IdentifiedAnnotation> assertables = new ArrayList<>();
+//      for ( IdentifiedAnnotation annotation : JCasUtil.select( jCas, IdentifiedAnnotation.class ) ) {
+//         final String uri = Neo4jOntologyConceptUtil.getUri( annotation );
+//         if ( uri.isEmpty() ) {
+//            continue;
+//         }
+//         if ( isTopoType( uri ) ) {
+//            NeoplasmSummaryCreator.addDebug( "CancerAttributeAdjuster topo " + annotation.getCoveredText()
+//                                             + " is negated " + (annotation.getPolarity() != 1)
+//                                             + " is uncertain " + IdentifiedAnnotationUtil.isUncertain( annotation ) +
+//                                             "\n" );
+//            // Major or Minor Topography
+//            annotation.setPolarity( NE_POLARITY_NEGATION_ABSENT );
+//            annotation.setUncertainty( NE_UNCERTAINTY_ABSENT );
+//         } else if ( isNeoplasmType( uri ) ) {
+//            assertables.add( annotation );
+////         } else {
+////            assertables.add( annotation );
+//         }
+//      }
+      final Collection<IdentifiedAnnotation> assertables = JCasUtil.select( jCas, IdentifiedAnnotation.class );
       if ( assertables.isEmpty() ) {
          return;
       }
@@ -97,7 +95,10 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
                       || following.contains( "not appl" ) ) ) {
                tumor.setGeneric( true );
             }
-            if ( following.contains( " nos " ) || following.contains( "(nos)" ) || following.contains( " nos." ) ) {
+//            if ( following.contains( " nos " ) || following.contains( "(nos)" ) || following.contains( " nos." ) ) {
+//               tumor.setPolarity( NE_POLARITY_NEGATION_ABSENT );
+//            }
+            if ( following.contains( "no spec" ) ) {
                tumor.setPolarity( NE_POLARITY_NEGATION_ABSENT );
             }
          }
@@ -117,7 +118,10 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
                tumor.setGeneric( true );
             } else if ( preceding.contains( "possible" )
                         || preceding.contains( "possibility of" )
-                        || preceding.contains( "suggestive for" ) ) {
+                        || preceding.contains( "poss of" )
+                        || preceding.contains( "suggestive for" )
+                        || preceding.contains( "concern for" )
+                        || preceding.contains( "concerning for" )) {
                tumor.setUncertainty( NE_UNCERTAINTY_PRESENT );
             } else if ( preceding.contains( "history" ) && !preceding.contains( "no history of" ) ) {
                tumor.setUncertainty( NE_UNCERTAINTY_ABSENT );
@@ -129,8 +133,12 @@ final public class CancerAttributeAdjuster extends JCasAnnotator_ImplBase {
                  || following.contains( "no spec") ) {
                tumor.setPolarity( NE_POLARITY_NEGATION_ABSENT );
             } else if ( following.contains( "not ident" ) || following.contains( "none ident" )
-                        || following.contains( "should be excluded" )) {
+                        || following.contains( "should be excluded" ) || following.contains( "not submitted" )
+                        || following.contains( "absent" ) ) {
                tumor.setPolarity( NE_POLARITY_NEGATION_PRESENT );
+            }
+            if ( following.contains( "unlikely" ) ) {
+               tumor.setUncertainty( NE_UNCERTAINTY_PRESENT );
             }
             if ( begin > 2 ) {
                final String preceding = docText.substring( begin - 3, begin )

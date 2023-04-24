@@ -3,6 +3,7 @@ package org.healthnlp.deepphe.util;
 import org.apache.ctakes.core.resource.FileLocator;
 import org.apache.ctakes.core.util.StringUtil;
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.io.*;
 import java.util.*;
@@ -58,6 +59,8 @@ INSTANCE;
 //   }
 
    public String getExactMorphCode( final String morphologyClass ) {
+      NeoplasmSummaryCreator.addDebug( "TopoMorphValidator.getExactMorphCode " + morphologyClass + " "
+                                       + _exactMorphCodes.getOrDefault( morphologyClass, "NONE" ) +"\n");
       return _exactMorphCodes.getOrDefault( morphologyClass, "" );
    }
 
@@ -72,6 +75,7 @@ public Collection<String> getBroadHistoCode( final String morphologyClass ) {
 
    
    private void parseValidationFile() {
+      NeoplasmSummaryCreator.addDebug( "Parsing Exact Codes from org/healthnlp/deepphe/icdo/DpheHistologySites.bsv\n" );
       File file = new File( "" );
       try {
          file = FileLocator.getFile( "org/healthnlp/deepphe/icdo/DpheHistologySites.bsv" );
@@ -119,11 +123,11 @@ public Collection<String> getBroadHistoCode( final String morphologyClass ) {
 //                               .add( histology + post );
 //            }
             String prev = _exactMorphCodes.put( morphologyExact, morphologyCode );
-//            if ( prev != null && !prev.equals( morphology ) ) {
-//               Logger.getLogger( "TopoMorphValidator" ).warn( "Previous morph " + prev
-//                                                               + " does not match " + morphoDescription
-//                                                               + " for " + morphology );
-//            }
+            if ( prev != null && !prev.equals( morphologyCode ) ) {
+               NeoplasmSummaryCreator.addDebug( "Previous morph " + prev
+                                                               + " does not match " + morphologyCode
+                                                               + " for " + morphologyExact );
+            }
 
 //            if ( histoDescription.equals( morphoDescription ) ) {
 //               primaryMorphs.computeIfAbsent( histoDescription, h -> new HashSet<>() )

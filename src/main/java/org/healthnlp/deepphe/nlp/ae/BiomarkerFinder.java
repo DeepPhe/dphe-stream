@@ -120,17 +120,17 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
 
 
    private enum Biomarker {
-      ER_( "(?:Estrogen|ER(?!B)\\+?-?|ER:(\\s*DCIS)?(\\s*IS)?)",
+      ER_( "(?:Estrogen|ER(?!B)A?(?:-IHC)?\\+?-?|ER:(\\s*DCIS)?(\\s*IS)?)",
            "",
            REGEX_POS_NEG_UNK_NA,
            true ),
 
-      PR_( "(?:Progesterone|Pg?R\\+?-?|PR:(\\s*DCIS)?(\\s*IS)?)",
+      PR_( "(?:Progesterone|Pg?RA?(?:-IHC)?\\+?-?|PR:(\\s*DCIS)?(\\s*IS)?)",
            "",
            REGEX_POS_NEG_UNK_NA,
            true ),
 
-      HER2( "(?:HER-? ?2(?: ?\\/?-? ?neu)?\\+?-?(?:\\s*ONCOGENE)?(?:\\s*\\(?ERBB2\\)?)?)",
+      HER2( "(?:HER-? ?2(?: ?\\/?-? ?neu)?(?:-IHC)?\\+?-?(?:\\s*ONCOGENE)?(?:\\s*\\(?ERBB2\\)?)?)",
             "",
             REGEX_POS_NEG_UNK_NA_NUM ),
 
@@ -165,7 +165,7 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
       BRAF( "(?:Serine\\/Threonine-Protein Kinase )?B-?RAF1?"
             + "(?: Fusion)?",
             "",
-            "" ),
+            REGEX_POS_NEG_UNK_NA ),
 
       ROS1( "(?:Proto-Oncogene )?(?:ROS1\\+?-?|MCF3\\+?-?|C-ROS-1\\+?-?"
             + "|(?:ROS Proto-Oncogene 1)"
@@ -189,7 +189,7 @@ final public class BiomarkerFinder extends JCasAnnotator_ImplBase {
       KRAS( "(?:KRAS\\+?-?|C-K-RAS\\+?-?|KRAS2\\+?-?|KRAS-2\\+?-?|V-KI-RAS2\\+?-?|(?:Kirsten Rat Sarcoma Viral Oncogene Homolog))"
             + "(?: Wild ?-?type|wt)?(?: Gene Mutation)?",
             "",
-            REGEX_POS_NEG_UNK_NA,
+            "(?:" + REGEX_POS_NEG_UNK_NA +")|(?:not mutant)|(?:no mutations?)|",
             true ),
 
       PSA( "PSA(?: Prostate Specific Antigen)?|(?:Prostate Specific Antigen(?: [PSA])?)",

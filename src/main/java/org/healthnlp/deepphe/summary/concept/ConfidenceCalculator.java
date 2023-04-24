@@ -32,23 +32,35 @@ final public class ConfidenceCalculator {
                                        + getStandardNumerator( confidences ) + "/"
                                        + getHighDenominator( confidences.size() )
                                        + " = " + getStandardConfidence( confidences )
-                                       +"\n" );
-      return getStandardConfidence( confidences );
-   }
-
-   static public double calculateAsRelationTarget( final List<Double> confidences ) {
-      NeoplasmSummaryCreator.addDebug( "ConfidenceCalculator.calculateAsRelationTarget:  "
-                                       + confidences.stream().sorted()
-                                                                  .map( d -> d+"" )
-                                                                  .collect( Collectors.joining(",") )
-                                       + " :\n(" + confidences.size() + ") "
+                                       +"   vs.  "
                                        + getStandardNumerator( confidences ) + "/"
-                                       + getHighDenominator( confidences.size() )
-                                       + " = " + getStandardConfidence( confidences )
-                                       +"\n" );
+                                       + getStandardDenominator( confidences.size() )
+                                       + " = " + (getStandardNumerator( confidences )
+                                                  / getStandardDenominator( confidences.size() ) )
+                                       + "\n" );
       return getStandardConfidence( confidences );
    }
 
+//   static public double calculateAsRelationTarget( final List<Double> confidences ) {
+//      NeoplasmSummaryCreator.addDebug( "ConfidenceCalculator.calculateAsRelationTarget:  "
+//                                       + confidences.stream().sorted()
+//                                                                  .map( d -> d+"" )
+//                                                                  .collect( Collectors.joining(",") )
+//                                       + " :\n(" + confidences.size() + ") "
+//                                       + getStandardNumerator( confidences ) + "/"
+//                                       + getHighDenominator( confidences.size() )
+//                                       + " = " + (getStandardNumerator( confidences )
+//                                                  / getStandardDenominator( confidences.size() ) )
+//                                       +"   vs.  "
+//                                       + getStandardNumerator( confidences ) + "/"
+//                                       + getStandardDenominator( confidences.size() )
+//                                       + " = " + (getStandardNumerator( confidences )
+//                                                  / getHighDenominator( confidences.size() ) )
+//                                     + "\n" );
+//      return getStandardConfidence( confidences );
+//   }
+
+   // TODO - use minimum value of zero and count of non-zero values?  Need to return 0 when count == 0;
    static public double getStandardConfidence( final List<Double> values ) {
       if ( values.isEmpty() ) {
          return 0;
@@ -63,10 +75,12 @@ final public class ConfidenceCalculator {
       return values.stream().mapToDouble( d -> d*d/100 ).sum();
    }
 
+   // Ovary Laterality +.12, .04
    static private double getStandardDenominator( final int count ) {
       return count/2d + Math.sqrt( count );
    }
 
+   // Ovary Topo Major +.07, .08  Grade +07, .04
    static private double getHighDenominator( final int count ) {
       return 2 * Math.sqrt( count );
    }

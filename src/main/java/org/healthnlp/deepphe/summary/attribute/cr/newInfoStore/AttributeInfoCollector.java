@@ -26,7 +26,7 @@ public interface AttributeInfoCollector {
 
    default Collection<ConceptAggregateRelation> getBestRelations() {
       final Collection<ConceptAggregateRelation> relations = getAllRelations();
-      if ( relations.size() <= 2 ) {
+      if ( relations.size() <= 1 ) {
          return relations;
       }
       return new ConfidenceGroup<>( relations ).getBest();
@@ -38,11 +38,18 @@ public interface AttributeInfoCollector {
                                .collect( Collectors.toSet() );
    }
 
+   default Collection<String> getAllUris() {
+      return getAllAggregates().stream()
+                               .map( CrConceptAggregate::getUri )
+                               .collect( Collectors.toSet() );
+   }
 
    default Collection<CrConceptAggregate> getBestAggregates() {
-      return getBestRelations().stream()
-                               .map( ConceptAggregateRelation::getTarget )
-                               .collect( Collectors.toSet() );
+      final Collection<CrConceptAggregate> aggregates
+            = getBestRelations().stream()
+                                .map( ConceptAggregateRelation::getTarget )
+                                .collect( Collectors.toSet() );
+      return new ConfidenceGroup<>( aggregates ).getBest();
    }
 
    default Collection<String> getBestUris() {

@@ -53,6 +53,94 @@ final public class CrSummaryEngine {
    }
 
 
+//   /**
+//    * Entry point for new multi-cancer, drools-free summary creation.
+//    *
+//    * @param patientId   -
+//    * @param patientMentionNoteIds -
+//    * @param patientRelations   -
+//    * @return map of cancer summary to tumor summaries
+//    */
+//   static private PatientSummary createCrPatientSummary( final String patientId,
+//                                                       final Map<Mention, String> patientMentionNoteIds,
+//                                                       final Collection<MentionRelation> patientRelations ) {
+////      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
+////      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
+////                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
+////      +
+////                   "  Concept Aggregates do not only aggregate cross-document mentions, but will also both aggregate and separate" +
+////                   " mentions in within-document coreference chains." +
+////                   "  So, yes, we could logically remove the coreference annotator from the nlp pipeline." +
+////                   "   I will experiment when I have time.   - 10/14/2020 Done." );
+////      LOGGER.info( "For the patient we have " + patientNotes.size() + " notes, "
+////                   + patientMentionNoteIds.size() + " mentions, "
+////                   + patientRelations.size() + " relations" );
+////                   + patientCorefs.size() + " coref chains." );
+//      NeoplasmSummaryCreator.addDebug( "CreatePatientSummary: " + patientId + "\n" );
+//      final Map<String, Collection<CrConceptAggregate>> uriCrAggregateMap
+//            = CrConceptAggregateCreator.createUriConceptAggregateMap( patientId,
+//                                                                      patientMentionNoteIds,
+//                                                                      patientRelations );
+////      final Collection<ConceptAggregate> allConcepts
+////            = uriCrAggregateMap.values().stream().flatMap( Collection::stream ).collect( Collectors.toSet() );
+//
+//      Collection<CrConceptAggregate> neoplasms
+//            = uriCrAggregateMap.entrySet()
+//                               .stream()
+//                               .filter( e -> UriInfoCache.getInstance()
+//                                                         .getSemanticTui( e.getKey() ) == SemanticTui.T191 )
+//                               .map( Map.Entry::getValue )
+//                               .flatMap( Collection::stream )
+//                               .collect( Collectors.toSet() );
+//
+//      if ( neoplasms.isEmpty() ) {
+//         LOGGER.warn( "No Cancer found for Patient " + patientId );
+//         neoplasms
+//               = uriCrAggregateMap.entrySet()
+//                                  .stream()
+//                                  .filter( e -> UriInfoCache.getInstance()
+//                                                            .getSemanticTui( e.getKey() ) == SemanticTui.T184 )
+//                                  .map( Map.Entry::getValue )
+//                                  .flatMap( Collection::stream )
+//                                  .collect( Collectors.toSet() );
+//      }
+//      if ( neoplasms.isEmpty() ) {
+//         LOGGER.warn( "No Mass/Tumor found for Patient " + patientId );
+//         neoplasms = Collections.singletonList( new CrConceptAggregate( patientId,
+//                                                                        Collections.emptyMap(),
+//                                                                        Collections.emptyMap() ) );
+//      }
+//      Collection<CrConceptAggregate> summaryNeoplasms = neoplasms.stream()
+//                                                                   .filter( CrSummaryEngine::mostlyAffirmed )
+//                                                                   .collect( Collectors.toList() );
+//      if ( summaryNeoplasms.isEmpty() ) {
+//         // No affirmed neoplasms, go with half affirmed.
+//         summaryNeoplasms = neoplasms.stream()
+//                                     .filter( CrSummaryEngine::halfAffirmed )
+//                                     .collect( Collectors.toList() );
+//      }
+//      if ( summaryNeoplasms.isEmpty() ) {
+//         // No affirmed neoplasms, go with negated.
+//         summaryNeoplasms = neoplasms;
+//      }
+//
+//      NeoplasmSummaryCreator.addDebug( "CreatePatientSummary: " + patientId + " "
+//                                       + summaryNeoplasms.stream().map( n -> n.getUri() + ":" + n.getConfidence() )
+//                                                  .collect( Collectors.joining(" , " ) ) + "\n" );
+//
+////      final Collection<CrConceptAggregate> topmostNeoplasms = new ConfidenceGroup<>( neoplasms ).getTopmost();
+//      final Collection<CrConceptAggregate> topmostNeoplasms = new ConfidenceGroup<>( summaryNeoplasms ).getBest();
+//      final List<NeoplasmSummary> topmostNeoplasmSummaries
+//            = topmostNeoplasms.stream()
+//                              .map( CrNeoplasmSummaryCreator::createCrNeoplasmSummary )
+//                              .collect( Collectors.toList() );
+//
+//      final PatientSummary patientSummary = new PatientSummary();
+//      patientSummary.setId( patientId );
+//      patientSummary.setNeoplasms( topmostNeoplasmSummaries );
+//      return patientSummary;
+//   }
+
    /**
     * Entry point for new multi-cancer, drools-free summary creation.
     *
@@ -62,8 +150,8 @@ final public class CrSummaryEngine {
     * @return map of cancer summary to tumor summaries
     */
    static private PatientSummary createCrPatientSummary( final String patientId,
-                                                       final Map<Mention, String> patientMentionNoteIds,
-                                                       final Collection<MentionRelation> patientRelations ) {
+                                                         final Map<Mention, String> patientMentionNoteIds,
+                                                         final Collection<MentionRelation> patientRelations ) {
 //      LOGGER.info( "\n====================== Creating Concept Aggregates for " + patientId + " ======================" );
 //      LOGGER.info( "Concept Aggregates are basically unique concepts that are created by aggregating all mentions that are correferent." +
 //                   "  While coreference chains are within single documents, Concept Aggregates span across all documents." );
@@ -77,56 +165,70 @@ final public class CrSummaryEngine {
 //                   + patientRelations.size() + " relations" );
 //                   + patientCorefs.size() + " coref chains." );
       NeoplasmSummaryCreator.addDebug( "CreatePatientSummary: " + patientId + "\n" );
-      final Map<String, Collection<CrConceptAggregate>> uriCrAggregateMap
-            = CrConceptAggregateCreator.createUriConceptAggregateMap( patientId,
+      final Collection<CrConceptAggregate> aggregates
+            = CrConceptAggregateCreator.createCrConceptAggregates( patientId,
                                                                       patientMentionNoteIds,
                                                                       patientRelations );
 //      final Collection<ConceptAggregate> allConcepts
 //            = uriCrAggregateMap.values().stream().flatMap( Collection::stream ).collect( Collectors.toSet() );
 
       Collection<CrConceptAggregate> neoplasms
-            = uriCrAggregateMap.entrySet()
-                               .stream()
-                               .filter( e -> UriInfoCache.getInstance()
-                                                         .getSemanticTui( e.getKey() ) == SemanticTui.T191 )
-                               .map( Map.Entry::getValue )
-                               .flatMap( Collection::stream )
-                               .collect( Collectors.toSet() );
+            = aggregates.stream()
+            .filter( a -> !a.isNegated() )
+                         .filter( a -> UriInfoCache.getInstance()
+                                                   .getSemanticTui( a.getUri() ) == SemanticTui.T191 )
+                         .collect( Collectors.toSet() );
+      if ( neoplasms.isEmpty() ) {
+         LOGGER.warn( "No Asserted Cancer found for Patient " + patientId );
+         neoplasms
+               = aggregates.stream()
+                           .filter( a -> UriInfoCache.getInstance()
+                                                     .getSemanticTui( a.getUri() ) == SemanticTui.T191 )
+                           .collect( Collectors.toSet() );
+      }
 
       if ( neoplasms.isEmpty() ) {
-         LOGGER.warn( "No Cancer found for Patient " + patientId );
+         LOGGER.warn( "No Asserted or Negated Cancer found for Patient " + patientId );
          neoplasms
-               = uriCrAggregateMap.entrySet()
-                                  .stream()
-                                  .filter( e -> UriInfoCache.getInstance()
-                                                            .getSemanticTui( e.getKey() ) == SemanticTui.T184 )
-                                  .map( Map.Entry::getValue )
-                                  .flatMap( Collection::stream )
-                                  .collect( Collectors.toSet() );
+               = aggregates.stream()
+                           .filter( a -> !a.isNegated() )
+                           .filter( a -> UriInfoCache.getInstance()
+                                                     .getSemanticTui( a.getUri() ) == SemanticTui.T184 )
+                           .collect( Collectors.toSet() );
       }
       if ( neoplasms.isEmpty() ) {
-         LOGGER.warn( "No Mass/Tumor found for Patient " + patientId );
+         LOGGER.warn( "No Asserted Mass/Tumor found for Patient " + patientId );
+         neoplasms
+               = aggregates.stream()
+                           .filter( a -> UriInfoCache.getInstance()
+                                                     .getSemanticTui( a.getUri() ) == SemanticTui.T184 )
+                           .collect( Collectors.toSet() );
+      }
+      if ( neoplasms.isEmpty() ) {
+         LOGGER.warn( "No Asserted or Negated Mass/Tumor found for Patient " + patientId );
          neoplasms = Collections.singletonList( new CrConceptAggregate( patientId,
                                                                         Collections.emptyMap(),
                                                                         Collections.emptyMap() ) );
       }
-      Collection<CrConceptAggregate> summaryNeoplasms = neoplasms.stream()
-                                                                   .filter( CrSummaryEngine::mostlyAffirmed )
-                                                                   .collect( Collectors.toList() );
-      if ( summaryNeoplasms.isEmpty() ) {
-         // No affirmed neoplasms, go with half affirmed.
-         summaryNeoplasms = neoplasms.stream()
-                                     .filter( CrSummaryEngine::halfAffirmed )
-                                     .collect( Collectors.toList() );
-      }
-      if ( summaryNeoplasms.isEmpty() ) {
-         // No affirmed neoplasms, go with negated.
-         summaryNeoplasms = neoplasms;
-      }
+//      Collection<CrConceptAggregate> summaryNeoplasms = neoplasms.stream()
+//                                                                 .filter( CrSummaryEngine::mostlyAffirmed )
+//                                                                 .collect( Collectors.toList() );
+//      if ( summaryNeoplasms.isEmpty() ) {
+//         // No affirmed neoplasms, go with half affirmed.
+//         summaryNeoplasms = neoplasms.stream()
+//                                     .filter( CrSummaryEngine::halfAffirmed )
+//                                     .collect( Collectors.toList() );
+//      }
+//      if ( summaryNeoplasms.isEmpty() ) {
+//         // No affirmed neoplasms, go with negated.
+//         summaryNeoplasms = neoplasms;
+//      }
+
+      Collection<CrConceptAggregate> summaryNeoplasms = neoplasms;
 
       NeoplasmSummaryCreator.addDebug( "CreatePatientSummary: " + patientId + " "
                                        + summaryNeoplasms.stream().map( n -> n.getUri() + ":" + n.getConfidence() )
-                                                  .collect( Collectors.joining(" , " ) ) + "\n" );
+                                                         .collect( Collectors.joining(" , " ) ) + "\n" );
 
 //      final Collection<CrConceptAggregate> topmostNeoplasms = new ConfidenceGroup<>( neoplasms ).getTopmost();
       final Collection<CrConceptAggregate> topmostNeoplasms = new ConfidenceGroup<>( summaryNeoplasms ).getBest();
@@ -134,12 +236,45 @@ final public class CrSummaryEngine {
             = topmostNeoplasms.stream()
                               .map( CrNeoplasmSummaryCreator::createCrNeoplasmSummary )
                               .collect( Collectors.toList() );
-
+      if ( topmostNeoplasmSummaries.size() > 1 ) {
+         final Collection<NeoplasmSummary> removals = new HashSet<>();
+         for ( NeoplasmSummary summary : topmostNeoplasmSummaries ) {
+            final Collection<NeoplasmAttribute> attributes = summary.getAttributes();
+            attributes.stream()
+                      .filter( a -> a.getName()
+                                     .equalsIgnoreCase( "histology" ) )
+                      .filter( a -> a.getValue()
+                                     .equalsIgnoreCase( "8000" ) )
+                      .findAny()
+                      .ifPresent( histology -> removals.add( summary ) );
+         }
+         if ( removals.size() < topmostNeoplasmSummaries.size() ) {
+            topmostNeoplasmSummaries.removeAll( removals );
+         }
+         if ( topmostNeoplasmSummaries.size() > 1 ) {
+            removals.clear();
+            for ( NeoplasmSummary summary : topmostNeoplasmSummaries ) {
+               final Collection<NeoplasmAttribute> attributes = summary.getAttributes();
+               attributes.stream()
+                         .filter( a -> a.getName()
+                                        .equalsIgnoreCase( "topography_major" ) )
+                         .filter( a -> a.getValue()
+                                        .equalsIgnoreCase( "C80" ) )
+                         .findAny()
+                         .ifPresent( topomajor -> removals.add( summary ) );
+            }
+            if ( removals.size() < topmostNeoplasmSummaries.size() ) {
+               topmostNeoplasmSummaries.removeAll( removals );
+            }
+         }
+      }
       final PatientSummary patientSummary = new PatientSummary();
       patientSummary.setId( patientId );
       patientSummary.setNeoplasms( topmostNeoplasmSummaries );
       return patientSummary;
    }
+
+
 
    static private boolean mostlyAffirmed( final CrConceptAggregate aggregate ) {
       final Collection<Mention> mentions = aggregate.getMentions();

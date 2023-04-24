@@ -27,7 +27,7 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
    private final String _patientId;
 
    private Map<String,Collection<ConceptAggregateRelation>> _aggregateRelationMap;
-   private double _asTargetConfidence = 0.0;
+//   private double _asTargetConfidence = 0.0;
    private double _confidence = -1;
 
    // TODO What we should actually do is create a map of annotations to some DocInfo object,
@@ -174,6 +174,25 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
       return Collections.unmodifiableMap( _aggregateRelationMap );
    }
 
+//
+//   public Map<String,Collection<ConceptAggregateRelation>> getAllAffirmedRelations() {
+//      if ( _aggregateRelationMap == null || _aggregateRelationMap.isEmpty() ) {
+//         return Collections.emptyMap();
+//      }
+//      final Map<String,Collection<ConceptAggregateRelation>> affirmed = new HashMap<>();
+//      for ( Map.Entry<String,Collection<ConceptAggregateRelation>> relations : _aggregateRelationMap.entrySet() ) {
+//         final Collection<ConceptAggregateRelation> wanted = relations.getValue()
+//                                                                      .stream()
+//                                                                      .filter( a -> !a.getTarget().isNegated() )
+//                                                                      .collect( Collectors.toList() );
+//         if ( !wanted.isEmpty() ) {
+//            affirmed.put( relations.getKey(), wanted );
+//         }
+//      }
+//      return affirmed;
+//   }
+//
+
    public Map<String,Collection<ConceptAggregateRelation>> getAllBestRelations() {
       if ( _aggregateRelationMap == null || _aggregateRelationMap.isEmpty() ) {
          return Collections.emptyMap();
@@ -186,6 +205,12 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
       return bestRelations;
    }
 
+//   public Map<String,Collection<ConceptAggregateRelation>> getAllBestRelations() {
+//      final Map<String,Collection<ConceptAggregateRelation>> affirmedRelations = getAllAffirmedRelations();
+//      return affirmedRelations.entrySet().stream().collect( Collectors.toMap( Map.Entry::getKey,
+//                                                                              e -> getBestRelations( e.getValue() )  ) );
+//   }
+//
    private Collection<ConceptAggregateRelation> getRelations_( final String type ) {
       if ( _aggregateRelationMap == null || _aggregateRelationMap.isEmpty() ) {
          return Collections.emptyList();
@@ -211,7 +236,7 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
     */
    static private Collection<ConceptAggregateRelation> getBestRelations(
          final Collection<ConceptAggregateRelation> relations ) {
-      if ( relations.size() <= 2 ) {
+      if ( relations.size() <= 1 ) {
          return relations;
       }
       return new ConfidenceGroup<>( relations ).getBest();
@@ -227,13 +252,13 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
    }
 
 
-   public double getAsTargetConfidence() {
-      return _asTargetConfidence;
-   }
-
-   public void setAsTargetConfidence( final double confidence ) {
-      _asTargetConfidence = confidence;
-   }
+//   public double getAsTargetConfidence() {
+//      return _asTargetConfidence;
+//   }
+//
+//   public void setAsTargetConfidence( final double confidence ) {
+//      _asTargetConfidence = confidence;
+//   }
 
 
 
@@ -301,11 +326,14 @@ final public class CrConceptAggregate implements ConceptAggregate, ConfidenceOwn
 //      final double assertionBump = isNegated() ? 20 : (isUncertain() ? 5 : 0);
       final double assertionBump = isNegated() ? 0.20 : (isUncertain() ? 0.05 : 0);
       // There is either a relationConfidence or an AsTargetConfidence.
-      final double relationConfidence = Math.max( computeRelationConfidence(), getAsTargetConfidence() );
+//      final double relationConfidence = Math.max( computeRelationConfidence(), getAsTargetConfidence() );
+      final double relationConfidence = computeRelationConfidence();
       _confidence = Math.max( 0.05, relationConfidence - assertionBump );
-      NeoplasmSummaryCreator.addDebug( "CrConceptAggregate.getConfidence for " + getUri()
-                                       + ": " + relationConfidence + " - "
-                                       + assertionBump + " = " + _confidence +"\n");
+//      NeoplasmSummaryCreator.addDebug( "CrConceptAggregate.getConfidence for " + getUri()
+//                                       + ": " + relationConfidence + " - "
+//                                       + assertionBump + " = " + _confidence +"\n");
+//      NeoplasmSummaryCreator.addDebug( Arrays.stream( new Throwable().getStackTrace() ).map( Object::toString ).collect(
+//            Collectors.joining("\n") )+"\n" );
       return _confidence;
    }
 

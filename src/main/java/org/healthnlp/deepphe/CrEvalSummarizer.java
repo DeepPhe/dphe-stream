@@ -81,6 +81,11 @@ final public class CrEvalSummarizer {
       final File debugDir = evalFile.getParentFile();
       featuresDir.mkdirs();
       jsonDir.mkdirs();
+      try ( Writer writer = new FileWriter( new File( debugDir, "EvalDebug.txt" ) ) ) {
+         writer.write( "Starting run ..." );
+      } catch ( IOException ioE ) {
+         LOGGER.error( ioE.getMessage() );
+      }
       try {
          FeatureFilesAppender.initFeatureFiles( featuresDir, ATTRIBUTE_NAMES );
       } catch ( IOException ioE ) {

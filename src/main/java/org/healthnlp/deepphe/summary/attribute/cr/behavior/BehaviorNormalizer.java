@@ -75,7 +75,9 @@ public class BehaviorNormalizer extends AbstractAttributeNormalizer {
                                                  .map( e -> e.getKey() + ":" + e.getValue() )
                                                  .collect( Collectors.joining(",") ) + " = "
                                        + bestCode +"\n");
-      return bestCode < 0 ? "3" : bestCode+"";
+//      return bestCode < 0 ? "3" : bestCode+"";
+      // CR doesn't do much benign, default to malignant.
+      return bestCode <= 0 ? "3" : bestCode+"";
    }
 
    private String getOppositeUri( final CrConceptAggregate aggregate ) {

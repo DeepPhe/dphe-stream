@@ -6,6 +6,7 @@ import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.util.Neo4jRelationUtil;
+import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -16,6 +17,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static org.apache.ctakes.core.util.annotation.SemanticTui.*;
+
 /**
  * @author SPF , chip-nlp
  * @since {3/9/2023}
@@ -25,6 +28,34 @@ public enum UriInfoCache {
 
    static public UriInfoCache getInstance() {
       return INSTANCE;
+   }
+
+//             Spatial Concept
+//                Body Space or Junction
+//                Body Location or Region
+
+   // Mass (including Tumor) is Sign or Symptom.
+   // Metastasis should be T047 D/D, but for now make it a S/S for Semantic Cleaning in Dictionary Lookup.
+   static public final SemanticTui TUMOR = T184;
+   // Neoplastic Process
+   static public final SemanticTui CANCER = T191;
+   // Body Part, Organ, or Organ Component
+   static public final SemanticTui LOCATION = T023;
+   // Spatial Concept
+   static public final SemanticTui SPATIAL_CONCEPT = T082;
+   // Clinical Attribute
+   static public final SemanticTui STAGING = T201;
+   // Laboratory or Test Result
+   static public final SemanticTui LAB_RESULT = T034;
+   // Finding is the default
+   static public final SemanticTui FINDING = T033;
+
+   static public boolean isLaterality( final String uri ) {
+      return LATERALITY_URIS.contains( uri );
+   }
+
+   static public boolean isLaterality( final CrConceptAggregate aggregate ) {
+      return isLaterality( aggregate.getUri() );
    }
 
    static private final Object LOCK = new Object();
@@ -46,7 +77,7 @@ public enum UriInfoCache {
 //   private final Map<String, Integer> _uriBranchSizeMap = new ConcurrentHashMap<>();
    private final Map<String, Collection<String>> _uriRootMap = new ConcurrentHashMap<>();
    private final Map<String, Integer> _uriLevelMap = new ConcurrentHashMap<>();
-   private final Map<String, Double> _uriMidLevelMap = new ConcurrentHashMap<>();
+//   private final Map<String, Double> _uriMidLevelMap = new ConcurrentHashMap<>();
    private final Map<String, UriNode> _uriNodeMap = new ConcurrentHashMap<>();
    private final ScheduledExecutorService _cacheCleaner;
 
@@ -71,7 +102,7 @@ public enum UriInfoCache {
 //         getUriBranchSize( uri );
          getUriRoots( uri );
          getUriLevel( uri );
-         getUriMidLevel( uri );
+//         getUriMidLevel( uri );
          uriNodes.put( uri, getUriNode( uri ) );
       }
       return uriNodes;
@@ -97,40 +128,32 @@ public enum UriInfoCache {
             return cachedSemantic;
          }
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
-         // Finding by default
-         SemanticTui semantic = SemanticTui.T033;
+         SemanticTui semantic = FINDING;
          // We don't want mass or Metastasis to be "Neoplastic Process"
          if ( UriConstants.getMassUris( graphDb ).contains( uri )
               || UriConstants.getMetastasisUris( graphDb ).contains( uri ) ) {
-            // Mass (including Tumor) is Sign or Symptom.
-            // Metastasis should be T047 D/D, but for now make it a S/S for Semantic Cleaning in Dictionary Lookup.
-            // UriConstants.getCancerUris(..)  DOES  contain metastases.
-            semantic = SemanticTui.T184;
+            // UriConstants.getCancerUris(..)  DOES  contain metastases, so assign this first.
+            semantic = TUMOR;
          } else if ( UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
-            // Neoplastic Process
-            semantic = SemanticTui.T191;
-         } else if ( UriConstants.getPositiveValueUris( graphDb ).contains( uri )
-                     || UriConstants.getRegaultValueUris( graphDb ).contains( uri )
-                     || UriConstants.getNormalValueUris( graphDb ).contains( uri )
-                     || UriConstants.getStableValueUris( graphDb ).contains( uri )
-                     || UriConstants.getHighValueUris( graphDb ).contains( uri ) ) {
-            // Laboratory or Test Result
-            return SemanticTui.T034;
+            semantic = CANCER;
+         } else if ( UriConstants.getLocationUris( graphDb ).contains( uri ) ) {
+            semantic = LOCATION;
          } else if ( LATERALITY_URIS.contains( uri )
                      || CustomUriRelations.getInstance().getQuadrantUris().contains( uri )
                      || getUriRoots( uri ).contains( UriConstants.CLOCKFACE ) ) {
-            // Spatial Concept
-            return SemanticTui.T082;
+            return SPATIAL_CONCEPT;
          } else if ( CustomUriRelations.getInstance().getStageUris().contains( uri )
                      || CustomUriRelations.getInstance().getGradeUris().contains( uri )
                      || CustomUriRelations.getInstance().getBehaviorUris().contains( uri )
                      || getUriBranch( "Generic_TNM" ).contains( uri )
                      || getUriBranch( "Pathologic_TNM" ).contains( uri ) ) {
-            // Clinical Attribute
-            return SemanticTui.T201;
-         } else if ( UriConstants.getLocationUris( graphDb ).contains( uri ) ) {
-            // Body Part, Organ, or Organ Component
-            semantic = SemanticTui.T023;
+            return STAGING;
+         } else if ( UriConstants.getPositiveValueUris( graphDb ).contains( uri )
+                     || UriConstants.getRegaultValueUris( graphDb ).contains( uri )
+                     || UriConstants.getNormalValueUris( graphDb ).contains( uri )
+                     || UriConstants.getStableValueUris( graphDb ).contains( uri )
+                     || UriConstants.getHighValueUris( graphDb ).contains( uri ) ) {
+            return LAB_RESULT;
          }
          _timeMap.put( uri, millis );
          _uriSemanticMap.put( uri, semantic );
@@ -209,25 +232,25 @@ public enum UriInfoCache {
    }
 
 
-   private double getUriMidLevel( final String uri ) {
-      if ( uri.equals( "Thing" ) || uri.equals( "DeepPhe" ) ) {
-         return 0;
-      }
-      synchronized ( LOCK ) {
-         final Double cachedLevel = _uriMidLevelMap.get( uri );
-         if ( cachedLevel != null ) {
-            return cachedLevel;
-         }
-         final int level = getUriLevel( uri );
-         final int maxLevel = getUriRoots( uri ).stream()
-                                             .mapToInt( UriInfoCache.this::getUriLevel )
-                                             .max()
-                                             .orElse( 0 ) + 1;
-         final double mean = (level+maxLevel) / 2d;
-         _uriMidLevelMap.put( uri, mean );
-         return mean;
-      }
-   }
+//   private double getUriMidLevel( final String uri ) {
+//      if ( uri.equals( "Thing" ) || uri.equals( "DeepPhe" ) ) {
+//         return 0;
+//      }
+//      synchronized ( LOCK ) {
+//         final Double cachedLevel = _uriMidLevelMap.get( uri );
+//         if ( cachedLevel != null ) {
+//            return cachedLevel;
+//         }
+//         final int level = getUriLevel( uri );
+//         final int maxLevel = getUriRoots( uri ).stream()
+//                                             .mapToInt( UriInfoCache.this::getUriLevel )
+//                                             .max()
+//                                             .orElse( 0 ) + 1;
+//         final double mean = (level+maxLevel) / 2d;
+//         _uriMidLevelMap.put( uri, mean );
+//         return mean;
+//      }
+//   }
 
 
    public UriNode getUriNode( final String uri ) {
@@ -238,8 +261,8 @@ public enum UriInfoCache {
             _timeMap.put( uri, millis );
             return cachedNode;
          }
-         final boolean isCancer = UriInfoCache.getInstance().getSemanticTui( uri ) == SemanticTui.T191;
-         if ( !isCancer ) {
+         final SemanticTui tui = UriInfoCache.getInstance().getSemanticTui( uri );
+         if ( tui != UriInfoCache.CANCER && tui != UriInfoCache.TUMOR ) {
             final UriNode node = new UriNode( uri, Collections.emptyMap(), Collections.emptyMap() );
             _timeMap.put( uri, millis );
             _uriNodeMap.put( uri, node );
@@ -265,7 +288,7 @@ public enum UriInfoCache {
                                .addAll( relation.getValue() );
             }
          }
-         nonSiteRelations.putAll( CustomUriRelations.getInstance().getCancerRelations( uri, graphDb ) );
+         nonSiteRelations.putAll( CustomUriRelations.getInstance().getCancerRelations( uri ) );
          final UriNode node = new UriNode( uri, nonSiteRelations, siteRelations );
          _timeMap.put( uri, millis );
          _uriNodeMap.put( uri, node );
@@ -403,7 +426,7 @@ public enum UriInfoCache {
 //               _uriBranchSizeMap.remove( removal );
                _uriRootMap.remove( removal );
                _uriLevelMap.remove( removal );
-               _uriMidLevelMap.remove( removal );
+//               _uriMidLevelMap.remove( removal );
                _uriNodeMap.remove( removal );
             }
          }

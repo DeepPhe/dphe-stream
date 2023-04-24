@@ -33,6 +33,14 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
       NeoplasmSummaryCreator.addDebug( "Histology best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
    }
 
+   protected Map<String,Long> createAllCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+      return aggregates.stream()
+                        .map( CrConceptAggregate::getAllUris )
+                       .flatMap( Collection::stream )
+                       .map( this::getCode )
+                       .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+   }
+
    public String getCode( final String uri ) {
       return getHistologyCode( uri, _uriStrengths );
    }
@@ -195,7 +203,8 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
 //            count += broadCount;
 //         }
          count += multiCodesMap.getOrDefault( code, 0 );
-         if ( code.startsWith( "801" ) ) {
+//         if ( code.startsWith( "801" ) ) {
+         if ( code.equals( "8010" ) ) {
             count = 1;
          }
          hitCounts.computeIfAbsent( count, c -> new HashSet<>() ).add( code );
@@ -259,7 +268,7 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
          final int strength = uriStrengths.get( uri );
 //         final String code = TopoMorphValidator.getInstance().getExactMorphCode( uri );
          NeoplasmSummaryCreator.addDebug( uriExactMorphCodeList.isEmpty()
-                                          ? "" : ("  Exact " + uri + " "
+                                          ? "  No Exact" : ("  Exact " + uri + " "
                                                   + String.join( ",", uriExactMorphCodeList ) +
                                                                                              "\n") );
          for ( String code : uriExactMorphCodeList ) {
@@ -328,7 +337,7 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
 //               = Arrays.asList( "8071", "8070", "8520", "8575", "8500", "8503", "8260", "8250", "8140", "8480",
 //                                "8046", "8041", "8240", "8012", "8000", "8010" );
 //               = Arrays.asList( "804", "848", "814", "824", "825", "826", "850", "875", "852", "807" );
-               = Arrays.asList( "807", "814", "804", "848", "824", "825", "826", "850", "875", "852" );
+               = Arrays.asList( "807", "814", "804", "848", "824", "825", "826", "850", "875", "852", "973", "997" );
          if ( histo1.equals( histo2 ) ) {
             return 0;
          }
@@ -364,9 +373,7 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
                                                         .filter( m -> ( !m.isNegated()
                                                                         || exactUris.contains( m.getClassUri() ) ) )
                                                         .collect( Collectors.toSet() );
-      final Collection<String> allUris = allMentions.stream()
-                                                    .map( Mention::getClassUri )
-                                                    .collect( Collectors.toSet() );
+      final Collection<String> allUris = attributeInfoCollector.getAllUris();
       final Map<String,Collection<String>> allUriRoots = new HashMap<>();
       for ( CrConceptAggregate attribute : aggregates ) {
          allUriRoots.putAll( attribute.getUriRootsMap() );

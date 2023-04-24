@@ -30,6 +30,10 @@ final public class MatchUtil {
    static private final String STAGE = "stage";
    static private final String QUADRANT = "quadrant";
    static private final String TUMOR_TYPE = "tumor_type";
+   static private final String BEHAVIOR = "behavior";
+   static private final String T = "t";
+   static private final String N = "n";
+   static private final String M = "m";
 
 
    static double countMatched( final String name, final String goldValue, final String systemValue ) {
@@ -133,7 +137,7 @@ final public class MatchUtil {
                                                                         "N0", "N1", "N2", "N3",
                                                                         "M0", "M1" );
 
-
+   static private final Collection<String> UNKNOWNS = Arrays.asList( "unknown", "equivocal", "requested", "" );
 
 //   static private boolean isSpecialMatch( final String goldValue, final String systemValue ) {
 //      if ( goldValue == null ) {
@@ -253,6 +257,19 @@ final public class MatchUtil {
    static boolean isSpecialMatch( final String name, final String goldValue1, final String systemValue1 ) {
       final String goldValue = goldValue1.trim();
       final String systemValue = systemValue1.trim();
+      if ( BEHAVIOR.equalsIgnoreCase( name ) ) {
+         if ( systemValue.equals( "3") && goldValue.equals( "6" ) ) {
+            return true;
+         }
+      }
+      if ( T.equalsIgnoreCase( name ) || N.equalsIgnoreCase( name ) || M.equalsIgnoreCase( name ) ) {
+         if ( UNKNOWNS.contains( goldValue.toLowerCase() ) && UNKNOWNS.contains( systemValue.toLowerCase() ) ) {
+            return true;
+         }
+      }
+      if ( M.equalsIgnoreCase( name ) && systemValue.toLowerCase().contains( "m0" ) && goldValue.isEmpty() ) {
+         return true;
+      }
       // SPECIAL CASE FOR ICDO LATERALITY OR ICDO TOPO_MINOR CODE.  MAKE SURE THAT IT DOESN'T SHOW UP ELSEWHERE.
       if ( LOCATION.equalsIgnoreCase( name ) ) {
          if ( goldValue.equalsIgnoreCase( "Breast" ) && systemValue.endsWith( "_Quadrant" ) ) {
@@ -406,7 +423,8 @@ final public class MatchUtil {
       if ( systemValue.contains( "Tis" ) && (goldValue.isEmpty() || goldValue.contains( "T0" )) ) {
          return true;
       }
-      if ( (systemValue.contains( "Tx" ) || systemValue.contains( "Nx" ) || systemValue.contains( "Mx" ))
+      if ( (systemValue.contains( "Tx" ) || systemValue.contains( "Nx" ) || systemValue.contains( "Mx" )
+            || systemValue.toLowerCase().contains( "mx" ))
            && goldValue.isEmpty() ) {
          return true;
       }

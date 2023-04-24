@@ -20,14 +20,14 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
-import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.*;
 
 /**
  * @author SPF , chip-nlp
@@ -41,9 +41,6 @@ import java.util.stream.Collectors;
 final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final Logger LOGGER = Logger.getLogger( "CrRelationFinder" );
-
-   static private final Pattern WHITESPACE = Pattern.compile( "\\s+" );
-
 
 
 
@@ -64,43 +61,17 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       LOGGER.info( "Creating Relations ..." );
       NeoplasmSummaryCreator.addDebug( "CrRelationFinder: " + DocIdUtil.getDocumentID( jCas ) +"\n");
       try ( DotLogger dotter = new DotLogger() ) {
-
-         // All Identified Annotations.
          final Map<String,Collection<IdentifiedAnnotation>> uriAnnotationsMap = new HashMap<>();
-         for ( IdentifiedAnnotation annotation : JCasUtil.select( jCas, IdentifiedAnnotation.class ) ) {
-            Neo4jOntologyConceptUtil.getUris( annotation )
-                                    .forEach( u -> uriAnnotationsMap
-                                          .computeIfAbsent( u, a -> new HashSet<>() ).add( annotation ) );
-         }
-         if ( uriAnnotationsMap.size() < 2 ) {
-            // Only a single uri, no relations can be made.
-            return;
-         }
-         // Just initializes.  Probably not necessary but may save some time locking.
-         final Map<String, UriInfoCache.UriNode> docUriNodeMap
-               = UriInfoCache.getInstance().createDocUriNodeMap( uriAnnotationsMap.keySet() );
-
-         // Paragraphs.  For confidence.  Todo - add paragraphID to IdentifiedAnnotation.
-         final Collection<Pair<Integer>> paragraphBounds = JCasUtil.select( jCas, Paragraph.class )
-                                                                   .stream()
-                                                                   .filter( Objects::nonNull )
-                                                                   .map( p -> new Pair<>( p.getBegin(), p.getEnd() ) )
-                                                                   .collect( Collectors.toList() );
-         final Map<String,String> sentenceTexts = new HashMap<>();
-         JCasUtil.select( jCas, Sentence.class ).forEach( s -> sentenceTexts.put( ""+s.getSentenceNumber(), s.getCoveredText() ) );
-
-         // Token indices.  For confidence.
+         final Collection<Pair<Integer>> paragraphBounds = new HashSet<>();
+         final Map<String,Sentence> sentences = new HashMap<>();
          final Map<Integer,Integer> tokenBeginToTokenNums = new HashMap<>();
          final Map<Integer,Integer> tokenEndToTokenNums = new HashMap<>();
-         int i = 1;
-         for ( BaseToken token : JCasUtil.select( jCas, BaseToken.class ) ) {
-            tokenBeginToTokenNums.put( token.getBegin(), i );
-            tokenEndToTokenNums.put( token.getEnd(), i );
-            i++;
+         fillSectionsMaps( jCas, uriAnnotationsMap, paragraphBounds, sentences,
+                           tokenBeginToTokenNums, tokenEndToTokenNums );
+         if ( uriAnnotationsMap.size() < 2 ) {
+            return;
          }
-         final String docText = jCas.getDocumentText();
-         final int docLength = docText.length();
-
+         final int docLength = jCas.getDocumentText().length();
          // Loop through URIs and Annotations.
          for ( Map.Entry<String,Collection<IdentifiedAnnotation>> uriSourceAnnotations : uriAnnotationsMap.entrySet() ) {
             final String sourceUri = uriSourceAnnotations.getKey();
@@ -121,68 +92,26 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                   continue;
                }
                for ( IdentifiedAnnotation sourceAnnotation : uriSourceAnnotations.getValue() ) {
-                  final Map<String,Collection<TargetAnnotationScore>> relatedAnnotationScoresMap = new HashMap<>();
-                  final double sourceAssertionPenalty = getAssertionPenalty( sourceAnnotation );
-                  final double sourceHistoryPenalty = getHistoryPenalty( docText, sourceAnnotation );
-                  final double lociSourceTestPenalty = getTestPenalty( sentenceTexts, sourceAnnotation );
-                  final double lociSourceMassPenalty = getMassPenalty( sentenceTexts, sourceAnnotation );
-                  for ( IdentifiedAnnotation targetAnnotation : uriTargetAnnotations.getValue() ) {
-                     final double targetAssertionPenalty = getAssertionPenalty( targetAnnotation );
-                     final double targetHistoryPenalty = getHistoryPenalty( docText, targetAnnotation );
-                     final double lociTargetTestPenalty = getTestPenalty( sentenceTexts, targetAnnotation );
-                     final double lociTargetMassPenalty = getMassPenalty( sentenceTexts, targetAnnotation );
-                     for ( Map.Entry<String,Double> relationScores : relationScoresMap.entrySet() ) {
-                        double sourceTestPenalty = 0;
-                        double sourceMassPenalty = 0;
-                        double targetTestPenalty = 0;
-                        double targetMassPenalty = 0;
-                        final String relationName = relationScores.getKey();
-                        if ( (relationName.equals( RelationConstants.DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE )
-                              || relationName.equals( RelationConstants.DISEASE_HAS_PRIMARY_ANATOMIC_SITE ) ) ) {
-                           if ( !isDirectSite( docText, targetAnnotation ) ) {
-                              continue;
-                           }
-                           sourceTestPenalty = lociSourceTestPenalty;
-                           sourceMassPenalty = lociSourceMassPenalty;
-                           targetTestPenalty = lociTargetTestPenalty;
-                           targetMassPenalty = lociTargetMassPenalty;
-                        }
-                        final double uriRelationScore = relationScores.getValue();
-                        final double distanceScore = getPlacementScore( sourceAnnotation, targetAnnotation,
-                                                                       tokenBeginToTokenNums,
-                                                                       tokenEndToTokenNums,
-                                                                       paragraphBounds, docLength );
-                        final TargetAnnotationScore targetScore = new TargetAnnotationScore( targetAnnotation,
-                                                                                            uriRelationScore,
-                                                                                            distanceScore,
-                                                                                            sourceAssertionPenalty,
-                                                                                            targetAssertionPenalty,
-                                                                                             sourceHistoryPenalty,
-                                                                                             targetHistoryPenalty,
-                                                                                             sourceTestPenalty,
-                                                                                             targetTestPenalty,
-                                                                                             sourceMassPenalty,
-                                                                                             targetMassPenalty );
-                        relatedAnnotationScoresMap.computeIfAbsent( relationName, r -> new HashSet<>() )
-                                               .add( targetScore );
-                     }
+                  final AnnotationPenalties sourcePenalties = new AnnotationPenalties( sourceAnnotation, sentences,
+                                                                                       tokenBeginToTokenNums,
+                                                                                       tokenEndToTokenNums, docLength );
+                  final Map<String,Collection<RelationScore>> relatedAnnotationScoresMap = new HashMap<>();
+                  for ( Map.Entry<String,Double> relationScores : relationScoresMap.entrySet() ) {
+                     final Collection<RelationScore> annotationRelationScores =
+                           createAnnotationRelationScores( relationScores.getKey(),
+                                                           relationScores.getValue(),
+                                                           sourceAnnotation,
+                                                           sourcePenalties,
+                                                           uriTargetAnnotations.getValue(),
+                                                           sentences,
+                                                           paragraphBounds,
+                                                           tokenBeginToTokenNums,
+                                                           tokenEndToTokenNums,
+                                                           docLength );
+                     relatedAnnotationScoresMap.put( relationScores.getKey(), annotationRelationScores );
                   }
-                  for ( Map.Entry<String,Collection<TargetAnnotationScore>> relatedAnnotationScores
+                  for ( Map.Entry<String,Collection<RelationScore>> relatedAnnotationScores
                         : relatedAnnotationScoresMap.entrySet() ) {
-//                     LOGGER.info( sourceAnnotation.getCoveredText() + " "
-//                                  + sourceAnnotation.getBegin() + "," + sourceAnnotation.getEnd() + " "
-//                                  + relatedAnnotationScores.getKey() );
-//                     for ( TotalAnnotationScore annotationScore : relatedAnnotationScores.getValue() ) {
-//                        LOGGER.info( "   " + annotationScore._annotation.getCoveredText() + " "
-//                                     + annotationScore._annotation.getBegin() + ","
-//                                     + annotationScore._annotation.getEnd() + " : "
-//                                     + annotationScore._uriScore + " + "
-//                                     + annotationScore._distanceScore + " = "
-//                                     + annotationScore.getTotalScore() );
-//                     }
-//                     createBestRelations( jCas, sourceAnnotation,
-//                                          relatedAnnotationScores.getKey(),
-//                                          relatedAnnotationScores.getValue() );
                      createAllRelations( jCas, sourceAnnotation,
                                           relatedAnnotationScores.getKey(),
                                           relatedAnnotationScores.getValue() );
@@ -195,217 +124,207 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       }
    }
 
+   static private void fillSectionsMaps( final JCas jCas,
+                                 final Map<String,Collection<IdentifiedAnnotation>> uriAnnotationsMap,
+                                 final Collection<Pair<Integer>> paragraphBounds,
+                                 final Map<String,Sentence> sentences,
+                                 final Map<Integer,Integer> tokenBeginToTokenNums,
+                                 final Map<Integer,Integer> tokenEndToTokenNums ) {
+      for ( IdentifiedAnnotation annotation : JCasUtil.select( jCas, IdentifiedAnnotation.class ) ) {
+         Neo4jOntologyConceptUtil.getUris( annotation )
+                                 .forEach( u -> uriAnnotationsMap
+                                       .computeIfAbsent( u, a -> new HashSet<>() ).add( annotation ) );
+      }
+      if ( uriAnnotationsMap.size() < 2 ) {
+         // Only a single uri, no relations can be made.
+         return;
+      }
+      // Just initializes.  Probably not necessary but may save some time locking.
+      UriInfoCache.getInstance().createDocUriNodeMap( uriAnnotationsMap.keySet() );
+      // Paragraphs.  For confidence.  Todo - ctakes: add paragraphID to IdentifiedAnnotation.
+      paragraphBounds.addAll( JCasUtil.select( jCas, Paragraph.class )
+                                                                .stream()
+                                                                .filter( Objects::nonNull )
+                                                                .map( p -> new Pair<>( p.getBegin(), p.getEnd() ) )
+                                                                .collect( Collectors.toList() ) );
+      JCasUtil.select( jCas, Sentence.class ).forEach( s -> sentences.put( ""+s.getSentenceNumber(), s ) );
+      // Token indices.  For confidence.
+      int i = 1;
+      for ( BaseToken token : JCasUtil.select( jCas, BaseToken.class ) ) {
+         tokenBeginToTokenNums.put( token.getBegin(), i );
+         tokenEndToTokenNums.put( token.getEnd(), i );
+         i++;
+      }
+   }
+
+   static private final Collection<String> LOCATION_RELATIONS
+         = Arrays.asList( HAS_LATERALITY, DISEASE_HAS_PRIMARY_ANATOMIC_SITE, DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE );
+//         , HAS_QUADRANT, HAS_CLOCKFACE );
+
+   static private Collection<RelationScore> createAnnotationRelationScores( final String relationName,
+                             final double uriRelationScore,
+                             final IdentifiedAnnotation sourceAnnotation,
+                             final AnnotationPenalties sourcePenalties,
+                             final Collection<IdentifiedAnnotation> targetAnnotations,
+                             final Map<String,Sentence> sentences,
+                             final Collection<Pair<Integer>> paragraphBounds,
+                             final Map<Integer,Integer> tokenBeginToTokenNums,
+                             final Map<Integer,Integer> tokenEndToTokenNums,
+                             final int docLength ) {
+      final boolean isLocation = LOCATION_RELATIONS.contains( relationName );
+      final Collection<RelationScore> relationScores = new HashSet<>();
+      for ( IdentifiedAnnotation targetAnnotation : targetAnnotations ) {
+         final AnnotationPenalties targetPenalties = createAnnotationPenalties( isLocation,
+                                                                                targetAnnotation,
+                                                                               sentences,
+                                                                               tokenBeginToTokenNums,
+                                                                               tokenEndToTokenNums,
+                                                                               docLength );
+         final Pair<Double> placementPenalty = getPlacementPenalty( sourceAnnotation, targetAnnotation,
+                                                                    paragraphBounds );
+         final double placementScore = getPlacementScore( sourcePenalties.getBeginEndTokens(),
+                                                          targetPenalties.getBeginEndTokens(),
+                                                          placementPenalty );
+         if ( isLocation && placementScore <= 1 ) {
+            NeoplasmSummaryCreator.addDebug( "Discarding Placement Relation " + sourceAnnotation.getCoveredText()
+                                             + " " + relationName + " " + targetAnnotation.getCoveredText() +
+                                             " " + placementScore + "\n" );
+            continue;
+         }
+         final RelationScore targetScore = createRelationScore( isLocation,
+                                                                targetAnnotation,
+                                                              uriRelationScore,
+                                                              placementScore,
+                                                              sourcePenalties,
+                                                              targetPenalties );
+         if ( targetScore.getTotalScore() > 1 ) {
+            NeoplasmSummaryCreator.addDebug( "Keeping Target Relation " + sourceAnnotation.getCoveredText()
+                                             + " " + relationName + " " + targetAnnotation.getCoveredText() +
+                                             " " + targetScore.getTotalScore() + "\n" );
+            relationScores.add( targetScore );
+         } else {
+            NeoplasmSummaryCreator.addDebug( "Discarding Target Relation " + sourceAnnotation.getCoveredText()
+                                             + " " + relationName + " " + targetAnnotation.getCoveredText() +
+                                             " " + targetScore.getTotalScore() + "\n" );
+         }
+      }
+      return relationScores;
+   }
+
    private void createAllRelations( final JCas jCas,
                                      final IdentifiedAnnotation source,
                                      final String relationName,
-                                     Collection<TargetAnnotationScore> AnnotationScores ) {
+                                     Collection<RelationScore> AnnotationScores ) {
       final RelationBuilder<BinaryTextRelation> builder
             = new RelationBuilder<>().creator( BinaryTextRelation::new )
                                      .name( relationName )
                                      .annotation( source )
                                      .discoveredBy( CONST.NE_DISCOVERY_TECH_EXPLICIT_AE );
-      for ( TargetAnnotationScore annotationScore : AnnotationScores ) {
-         builder.hasRelated( annotationScore._annotation )
+      for ( RelationScore annotationScore : AnnotationScores ) {
+         builder.hasRelated( annotationScore._targetAnnotation )
                .confidence( (float)annotationScore.getTotalScore() )
                 .build( jCas );
          final boolean sourceNegated = IdentifiedAnnotationUtil.isNegated( source );
-         final boolean targetNegated = IdentifiedAnnotationUtil.isNegated( annotationScore._annotation );
+         final boolean targetNegated = IdentifiedAnnotationUtil.isNegated( annotationScore._targetAnnotation );
          NeoplasmSummaryCreator.addDebug(  "CrRelationFinder.createAllRelations " + ( sourceNegated ? "-" : "+") + source.getCoveredText() + " "
                                  + source.getBegin() + "," + source.getEnd() + "  *"
                                  + relationName + "*  " + (targetNegated?"-":"+")
-                                 + annotationScore._annotation.getCoveredText() + " "
-                                 + annotationScore._annotation.getBegin() + "," + annotationScore._annotation.getEnd()
+                                 + annotationScore._targetAnnotation.getCoveredText() + " "
+                                 + annotationScore._targetAnnotation.getBegin() + "," + annotationScore._targetAnnotation.getEnd()
                                            + " = score listed above\n");
       }
    }
 
 
-//   private void createBestRelations( final JCas jCas,
-//                                     final IdentifiedAnnotation source,
-//                                     final String relationName,
-//                                     Collection<TotalAnnotationScore> AnnotationScores ) {
-//      final RelationBuilder<BinaryTextRelation> builder
-//            = new RelationBuilder<>().creator( BinaryTextRelation::new )
-//                                     .annotation( source )
-//                                     .discoveredBy( CONST.NE_DISCOVERY_TECH_EXPLICIT_AE );
-//      double bestScore = 0d;
-//      final Collection<IdentifiedAnnotation> bestTargets = new HashSet<>();
-//      double nextScore = 0d;
-//      final Collection<IdentifiedAnnotation> nextTargets = new HashSet<>();
-//      LOGGER.info( "Relation: " + relationName );
-//      for ( TotalAnnotationScore annotationScore : AnnotationScores ) {
-//         final double totalScore = annotationScore.getTotalScore();
-////         LOGGER.info( "   " + source.getCoveredText() + " "
-////                      + source.getBegin() + "," + source.getEnd() + " "
-////                      + relationName + " "
-////                      + annotationScore._annotation.getCoveredText() + " "
-////                      + annotationScore._annotation.getBegin() + "," + annotationScore._annotation.getEnd() + " "
-////                      + annotationScore._uriScore + " + " + annotationScore._distanceScore + " = " + totalScore );
-//         if ( totalScore >= bestScore ) {
-//            if ( totalScore > bestScore ) {
-//               nextTargets.clear();
-//               nextTargets.addAll( bestTargets );
-//               bestTargets.clear();
-//               bestScore = totalScore;
-//            }
-//            bestTargets.add( annotationScore._annotation );
-//         } else if ( totalScore >= nextScore ) {
-//            if ( totalScore > nextScore ) {
-//               nextTargets.clear();
-//               nextScore = totalScore;
-//            }
-//            nextTargets.add( annotationScore._annotation );
-//         }
-//      }
-//      builder.name( relationName ).confidence( (float)bestScore );
-//      for ( IdentifiedAnnotation target : bestTargets ) {
-//         builder.hasRelated( target ).build( jCas );
-//         LOGGER.info( "      Best Relation " + source.getCoveredText() + " "
-//                      + source.getBegin() + "," + source.getEnd() + " "
-//                      + relationName + " "
-//                      + target.getCoveredText() + " "
-//                      + target.getBegin() + "," + target.getEnd() + " = "
-//                      + bestScore );
-//      }
-////      LOGGER.info( "         Best Target Count: " + bestTargets.size() );
-//      if ( bestTargets.size() > 1 ) {
-////            return;
-//      }
-//      builder.confidence( (float)nextScore );
-//      for ( IdentifiedAnnotation target : nextTargets ) {
-//         builder.hasRelated( target ).build( jCas );
-//         LOGGER.info( "      Next Relation " + source.getCoveredText() + " "
-//                      + source.getBegin() + "," + source.getEnd() + " "
-//                      + relationName + " "
-//                      + target.getCoveredText() + " "
-//                      + target.getBegin() + "," + target.getEnd() + " = "
-//                      + nextScore );
-//      }
-////      LOGGER.info( "         Next Target Count: " + nextTargets.size() );
-//   }
 
 
-
+//   static private final double MIN_RELATION_CONFIDENCE = 1;
    static private final double MIN_RELATION_CONFIDENCE = 1;
+   static private final double MIN_LOCATION_CONFIDENCE = 0;
 
-   static private class TargetAnnotationScore {
-      private final IdentifiedAnnotation _annotation;
+   static private class RelationScore {
+      private final IdentifiedAnnotation _targetAnnotation;
       private final double _uriRelationScore;
       private final double _distanceScore;
-      private final double _sourceAssertionPenalty;
-      private final double _targetAssertionPenalty;
-      private final double _sourceHistoryPenalty;
-      private final double _targetHistoryPenalty;
-      private final double _sourceTestPenalty;
-      private final double _targetTestPenalty;
-      private final double _sourceMassPenalty;
-      private final double _targetMassPenalty;
-      private TargetAnnotationScore( final IdentifiedAnnotation annotation, final double uriRelationScore,
-                                     final double distanceScore,
-                                     final double sourceAssertionPenalty, final double targetAssertionPenalty,
-                                     final double sourceHistoryPenalty, final double targetHistoryPenalty,
-                                     final double sourceTestPenalty, final double targetTestPenalty,
-                                     final double sourceMassPenalty, final double targetMassPenalty ) {
-         _annotation = annotation;
+      private final AnnotationPenalties _sourcePenalties;
+      private final AnnotationPenalties _targetPenalties;
+      private double _totalScore = Double.MIN_VALUE;
+
+      private RelationScore( final IdentifiedAnnotation targetAnnotation,
+                             final double uriRelationScore,
+                             final double distanceScore,
+                             final AnnotationPenalties sourcePenalties,
+                             final AnnotationPenalties targetPenalties ) {
+         _targetAnnotation = targetAnnotation;
          _uriRelationScore = uriRelationScore;
          _distanceScore = distanceScore;
-         _sourceAssertionPenalty = sourceAssertionPenalty;
-         _targetAssertionPenalty = targetAssertionPenalty;
-         _sourceHistoryPenalty = sourceHistoryPenalty;
-         _targetHistoryPenalty = targetHistoryPenalty;
-         _sourceTestPenalty = sourceTestPenalty;
-         _targetTestPenalty = targetTestPenalty;
-         _sourceMassPenalty = sourceMassPenalty;
-         _targetMassPenalty = targetMassPenalty;
+         _sourcePenalties = sourcePenalties;
+         _targetPenalties = targetPenalties;
       }
-
+      protected double getMinimumScore() {
+         return MIN_RELATION_CONFIDENCE;
+      }
       /**
        *
        * @return between 1 and 100.  100 is max because the uri relation score and distance score have a max of 100.
        */
       private double getTotalScore() {
-         final double confidence = Math.max( MIN_RELATION_CONFIDENCE,
-                                             ( _uriRelationScore + _distanceScore ) / 2
-                                             - _sourceAssertionPenalty - _targetAssertionPenalty
-                                             - _sourceHistoryPenalty - _targetHistoryPenalty
-                                             - _sourceTestPenalty - _targetTestPenalty
-                                             - _sourceMassPenalty - _targetMassPenalty );
+         if ( _totalScore != Double.MIN_VALUE ) {
+            return _totalScore;
+         }
+         _totalScore = Math.max( getMinimumScore(), ( _uriRelationScore + _distanceScore ) / 2
+                                             - _sourcePenalties.getTotalPenalty()
+                                             - _targetPenalties.getTotalPenalty() );
          NeoplasmSummaryCreator.addDebug( "CrRelationFinder.TargetAnnotationScore: (rType+placement)"
-                                          + "/2-sourceAssert-targetAssert: "
-                                          + _annotation.getCoveredText() + "(" +
+                                          + "/2-sourceAssert-targetAssert: " +
+                                          _targetAnnotation.getCoveredText() + "(" +
                                           _uriRelationScore + "+" + _distanceScore + ")/2 - "
-                                          + _sourceAssertionPenalty + "-" + _targetAssertionPenalty + " "
-                                          + _sourceHistoryPenalty + "-" + _targetHistoryPenalty + " "
-                                          + _sourceTestPenalty + "-" + _targetTestPenalty +
-                                          + _sourceMassPenalty + "-" + _targetMassPenalty +
-                                          " = " + confidence +
-                                          "\n" );
-         return confidence;
+                                          + _sourcePenalties  + " - " + _targetPenalties
+                                          + " = " + _totalScore + "\n" );
+         return _totalScore;
       }
    }
 
 
-   static private final double MIN_PLACEMENT_SCORE = 3;
+   static private class LocationRelationScore extends RelationScore {
+      private LocationRelationScore( final IdentifiedAnnotation targetAnnotation,
+                             final double uriRelationScore,
+                             final double distanceScore,
+                             final AnnotationPenalties sourcePenalties,
+                             final AnnotationPenalties targetPenalties ) {
+         super( targetAnnotation, uriRelationScore, distanceScore, sourcePenalties, targetPenalties );
+      }
+      protected double getMinimumScore() {
+         return MIN_LOCATION_CONFIDENCE;
+      }
+   }
+
+
+   // TODO - Try 2 then 1
+//   static private final double MIN_PLACEMENT_SCORE = 3;
+   static private final double MIN_PLACEMENT_SCORE = 1;
+
 
    /**
     *
     * @param source -
     * @param target -
-    * @param tokenBeginToTokenNum -
-    * @param tokenEndToTokenNum -
-    * @param paragraphBounds collection of paragraph char index bounds.
+    * @param placementPenalty -
     * @return score between 3 and 100.  Distances and penalties > 155 are 3.
     */
-   static private double getPlacementScore( final IdentifiedAnnotation source,
-                                            final IdentifiedAnnotation target,
-                                            final Map<Integer,Integer> tokenBeginToTokenNum,
-                                            final Map<Integer,Integer> tokenEndToTokenNum,
-                                            final Collection<Pair<Integer>> paragraphBounds,
-                                            final int docLength ) {
-      final double tokenDistance = getTokenDistance( source, target, tokenBeginToTokenNum, tokenEndToTokenNum, docLength );
+   static private double getPlacementScore(  final Pair<Integer> source, final Pair<Integer> target,
+                                            final Pair<Double> placementPenalty) {
+      final double tokenDistance = getDistance( source, target);
       if ( tokenDistance == 0 ) {
-//         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 0 distance!\n" );
+         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100\n" );
          return 100;
       }
-      final Pair<Double> penalty = getSectionPenalty( source, target, paragraphBounds );
-//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
-//                                       + penalty.getValue1() + " + " + penalty.getValue2()
-//                                       + " * " + tokenDistance + ") = "
-//                                       + (100 - (penalty.getValue1() + penalty.getValue2() * tokenDistance)) + "\n" );
-      return Math.max( MIN_PLACEMENT_SCORE, 100 - (penalty.getValue1() + penalty.getValue2() * tokenDistance) );
-   }
-
-   /**
-    *
-    * @param source -
-    * @param target -
-    * @param tokenBeginToTokenNum -
-    * @param tokenEndToTokenNum -
-    * @return whole number (floor) distance >= 0, short distances are below 100, long can quickly reach 1000
-    */
-   static private double getTokenDistance( final IdentifiedAnnotation source,
-                                        final IdentifiedAnnotation target,
-                                        final Map<Integer,Integer> tokenBeginToTokenNum,
-                                        final Map<Integer,Integer> tokenEndToTokenNum,
-                                           final int docLength ) {
-      final int sourceBeginToken = getBeginTokenNum( source.getBegin(), tokenBeginToTokenNum );
-      final int sourceEndToken = getEndTokenNum( source.getEnd(), tokenEndToTokenNum, docLength );
-//      final double sourceCenter = (sourceBeginToken + sourceEndToken)/2d;
-      final int targetBeginToken = getBeginTokenNum( target.getBegin(), tokenBeginToTokenNum );
-      final int targetEndToken = getEndTokenNum( target.getEnd(), tokenEndToTokenNum, docLength );
-//      final double targetCenter = (targetBeginToken + targetEndToken)/2d;
-//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getTokenDistance source, target: "
-//                                       + source.getCoveredText() + "," + target.getCoveredText() + " "
-//                                       + sourceCenter + "," + targetCenter + " Diff = "
-//                                       + Math.abs( sourceCenter - targetCenter ) +"\n" );
-//      return Math.floor( Math.abs( sourceCenter - targetCenter ) );
-      final double distance = getDistance( sourceBeginToken, sourceEndToken, targetBeginToken, targetEndToken );
-//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getTokenDistance source, target: "
-//                                       + source.getCoveredText() + "," + target.getCoveredText() + " "
-//                                       + sourceBeginToken + "," + sourceEndToken + " to "
-//                                       + targetBeginToken + "," + targetEndToken + " Distance = "
-//                                       + distance +"\n" );
-      return distance;
+      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
+                                       + placementPenalty.getValue1() + " + " + placementPenalty.getValue2()
+                                       + " * " + tokenDistance + ") = " + MIN_PLACEMENT_SCORE + " or "
+                                       + (100 - (placementPenalty.getValue1()
+                                                 + placementPenalty.getValue2() * tokenDistance)) + "\n" );
+      return Math.max( MIN_PLACEMENT_SCORE, 100 - (placementPenalty.getValue1() + placementPenalty.getValue2() * tokenDistance) );
    }
 
    static private int getBeginTokenNum( final int annotationBegin, final Map<Integer,Integer> tokenBeginToTokenNum ) {
@@ -436,6 +355,10 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return 0;
    }
 
+   static private int getDistance( final Pair<Integer> source, final Pair<Integer> target ) {
+      return getDistance( source.getValue1(), source.getValue2(), target.getValue1(), target.getValue2() );
+   }
+
 
    static private final double SENTENCE_OFFSET = 0;
    static private final double PARAGRAPH_OFFSET = 5;
@@ -446,9 +369,9 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    static private final double SECTION_MULTIPLIER = 0.3;
    static private final double DOCUMENT_MULTIPLIER = .5;
 
-   static private Pair<Double> getSectionPenalty( final IdentifiedAnnotation source,
-                                                  final IdentifiedAnnotation target,
-                                                  final Collection<Pair<Integer>> paragraphBounds ) {
+   static private Pair<Double> getPlacementPenalty( final IdentifiedAnnotation source,
+                                                    final IdentifiedAnnotation target,
+                                                    final Collection<Pair<Integer>> paragraphBounds ) {
       if ( !source.getSegmentID().equals( target.getSegmentID() ) ) {
          // Not in the same section, which is the largest window of interest.
          return new Pair<>( DOCUMENT_OFFSET, DOCUMENT_MULTIPLIER );
@@ -475,81 +398,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    }
 
 
-//   static private double getDistanceScore( final IdentifiedAnnotation source,
-//                                           final IdentifiedAnnotation target,
-//                                           final Map<Integer,Integer> tokenBeginToTokenNum,
-//                                           final Map<Integer,Integer> tokenEndToTokenNum,
-//                                           final Collection<Pair<Integer>> paragraphBounds ) {
-//      final double offsetScore = getOffsetScore( source, target, tokenBeginToTokenNum, tokenEndToTokenNum );
-//      if ( offsetScore > 99 ) {
-//         return offsetScore;
-//      }
-//      final double windowPenalty = getWindowPenalty( source, target,  paragraphBounds );
-//      return Math.max( 0, offsetScore - windowPenalty );
-//   }
-//
-//   static private double getOffsetScore( final IdentifiedAnnotation source,
-//                                         final IdentifiedAnnotation target,
-//                                         final Map<Integer,Integer> tokenBeginToTokenNum,
-//                                         final Map<Integer,Integer> tokenEndToTokenNum ) {
-//      final int sourceBeginToken = tokenBeginToTokenNum.get( source.getBegin() );
-//      final int targetBeginToken = tokenBeginToTokenNum.get( target.getBegin() );
-//      if ( sourceBeginToken == targetBeginToken ) {
-//         // Overlap.
-//         return 100;
-//      }
-//      final int sourceEndToken = tokenEndToTokenNum.get( source.getEnd() );
-//      if ( sourceBeginToken < targetBeginToken ) {
-//         // source begin is before the target in the text.
-//         if ( sourceEndToken >= targetBeginToken ) {
-//            // Overlap.
-//            return 100;
-//         }
-//         return Math.max( 1, 100 - (targetBeginToken - sourceEndToken) );
-//      }
-//      // target begin is before the source in the text.
-//      final int targetEndToken = tokenEndToTokenNum.get( target.getEnd() );
-//      if ( targetEndToken >= sourceBeginToken ) {
-//         // Overlap.
-//         return 100;
-//      }
-//      return Math.max( 1, 100 - (sourceBeginToken - targetEndToken) );
-//   }
-
-
-//   static private final double SENTENCE_PENALTY = 0;
-//   static private final double PARAGRAPH_PENALTY = 10;
-//   static private final double SECTION_PENALTY = 20;
-//   static private final double DOC_PENALTY = 30;
-//
-//   static private double getWindowPenalty( final IdentifiedAnnotation source,
-//                                         final IdentifiedAnnotation target,
-//                                         final Collection<Pair<Integer>> paragraphBounds ) {
-//      if ( !source.getSegmentID().equals( target.getSegmentID() ) ) {
-//         // Not in the same section, which is the largest window of interest.
-//         return DOC_PENALTY;
-//      }
-//      if ( source.getSentenceID().equals( target.getSentenceID() ) ) {
-//         // In the same sentence, no penalty.
-//         return SENTENCE_PENALTY;
-//      }
-//      for ( Pair<Integer> paragraph : paragraphBounds ) {
-//         final boolean foundSource = paragraph.getValue1() <= source.getBegin()
-//              && paragraph.getValue2() <= source.getEnd();
-//         final boolean foundTarget = paragraph.getValue1() <= target.getBegin()
-//                                     && paragraph.getValue2() <= target.getEnd();
-//         if ( foundSource != foundTarget ) {
-//            // Not in the same Paragraph, but in the same Section.
-//            return SECTION_PENALTY;
-//         } else if ( foundSource ) {
-//            // In the same paragraph.
-//            return PARAGRAPH_PENALTY;
-//         }
-//      }
-//      // In the same Section.
-//      return SECTION_PENALTY;
-//   }
-
    static private final double NEGATED_PENALTY = 30;
    static private final double UNCERTAIN_PENALTY = 5;
 
@@ -564,39 +412,54 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return penalty;
    }
 
-   static private final double FAMILY_HISTORY_PENALTY = 30;
+   static private final double FAMILY_HISTORY_PENALTY = 50;
    static private final double PERSONAL_HISTORY_PENALTY = 5;
 
-   static private double getHistoryPenalty( final String docText, final IdentifiedAnnotation target ) {
-      if ( isFamilyHistory( docText, target ) ) {
+   static private double getHistoryPenalty( final String precedingText, final IdentifiedAnnotation target ) {
+      if ( isFamilyHistory( precedingText, target ) ) {
          return FAMILY_HISTORY_PENALTY;
-      } else if ( isPersonalHistory( docText, target ) ) {
+      } else if ( isPersonalHistory( precedingText ) ) {
          return PERSONAL_HISTORY_PENALTY;
       }
       return 0;
    }
 
-   static private final double TEST_PENALTY = 10;
+   static private final double TEST_PENALTY = 40;
 
-   static private double getTestPenalty( final Map<String,String> sentenceTexts,
-                                         final IdentifiedAnnotation annotation ) {
-      if ( isTestSentence( sentenceTexts, annotation ) ) {
+   static private double getTestPenalty( final String precedingText, final String sentenceText  ) {
+//      if ( isTestSentence( precedingText ) ) {
+      if ( isTestSentence( sentenceText ) ) {
          return TEST_PENALTY;
       }
       return 0;
    }
 
-   static private final double MASS_PENALTY = 5;
+   static private final double MASS_PENALTY = 40;
+   static private final double NODE_PENALTY = 50;
 
-   static private double getMassPenalty( final Map<String,String> sentenceTexts,
-                                         final IdentifiedAnnotation annotation ) {
-      if ( isMassSentence( sentenceTexts, annotation ) ) {
+
+   static private double getMassPenalty( final String precedingText, final String sentenceText ) {
+      if ( precedingText.contains( "tumor site" ) || precedingText.contains( "primary tumor" )) {
+         // boost
+         return -40;
+      }
+      if ( sentenceText.contains( "node" ) ) {
+         return NODE_PENALTY;
+      }
+      if ( isMassSentence( precedingText, sentenceText ) ) {
          return MASS_PENALTY;
       }
       return 0;
    }
 
+   static private final double NEARBY_PENALTY = 10;
 
+   static private double getNearbyPenalty( final String precedingText ) {
+      if ( isIndirectSite( precedingText ) ) {
+         return NEARBY_PENALTY;
+      }
+      return 0;
+   }
 
    static private final Collection<String> UNWANTED_SITE_PRECEDENTS = new HashSet<>( Arrays.asList(
          "near ",
@@ -614,10 +477,8 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          "superior to "
                                                                                                   ) );
 
-   static private boolean isDirectSite( final String docText, final IdentifiedAnnotation site ) {
-      final int begin = Math.max( 0, site.getBegin() - 40 );
-      final String preceding = docText.substring( begin, site.getBegin() ).toLowerCase();
-      return UNWANTED_SITE_PRECEDENTS.stream().noneMatch( preceding::contains );
+   static private boolean isIndirectSite( final String precedingText ) {
+      return UNWANTED_SITE_PRECEDENTS.stream().anyMatch( precedingText::contains );
    }
 
    static private final Collection<String> FAMILY_HISTORY_PRECEDENTS = new HashSet<>( Arrays.asList(
@@ -626,73 +487,103 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          "family hx",
          "fam hx",
          "famhx",
-         "fmhx"
+         "fmhx",
+         "fmh",
+         "fh"
                                                                                                    ) );
 
    static private final Collection<String> PERSONAL_HISTORY_PRECEDENTS = new HashSet<>( Arrays.asList(
          "history of",
          "hist of",
-         "hx of"
+         "hx"
                                                                                                    ) );
 
-   static private boolean isFamilyHistory( final String docText, final IdentifiedAnnotation annotation ) {
-      final int begin = Math.max( 0, annotation.getBegin() - 40 );
-      final String preceding = docText.substring( begin, annotation.getBegin() ).toLowerCase();
-      return FAMILY_HISTORY_PRECEDENTS.stream().anyMatch( preceding::contains );
+   static private boolean isFamilyHistory( final String precedingText, final IdentifiedAnnotation annotation ) {
+      if ( !annotation.getSubject().equals( CONST.ATTR_SUBJECT_PATIENT ) ) {
+         return true;
+      }
+      return FAMILY_HISTORY_PRECEDENTS.stream().anyMatch( precedingText::contains );
    }
 
-   static private boolean isPersonalHistory( final String docText, final IdentifiedAnnotation annotation ) {
-      final int begin = Math.max( 0, annotation.getBegin() - 40 );
-      final String preceding = docText.substring( begin, annotation.getBegin() ).toLowerCase();
-      return PERSONAL_HISTORY_PRECEDENTS.stream().anyMatch( preceding::contains );
+   static private boolean isPersonalHistory( final String precedingText ) {
+      return PERSONAL_HISTORY_PRECEDENTS.stream().anyMatch( precedingText::contains );
    }
 
    static private final Collection<String> TEST_PRECEDENTS = new HashSet<>( Arrays.asList(
          "specimen",
          "part #",
          "biopsy",
+         "biopsies",
          "bx",
-         " ct ",
-         " mri ",
+         "fna",
+         " ct",
+         " cxr",
+         "ray",
+         " mri",
+         " pet ",
+         " pet:",
+         "scan",
+         " pe ",
+         " pe:",
+         "radiation",
+         "view",
          "procedure",
          "frozen",
-         "cell block",
+         "slide",
+         "block",
+         "cytology",
+         "stain",
+         "wash",
+         "fluid",
          "exam",
+         "screen",
+         "mast",
+         "ectomy",
          "pe:",
          "resect",
          "complaint",
          "excis",
-         "submit"
+         "incis",
+         "source",
+         "submit",
+         "reveal",
+         "seen",
+         "presents",
+         "evaluat",
+         "perform",
+         "thin"
                                                                                          ));
 
    // TODO When tests/procedures are added to the ontology use them here.
-   static private boolean isTestSentence( final Map<String,String> sentenceTexts,
-                                          final IdentifiedAnnotation annotation ) {
-      final String sentenceId = annotation.getSentenceID();
-      final String text = sentenceTexts.getOrDefault( sentenceId, "" );
-//      final int end = Math.min( text.length(), 40 );
-//      final String intro = text.substring( 0, end ).toLowerCase();
-//      return TEST_PRECEDENTS.stream().anyMatch( intro::contains );
-      return TEST_PRECEDENTS.stream().anyMatch( text::contains );
+   static private boolean isTestSentence( final String precedingText ) {
+      return TEST_PRECEDENTS.stream().anyMatch( precedingText::contains );
    }
 
+   // This is probably important for location and laterality confidence.
+   // TODO - Don't change confidence for source cancer ?
    static private final Collection<String> MASS_WORDS = new HashSet<>( Arrays.asList(
          " mass ",
          " mass.",
          " mass,",
          "masses",
-         "tumor",
+         "metastas",
+         "mets",
+         "infiltrate",
+         "implant",
          "cyst ",
+         "polyp",
          "adnexal",
          "nodule",
          "node",
          "nodal",
          " ln",
+         "sln",
          "lesion",
          "ascites",
+         "density",
          "body",
          "bodies",
-         "tissue",
+         "tiss",
          "cm ",
          "cm,",
          "cm.",
@@ -702,20 +593,117 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          "largest",
          "not involved",
          "benign",
-         "unremarkable"
-
+         "unremarkable",
+         "margin"
                                                                                            ));
 
-   static private boolean isMassSentence( final Map<String,String> sentenceTexts,
-                                            final IdentifiedAnnotation annotation ) {
+   static private boolean isMassSentence( final String precedingText, final String sentenceText ) {
+      return MASS_WORDS.stream().anyMatch( sentenceText::contains );
+   }
+
+   static private Pair<String> getSentenceText( final IdentifiedAnnotation annotation,
+                                           final Map<String,Sentence> sentences ) {
       final String sentenceId = annotation.getSentenceID();
-      final String text = sentenceTexts.getOrDefault( sentenceId, "" );
-      return MASS_WORDS.stream().anyMatch( text::contains );
+      final Sentence sentence = sentences.getOrDefault( sentenceId, null );
+      if ( sentence == null ) {
+//            LOGGER.warn( "No Sentence for Annotation " + annotation.getCoveredText() );
+         return new Pair<>( "", "" );
+      }
+      final String sentenceText = sentence.getCoveredText()
+                                          .toLowerCase();
+      final int begin = annotation.getBegin() - sentence.getBegin();
+      final String precedingText = begin <= 0 ? "" : sentenceText.substring( 0, begin );
+      return new Pair( precedingText, sentenceText );
+   }
+
+   static private class AnnotationPenalties {
+      private final Pair<Integer> _beginEndTokens;
+      private final double _assertionPenalty;
+      private final double _historyPenalty;
+      private AnnotationPenalties( final IdentifiedAnnotation annotation,
+                                   final Map<String,Sentence> sentences,
+                                   final Map<Integer,Integer> tokenBeginToTokenNums,
+                                   final Map<Integer,Integer> tokenEndToTokenNums,
+                                   final int docLength ) {
+         final int beginToken = getBeginTokenNum( annotation.getBegin(),
+                                                  tokenBeginToTokenNums );
+         final int endToken = getEndTokenNum( annotation.getEnd(), tokenEndToTokenNums,
+                                              docLength );
+         _beginEndTokens = new Pair<>( beginToken, endToken );
+         _assertionPenalty = getAssertionPenalty( annotation );
+         _historyPenalty = getHistoryPenalty( getSentenceText(  annotation, sentences ).getValue1(), annotation );
+      }
+      private Pair<Integer> getBeginEndTokens() {
+         return _beginEndTokens;
+      }
+      protected double getTotalPenalty() {
+         return _assertionPenalty + _historyPenalty;
+      }
+      public String toString() {
+         return _assertionPenalty + " " + _historyPenalty;
+      }
    }
 
 
+   static private class LocationAnnotationPenalties extends AnnotationPenalties {
+      private final double _procedurePenalty;
+      private final double _massPenalty;
+      private final double _nearbyPenalty;
+      private LocationAnnotationPenalties( final IdentifiedAnnotation annotation,
+                                   final Map<String,Sentence> sentences,
+                                   final Map<Integer,Integer> tokenBeginToTokenNums,
+                                   final Map<Integer,Integer> tokenEndToTokenNums,
+                                   final int docLength ) {
+         super( annotation, sentences, tokenBeginToTokenNums, tokenEndToTokenNums, docLength );
+         final Pair<String> sentenceText = getSentenceText( annotation, sentences );
+         _procedurePenalty = getTestPenalty( sentenceText.getValue1(), sentenceText.getValue2() );
+         _massPenalty = getMassPenalty( sentenceText.getValue1(), sentenceText.getValue2() );
+         _nearbyPenalty = getNearbyPenalty( sentenceText.getValue1() );
+      }
+      protected double getTotalPenalty() {
+         return super.getTotalPenalty() + _procedurePenalty + _massPenalty + _nearbyPenalty;
+      }
+      public String toString() {
+         return super.toString() + " " + _procedurePenalty + " " + _massPenalty + " " + _nearbyPenalty;
+      }
+   }
 
 
+   static private AnnotationPenalties createAnnotationPenalties( final boolean isLocation,
+                                                                 final IdentifiedAnnotation annotation,
+                                                                 final Map<String,Sentence> sentences,
+                                                                 final Map<Integer,Integer> tokenBeginToTokenNums,
+                                                                 final Map<Integer,Integer> tokenEndToTokenNums,
+                                                                 final int docLength) {
+      return isLocation ? new LocationAnnotationPenalties( annotation,
+                                                          sentences,
+                                                          tokenBeginToTokenNums,
+                                                          tokenEndToTokenNums,
+                                                          docLength )
+                       : new AnnotationPenalties( annotation,
+                                                  sentences,
+                                                  tokenBeginToTokenNums,
+                                                  tokenEndToTokenNums,
+                                                  docLength );
+   }
 
+
+   static private RelationScore createRelationScore( final boolean isLocation,
+                                                     final IdentifiedAnnotation targetAnnotation,
+                                                     final double uriRelationScore,
+                                                     final double placementScore,
+                                                     final AnnotationPenalties sourcePenalties,
+                                                     final AnnotationPenalties targetPenalties ) {
+      return isLocation ? new LocationRelationScore( targetAnnotation,
+                                             uriRelationScore,
+                                             placementScore,
+                                             sourcePenalties,
+                                             targetPenalties )
+                        : new RelationScore( targetAnnotation,
+                                               uriRelationScore,
+                                               placementScore,
+                                               sourcePenalties,
+                                               targetPenalties );
+   }
 
 }

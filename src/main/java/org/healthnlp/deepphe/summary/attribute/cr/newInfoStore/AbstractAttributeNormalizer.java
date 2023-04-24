@@ -1,6 +1,7 @@
 package org.healthnlp.deepphe.summary.attribute.cr.newInfoStore;
 
 import org.healthnlp.deepphe.neo4j.node.Mention;
+import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
 import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 
@@ -67,6 +68,17 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
 
    public double getConfidenceMultiplier() {
       return (double)getBestCodesCount() / getAllCodesCount();
+   }
+
+   protected Map<Integer,Double> createIntCodeConfidenceMap( final Collection<ConceptAggregateRelation> relations ) {
+      return relations.stream()
+                       .collect( Collectors.toMap( this::getIntCode,
+                                                   ConceptAggregateRelation::getConfidence ) );
+
+   }
+
+   protected int getIntCode( final ConceptAggregateRelation relation ) {
+      return getIntCode( relation.getTarget() );
    }
 
    protected int getIntCode( final CrConceptAggregate aggregate ) {

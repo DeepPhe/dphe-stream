@@ -106,7 +106,9 @@ final public class GleasonFinder extends JCasAnnotator_ImplBase {
          annotations.addAll(
                UriAnnotationFactory.createIdentifiedAnnotations( jcas,
                      windowStartOffset + grade._begin,
-                     windowStartOffset + grade._end, grade._uri, SemanticGroup.FINDING, "T184" ) );
+//                     windowStartOffset + grade._end, grade._uri, SemanticGroup.FINDING, "T184" ) );
+                     windowStartOffset + grade._end, grade._uri, SemanticGroup.FINDING, "T201" ) );
+
          plainGrades.stream()
                      .filter( a -> a.getBegin() >= windowStartOffset + grade._matchBegin )
                      .filter( a -> a.getEnd() <= windowStartOffset + grade._end )

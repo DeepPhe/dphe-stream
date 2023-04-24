@@ -28,7 +28,10 @@ public class GradeInfoCollector extends AbstractAttributeInfoCollector {
    // Is this necessary?
    public Collection<CrConceptAggregate> getBestAggregates() {
       final Collection<CrConceptAggregate> statedGrades = new HashSet<>();
-      for ( CrConceptAggregate aggregate : super.getBestAggregates() ) {
+      final Collection<CrConceptAggregate> nuclearGrades = new HashSet<>();
+      final Collection<CrConceptAggregate> aggregates = new HashSet<>( super.getBestAggregates() );
+      for ( CrConceptAggregate aggregate : aggregates ) {
+         int nuclearCount = 0;
          for ( Mention mention : aggregate.getMentions() ) {
             final int mentionBegin = mention.getBegin();
             if ( mentionBegin <= GRADE_WINDOW ) {
@@ -43,6 +46,9 @@ public class GradeInfoCollector extends AbstractAttributeInfoCollector {
             final String preText = note.getText()
                                        .substring( mentionBegin - GRADE_WINDOW, mentionBegin )
                                        .toLowerCase();
+            if ( preText.contains( "nuclear" ) ) {
+               nuclearCount++;
+            }
             if ( preText.contains( "histologic grade:" ) ) {
                NeoplasmSummaryCreator.addDebug( "Trimming to grade candidate "
                                                 + aggregate.getCoveredText() + "\n" );
@@ -50,11 +56,15 @@ public class GradeInfoCollector extends AbstractAttributeInfoCollector {
                break;
             }
          }
+         if ( nuclearCount == aggregate.getMentions().size() ) {
+            nuclearGrades.add( aggregate );
+         }
       }
       if ( !statedGrades.isEmpty() ) {
          return statedGrades;
       }
-      return super.getBestAggregates();
+      aggregates.removeAll( nuclearGrades );
+      return aggregates;
    }
 
 

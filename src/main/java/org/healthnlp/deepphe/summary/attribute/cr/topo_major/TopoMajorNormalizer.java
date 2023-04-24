@@ -92,7 +92,7 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
       NeoplasmSummaryCreator.addDebug( "No codes for " + confidenceGroup.getTopmost()
                                                                         .stream()
                                                                         .map( CrConceptAggregate::getUri )
-                                                                        .collect( Collectors.joining(",") ) );
+                                                                        .collect( Collectors.joining(",") ) + "\n" );
       return UNDETERMINED;
    }
 

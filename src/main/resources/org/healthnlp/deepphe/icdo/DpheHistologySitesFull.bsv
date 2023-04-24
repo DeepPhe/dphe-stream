@@ -8204,7 +8204,7 @@ C569|Ovary|803|Sarcomatoid_Carcinoma|8032/3|Sarcomatoid_Carcinoma
 C569|Ovary|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C569|Ovary|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C569|Ovary|803|Sarcomatoid_Carcinoma|8035/3|Carcinoma
-C569|Ovary|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
+C569|Ovary|804|Small_Cell_Carcinoma|8041/3|Ovarian_Small_Cell_Carcinoma
 C569|Ovary|805|Papillary_Carcinoma|8050/2|Papillary_Carcinoma_In_Situ
 C569|Ovary|805|Papillary_Carcinoma|8050/3|Papillary_Carcinoma
 C569|Ovary|805|Papillary_Carcinoma|8051/3|Verrucous_Carcinoma

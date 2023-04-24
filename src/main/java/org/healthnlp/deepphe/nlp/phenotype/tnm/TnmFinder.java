@@ -234,6 +234,9 @@ public enum TnmFinder {
          if ( isParenthetic( docText, tnm ) ) {
             continue;
          }
+         if ( isLviPni( docText, tnm ) ) {
+            continue;
+         }
 //         NeoplasmSummaryCreator.addDebug( "TnmFinder.addTnms " + tnm.getUri()
 //                                          + " " + docText.substring( tnm._begin, tnm._end ) + " " + tnm._begin + "\n" );
          // Clinical Attribute
@@ -258,6 +261,13 @@ public enum TnmFinder {
       return subText.startsWith( "n" ) || subText.startsWith( "p" );
    }
 
+   static private boolean isLviPni( final String docText, SimpleTnm tnm ) {
+      if ( tnm._begin < 10 ) {
+         return false;
+      }
+      return docText.substring( tnm._begin, tnm._end ).equalsIgnoreCase( "pni" )
+           && docText.substring( tnm._begin-10, tnm._begin ).toLowerCase().contains( "lvi" );
+   }
 
    static public List<IdentifiedAnnotation> addTnms( final JCas jcas, final AnnotationFS lookupWindow ) {
       final String windowText = lookupWindow.getCoveredText();

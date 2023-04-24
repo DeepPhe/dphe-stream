@@ -4,7 +4,6 @@ import org.apache.ctakes.core.util.annotation.SemanticTui;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,10 +19,9 @@ public enum CustomUriRelations {
    }
 
    private final Map<String, Collection<String>> CANCER_RELATIONS = new HashMap<>();
-   public Map<String,Collection<String>> getCancerRelations( final String uri,
-                                                             final GraphDatabaseService graphDb ) {
-//      if ( !UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
-      if ( UriInfoCache.getInstance().getSemanticTui( uri ) != SemanticTui.T191 ) {
+   public Map<String,Collection<String>> getCancerRelations( final String uri ) {
+      final SemanticTui tui = UriInfoCache.getInstance().getSemanticTui( uri );
+      if ( tui != UriInfoCache.CANCER && tui != UriInfoCache.TUMOR ) {
          return Collections.emptyMap();
       }
       if ( !CANCER_RELATIONS.isEmpty() ) {
@@ -117,8 +115,10 @@ public enum CustomUriRelations {
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Poorly_Differentiated" ) );
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "High_Grade" ) );
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Grade_4" ) );
+      GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Gleason_Grade" ) );
+      GRADE_URIS.remove( "Gleason_Grade" );
       // Anaplastic is Undifferentiated
-      GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Anaplastic" ) );
+//      GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Anaplastic" ) );
       // 5 is on a different grade scale
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Grade_5" ) );
       return GRADE_URIS;

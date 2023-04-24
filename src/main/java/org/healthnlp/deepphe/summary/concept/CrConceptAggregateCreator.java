@@ -48,6 +48,7 @@ public class CrConceptAggregateCreator {
             }
          }
       }
+
 //      final Map<String,Collection<String>> uriUrisMap = UriUtil.getAssociatedUriMap( applicableUris );
 //      final Collection<String> neoplasmUris
 //            = uriUrisMap.keySet()
@@ -81,7 +82,40 @@ public class CrConceptAggregateCreator {
    }
 
 
-   static private CrConceptAggregate createNeoplasmAggregate( final String patientId,
+
+   static private Collection<CrConceptAggregate> createAggregates( final String patientId,
+                                      final Map<Mention, String> patientMentionNoteIds,
+                                      final Map<String, List<Mention>> uriMentionsMap ) {
+      final Collection<CrConceptAggregate> aggregates = new HashSet<>();
+      final Map<SemanticTui, List<String>> semanticUrisMap
+            = uriMentionsMap.keySet().stream()
+                            .collect( Collectors.groupingBy( u -> UriInfoCache.getInstance()
+                                                                              .getSemanticTui( u ) ) );
+      for ( Map.Entry<SemanticTui, List<String>> semanticUris : semanticUrisMap.entrySet() ) {
+         final Collection<String> uris = semanticUris.getValue();
+         if ( semanticUris.getKey()
+                          .equals( SemanticTui.T191 ) ) {
+            final CrConceptAggregate neoplasmAggregate = createAggregate( patientId, patientMentionNoteIds,
+                                                                          uris, uriMentionsMap );
+            aggregates.add( neoplasmAggregate );
+         } else {
+            final Map<String, Collection<String>> uriUrisMap = UriUtil.getAssociatedUriMap( uris );
+            for ( Map.Entry<String, Collection<String>> uriUris : uriUrisMap.entrySet() ) {
+               final CrConceptAggregate otherAggregate = createOtherAggregate( patientId,
+                                                                               patientMentionNoteIds,
+                                                                               uriUris.getKey(),
+                                                                               uriUris.getValue(),
+                                                                               uriMentionsMap );
+               aggregates.add( otherAggregate );
+            }
+         }
+      }
+      return aggregates;
+   }
+
+
+
+      static private CrConceptAggregate createNeoplasmAggregate( final String patientId,
                                                             final Map<Mention, String> patientMentionNoteIds,
                                                             final Collection<String> neoplasmUris,
                                                             final Map<String,Collection<String>> uriUrisMap,
@@ -123,35 +157,65 @@ public class CrConceptAggregateCreator {
       return new CrConceptAggregate( patientId, uriRoots, noteIdMentionsMap );
    }
 
+//   /**
+//    * @param patientId      -
+//    * @param patientMentionNoteIds -
+//    * @param patientRelations   -
+//    * @return map of best uri to its concept instances
+//    */
+//   static public Map<String, Collection<CrConceptAggregate>> createUriConceptAggregateMapOld(
+//         final String patientId,
+//         final Map<Mention, String> patientMentionNoteIds,
+//         final Collection<MentionRelation> patientRelations ) {
+//      // Map of unique URIs to all Mentions with that URI.
+//      final Map<String, List<Mention>> uriMentionsMap = mapUriMentions( patientMentionNoteIds.keySet() );
+//      final Collection<String> negatedUris = getNegatedUris( uriMentionsMap );
+//      final Collection<String> affirmedUris = new HashSet<>( uriMentionsMap.keySet() );
+//      affirmedUris.removeAll( negatedUris );
+//      // Map of unique xDoc URIs to URIs that are associated (e.g. same branch).
+//      // Has nothing to do with previously determined in-doc coreference chains.
+//      final Map<String, Collection<CrConceptAggregate>> aggregates = new HashMap<>();
+//      if ( !affirmedUris.isEmpty() ) {
+//         addAggregates( patientId, patientMentionNoteIds, affirmedUris, uriMentionsMap, aggregates );
+//      }
+//      if ( !negatedUris.isEmpty() ) {
+//         addAggregates( patientId, patientMentionNoteIds, negatedUris, uriMentionsMap, aggregates );
+//      }
+//      addRelations( aggregates.values(), patientRelations );
+//      return aggregates;
+//   }
+
    /**
     * @param patientId      -
     * @param patientMentionNoteIds -
     * @param patientRelations   -
     * @return map of best uri to its concept instances
     */
-   static public Map<String, Collection<CrConceptAggregate>> createUriConceptAggregateMap(
+   static public Collection<CrConceptAggregate> createCrConceptAggregates(
          final String patientId,
          final Map<Mention, String> patientMentionNoteIds,
          final Collection<MentionRelation> patientRelations ) {
+      final Map<Boolean,Collection<Mention>> assertedMentions
+            = sortAssertedMentions( patientMentionNoteIds.keySet() );
       // Map of unique URIs to all Mentions with that URI.
-      final Map<String, List<Mention>> uriMentionsMap = mapUriMentions( patientMentionNoteIds.keySet() );
-      final Collection<String> negatedUris = getNegatedUris( uriMentionsMap );
-      final Collection<String> affirmedUris = new HashSet<>( uriMentionsMap.keySet() );
-      affirmedUris.removeAll( negatedUris );
+      final Map<String, List<Mention>> uriAssertedMentionsMap
+            = mapUriMentions( assertedMentions.getOrDefault( Boolean.TRUE, Collections.emptyList() ) );
       // Map of unique xDoc URIs to URIs that are associated (e.g. same branch).
       // Has nothing to do with previously determined in-doc coreference chains.
-      final Map<String, Collection<CrConceptAggregate>> aggregates = new HashMap<>();
-      if ( !affirmedUris.isEmpty() ) {
-         addAggregates( patientId, patientMentionNoteIds, affirmedUris, uriMentionsMap, aggregates );
+      final Collection<CrConceptAggregate> aggregates = new HashSet<>();
+      if ( !uriAssertedMentionsMap.isEmpty() ) {
+         aggregates.addAll( createAggregates( patientId, patientMentionNoteIds, uriAssertedMentionsMap ) );
       }
-      if ( !negatedUris.isEmpty() ) {
-         addAggregates( patientId, patientMentionNoteIds, negatedUris, uriMentionsMap, aggregates );
+      final Map<String, List<Mention>> uriNegatedMentionsMap
+            = mapUriMentions( assertedMentions.getOrDefault( Boolean.FALSE, Collections.emptyList() ) );
+      if ( !uriNegatedMentionsMap.isEmpty() ) {
+         aggregates.addAll( createAggregates( patientId, patientMentionNoteIds, uriNegatedMentionsMap ) );
       }
-      addRelations( aggregates.values(), patientRelations );
+      addRelations( aggregates, patientRelations );
       return aggregates;
    }
 
-   static private void addRelations( final Collection<Collection<CrConceptAggregate>> aggregates,
+   static private void addRelationsOld( final Collection<Collection<CrConceptAggregate>> aggregates,
                                      final Collection<MentionRelation> mentionRelations ) {
       final Map<String,CrConceptAggregate> mentionIdAggregateMap = new HashMap<>();
       for ( Collection<CrConceptAggregate> aggregateSet : aggregates ) {
@@ -171,7 +235,34 @@ public class CrConceptAggregateCreator {
          addRelations( sourceMentionRelations.getKey(), mentionIdAggregateMap, sourceMentionRelations.getValue() );
       }
 
-      addAsTargetConfidence( mentionRelations, mentionIdAggregateMap );
+//      addAsTargetConfidence( mentionRelations, mentionIdAggregateMap );
+   }
+
+
+   static private void addRelations( final Collection<CrConceptAggregate> aggregates,
+                                     final Collection<MentionRelation> mentionRelations ) {
+      final Map<String,CrConceptAggregate> mentionIdAggregateMap = new HashMap<>();
+      for ( CrConceptAggregate aggregate : aggregates ) {
+         if ( aggregate.isNegated() ) {
+            continue;
+         }
+         aggregate.getMentions().forEach( m -> mentionIdAggregateMap.put( m.getId(), aggregate ) );
+      }
+      final Map<CrConceptAggregate,Collection<MentionRelation>> sourceMentionRelationsMap = new HashMap<>();
+      for ( MentionRelation mentionRelation : mentionRelations ) {
+         final String sourceId = mentionRelation.getSourceId();
+         final CrConceptAggregate sourceAggregate = mentionIdAggregateMap.get( sourceId );
+         if ( sourceAggregate == null ) {
+            continue;
+         }
+         sourceMentionRelationsMap.computeIfAbsent( sourceAggregate, a -> new HashSet<>() )
+                                  .add( mentionRelation );
+      }
+      for ( Map.Entry<CrConceptAggregate,Collection<MentionRelation>> sourceMentionRelations :
+            sourceMentionRelationsMap.entrySet() ) {
+         addRelations( sourceMentionRelations.getKey(), mentionIdAggregateMap, sourceMentionRelations.getValue() );
+      }
+//      addAsTargetConfidence( mentionRelations, mentionIdAggregateMap );
    }
 
    static private void addRelations( final CrConceptAggregate sourceAggregate,
@@ -193,6 +284,7 @@ public class CrConceptAggregateCreator {
          = mentionRelation -> mentionRelation.getType().equals( UriInfoCache.PRIMARY_SITE )
                               ? UriInfoCache.ASSOCIATED_SITE : mentionRelation.getType();
 
+
    static private void addRelations( final String type,
                                      final CrConceptAggregate sourceAggregate,
                                      final Map<String,CrConceptAggregate> mentionIdAggregateMap,
@@ -200,9 +292,11 @@ public class CrConceptAggregateCreator {
       final Map<CrConceptAggregate,Collection<MentionRelation>> targetMentionRelationsMap = new HashMap<>();
       for ( MentionRelation mentionRelation : mentionRelations ) {
          final CrConceptAggregate targetAggregate = mentionIdAggregateMap.get( mentionRelation.getTargetId() );
+         if ( targetAggregate == null ) {
+            continue;
+         }
          targetMentionRelationsMap.computeIfAbsent( targetAggregate, a -> new HashSet<>() ).add( mentionRelation );
       }
-
       for ( Map.Entry<CrConceptAggregate,Collection<MentionRelation>> targetMentionRelations :
             targetMentionRelationsMap.entrySet() ) {
          final ConceptAggregateRelation relation = new ConceptAggregateRelation( type,
@@ -212,21 +306,24 @@ public class CrConceptAggregateCreator {
       }
    }
 
-   static private void addAsTargetConfidence( final Collection<MentionRelation> mentionRelations,
-                                              final Map<String,CrConceptAggregate> mentionIdAggregateMap ) {
-      final Map<CrConceptAggregate,List<Double>> targetRelationConfidencesMap = new HashMap<>();
-      for ( MentionRelation mentionRelation : mentionRelations ) {
-         final CrConceptAggregate aggregate = mentionIdAggregateMap.get( mentionRelation.getTargetId() );
-         targetRelationConfidencesMap.computeIfAbsent( aggregate, a -> new ArrayList<>() )
-                                     .add( mentionRelation.getConfidence() );
-      }
-      for ( Map.Entry<CrConceptAggregate, List<Double>> targetRelationConfidences :
-            targetRelationConfidencesMap.entrySet() ) {
-         final double confidence =
-               ConfidenceCalculator.calculateAsRelationTarget( targetRelationConfidences.getValue() );
-         targetRelationConfidences.getKey().setAsTargetConfidence( confidence );
-      }
-   }
+//   static private void addAsTargetConfidence( final Collection<MentionRelation> mentionRelations,
+//                                              final Map<String,CrConceptAggregate> mentionIdAggregateMap ) {
+//      final Map<CrConceptAggregate,List<Double>> targetRelationConfidencesMap = new HashMap<>();
+//      for ( MentionRelation mentionRelation : mentionRelations ) {
+//         final CrConceptAggregate aggregate = mentionIdAggregateMap.get( mentionRelation.getTargetId() );
+//         if ( aggregate == null || aggregate.isNegated() ) {
+//            continue;
+//         }
+//         targetRelationConfidencesMap.computeIfAbsent( aggregate, a -> new ArrayList<>() )
+//                                     .add( mentionRelation.getConfidence() );
+//      }
+//      for ( Map.Entry<CrConceptAggregate, List<Double>> targetRelationConfidences :
+//            targetRelationConfidencesMap.entrySet() ) {
+//         final double confidence =
+//               ConfidenceCalculator.calculateAsRelationTarget( targetRelationConfidences.getValue() );
+//         targetRelationConfidences.getKey().setAsTargetConfidence( confidence );
+//      }
+//   }
 
 
    /**
@@ -238,6 +335,17 @@ public class CrConceptAggregateCreator {
       return mentions.stream().collect( Collectors.groupingBy( Mention::getClassUri ) );
    }
 
+   static private Map<Boolean,Collection<Mention>> sortAssertedMentions( final Collection<Mention> mentions ) {
+      final Map<Boolean,Collection<Mention>> sortedMentions = new HashMap<>( 2 );
+      for ( Mention mention : mentions ) {
+         if ( mention.isNegated() ) {
+            sortedMentions.computeIfAbsent( Boolean.FALSE, m -> new HashSet<>() ).add( mention );
+         } else {
+            sortedMentions.computeIfAbsent( Boolean.TRUE, m -> new HashSet<>() ).add( mention );
+         }
+      }
+      return sortedMentions;
+   }
 
 
    static private Collection<String> getNegatedUris(
