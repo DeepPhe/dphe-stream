@@ -33,13 +33,14 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
       NeoplasmSummaryCreator.addDebug( "Histology best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
    }
 
-   protected Map<String,Long> createAllCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      return aggregates.stream()
-                        .map( CrConceptAggregate::getAllUris )
-                       .flatMap( Collection::stream )
-                       .map( this::getCode )
-                       .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-   }
+   // Works ok for lung, but nobody else
+//   protected Map<String,Long> createAllCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+//      return aggregates.stream()
+//                        .map( CrConceptAggregate::getAllUris )
+//                       .flatMap( Collection::stream )
+//                       .map( this::getCode )
+//                       .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//   }
 
    public String getCode( final String uri ) {
       return getHistologyCode( uri, _uriStrengths );
