@@ -5,10 +5,7 @@ import org.apache.ctakes.core.resource.FileLocator;
 import org.apache.ctakes.core.util.Pair;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +34,10 @@ public class IcdoEvaluator {
       }
       try {
          final File goldFile = FileLocator.getFile( args[ 0 ] );
+         if ( goldFile.isDirectory() ) {
+            handleGoldDir( args );
+            System.exit( 0 );
+         }
          final File systemFile = FileLocator.getFile( args[ 1 ] );
          String outFileName = goldFile.getName();
          int dotIndex = outFileName.lastIndexOf( '.' );
@@ -55,6 +56,27 @@ public class IcdoEvaluator {
       } catch ( IOException ioE ) {
          LOGGER.error( ioE.getMessage() );
          System.exit( -1 );
+      }
+   }
+
+   static private void handleGoldDir( final String... args ) throws FileNotFoundException {
+      final File goldDir = FileLocator.getFile( args[ 0 ] );
+      final File systemFile = FileLocator.getFile( args[ 1 ] );
+      final File[] goldFiles = goldDir.listFiles();
+      assert goldFiles != null;
+      for ( File goldFile : goldFiles ) {
+         String outFileName = goldFile.getName();
+         int dotIndex = outFileName.lastIndexOf( '.' );
+         if ( dotIndex > 0 ) {
+            outFileName = outFileName.substring( 0, dotIndex );
+         }
+         if ( args.length == 3 ) {
+            scoreSplitsOneColumn( outFileName, goldFile, systemFile, args[ 2 ] );
+         } else if ( args.length == 4 ) {
+            scoreSplitsByCancerType( outFileName, goldFile, systemFile, args[ 2 ], args[ 3 ] );
+         } else {
+            scoreSystem( outFileName, goldFile, systemFile );
+         }
       }
    }
 

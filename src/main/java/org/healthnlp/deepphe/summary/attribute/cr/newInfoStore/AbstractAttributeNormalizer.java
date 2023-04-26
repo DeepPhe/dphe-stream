@@ -4,9 +4,9 @@ import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
 import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
+import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -22,13 +22,14 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
    }
 
    private String _bestCode;
-   private int _uniqueCodeCount = 1;
-   private int _bestCodesCount = 1;
-   private int _allCodesCount = 1;
+
+   private double _bestConfidence = 0;
+   private double _totalConfidence = 1;
    private final EnumMap<EvidenceLevel,Collection<Mention>> _evidenceMap = new EnumMap<>( EvidenceLevel.class );
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
       final String bestCode = getBestCode( infoCollector );
+      NeoplasmSummaryCreator.addDebug( "AbstractAttributeNormalizer Best Code: " + bestCode + "\n" );
       setBestCode( bestCode );
       fillEvidenceMap( infoCollector, dependencies );
    }
@@ -41,113 +42,135 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
       return _bestCode;
    }
 
-   protected void setUniqueCodeCount( final int uniqueCodeCount ) {
-      _uniqueCodeCount = uniqueCodeCount;
+   protected void setBestConfidence( final double confidence ) {
+      _bestConfidence = confidence;
    }
 
-   protected int getUniqueCodeCount() {
-      return _uniqueCodeCount;
-   }
-
-   protected void setBestCodesCount( final int bestCodesCount ) {
-      _bestCodesCount = bestCodesCount;
-   }
-
-   protected int getBestCodesCount() {
-      return _bestCodesCount;
-   }
-
-   protected void setAllCodesCount( final int allCodesCount ) {
-      _allCodesCount = allCodesCount;
-   }
-
-   protected int getAllCodesCount() {
-      return _allCodesCount;
-   }
-
-
-   public double getConfidenceMultiplier() {
-      return (double)getBestCodesCount() / getAllCodesCount();
-   }
-
-   protected Map<Integer,Double> createIntCodeConfidenceMap( final Collection<ConceptAggregateRelation> relations ) {
-      return relations.stream()
-                       .collect( Collectors.toMap( this::getIntCode,
-                                                   ConceptAggregateRelation::getConfidence ) );
-
-   }
-
-   protected int getIntCode( final ConceptAggregateRelation relation ) {
-      return getIntCode( relation.getTarget() );
-   }
-
-   protected int getIntCode( final CrConceptAggregate aggregate ) {
-      return getIntCode( aggregate.getUri() );
-   }
-
-   protected int getIntCode( final String uri ) {
-      return -1;
-   }
-
-   protected Map<Integer,Long> createIntCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      return createAllIntCodeCountMap( new ConfidenceGroup<>( aggregates ).getBest() );
-   }
-
-   protected Map<String,Long> createCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      return createAllCodeCountMap( new ConfidenceGroup<>( aggregates ).getBest() );
-   }
-
-   protected Map<Integer,Long> createAllIntCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      return aggregates.stream()
-                         .map( this::getIntCode )
-                         .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-   }
-
-   protected Map<String,Long> createAllCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
-      return aggregates.stream()
-                      .map( this::getCode )
-                      .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+   protected void setTotalConfidence( final double confidence ) {
+      _totalConfidence = confidence;
    }
 
    /**
     *
-    * @param codeCountMap - map of codes and the number of times those codes appear
-    * @return a collection of the best codes, and a pair representing the count of those codes and number of codes.
+    * @return between 0 and 1
     */
-   protected List<Integer> getBestIntCodes( final Map<Integer,Long> codeCountMap ) {
-      final List<Integer> bestCodes = new ArrayList<>();
-      long maxCount = 0;
-      for ( Map.Entry<Integer,Long> codeCount : codeCountMap.entrySet() ) {
-         if ( codeCount.getValue() == maxCount ) {
-            bestCodes.add( codeCount.getKey() );
-         } else if ( codeCount.getValue() > maxCount ) {
-            bestCodes.clear();
-            bestCodes.add( codeCount.getKey() );
-            maxCount = codeCount.getValue();
-         }
-      }
-      return bestCodes;
+   public double getConfidence() {
+      return _bestConfidence / _totalConfidence;
    }
 
-   /**
-    *
-    * @param codeCountMap - map of codes and the number of times those codes appear
-    * @return a collection of the best codes, and a pair representing the count of those codes and number of codes.
-    */
-   protected List<String> getBestCodes( final Map<String,Long> codeCountMap ) {
-      final List<String> bestCodes = new ArrayList<>();
-      long maxCount = 0;
-      for ( Map.Entry<String,Long> codeCount : codeCountMap.entrySet() ) {
-         if ( codeCount.getValue() == maxCount ) {
-            bestCodes.add( codeCount.getKey() );
-         } else if ( codeCount.getValue() > maxCount ) {
-            bestCodes.clear();
-            bestCodes.add( codeCount.getKey() );
-            maxCount = codeCount.getValue();
-         }
+   protected String getBestIntCode( final Collection<ConceptAggregateRelation> relations ) {
+      if ( relations.isEmpty() ) {
+         return getDefaultTextCode();
       }
-      return bestCodes;
+      final Map<Integer,Double> confidenceMap = createIntCodeConfidenceMap( relations );
+      if ( confidenceMap.isEmpty() ) {
+         return getDefaultTextCode();
+      }
+      final List<Integer> bestCodes = getConfidentIntCodes( confidenceMap );
+      sortIntCodes( bestCodes );
+      final int bestCode = bestCodes.get( 0 );
+      _bestConfidence = confidenceMap.get( bestCode );
+      _totalConfidence = confidenceMap.values().stream().mapToDouble( d -> d ).sum();
+      NeoplasmSummaryCreator.addDebug( "AbstractAttributeNormalizer " + bestCode + "  "
+                                       + confidenceMap.entrySet().stream()
+                                                      .map( e -> e.getKey() + ":" + e.getValue() )
+                                                      .collect( Collectors.joining(",") ) + " bests: "
+                                       + bestCodes.stream().map( c -> c+"" )
+                                                  .collect( Collectors.joining("," ) ) + "\n" );
+      return bestCode < 0 ? getDefaultTextCode() : bestCode+"";
    }
+
+   protected String getBestTextCode( final Collection<ConceptAggregateRelation> relations ) {
+      if ( relations.isEmpty() ) {
+         return getDefaultTextCode();
+      }
+      final Map<String,Double> confidenceMap = createTextCodeConfidenceMap( relations );
+      if ( confidenceMap.isEmpty() ) {
+         return getDefaultTextCode();
+      }
+      final List<String> bestCodes = getConfidentTextCodes( confidenceMap );
+      sortTextCodes( bestCodes );
+      final String bestCode = bestCodes.get( 0 );
+      _bestConfidence = confidenceMap.get( bestCode );
+      _totalConfidence = confidenceMap.values().stream().mapToDouble( d -> d ).sum();
+      NeoplasmSummaryCreator.addDebug( "AbstractAttributeNormalizer " + bestCode + "  "
+                                       + confidenceMap.entrySet().stream()
+                                                      .map( e -> e.getKey() + ":" + e.getValue() )
+                                                      .collect( Collectors.joining(", ") ) + " bests: "
+                                       + String.join(",", bestCodes ) + "\n" );
+      return bestCode.isEmpty() ? getDefaultTextCode() : bestCode ;
+   }
+
+   protected void sortIntCodes( final List<Integer> codes ) {
+      // By default use the highest code value.
+      codes.sort( Comparator.reverseOrder() );
+   }
+
+   protected void sortTextCodes( final List<String> codes ) {
+      // By default use the highest code value.
+      codes.sort( Comparator.reverseOrder() );
+   }
+
+
+//   protected Map<Integer,Long> createIntCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+//      return createAllIntCodeCountMap( new ConfidenceGroup<>( aggregates ).getBest() );
+//   }
+//
+//   protected Map<String,Long> createCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+//      return createAllCodeCountMap( new ConfidenceGroup<>( aggregates ).getBest() );
+//   }
+//
+//   protected Map<Integer,Long> createAllIntCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+//      return aggregates.stream()
+//                         .map( this::getAggragateIntCode )
+//                         .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//   }
+//
+//   protected Map<String,Long> createAllCodeCountMap( final Collection<CrConceptAggregate> aggregates ) {
+//      return aggregates.stream()
+//                      .map( this::getCode )
+//                      .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//   }
+//
+//   /**
+//    *
+//    * @param codeCountMap - map of codes and the number of times those codes appear
+//    * @return a collection of the best codes, and a pair representing the count of those codes and number of codes.
+//    */
+//   protected List<Integer> getBestIntCodes( final Map<Integer,Long> codeCountMap ) {
+//      final List<Integer> bestCodes = new ArrayList<>();
+//      long maxCount = 0;
+//      for ( Map.Entry<Integer,Long> codeCount : codeCountMap.entrySet() ) {
+//         if ( codeCount.getValue() == maxCount ) {
+//            bestCodes.add( codeCount.getKey() );
+//         } else if ( codeCount.getValue() > maxCount ) {
+//            bestCodes.clear();
+//            bestCodes.add( codeCount.getKey() );
+//            maxCount = codeCount.getValue();
+//         }
+//      }
+//      return bestCodes;
+//   }
+//
+//   /**
+//    *
+//    * @param codeCountMap - map of codes and the number of times those codes appear
+//    * @return a collection of the best codes, and a pair representing the count of those codes and number of codes.
+//    */
+//   protected List<String> getBestCodes( final Map<String,Long> codeCountMap ) {
+//      final List<String> bestCodes = new ArrayList<>();
+//      long maxCount = 0;
+//      for ( Map.Entry<String,Long> codeCount : codeCountMap.entrySet() ) {
+//         if ( codeCount.getValue() == maxCount ) {
+//            bestCodes.add( codeCount.getKey() );
+//         } else if ( codeCount.getValue() > maxCount ) {
+//            bestCodes.clear();
+//            bestCodes.add( codeCount.getKey() );
+//            maxCount = codeCount.getValue();
+//         }
+//      }
+//      return bestCodes;
+//   }
 
    public Collection<Mention> getDirectEvidence() {
       return _evidenceMap.getOrDefault( EvidenceLevel.DIRECT_EVIDENCE, Collections.emptyList() );
@@ -167,7 +190,8 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
 
    protected void fillEvidenceMap( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies) {
       final String bestCode = getBestCode();
-      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( infoCollector.getAllAggregates() );
+      final ConfidenceGroup<CrConceptAggregate> confidenceGroup =
+            new ConfidenceGroup<>( infoCollector.getAllAggregates() );
       final Collection<Mention> bestMentions
             = confidenceGroup.getBest()
                              .stream()
@@ -187,9 +211,10 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
    }
 
    protected void useAllEvidenceMap( final AttributeInfoCollector infoCollector,
-                                     final Map<String,String> dependencies) {
+                                     final Map<String,String> dependencies ) {
       final String bestCode = getBestCode();
-      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( infoCollector.getAllAggregates() );
+      final ConfidenceGroup<CrConceptAggregate> confidenceGroup =
+            new ConfidenceGroup<>( infoCollector.getAllAggregates() );
       final Collection<Mention> bestMentions
             = confidenceGroup.getBest()
                              .stream()
@@ -201,7 +226,7 @@ abstract public class AbstractAttributeNormalizer implements AttributeNormalizer
       final Collection<Mention> nextMentions
             = confidenceGroup.getBest()
                              .stream()
-                             .filter( a -> !getCode( a ).isEmpty() )
+                             .filter( a -> !getTextCode( a ).isEmpty() )
                              .map( CrConceptAggregate::getMentions )
                              .flatMap( Collection::stream )
                              .filter( m -> !bestMentions.contains( m ) )

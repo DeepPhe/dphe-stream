@@ -9,7 +9,6 @@ import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
@@ -42,43 +41,51 @@ public class BehaviorNormalizer extends AbstractAttributeNormalizer {
          METASTATIC_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Metastatic" ) );
       }
       super.init( infoCollector, dependencies );
-      NeoplasmSummaryCreator.addDebug( "Behavior best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "Behavior best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
    }
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      if ( aggregates.isEmpty() ) {
-         // The Cancer Registry default is 3.
-         return "3";
-      }
-
-      final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
-      int bestCode = -1;
-      long bestCodesCount = 0;
-      for ( Map.Entry<Integer,Long> codeCount : intCountMap.entrySet() ) {
-         final long count = codeCount.getValue();
-         if ( count > bestCodesCount ) {
-            bestCodesCount = count;
-            bestCode = codeCount.getKey();
-         } else if ( count == bestCodesCount ) {
-            if ( bestCode == 3 || codeCount.getKey() == 3 ) {
-               bestCode = 3;
-            } else {
-               bestCode = Math.max( bestCode, codeCount.getKey() );
-            }
-         }
-      }
-      setBestCodesCount( (int)bestCodesCount );
-      setAllCodesCount( aggregates.size() );
-      setUniqueCodeCount( intCountMap.size() );
-      NeoplasmSummaryCreator.addDebug( "BehaviorNormalizer "
-                                       + intCountMap.entrySet().stream()
-                                                 .map( e -> e.getKey() + ":" + e.getValue() )
-                                                 .collect( Collectors.joining(",") ) + " = "
-                                       + bestCode +"\n");
-//      return bestCode < 0 ? "3" : bestCode+"";
-      // CR doesn't do much benign, default to malignant.
-      return bestCode <= 0 ? "3" : bestCode+"";
+   public String getDefaultTextCode() {
+      return "3";
    }
+
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
+      return getBestIntCode( infoCollector.getAllRelations() );
+   }
+
+//   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+//      if ( aggregates.isEmpty() ) {
+//         // The Cancer Registry default is 3.
+//         return "3";
+//      }
+//
+//      final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
+//      int bestCode = -1;
+//      long bestCodesCount = 0;
+//      for ( Map.Entry<Integer,Long> codeCount : intCountMap.entrySet() ) {
+//         final long count = codeCount.getValue();
+//         if ( count > bestCodesCount ) {
+//            bestCodesCount = count;
+//            bestCode = codeCount.getKey();
+//         } else if ( count == bestCodesCount ) {
+//            if ( bestCode == 3 || codeCount.getKey() == 3 ) {
+//               bestCode = 3;
+//            } else {
+//               bestCode = Math.max( bestCode, codeCount.getKey() );
+//            }
+//         }
+//      }
+//      setBestCodesCount( (int)bestCodesCount );
+//      setAllCodesCount( aggregates.size() );
+//      setUniqueCodeCount( intCountMap.size() );
+//      NeoplasmSummaryCreator.addDebug( "BehaviorNormalizer "
+//                                       + intCountMap.entrySet().stream()
+//                                                 .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                 .collect( Collectors.joining(",") ) + " = "
+//                                       + bestCode +"\n");
+////      return bestCode < 0 ? "3" : bestCode+"";
+//      // CR doesn't do much benign, default to malignant.
+//      return bestCode <= 0 ? "3" : bestCode+"";
+//   }
 
    private String getOppositeUri( final CrConceptAggregate aggregate ) {
       final String uri = aggregate.getUri();
@@ -89,7 +96,7 @@ public class BehaviorNormalizer extends AbstractAttributeNormalizer {
       } else if ( IN_SITU_URIS.contains( uri ) ) {
          return "Invasive";
       } else if ( BORDERLINE_URIS.contains( uri ) ) {
-         return "Benign";
+         return "Invasive";
       } else  if ( BENIGN_URIS.contains( uri ) ) {
          return "Invasive";
       }
@@ -97,20 +104,15 @@ public class BehaviorNormalizer extends AbstractAttributeNormalizer {
       return uri;
    }
 
-   public String getCode( final CrConceptAggregate aggregate ) {
+   public String getTextCode( final CrConceptAggregate aggregate ) {
       if ( aggregate.isNegated() ) {
-         return getCode( getOppositeUri( aggregate ) );
+         return getTextCode( getOppositeUri( aggregate ) );
       }
-      return getCode( aggregate.getUri() );
+      return getTextCode( aggregate.getUri() );
    }
 
 
-   public String getCode( final String uri ) {
-      final int code = getIntCode( uri );
-      return code < 0 ? "" : code+"";
-   }
-
-   protected int getIntCode( final String uri ) {
+   public int getIntCode( final String uri ) {
       if ( METASTATIC_URIS.contains( uri ) ) {
          return 3;
          // Cancer registries do not use behavior code 6
@@ -126,9 +128,10 @@ public class BehaviorNormalizer extends AbstractAttributeNormalizer {
          return 1;
       }
       if ( BENIGN_URIS.contains( uri ) ) {
-         return 0;
+//         return 0;
+         return 3;
       }
-      NeoplasmSummaryCreator.addDebug( "No Behavior code for " + uri +"\n");
+//      NeoplasmSummaryCreator.addDebug( "No Behavior code for " + uri +"\n");
       return -1;
    }
 

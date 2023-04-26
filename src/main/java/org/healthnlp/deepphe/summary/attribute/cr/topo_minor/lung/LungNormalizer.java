@@ -2,16 +2,6 @@ package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.lung;
 
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
-import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
-import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * C34.0	Main bronchus
@@ -25,68 +15,64 @@ import java.util.stream.Collectors;
  */
 public class LungNormalizer extends AbstractAttributeNormalizer {
 
-   public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
-      super.init( infoCollector, dependencies );
-      NeoplasmSummaryCreator.addDebug( "Lung best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
+      return getBestIntCode( infoCollector.getAllRelations() );
    }
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      if ( aggregates.isEmpty() ) {
-         // The Cancer Registry default is 9.
-         return "9";
-      }
-      int bestIntCode = -1;
-      long bestCount = 0;
-      int uniqueCount = 0;
-      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
-      final Map<Integer,Long> bestCountMap = confidenceGroup.getBest()
-                                                            .stream()
-                                                            .map( CrConceptAggregate::getUri )
-                                                            .map( LungNormalizer::getUriLungNumber )
-                                                            .filter( c -> c >= 0 )
-                                                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-      if ( !bestCountMap.isEmpty() ) {
-         final List<Integer> bestCodes = getBestIntCodes( bestCountMap );
-         bestCodes.sort( Comparator.reverseOrder() );
-         bestIntCode = bestCodes.get( 0 );
-         bestCount = bestCountMap.get( bestIntCode );
-         uniqueCount += bestCountMap.size();
-      }
-      final Map<Integer,Long> otherCountMap = confidenceGroup.getBest()
-                                                             .stream()
-                                                             .map( CrConceptAggregate::getUri )
-                                                             .map( LungNormalizer::getOtherUriLungNumber )
-                                                             .filter( c -> c >= 0 )
-                                                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-      if ( !otherCountMap.isEmpty() ) {
-         if ( bestIntCode < 0 ) {
-            final List<Integer> bestCodes = getBestIntCodes( otherCountMap );
-            bestCodes.sort( Comparator.reverseOrder() );
-            bestIntCode = bestCodes.get( 0 );
-            bestCount = otherCountMap.get( bestIntCode );
-         }
-         uniqueCount += otherCountMap.size();
-      }
-      setBestCodesCount( (int)bestCount );
-      setAllCodesCount( aggregates.size() );
-      setUniqueCodeCount( uniqueCount );
-      NeoplasmSummaryCreator.addDebug( "LungNormalizer "
-                                       + bestCountMap.entrySet().stream()
-                                                     .map( e -> e.getKey() + ":" + e.getValue() )
-                                                     .collect( Collectors.joining(",") ) + " ; "
-                                       + otherCountMap.entrySet().stream()
-                                                      .map( e -> e.getKey() + ":" + e.getValue() )
-                                                      .collect( Collectors.joining(",") ) + " ; "
-                                       + bestIntCode +"\n" );
-      return bestIntCode < 0 ? "9" : bestIntCode+"";
-   }
+//   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+//      if ( aggregates.isEmpty() ) {
+//         // The Cancer Registry default is 9.
+//         return "9";
+//      }
+//      int bestIntCode = -1;
+//      long bestCount = 0;
+//      int uniqueCount = 0;
+//      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
+//      final Map<Integer,Long> bestCountMap = confidenceGroup.getBest()
+//                                                            .stream()
+//                                                            .map( CrConceptAggregate::getUri )
+//                                                            .map( LungNormalizer::getUriLungNumber )
+//                                                            .filter( c -> c >= 0 )
+//                                                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//      if ( !bestCountMap.isEmpty() ) {
+//         final List<Integer> bestCodes = getBestIntCodes( bestCountMap );
+//         bestCodes.sort( Comparator.reverseOrder() );
+//         bestIntCode = bestCodes.get( 0 );
+//         bestCount = bestCountMap.get( bestIntCode );
+//         uniqueCount += bestCountMap.size();
+//      }
+//      final Map<Integer,Long> otherCountMap = confidenceGroup.getBest()
+//                                                             .stream()
+//                                                             .map( CrConceptAggregate::getUri )
+//                                                             .map( LungNormalizer::getOtherUriLungNumber )
+//                                                             .filter( c -> c >= 0 )
+//                                                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//      if ( !otherCountMap.isEmpty() ) {
+//         if ( bestIntCode < 0 ) {
+//            final List<Integer> bestCodes = getBestIntCodes( otherCountMap );
+//            bestCodes.sort( Comparator.reverseOrder() );
+//            bestIntCode = bestCodes.get( 0 );
+//            bestCount = otherCountMap.get( bestIntCode );
+//         }
+//         uniqueCount += otherCountMap.size();
+//      }
+//      setBestCodesCount( (int)bestCount );
+//      setAllCodesCount( aggregates.size() );
+//      setUniqueCodeCount( uniqueCount );
+//      NeoplasmSummaryCreator.addDebug( "LungNormalizer "
+//                                       + bestCountMap.entrySet().stream()
+//                                                     .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                     .collect( Collectors.joining(",") ) + " ; "
+//                                       + otherCountMap.entrySet().stream()
+//                                                      .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                      .collect( Collectors.joining(",") ) + " ; "
+//                                       + bestIntCode +"\n" );
+//      return bestIntCode < 0 ? "9" : bestIntCode+"";
+//   }
 
-   public String getCode( final String uri ) {
-      final int code = getIntCode( uri );
-      return code < 0 ? "" : code+"";
-   }
 
-   protected int getIntCode( final String uri ) {
+   public int getIntCode( final String uri ) {
       int lungNumber = getUriLungNumber( uri );
       if ( lungNumber >= 0 ) {
          return lungNumber;

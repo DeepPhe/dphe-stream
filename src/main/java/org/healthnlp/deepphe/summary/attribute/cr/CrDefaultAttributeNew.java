@@ -3,6 +3,7 @@ package org.healthnlp.deepphe.summary.attribute.cr;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeNormalizer;
+import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
@@ -48,7 +49,7 @@ public class CrDefaultAttributeNew<C extends AttributeInfoCollector,
    }
 
    protected NeoplasmAttribute createNeoplasmAttribute( final String name ) {
-      NeoplasmSummaryCreator.addDebug( "#####  " + name + "  #####\nNeoplasm Store\n" );
+      NeoplasmSummaryCreator.addDebug( "#####  " + name + "  #####\n" );
       // TODO - Next URI and Next Code
       return CrSpecificAttribute.createAttribute( name,
                                                   getBestCode(),
@@ -62,7 +63,7 @@ public class CrDefaultAttributeNew<C extends AttributeInfoCollector,
    }
 
    public Collection<String> getBestUris() {
-      return _attributeInfoCollector.getBestAggregates()
+      return new ConfidenceGroup<>( _attributeInfoCollector.getAllAggregates() ).getBest()
                                     .stream()
                                .map( CrConceptAggregate::getUri )
                                .collect( Collectors.toSet() );
@@ -77,8 +78,7 @@ public class CrDefaultAttributeNew<C extends AttributeInfoCollector,
    }
 
    public double getConfidence() {
-      return _attributeInfoCollector.getConfidence();
-      // * _attributeNormalizer.getConfidenceMultiplier();
+      return _attributeNormalizer.getConfidence();
    }
 
    public NeoplasmAttribute toNeoplasmAttribute() {

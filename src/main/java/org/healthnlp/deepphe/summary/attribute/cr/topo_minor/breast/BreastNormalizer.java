@@ -3,11 +3,10 @@ package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.breast;
 import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
-import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author SPF , chip-nlp
@@ -39,36 +38,39 @@ public class BreastNormalizer extends AbstractAttributeNormalizer {
       }
       _lateralityCode = dependencies.getOrDefault( "laterality", "" );
       super.init( infoCollector, dependencies );
-      NeoplasmSummaryCreator.addDebug( "Breast best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "Breast best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
    }
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      if ( aggregates.isEmpty() ) {
-         // The Cancer Registry default is 9.
-         return "9";
-      }
-      final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
-      final List<Integer> bestCodes = getBestIntCodes( intCountMap );
-      bestCodes.sort( Comparator.reverseOrder() );
-      final int bestIntCode = bestCodes.get( 0 );
-      long bestCount = intCountMap.get( bestIntCode );
-      setBestCodesCount( (int)bestCount );
-      setAllCodesCount( aggregates.size() );
-      setUniqueCodeCount( intCountMap.size() );
-      NeoplasmSummaryCreator.addDebug( "BreastNormalizer "
-                                       + intCountMap.entrySet().stream()
-                                                    .map( e -> e.getKey() + ":" + e.getValue() )
-                                                    .collect( Collectors.joining(",") ) + " = "
-                                       + bestIntCode +"\n");
-      return bestIntCode < 0 ? "9" : bestIntCode+"";
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
+      return getBestIntCode( infoCollector.getAllRelations() );
    }
 
-   public String getCode( final String uri ) {
-      final int code = getIntCode( uri );
-      return code < 0 ? "9" : code+"";
-   }
 
-   protected int getIntCode( final String uri ) {
+
+//   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+//      if ( aggregates.isEmpty() ) {
+//         // The Cancer Registry default is 9.
+//         return "9";
+//      }
+//      final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
+//      final List<Integer> bestCodes = getBestIntCodes( intCountMap );
+//      bestCodes.sort( Comparator.reverseOrder() );
+//      final int bestIntCode = bestCodes.get( 0 );
+//      long bestCount = intCountMap.get( bestIntCode );
+//      setBestCodesCount( (int)bestCount );
+//      setAllCodesCount( aggregates.size() );
+//      setUniqueCodeCount( intCountMap.size() );
+//      NeoplasmSummaryCreator.addDebug( "BreastNormalizer "
+//                                       + intCountMap.entrySet().stream()
+//                                                    .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                    .collect( Collectors.joining(",") ) + " = "
+//                                       + bestIntCode +"\n");
+//      return bestIntCode < 0 ? "9" : bestIntCode+"";
+//   }
+
+
+   @Override
+   public int getIntCode( final String uri ) {
       return getBreastCode( uri, _lateralityCode );
    }
 
@@ -81,7 +83,8 @@ public class BreastNormalizer extends AbstractAttributeNormalizer {
                   || uri.contains( "Areola" )
                   || uri.contains( "Subareolar" )) {
          return 1;
-      } else if ( uri.startsWith( "Upper_Inner_Quadrant" ) ) {
+      } else if ( uri.startsWith( "Upper_inner_Quadrant" ) || uri.startsWith( "Upper_Inner_Quadrant" ) ) {
+         // Somehow "Upper_inner_Quadrant" ended up with a lower-case 'i'
          return 2;
       } else if ( uri.startsWith( "Lower_Inner_Quadrant" ) ) {
          return 3;

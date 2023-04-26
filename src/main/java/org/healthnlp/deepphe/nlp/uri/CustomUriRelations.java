@@ -34,6 +34,7 @@ public enum CustomUriRelations {
       CANCER_RELATIONS.put( RelationConstants.HAS_GRADE, getGradeUris() );
       CANCER_RELATIONS.put( RelationConstants.HAS_BEHAVIOR, getBehaviorUris() );
       CANCER_RELATIONS.put( RelationConstants.has_Biomarker, getBiomarkerUris() );
+      CANCER_RELATIONS.put( RelationConstants.HAS_LATERALITY, getLateralityUris() );
       return CANCER_RELATIONS;
    }
 
@@ -55,6 +56,48 @@ public enum CustomUriRelations {
       QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Subareolar_Region" ) );
       QUADRANT_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Axillary_Tail_Of_The_Breast" ) );
       return QUADRANT_URIS;
+   }
+
+   static private final Collection<String> LATERALITY_URIS = Arrays.asList(
+         UriConstants.BILATERAL, UriConstants.RIGHT, UriConstants.LEFT,
+         "Unilateral_Right", "Unilateral_Left", "Unilateral", "Unspecified_Laterality" );
+   private final Collection<String> ALL_LATERALITIES = new HashSet<>();
+   public Collection<String> getLateralityUris() {
+      if ( !ALL_LATERALITIES.isEmpty() ) {
+         return ALL_LATERALITIES;
+      }
+      ALL_LATERALITIES.addAll( getLungLateralityUris() );
+      ALL_LATERALITIES.addAll( LATERALITY_URIS );
+     return ALL_LATERALITIES;
+   }
+
+   private final Collection<String> LUNG_LATERALITIES = new HashSet<>();
+   public Collection<String> getLungLateralityUris() {
+      if ( !LUNG_LATERALITIES.isEmpty() ) {
+         return LUNG_LATERALITIES;
+      }
+      LUNG_LATERALITIES.addAll( getLeftLungLateralityUris() );
+      LUNG_LATERALITIES.addAll( getRightLungLateralityUris() );
+      return LUNG_LATERALITIES;
+   }
+
+   private final Collection<String> LEFT_LUNG_LATERALITIES = new HashSet<>();
+   public Collection<String> getLeftLungLateralityUris() {
+      if ( !LEFT_LUNG_LATERALITIES.isEmpty() ) {
+         return LEFT_LUNG_LATERALITIES;
+      }
+      LEFT_LUNG_LATERALITIES.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Left_Lung" ) );
+      LEFT_LUNG_LATERALITIES.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Left_Lung_Zone" ) );
+      return LEFT_LUNG_LATERALITIES;
+   }
+   private final Collection<String> RIGHT_LUNG_LATERALITIES = new HashSet<>();
+   public Collection<String> getRightLungLateralityUris() {
+      if ( !RIGHT_LUNG_LATERALITIES.isEmpty() ) {
+         return RIGHT_LUNG_LATERALITIES;
+      }
+      RIGHT_LUNG_LATERALITIES.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Right_Lung" ) );
+      RIGHT_LUNG_LATERALITIES.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Right_Lung_Zone" ) );
+      return RIGHT_LUNG_LATERALITIES;
    }
 
 
@@ -115,6 +158,7 @@ public enum CustomUriRelations {
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Poorly_Differentiated" ) );
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "High_Grade" ) );
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Grade_4" ) );
+      GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Undifferentiated" ) );
       GRADE_URIS.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Gleason_Grade" ) );
       GRADE_URIS.remove( "Gleason_Grade" );
       // Anaplastic is Undifferentiated

@@ -28,6 +28,14 @@ add WtfSectionFixer
 //  Fix sentences so that no sentence spans across two or more paragraphs.
 add ParagraphSentenceFixer
 
+set LIST_TYPES_PATH=org/healthnlp/deepphe/list/CancerListRegex.bsv
+//  Discover formatted lists and tables.
+add ListAnnotator
+
+//  Fix sentences so that no sentence spans across two or more list entries.
+add ListSentenceFixer
+
+
 //  Tokenize by penn treebank rules.
 add TokenizerAnnotatorPTB
 
@@ -126,5 +134,6 @@ add CrRelationFinder
 //add CrNonGraphedRelationFinder
 
 add JsonNodeCreator
-//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_10_2023\all_crc SubDirectory=HTML
-//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_13_2023\all_lung SubDirectory=TEXT
+//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_25_2023\kcr_corpora SubDirectory=HTML
+//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_25_2023\kcr_corpora SubDirectory=TEXT
+

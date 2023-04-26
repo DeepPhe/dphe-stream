@@ -7,7 +7,6 @@ import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.util.Neo4jRelationUtil;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import java.util.*;
@@ -15,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.apache.ctakes.core.util.annotation.SemanticTui.*;
 
@@ -136,12 +134,12 @@ public enum UriInfoCache {
             semantic = TUMOR;
          } else if ( UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
             semantic = CANCER;
-         } else if ( UriConstants.getLocationUris( graphDb ).contains( uri ) ) {
-            semantic = LOCATION;
          } else if ( LATERALITY_URIS.contains( uri )
                      || CustomUriRelations.getInstance().getQuadrantUris().contains( uri )
                      || getUriRoots( uri ).contains( UriConstants.CLOCKFACE ) ) {
             return SPATIAL_CONCEPT;
+         } else if ( UriConstants.getLocationUris( graphDb ).contains( uri ) ) {
+            semantic = LOCATION;
          } else if ( CustomUriRelations.getInstance().getStageUris().contains( uri )
                      || CustomUriRelations.getInstance().getGradeUris().contains( uri )
                      || CustomUriRelations.getInstance().getBehaviorUris().contains( uri )
@@ -275,8 +273,8 @@ public enum UriInfoCache {
          final Map<String,Collection<String>> nonSiteRelations = new HashMap<>();
          for ( Map.Entry<String,Collection<String>> relation : uriRelations.entrySet() ) {
             if ( RelationConstants.isHasSiteRelation( relation.getKey() ) ) {
-               NeoplasmSummaryCreator.addDebug( "URI SITE: " + uri + " " + relation.getKey() + " : "
-                                             + String.join( ",", relation.getValue() ) + "\n");
+//               NeoplasmSummaryCreator.addDebug( "URI SITE: " + uri + " " + relation.getKey() + " : "
+//                                             + String.join( ",", relation.getValue() ) + "\n");
                String siteRelation = PRIMARY_SITE;
                if ( relation.getKey().toLowerCase().contains( "associated" ) ) {
                   siteRelation = ASSOCIATED_SITE;
@@ -373,23 +371,27 @@ public enum UriInfoCache {
    public Map<String,Double> getRelationScores( final String targetUri ) {
          final Map<String,Double> relationScores = new HashMap<>();
          final Collection<String> targetRoots = getUriRoots( targetUri );
-         if ( getInstance().getSemanticTui( targetUri ) == SemanticTui.T023 ) {
+         if ( getInstance().getSemanticTui( targetUri ) == UriInfoCache.LOCATION ) {
             fillRelationScores( targetRoots, _siteRelations, relationScores );
+            // Special case for Lung Lobes (e.g. LUL) which are Locations but have laterality.
+            if ( CustomUriRelations.getInstance().getLungLateralityUris().contains( targetUri ) ) {
+               fillRelationScores( targetRoots, _nonSiteRelations, relationScores );
+            }
          } else {
             fillRelationScores( targetRoots, _nonSiteRelations, relationScores );
-            // Special case for quadrants (e.g. Nipple)
+            // Special case for quadrants (e.g. Nipple) which are Spatial Concepts and also Locations.
             if ( CustomUriRelations.getInstance().getQuadrantUris().contains( targetUri ) ) {
                fillRelationScores( targetRoots, _siteRelations, relationScores );
             }
          }
-         if ( !relationScores.isEmpty() ) {
-            NeoplasmSummaryCreator.addDebug( "Relation Scores " + _uri + " " + targetUri + " : "
-                                             + relationScores.entrySet()
-                                                             .stream()
-                                                             .map( e -> e.getKey() + " " + e.getValue() )
-                                                             .collect(
-                                                                   Collectors.joining( " ; " ) ) + "\n" );
-         }
+//         if ( !relationScores.isEmpty() ) {
+//            NeoplasmSummaryCreator.addDebug( "Relation Scores " + _uri + " " + targetUri + " : "
+//                                             + relationScores.entrySet()
+//                                                             .stream()
+//                                                             .map( e -> e.getKey() + " " + e.getValue() )
+//                                                             .collect(
+//                                                                   Collectors.joining( " ; " ) ) + "\n" );
+//         }
          return relationScores;
       }
       private void fillRelationScores( final Collection<String> targetRoots,

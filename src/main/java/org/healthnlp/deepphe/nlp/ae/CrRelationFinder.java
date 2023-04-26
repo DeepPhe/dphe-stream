@@ -10,6 +10,7 @@ import org.apache.ctakes.typesystem.type.constants.CONST;
 import org.apache.ctakes.typesystem.type.relation.BinaryTextRelation;
 import org.apache.ctakes.typesystem.type.syntax.BaseToken;
 import org.apache.ctakes.typesystem.type.textsem.IdentifiedAnnotation;
+import org.apache.ctakes.typesystem.type.textspan.ListEntry;
 import org.apache.ctakes.typesystem.type.textspan.Paragraph;
 import org.apache.ctakes.typesystem.type.textspan.Sentence;
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.healthnlp.deepphe.core.document.SectionType;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.nlp.uri.UriInfoCache;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.healthnlp.deepphe.core.document.SectionType.*;
 import static org.healthnlp.deepphe.neo4j.constant.RelationConstants.*;
 
 /**
@@ -42,7 +45,41 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final Logger LOGGER = Logger.getLogger( "CrRelationFinder" );
 
+   static private final double MIN_PLACEMENT_SCORE = 1;
+   static private final double SENTENCE_OFFSET = 0;
+   static private final double LIST_ENTRY_OFFSET = 1;
+   static private final double PARAGRAPH_OFFSET = 5;
+   static private final double SECTION_OFFSET = 10;
+   // 4/24/2023  DOCUMENT_OFFSET from 15 to 20 since the sentence splitter can be overly enthusiastic.
+   static private final double DOCUMENT_OFFSET = 20;
+   static private final double SENTENCE_MULTIPLIER = 0.1;
+   static private final double LIST_ENTRY_MULTIPLIER = 0.1;
+   static private final double PARAGRAPH_MULTIPLIER = 0.2;
+   static private final double SECTION_MULTIPLIER = 0.3;
+   static private final double DOCUMENT_MULTIPLIER = .5;
+   static private final double PRECEDE_MULTIPLIER = 0.1;
+   static private final double FOLLOW_MULTIPLIER = 0.2;
 
+   static private final double NEGATED_PENALTY = 30;
+   static private final double UNCERTAIN_PENALTY = 5;
+
+   static private final double FAMILY_HISTORY_PENALTY = 50;
+   static private final double PERSONAL_HISTORY_PENALTY = 5;
+
+   // 4/24/2023 MASS_PENALTY from 40 to 20, NODE_PENALTY from 50 to 25 since the sentence splitter may not split.
+   static private final double MASS_PENALTY = 20;
+   static private final double NODE_PENALTY = 25;
+
+   static private final double TEST_PENALTY = 40;
+
+   static private final double NEARBY_PENALTY = 10;
+
+   static private final double PREFERRED_SECTION_BUMP = -30;
+   static private final double LESSER_SECTION_PENALTY = 20;
+
+   //   static private final double MIN_RELATION_CONFIDENCE = 1;
+   static private final double MIN_RELATION_CONFIDENCE = 1;
+   static private final double MIN_LOCATION_CONFIDENCE = 0;
 
    /**
     * {@inheritDoc}
@@ -63,10 +100,11 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       try ( DotLogger dotter = new DotLogger() ) {
          final Map<String,Collection<IdentifiedAnnotation>> uriAnnotationsMap = new HashMap<>();
          final Collection<Pair<Integer>> paragraphBounds = new HashSet<>();
+         final Collection<Pair<Integer>> listEntryBounds = new HashSet<>();
          final Map<String,Sentence> sentences = new HashMap<>();
          final Map<Integer,Integer> tokenBeginToTokenNums = new HashMap<>();
          final Map<Integer,Integer> tokenEndToTokenNums = new HashMap<>();
-         fillSectionsMaps( jCas, uriAnnotationsMap, paragraphBounds, sentences,
+         fillSectionsMaps( jCas, uriAnnotationsMap, paragraphBounds, listEntryBounds, sentences,
                            tokenBeginToTokenNums, tokenEndToTokenNums );
          if ( uriAnnotationsMap.size() < 2 ) {
             return;
@@ -77,7 +115,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
             final String sourceUri = uriSourceAnnotations.getKey();
             final UriInfoCache.UriNode sourceNode = UriInfoCache.getInstance().getUriNode( sourceUri );
             if ( sourceNode.lacksRelations() ) {
-               // Move on to next source URI.
                continue;
             }
             for ( Map.Entry<String, Collection<IdentifiedAnnotation>> uriTargetAnnotations :
@@ -92,9 +129,12 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                   continue;
                }
                for ( IdentifiedAnnotation sourceAnnotation : uriSourceAnnotations.getValue() ) {
-                  final AnnotationPenalties sourcePenalties = new AnnotationPenalties( sourceAnnotation, sentences,
-                                                                                       tokenBeginToTokenNums,
-                                                                                       tokenEndToTokenNums, docLength );
+//                  final AnnotationPenalties sourcePenalties = new AnnotationPenalties( sourceAnnotation,
+                  final AnnotationPenalties sourcePenalties = new NeoplasmAnnotationPenalties( sourceAnnotation,
+                                                                                                sentences,
+                                                                                                tokenBeginToTokenNums,
+                                                                                                tokenEndToTokenNums,
+                                                                                               docLength );
                   final Map<String,Collection<RelationScore>> relatedAnnotationScoresMap = new HashMap<>();
                   for ( Map.Entry<String,Double> relationScores : relationScoresMap.entrySet() ) {
                      final Collection<RelationScore> annotationRelationScores =
@@ -105,6 +145,7 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                                            uriTargetAnnotations.getValue(),
                                                            sentences,
                                                            paragraphBounds,
+                                                           listEntryBounds,
                                                            tokenBeginToTokenNums,
                                                            tokenEndToTokenNums,
                                                            docLength );
@@ -127,7 +168,8 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    static private void fillSectionsMaps( final JCas jCas,
                                  final Map<String,Collection<IdentifiedAnnotation>> uriAnnotationsMap,
                                  final Collection<Pair<Integer>> paragraphBounds,
-                                 final Map<String,Sentence> sentences,
+                                         final Collection<Pair<Integer>> listEntryBounds,
+                                         final Map<String,Sentence> sentences,
                                  final Map<Integer,Integer> tokenBeginToTokenNums,
                                  final Map<Integer,Integer> tokenEndToTokenNums ) {
       for ( IdentifiedAnnotation annotation : JCasUtil.select( jCas, IdentifiedAnnotation.class ) ) {
@@ -147,6 +189,12 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                                                 .filter( Objects::nonNull )
                                                                 .map( p -> new Pair<>( p.getBegin(), p.getEnd() ) )
                                                                 .collect( Collectors.toList() ) );
+      // ListEntries.  For confidence.
+      listEntryBounds.addAll( JCasUtil.select( jCas, ListEntry.class )
+                                      .stream()
+                                      .filter( Objects::nonNull )
+                                      .map( p -> new Pair<>( p.getBegin(), p.getEnd() ) )
+                                      .collect( Collectors.toList() ) );
       JCasUtil.select( jCas, Sentence.class ).forEach( s -> sentences.put( ""+s.getSentenceNumber(), s ) );
       // Token indices.  For confidence.
       int i = 1;
@@ -158,17 +206,20 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    }
 
    static private final Collection<String> LOCATION_RELATIONS
-         = Arrays.asList( HAS_LATERALITY, DISEASE_HAS_PRIMARY_ANATOMIC_SITE, DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE );
-//         , HAS_QUADRANT, HAS_CLOCKFACE );
+         = new HashSet<>( Arrays.asList( HAS_LATERALITY, DISEASE_HAS_PRIMARY_ANATOMIC_SITE,
+                               DISEASE_HAS_ASSOCIATED_ANATOMIC_SITE ) );
+//         , HAS_QUADRANT, HAS_CLOCKFACE ) );
 
-   static private Collection<RelationScore> createAnnotationRelationScores( final String relationName,
-                             final double uriRelationScore,
+   static private Collection<RelationScore> createAnnotationRelationScores(
+         final String relationName,
+         final double uriRelationScore,
                              final IdentifiedAnnotation sourceAnnotation,
                              final AnnotationPenalties sourcePenalties,
                              final Collection<IdentifiedAnnotation> targetAnnotations,
                              final Map<String,Sentence> sentences,
                              final Collection<Pair<Integer>> paragraphBounds,
-                             final Map<Integer,Integer> tokenBeginToTokenNums,
+                               final Collection<Pair<Integer>> listEntryBounds,
+                               final Map<Integer,Integer> tokenBeginToTokenNums,
                              final Map<Integer,Integer> tokenEndToTokenNums,
                              final int docLength ) {
       final boolean isLocation = LOCATION_RELATIONS.contains( relationName );
@@ -181,14 +232,16 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                                                                tokenEndToTokenNums,
                                                                                docLength );
          final Pair<Double> placementPenalty = getPlacementPenalty( sourceAnnotation, targetAnnotation,
-                                                                    paragraphBounds );
+                                                                    paragraphBounds, listEntryBounds );
          final double placementScore = getPlacementScore( sourcePenalties.getBeginEndTokens(),
                                                           targetPenalties.getBeginEndTokens(),
                                                           placementPenalty );
          if ( isLocation && placementScore <= 1 ) {
-            NeoplasmSummaryCreator.addDebug( "Discarding Placement Relation " + sourceAnnotation.getCoveredText()
-                                             + " " + relationName + " " + targetAnnotation.getCoveredText() +
-                                             " " + placementScore + "\n" );
+//            NeoplasmSummaryCreator.addDebug( "Discarding Placement Relation "
+//                                             + Neo4jOntologyConceptUtil.getUri( sourceAnnotation )
+//                                             + " " + relationName + " "
+//                                             + Neo4jOntologyConceptUtil.getUri( targetAnnotation ) +
+//                                             " " + placementScore + "\n" );
             continue;
          }
          final RelationScore targetScore = createRelationScore( isLocation,
@@ -198,14 +251,14 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                                               sourcePenalties,
                                                               targetPenalties );
          if ( targetScore.getTotalScore() > 1 ) {
-            NeoplasmSummaryCreator.addDebug( "Keeping Target Relation " + sourceAnnotation.getCoveredText()
-                                             + " " + relationName + " " + targetAnnotation.getCoveredText() +
-                                             " " + targetScore.getTotalScore() + "\n" );
+//            NeoplasmSummaryCreator.addDebug( "Keeping Target Relation " +  Neo4jOntologyConceptUtil.getUri( sourceAnnotation )
+//                                             + " " + relationName + " " + Neo4jOntologyConceptUtil.getUri( targetAnnotation ) +
+//                                             " " + targetScore.getTotalScore() + "\n" );
             relationScores.add( targetScore );
-         } else {
-            NeoplasmSummaryCreator.addDebug( "Discarding Target Relation " + sourceAnnotation.getCoveredText()
-                                             + " " + relationName + " " + targetAnnotation.getCoveredText() +
-                                             " " + targetScore.getTotalScore() + "\n" );
+//         } else {
+//            NeoplasmSummaryCreator.addDebug( "Discarding Target Relation " + Neo4jOntologyConceptUtil.getUri( sourceAnnotation )
+//                                             + " " + relationName + " " + Neo4jOntologyConceptUtil.getUri( targetAnnotation ) +
+//                                             " " + targetScore.getTotalScore() + "\n" );
          }
       }
       return relationScores;
@@ -224,23 +277,21 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          builder.hasRelated( annotationScore._targetAnnotation )
                .confidence( (float)annotationScore.getTotalScore() )
                 .build( jCas );
-         final boolean sourceNegated = IdentifiedAnnotationUtil.isNegated( source );
-         final boolean targetNegated = IdentifiedAnnotationUtil.isNegated( annotationScore._targetAnnotation );
-         NeoplasmSummaryCreator.addDebug(  "CrRelationFinder.createAllRelations " + ( sourceNegated ? "-" : "+") + source.getCoveredText() + " "
-                                 + source.getBegin() + "," + source.getEnd() + "  *"
-                                 + relationName + "*  " + (targetNegated?"-":"+")
-                                 + annotationScore._targetAnnotation.getCoveredText() + " "
-                                 + annotationScore._targetAnnotation.getBegin() + "," + annotationScore._targetAnnotation.getEnd()
-                                           + " = score listed above\n");
+//         final boolean sourceNegated = IdentifiedAnnotationUtil.isNegated( source );
+//         final boolean targetNegated = IdentifiedAnnotationUtil.isNegated( annotationScore._targetAnnotation );
+//         NeoplasmSummaryCreator.addDebug(  "CrRelationFinder.createAllRelations " + ( sourceNegated ? "-" : "+")
+//                                           + Neo4jOntologyConceptUtil.getUri( source ) + " "
+//                                 + source.getBegin() + "," + source.getEnd() + "  *"
+//                                 + relationName + "*  " + (targetNegated?"-":"+")
+//                                 + Neo4jOntologyConceptUtil.getUri( annotationScore._targetAnnotation ) + " "
+//                                 + annotationScore._targetAnnotation.getBegin() + "," + annotationScore._targetAnnotation.getEnd()
+//                                           + " = score listed above\n");
       }
    }
 
 
 
 
-//   static private final double MIN_RELATION_CONFIDENCE = 1;
-   static private final double MIN_RELATION_CONFIDENCE = 1;
-   static private final double MIN_LOCATION_CONFIDENCE = 0;
 
    static private class RelationScore {
       private final IdentifiedAnnotation _targetAnnotation;
@@ -275,12 +326,12 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          _totalScore = Math.max( getMinimumScore(), ( _uriRelationScore + _distanceScore ) / 2
                                              - _sourcePenalties.getTotalPenalty()
                                              - _targetPenalties.getTotalPenalty() );
-         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.TargetAnnotationScore: (rType+placement)"
-                                          + "/2-sourceAssert-targetAssert: " +
-                                          _targetAnnotation.getCoveredText() + "(" +
-                                          _uriRelationScore + "+" + _distanceScore + ")/2 - "
-                                          + _sourcePenalties  + " - " + _targetPenalties
-                                          + " = " + _totalScore + "\n" );
+//         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.TargetAnnotationScore: (rType+placement)"
+//                                          + "/2- ( " +
+//                                          Neo4jOntologyConceptUtil.getUri( _targetAnnotation ) + "(" +
+//                                          _uriRelationScore + "+" + _distanceScore + ")/2 - "
+//                                          + _sourcePenalties  + " " + _targetPenalties
+//                                          + " ) = " + _totalScore + "\n" );
          return _totalScore;
       }
    }
@@ -300,9 +351,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    }
 
 
-   // TODO - Try 2 then 1
-//   static private final double MIN_PLACEMENT_SCORE = 3;
-   static private final double MIN_PLACEMENT_SCORE = 1;
 
 
    /**
@@ -316,14 +364,14 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                             final Pair<Double> placementPenalty) {
       final double tokenDistance = getDistance( source, target);
       if ( tokenDistance == 0 ) {
-         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100\n" );
+//         NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100\n" );
          return 100;
       }
-      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
-                                       + placementPenalty.getValue1() + " + " + placementPenalty.getValue2()
-                                       + " * " + tokenDistance + ") = " + MIN_PLACEMENT_SCORE + " or "
-                                       + (100 - (placementPenalty.getValue1()
-                                                 + placementPenalty.getValue2() * tokenDistance)) + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "CrRelationFinder.getPlacementScore: 100 - ("
+//                                       + placementPenalty.getValue1() + " + " + placementPenalty.getValue2()
+//                                       + " * " + tokenDistance + ") = " + MIN_PLACEMENT_SCORE + " or "
+//                                       + (100 - (placementPenalty.getValue1()
+//                                                 + placementPenalty.getValue2() * tokenDistance)) + "\n" );
       return Math.max( MIN_PLACEMENT_SCORE, 100 - (placementPenalty.getValue1() + placementPenalty.getValue2() * tokenDistance) );
    }
 
@@ -360,46 +408,67 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    }
 
 
-   static private final double SENTENCE_OFFSET = 0;
-   static private final double PARAGRAPH_OFFSET = 5;
-   static private final double SECTION_OFFSET = 10;
-   static private final double DOCUMENT_OFFSET = 15;
-   static private final double SENTENCE_MULTIPLIER = 0.1;
-   static private final double PARAGRAPH_MULTIPLIER = 0.2;
-   static private final double SECTION_MULTIPLIER = 0.3;
-   static private final double DOCUMENT_MULTIPLIER = .5;
 
    static private Pair<Double> getPlacementPenalty( final IdentifiedAnnotation source,
                                                     final IdentifiedAnnotation target,
-                                                    final Collection<Pair<Integer>> paragraphBounds ) {
+                                                    final Collection<Pair<Integer>> paragraphBounds,
+                                                    final Collection<Pair<Integer>> listEntryBounds ) {
       if ( !source.getSegmentID().equals( target.getSegmentID() ) ) {
-         // Not in the same section, which is the largest window of interest.
+         // Not in the same section, so nothing else can be in common.
          return new Pair<>( DOCUMENT_OFFSET, DOCUMENT_MULTIPLIER );
       }
       if ( source.getSentenceID().equals( target.getSentenceID() ) ) {
-         // In the same sentence, no penalty.
          return new Pair<>( SENTENCE_OFFSET, SENTENCE_MULTIPLIER );
       }
-      for ( Pair<Integer> paragraph : paragraphBounds ) {
-         final boolean foundSource = paragraph.getValue1() <= source.getBegin()
-                                     && paragraph.getValue2() <= source.getEnd();
-         final boolean foundTarget = paragraph.getValue1() <= target.getBegin()
-                                     && paragraph.getValue2() <= target.getEnd();
-         if ( foundSource != foundTarget ) {
-            // Not in the same Paragraph, but in the same Section.
-            return new Pair<>( SECTION_OFFSET, SECTION_MULTIPLIER );
-         } else if ( foundSource ) {
-            // In the same paragraph.
-            return new Pair<>( PARAGRAPH_OFFSET, PARAGRAPH_MULTIPLIER );
-         }
+      if ( inSameListEntry( source, target, listEntryBounds ) ) {
+         return new Pair<>( LIST_ENTRY_OFFSET, LIST_ENTRY_MULTIPLIER );
       }
-      // In the same Section.
+      if ( inSameParagraph( source, target, paragraphBounds ) ) {
+         return new Pair<>( PARAGRAPH_OFFSET, PARAGRAPH_MULTIPLIER );
+      }
+      // In the same Section, but that is the best of it.
       return new Pair<>( SECTION_OFFSET, SECTION_MULTIPLIER );
    }
 
+   static private boolean inSameParagraph( final IdentifiedAnnotation source,
+                                           final IdentifiedAnnotation target,
+                                           final Collection<Pair<Integer>> paragraphBounds ) {
+      for ( Pair<Integer> paragraph : paragraphBounds ) {
+         final boolean foundSource = paragraph.getValue1() <= source.getBegin()
+                                     && source.getEnd() <= paragraph.getValue2();
+         final boolean foundTarget = paragraph.getValue1() <= target.getBegin()
+                                     && target.getEnd() <= paragraph.getValue2();
+         if ( foundSource != foundTarget ) {
+            return false;
+         } else if ( foundSource ) {
+            return true;
+         }
+      }
+      return false;
+   }
 
-   static private final double NEGATED_PENALTY = 30;
-   static private final double UNCERTAIN_PENALTY = 5;
+   static private boolean inSameListEntry( final IdentifiedAnnotation source,
+                                           final IdentifiedAnnotation target,
+                                           final Collection<Pair<Integer>> listEntryBounds ) {
+      int sourceIndex = -1;
+      int targetIndex = -2;
+      int index = 1;
+      for ( Pair<Integer> listEntry : listEntryBounds ) {
+         if ( listEntry.getValue1() <= source.getBegin()
+              && source.getEnd() <= listEntry.getValue2() ) {
+            sourceIndex = index;
+         }
+         if ( listEntry.getValue1() <= target.getBegin()
+              && target.getEnd() <= listEntry.getValue2() ) {
+            targetIndex = index;
+         }
+         if ( sourceIndex > 0 && targetIndex > 0 ) {
+            break;
+         }
+         index++;
+      }
+      return sourceIndex == targetIndex;
+   }
 
    static private double getAssertionPenalty( final IdentifiedAnnotation target ) {
       double penalty = 0;
@@ -412,9 +481,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return penalty;
    }
 
-   static private final double FAMILY_HISTORY_PENALTY = 50;
-   static private final double PERSONAL_HISTORY_PENALTY = 5;
-
    static private double getHistoryPenalty( final String precedingText, final IdentifiedAnnotation target ) {
       if ( isFamilyHistory( precedingText, target ) ) {
          return FAMILY_HISTORY_PENALTY;
@@ -424,7 +490,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return 0;
    }
 
-   static private final double TEST_PENALTY = 40;
 
    static private double getTestPenalty( final String precedingText, final String sentenceText  ) {
 //      if ( isTestSentence( precedingText ) ) {
@@ -434,16 +499,15 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return 0;
    }
 
-   static private final double MASS_PENALTY = 40;
-   static private final double NODE_PENALTY = 50;
-
+   static private final Collection<String> MASS_BUMPS = Arrays.asList(
+         "tumor site", "primary tumor", "histologic type" );
 
    static private double getMassPenalty( final String precedingText, final String sentenceText ) {
-      if ( precedingText.contains( "tumor site" ) || precedingText.contains( "primary tumor" )) {
+      if ( MASS_BUMPS.stream().anyMatch( precedingText::contains ) ) {
          // boost
          return -40;
       }
-      if ( sentenceText.contains( "node" ) ) {
+      if ( sentenceText.contains( "node" ) || sentenceText.contains( "nodul" ) ) {
          return NODE_PENALTY;
       }
       if ( isMassSentence( precedingText, sentenceText ) ) {
@@ -452,7 +516,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return 0;
    }
 
-   static private final double NEARBY_PENALTY = 10;
 
    static private double getNearbyPenalty( final String precedingText ) {
       if ( isIndirectSite( precedingText ) ) {
@@ -511,7 +574,6 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final Collection<String> TEST_PRECEDENTS = new HashSet<>( Arrays.asList(
          "specimen",
-         "part #",
          "biopsy",
          "biopsies",
          "bx",
@@ -601,6 +663,84 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return MASS_WORDS.stream().anyMatch( sentenceText::contains );
    }
 
+   static private final Collection<SectionType> PREFERRED_SECTIONS = new HashSet<>( Arrays.asList(
+         FinalDiagnosis, ClinicalHistory, PreOpDiagnosis, PostOpDiagnosis, PrincipalDiagnosis, ClinicalData
+                                                                                                ) );
+   static private final Collection<SectionType> LESSER_SECTIONS = new HashSet<>( Arrays.asList(
+         PriorTherapy, ReviewSystems, PastSurgicalHistory, HistologySummary,
+         CurrentTherapy, FamilyHistory
+                                                                                                 ) );
+   // Not in ctakes, in dphe
+   static private final Collection<String> LESSER_SECTION_NAMES =new HashSet<>( Arrays.asList(
+         "specimen information", "microscopic description", "biopsy results" ) );
+
+   static private final Collection<SectionType> NEOPLASM_LESSER_SECTIONS = new HashSet<>( Arrays.asList(
+         Microscopic, ClinicalInfo
+                                                                                              ) );
+   // Not in ctakes, in dphe
+//   static private final Collection<String> NEOPLASM_LESSER_SECTION_NAMES = new HashSet<>( Arrays.asList(
+//         "specimen information" ) );
+
+//   static private final Collection<SectionType> LOCATION_LESSER_SECTIONS = new HashSet<>( Arrays.asList() );
+   // Not in ctakes, in dphe
+//   static private final Collection<String> LOCATION_LESSER_SECTION_NAMES = new HashSet<>( Arrays.asList() );
+
+   static private double getSectionPenalty( final IdentifiedAnnotation annotation ) {
+      final SectionType sectionType = getSectionType( annotation );
+      if ( PREFERRED_SECTIONS.contains( sectionType ) ) {
+         return PREFERRED_SECTION_BUMP;
+      }
+      if ( LESSER_SECTIONS.contains( sectionType )
+           || LESSER_SECTION_NAMES.contains( getSectionId( annotation ).toLowerCase() ) ) {
+
+         return LESSER_SECTION_PENALTY;
+      }
+      return 0;
+   }
+
+   static private double getNeoplasmSectionPenalty( final IdentifiedAnnotation annotation ) {
+      final SectionType sectionType = getSectionType( annotation );
+      if ( PREFERRED_SECTIONS.contains( sectionType ) ) {
+         return PREFERRED_SECTION_BUMP;
+      }
+      if ( LESSER_SECTIONS.contains( sectionType ) || NEOPLASM_LESSER_SECTIONS.contains( sectionType )
+      || LESSER_SECTION_NAMES.contains( getSectionId( annotation ).toLowerCase() ) ) {
+         return LESSER_SECTION_PENALTY;
+      }
+      return 0;
+   }
+
+   static private double getLocationSectionPenalty( final IdentifiedAnnotation annotation ) {
+      final SectionType sectionType = getSectionType( annotation );
+      if ( PREFERRED_SECTIONS.contains( sectionType ) ) {
+         return PREFERRED_SECTION_BUMP;
+      }
+      if ( LESSER_SECTIONS.contains( sectionType ) || NEOPLASM_LESSER_SECTIONS.contains( sectionType )
+           || LESSER_SECTION_NAMES.contains( getSectionId( annotation ).toLowerCase() ) ) {
+         return LESSER_SECTION_PENALTY;
+      }
+      return 0;
+   }
+
+   static private SectionType getSectionType( final IdentifiedAnnotation annotation ) {
+      final String sectionId = getSectionId( annotation );
+      final SectionType sectionType = SectionType.getSectionType( sectionId );
+//      NeoplasmSummaryCreator.addDebug( "Section: " + sectionType.getName() + " "
+//                                       + sectionId + " "
+//                                       + Neo4jOntologyConceptUtil.getUri( annotation ) + "\n" );
+      return sectionType;
+   }
+
+   static private String getSectionId( final IdentifiedAnnotation annotation ) {
+      final String sectionId = annotation.getSegmentID();
+      final int scoreIndex = sectionId.indexOf( '_' );
+      if ( scoreIndex > 0 ) {
+         return sectionId.substring( 0, scoreIndex );
+      }
+      return sectionId;
+   }
+
+
    static private Pair<String> getSentenceText( final IdentifiedAnnotation annotation,
                                            final Map<String,Sentence> sentences ) {
       final String sentenceId = annotation.getSentenceID();
@@ -613,13 +753,14 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
                                           .toLowerCase();
       final int begin = annotation.getBegin() - sentence.getBegin();
       final String precedingText = begin <= 0 ? "" : sentenceText.substring( 0, begin );
-      return new Pair( precedingText, sentenceText );
+      return new Pair<>( precedingText, sentenceText );
    }
 
    static private class AnnotationPenalties {
       private final Pair<Integer> _beginEndTokens;
       private final double _assertionPenalty;
       private final double _historyPenalty;
+      private final double _sectionPenalty;
       private AnnotationPenalties( final IdentifiedAnnotation annotation,
                                    final Map<String,Sentence> sentences,
                                    final Map<Integer,Integer> tokenBeginToTokenNums,
@@ -632,15 +773,32 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          _beginEndTokens = new Pair<>( beginToken, endToken );
          _assertionPenalty = getAssertionPenalty( annotation );
          _historyPenalty = getHistoryPenalty( getSentenceText(  annotation, sentences ).getValue1(), annotation );
+         _sectionPenalty = getMySectionPenalty( annotation );
+      }
+      protected double getMySectionPenalty( final IdentifiedAnnotation annotation ) {
+         return getSectionPenalty( annotation );
       }
       private Pair<Integer> getBeginEndTokens() {
          return _beginEndTokens;
       }
       protected double getTotalPenalty() {
-         return _assertionPenalty + _historyPenalty;
+         return _assertionPenalty + _historyPenalty + _sectionPenalty;
       }
       public String toString() {
-         return _assertionPenalty + " " + _historyPenalty;
+         return " Assert " + _assertionPenalty + " Hist " + _historyPenalty + " Sect " + _sectionPenalty;
+      }
+   }
+
+   static private class NeoplasmAnnotationPenalties extends AnnotationPenalties {
+
+      private NeoplasmAnnotationPenalties( final IdentifiedAnnotation annotation,
+                                           final Map<String, Sentence> sentences,
+                                           final Map<Integer, Integer> tokenBeginToTokenNums,
+                                           final Map<Integer, Integer> tokenEndToTokenNums, final int docLength ) {
+         super( annotation, sentences, tokenBeginToTokenNums, tokenEndToTokenNums, docLength );
+      }
+      protected double getMySectionPenalty( final IdentifiedAnnotation annotation ) {
+         return getNeoplasmSectionPenalty( annotation );
       }
    }
 
@@ -660,11 +818,15 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          _massPenalty = getMassPenalty( sentenceText.getValue1(), sentenceText.getValue2() );
          _nearbyPenalty = getNearbyPenalty( sentenceText.getValue1() );
       }
+      protected double getMySectionPenalty( final IdentifiedAnnotation annotation ) {
+         return getLocationSectionPenalty( annotation );
+      }
       protected double getTotalPenalty() {
          return super.getTotalPenalty() + _procedurePenalty + _massPenalty + _nearbyPenalty;
       }
       public String toString() {
-         return super.toString() + " " + _procedurePenalty + " " + _massPenalty + " " + _nearbyPenalty;
+         return super.toString() + " Proc " + _procedurePenalty + " Mass "
+                + _massPenalty + " Near " + _nearbyPenalty;
       }
    }
 

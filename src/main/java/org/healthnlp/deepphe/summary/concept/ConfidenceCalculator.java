@@ -29,36 +29,27 @@ final public class ConfidenceCalculator {
                                              .map( d -> ""+d )
                                              .collect( Collectors.joining( "," ) )
                                        + " :\n(" + confidences.size() + ") "
+//                                       + getStandardNumerator( confidences ) + "/"
+//                                       + getHighDenominator( confidences.size() )
+//                                       + " = " + getStandardConfidence( confidences )
+//                                       + "     vs.    "
+//                                       + getStandardNumerator( confidences ) + "/"
+//                                       + getMidDenominator( confidences.size() )
+//                                       + " = " + ( getStandardNumerator( confidences )
+//                                                   / getMidDenominator( confidences.size() ) )
+//                                       + "     vs.    "
+//                                       + getStandardNumerator( confidences ) + "/"
+//                                       + getLowDenominator( confidences.size() )
+//                                       + " = " + ( getStandardNumerator( confidences )
+//                                                   / getLowDenominator( confidences.size() ) )
+//                                       + "     vs.    "
                                        + getStandardNumerator( confidences ) + "/"
-                                       + getHighDenominator( confidences.size() )
-                                       + " = " + getStandardConfidence( confidences )
-                                       +"   vs.  "
-                                       + getStandardNumerator( confidences ) + "/"
-                                       + getStandardDenominator( confidences.size() )
-                                       + " = " + (getStandardNumerator( confidences )
-                                                  / getStandardDenominator( confidences.size() ) )
+                                       + getLowBumpDenominator( confidences.size() )
+                                       + " = " + ( getStandardNumerator( confidences )
+                                                   / getLowBumpDenominator( confidences.size() ) )
                                        + "\n" );
       return getStandardConfidence( confidences );
    }
-
-//   static public double calculateAsRelationTarget( final List<Double> confidences ) {
-//      NeoplasmSummaryCreator.addDebug( "ConfidenceCalculator.calculateAsRelationTarget:  "
-//                                       + confidences.stream().sorted()
-//                                                                  .map( d -> d+"" )
-//                                                                  .collect( Collectors.joining(",") )
-//                                       + " :\n(" + confidences.size() + ") "
-//                                       + getStandardNumerator( confidences ) + "/"
-//                                       + getHighDenominator( confidences.size() )
-//                                       + " = " + (getStandardNumerator( confidences )
-//                                                  / getStandardDenominator( confidences.size() ) )
-//                                       +"   vs.  "
-//                                       + getStandardNumerator( confidences ) + "/"
-//                                       + getStandardDenominator( confidences.size() )
-//                                       + " = " + (getStandardNumerator( confidences )
-//                                                  / getHighDenominator( confidences.size() ) )
-//                                     + "\n" );
-//      return getStandardConfidence( confidences );
-//   }
 
    // TODO - use minimum value of zero and count of non-zero values?  Need to return 0 when count == 0;
    static public double getStandardConfidence( final List<Double> values ) {
@@ -66,23 +57,30 @@ final public class ConfidenceCalculator {
          return 0;
       }
       final double numerator = getStandardNumerator( values );
-      final double denominator = getHighDenominator( values.size() );
+//      final double denominator = getHighDenominator( values.size() );
+      final double denominator = getLowBumpDenominator( values.size() );
       return numerator / denominator;
    }
 
    static private double getStandardNumerator( final Collection<Double> values ) {
       // Value larger numbers much more than smaller numbers.
-      return values.stream().mapToDouble( d -> d*d/100 ).sum();
+      return values.stream().mapToDouble( d -> d*d ).sum() / 100;
    }
 
-   // Ovary Laterality +.12, .04
-   static private double getStandardDenominator( final int count ) {
-      return count/2d + Math.sqrt( count );
+   static private double getLowDenominator( final int count ) {
+      return Math.sqrt( count );
    }
 
-   // Ovary Topo Major +.07, .08  Grade +07, .04
+   static private double getMidDenominator( final int count ) {
+      return Math.sqrt( 2*count );
+   }
+
    static private double getHighDenominator( final int count ) {
       return 2 * Math.sqrt( count );
+   }
+
+   static private double getLowBumpDenominator( final int count ) {
+      return 2 + Math.sqrt( count );
    }
 
    /**

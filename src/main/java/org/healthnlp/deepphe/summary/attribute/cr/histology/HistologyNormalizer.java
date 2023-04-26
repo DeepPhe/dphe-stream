@@ -4,6 +4,7 @@ import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
+import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.healthnlp.deepphe.util.KeyValue;
@@ -25,12 +26,12 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
       // HistologyInfoCollector.getAggregates includes neoplasm aggregate.
       _uriStrengths = getAttributeUriStrengths( infoCollector );
-      NeoplasmSummaryCreator.addDebug( "Histology = " + infoCollector.getBestAggregates()
-                                                                     .stream()
-                                                                     .map( CrConceptAggregate::getUri )
-                                                                     .collect( Collectors.joining(",") ) +"\n");
+//      NeoplasmSummaryCreator.addDebug( "Histology = " + infoCollector.getBestAggregates()
+//                                                                     .stream()
+//                                                                     .map( CrConceptAggregate::getUri )
+//                                                                     .collect( Collectors.joining(",") ) +"\n");
       super.init( infoCollector, dependencies );
-      NeoplasmSummaryCreator.addDebug( "Histology best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "Histology best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
    }
 
    // Works ok for lung, but nobody else
@@ -42,7 +43,15 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
 //                       .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
 //   }
 
-   public String getCode( final String uri ) {
+   public String getDefaultTextCode() {
+      return "8000";
+   }
+
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
+      return getTextCode( infoCollector.getNeoplasm().getUri() );
+   }
+
+   public String getTextCode( final String uri ) {
       return getHistologyCode( uri, _uriStrengths );
    }
 
@@ -51,27 +60,27 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
       useAllEvidenceMap( infoCollector, dependencies );
    }
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      final Map<String,Long> codeCountMap = createCodeCountMap( aggregates );
-      String bestCode = "";
-      long bestCodesCount = 0;
-      for ( Map.Entry<String,Long> codeCount : codeCountMap.entrySet() ) {
-         final long count = codeCount.getValue();
-         if ( getInt( codeCount.getKey() ) > getInt( bestCode ) ) {
-            bestCode = codeCount.getKey();
-            bestCodesCount = count;
-         }
-      }
-      setBestCodesCount( (int)bestCodesCount );
-      setAllCodesCount( aggregates.size() );
-      setUniqueCodeCount( codeCountMap.size() );
-      NeoplasmSummaryCreator.addDebug( "HistologyNormalizer "
-                                       + codeCountMap.entrySet().stream()
-                                                 .map( e -> e.getKey() + ":" + e.getValue() )
-                                                 .collect( Collectors.joining(",") ) + " = "
-                                       + bestCode +"\n");
-      return bestCode;
-   }
+//   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+//      final Map<String,Long> codeCountMap = createCodeCountMap( aggregates );
+//      String bestCode = "";
+//      long bestCodesCount = 0;
+//      for ( Map.Entry<String,Long> codeCount : codeCountMap.entrySet() ) {
+//         final long count = codeCount.getValue();
+//         if ( getInt( codeCount.getKey() ) > getInt( bestCode ) ) {
+//            bestCode = codeCount.getKey();
+//            bestCodesCount = count;
+//         }
+//      }
+//      setBestCodesCount( (int)bestCodesCount );
+//      setAllCodesCount( aggregates.size() );
+//      setUniqueCodeCount( codeCountMap.size() );
+//      NeoplasmSummaryCreator.addDebug( "HistologyNormalizer "
+//                                       + codeCountMap.entrySet().stream()
+//                                                 .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                 .collect( Collectors.joining(",") ) + " = "
+//                                       + bestCode +"\n");
+//      return bestCode;
+//   }
 
 
 
@@ -85,6 +94,7 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
                                                      broadMorphCodeList,
                                                      exactMorphCodeList,
                                                      uriStrengths );
+      NeoplasmSummaryCreator.addDebug( "HistologyNormalizer.getHistologyCode bestMorphCode: " + bestMorphCode + "\n"  );
       if ( !bestMorphCode.isEmpty() ) {
          return bestMorphCode.substring( 0, 4 );
       }
@@ -94,6 +104,8 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
       final List<String> sortedMorphCodes = getSortedMorphCodes( ontoMorphCodes,
                                                                  broadMorphCodes,
                                                                  exactMorphCodes );
+      NeoplasmSummaryCreator.addDebug( "HistologyNormalizer.getHistologyCode sortedMorphCodes: " +
+                                       String.join( ",", sortedMorphCodes ) + "\n"  );
       return getBestHistology( sortedMorphCodes );
    }
 
@@ -364,19 +376,25 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
 
 
 
-   private Map<String,Integer> getAttributeUriStrengths( final AttributeInfoCollector attributeInfoCollector ) {
-      final Collection<String> exactUris = attributeInfoCollector.getBestUris();
-      final Collection<CrConceptAggregate> aggregates = attributeInfoCollector.getBestAggregates();
+   private Map<String,Integer> getAttributeUriStrengths( final AttributeInfoCollector infoCollector ) {
+      final Collection<CrConceptAggregate> aggregates = infoCollector.getAllAggregates();
+      final Collection<CrConceptAggregate> bestAggregates = new ConfidenceGroup<>( aggregates ).getBest();
+      final Collection<String> exactUris = bestAggregates.stream()
+                                                         .map( CrConceptAggregate::getUri )
+                                                       .collect(  Collectors.toSet() );
+
       // Switched from getAllUris to uris for affirmed mentions 3/23/2021
-      final Collection<Mention> allMentions = aggregates.stream()
+      final Collection<Mention> allMentions = bestAggregates.stream()
                                                         .map( CrConceptAggregate::getMentions )
                                                         .flatMap( Collection::stream )
                                                         .filter( m -> ( !m.isNegated()
                                                                         || exactUris.contains( m.getClassUri() ) ) )
                                                         .collect( Collectors.toSet() );
-      final Collection<String> allUris = attributeInfoCollector.getAllUris();
+      final Collection<String> allUris = infoCollector.getAllAggregates().stream()
+                                                                           .map( CrConceptAggregate::getUri )
+                                                                           .collect( Collectors.toSet() );
       final Map<String,Collection<String>> allUriRoots = new HashMap<>();
-      for ( CrConceptAggregate attribute : aggregates ) {
+      for ( CrConceptAggregate attribute : bestAggregates ) {
          allUriRoots.putAll( attribute.getUriRootsMap() );
       }
       final List<KeyValue<String, Double>> uriQuotients = UriScoreUtil.mapUriQuotients( allUris,
@@ -396,14 +414,6 @@ public class HistologyNormalizer extends AbstractAttributeNormalizer {
       return uriStrengths;
    }
 
-
-   static private int getInt( final String value ) {
-      try {
-         return Integer.parseInt( value );
-      } catch ( NumberFormatException nfE ) {
-         return 0;
-      }
-   }
 
 
 }

@@ -3,11 +3,12 @@ package org.healthnlp.deepphe.summary.attribute.cr.stage;
 import org.healthnlp.deepphe.neo4j.constant.Neo4jConstants;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
-import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author SPF , chip-nlp
@@ -15,38 +16,45 @@ import java.util.stream.Collectors;
  */
 public class StageNormalizer extends AbstractAttributeNormalizer {
 
-   public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
-      super.init( infoCollector, dependencies );
-      NeoplasmSummaryCreator.addDebug( "Stage best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
+      return getBestTextCode( infoCollector.getAllRelations() );
    }
 
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      if ( aggregates.isEmpty() ) {
-         // No Default stage.
-         return "";
-      }
-      final Map<String,Long> countMap = createCodeCountMap( aggregates );
-      final List<String> codeList = new ArrayList<>( countMap.keySet() );
-      codeList.sort( Comparator.comparingInt( SORT_LIST::indexOf ).reversed() );
-      final String bestCode = codeList.get( 0 );
-      if ( bestCode.isEmpty() ) {
-         return "";
-      }
-      long bestCount = countMap.get( bestCode );
-      setBestCodesCount( (int)bestCount );
-      setAllCodesCount( aggregates.size() );
-      setUniqueCodeCount( countMap.size() );
-      NeoplasmSummaryCreator.addDebug( "StageNormalizer "
-                                       + countMap.entrySet().stream()
-                                                 .map( e -> e.getKey() + ":" + e.getValue() )
-                                                 .collect( Collectors.joining(",") ) + " = "
-                                       + bestCode +"\n");
-      return bestCode;
+   public String getDefaultTextCode() {
+      return "";
+   }
+
+//   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+//      if ( aggregates.isEmpty() ) {
+//         // No Default stage.
+//         return "";
+//      }
+//      final Map<String,Long> countMap = createCodeCountMap( aggregates );
+//      final List<String> codeList = new ArrayList<>( countMap.keySet() );
+//      codeList.sort( Comparator.comparingInt( SORT_LIST::indexOf ).reversed() );
+//      final String bestCode = codeList.get( 0 );
+//      if ( bestCode.isEmpty() ) {
+//         return "";
+//      }
+//      long bestCount = countMap.get( bestCode );
+//      setBestCodesCount( (int)bestCount );
+//      setAllCodesCount( aggregates.size() );
+//      setUniqueCodeCount( countMap.size() );
+//      NeoplasmSummaryCreator.addDebug( "StageNormalizer "
+//                                       + countMap.entrySet().stream()
+//                                                 .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                 .collect( Collectors.joining(",") ) + " = "
+//                                       + bestCode +"\n");
+//      return bestCode;
+//   }
+
+   protected void sortTextCodes( final List<String> codes ) {
+      codes.sort( Comparator.comparingInt( SORT_LIST::indexOf ).reversed() );
    }
 
 
-   public String getCode( final String uri ) {
+   public String getTextCode( final String uri ) {
       if ( uri.isEmpty() || uri.equals( Neo4jConstants.MISSING_NODE_NAME ) ) {
          return "";
       }

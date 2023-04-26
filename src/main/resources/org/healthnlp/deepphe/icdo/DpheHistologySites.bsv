@@ -4602,7 +4602,6 @@ C339|Trachea|803|Sarcomatoid_Carcinoma|8032/3|Sarcomatoid_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C339|Trachea|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
-C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
 C339|Trachea|804|Non_Small_Cell_Carcinoma|8046/6|Metastatic_Lung_Carcinoma
 C339|Trachea|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
@@ -4682,7 +4681,6 @@ C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8032/3|Sarcomatoid_Carcin
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8033/3|Sarcomatoid_Carcinoma
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8034/3|Polygonal_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|803|Sarcomatoid_Carcinoma|8035/3|Neoplastic_Osteoclast_Like_Giant_Cell
-C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/2|Lung_Adenocarcinoma
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/3|Non_Small_Cell_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Non_Small_Cell_Carcinoma|8046/6|Metastatic_Lung_Carcinoma
 C340-C343,C348-C349|Bronchus|804|Small_Cell_Carcinoma|8041/3|Small_Cell_Carcinoma
@@ -4713,6 +4711,7 @@ C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8121/3|Schneiderian
 C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8122/3|Sarcomatoid_Carcinoma
 C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8123/3|Basaloid_Carcinoma
 C340-C343,C348-C349|Bronchus|812|Transitional_Cell_Carcinoma|8124/3|Anal_Canal_Cloacogenic_Carcinoma
+C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8140/1|Lung_Carcinoma
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8140/2|Adenocarcinoma_In_Situ
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8140/3|Adenocarcinoma
 C340-C343,C348-C349|Bronchus|814|Adenocarcinoma|8141/3|Scirrhous_Adenocarcinoma

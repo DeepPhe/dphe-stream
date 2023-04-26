@@ -1,10 +1,10 @@
 package org.healthnlp.deepphe.summary.attribute.cr.laterality;
 
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
-import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.util.Arrays;
@@ -35,6 +35,7 @@ public class LateralityNormalizer extends AbstractAttributeNormalizer {
 //static private final double CONFIDENCE_CUTOFF = 0.1;
 static private final double CONFIDENCE_CUTOFF = 1.5;
 
+   private boolean _isLung = false;
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
       String topographyMajor = dependencies.getOrDefault( "topography_major", "" )
@@ -48,90 +49,30 @@ static private final double CONFIDENCE_CUTOFF = 1.5;
          setBestCode( "0" );
          fillEvidenceMap( infoCollector, dependencies );
 //      } else if ( infoCollector.getConfidence() < CONFIDENCE_CUTOFF ) {
-//         // TODO - Math.abs( left confidence - right confidence )
 //         // A "Paired Site, but no confident information on laterality"
 //         setBestCode( "9" );
 //         fillEvidenceMap( infoCollector, dependencies );
       } else {
+         _isLung = topographyMajor.equals( "C34" );
          super.init( infoCollector, dependencies );
-         final String bestCode = getBestRelationCode( infoCollector.getAllRelations() );
-         setBestCode( bestCode );
-         fillEvidenceMap( infoCollector, dependencies );
       }
-      NeoplasmSummaryCreator.addDebug( "Laterality best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+//      NeoplasmSummaryCreator.addDebug( "Laterality best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
    }
 
    public String getBestCode( final AttributeInfoCollector infoCollector ) {
       return getBestRelationCode( infoCollector.getAllRelations() );
    }
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      return "9";
-   }
-//      if ( aggregates.isEmpty() ) {
-//         return "9";
-//      }
-//      final Map<Integer,Long> intCountMap = createIntCodeCountMap( aggregates );
-//      int bestCode = -1;
-//      long bestCodesCount = 0;
-//      long bilateralCount = 0;
-//      long unilateralCount = 0;
-//      long unspecifiedCount = 0;
-//      for ( Map.Entry<Integer,Long> codeCount : intCountMap.entrySet() ) {
-//         final int code = codeCount.getKey();
-//         final long count = codeCount.getValue();
-//         if ( code == 4 ) {
-//            bilateralCount = count;
-//         }
-//         if ( count > bestCodesCount ) {
-//            if ( code == 3 ) {
-//               unilateralCount = count;
-//            } else if ( code == 9 ) {
-//               unspecifiedCount = count;
-//            } else {
-//               bestCode = code;
-//               bestCodesCount = count;
-//            }
-//         } else if ( count == bestCodesCount && code + bestCode == 3 ) {
-//            // Right and Left are equal, use Bilateral.
-//            bestCode = 4;
-//            bilateralCount += count;
-//         }
-//      }
-//      if ( bilateralCount > 0 ) {
-//         bestCode = 4;
-//         bestCodesCount = bilateralCount;
-//      } else if ( bestCode == 0 ) {
-//         if ( unilateralCount > 0 ) {
-//            bestCode = 3;
-//            bestCodesCount = unilateralCount;
-//         } else if ( unspecifiedCount > 0 ) {
-//            bestCode = 9;
-//            bestCodesCount = unspecifiedCount;
-//         }
-//      }
-//      setBestCodesCount( (int)bestCodesCount );
-//      setAllCodesCount( aggregates.size() );
-//      setUniqueCodeCount( intCountMap.size() );
-//      NeoplasmSummaryCreator.addDebug( "LateralityNormalizer "
-//                                       + intCountMap.entrySet().stream()
-//                                                 .map( e -> e.getKey() + ":" + e.getValue() )
-//                                                 .collect( Collectors.joining(",") ) + " = "
-//                                       + bestCode +"\n");
-//      return bestCode <= 0 ? "9" : bestCode+"";
-//   }
 
    public String getBestRelationCode( final Collection<ConceptAggregateRelation> relations ) {
       if ( relations.isEmpty() ) {
          return "9";
       }
       final Map<Integer,Double> intConfidenceMap = createIntCodeConfidenceMap( relations );
-
       NeoplasmSummaryCreator.addDebug( "LateralityNormalizer "
                                        + intConfidenceMap.entrySet().stream()
                                                     .map( e -> e.getKey() + ":" + e.getValue() )
                                                     .collect( Collectors.joining(",") )  +"\n");
-
       double rightConfidence = intConfidenceMap.getOrDefault( 1, -1d );
       double leftConfidence = intConfidenceMap.getOrDefault( 2, -1d );
       double unilateralConfidence = intConfidenceMap.getOrDefault( 3, -1d );
@@ -139,11 +80,19 @@ static private final double CONFIDENCE_CUTOFF = 1.5;
       double unspecifiedConfidence = intConfidenceMap.getOrDefault( 9, -1d );
 
       if ( bilateralConfidence > 0 && leftConfidence > 0 && rightConfidence > 0 ) {
+         if ( bilateralConfidence > 0
+              && Math.min( leftConfidence, rightConfidence ) / Math.max( leftConfidence, rightConfidence ) > 0.8 ) {
+            NeoplasmSummaryCreator.addDebug( "LateralityNormalizer Bilateral "
+                                             + (Math.min( leftConfidence, rightConfidence ) / Math.max( leftConfidence,
+                                                                                                        rightConfidence ) )+ "\n" );
+            return 4+"";
+         }
          if ( bilateralConfidence > leftConfidence || bilateralConfidence > rightConfidence ) {
             bilateralConfidence += Math.min( leftConfidence, rightConfidence );
          }
       }
       if ( bilateralConfidence > rightConfidence && bilateralConfidence > leftConfidence ) {
+         NeoplasmSummaryCreator.addDebug( "LateralityNormalizer Bilateral by sum " + bilateralConfidence + "\n" );
          return 4+"";
       }
       if ( rightConfidence > leftConfidence && rightConfidence > unspecifiedConfidence ) {
@@ -159,24 +108,20 @@ static private final double CONFIDENCE_CUTOFF = 1.5;
    }
 
 
-
-   public String getCode( final String uri ) {
-      final int code = getIntCode( uri );
-      return code <= 0 ? "" : code+"";
-   }
-
    // https://seer.cancer.gov/archive/manuals/2021/SPCSM_2021_MainDoc.pdf
-   protected int getIntCode( final String uri ) {
+   public int getIntCode( final String uri ) {
        if ( uri.equals( UriConstants.BILATERAL ) ) {
          return 4;
       }
-      if ( uri.equals( UriConstants.RIGHT ) || uri.equals( "Unilateral_Right" ) ) {
+      if ( uri.equals( UriConstants.RIGHT ) || uri.equals( "Unilateral_Right" )
+           || ( _isLung && CustomUriRelations.getInstance().getRightLungLateralityUris().contains( uri ) ) ) {
          return 1;
       }
-      if ( uri.equals( UriConstants.LEFT ) || uri.equals( "Unilateral_Left" ) ) {
+      if ( uri.equals( UriConstants.LEFT ) || uri.equals( "Unilateral_Left" )
+           || ( _isLung && CustomUriRelations.getInstance().getLeftLungLateralityUris().contains( uri ) ) ) {
          return 2;
       }
-      if ( uri.equals( "Unilateral" )) {
+      if ( uri.equals( "Unilateral" ) ) {
          return 3;
       }
       if ( uri.equals( "Unspecified_Laterality" ) ) {
@@ -184,6 +129,56 @@ static private final double CONFIDENCE_CUTOFF = 1.5;
       }
       return -1;
    }
+
+//   public Map<Integer,Double> createIntCodeConfidenceMap( final Collection<ConceptAggregateRelation> relations ) {
+//      if ( !_isLung ) {
+//         return super.createIntCodeConfidenceMap( relations );
+//      }
+//      final Map<Integer, List<ConceptAggregateRelation>> codeRelationsMap
+//            = relations.stream()
+//                       .collect( Collectors.groupingBy( this::getIntCode ) );
+//      final Map<Integer,Double>  confidenceMap = new HashMap<>();
+//      for ( Map.Entry<Integer,List<ConceptAggregateRelation>> codeRelations : codeRelationsMap.entrySet() ) {
+//         NeoplasmSummaryCreator.addDebug( "AbstractAttributeNormalizer.createIntCodeConfidenceMap " +
+//                                          codeRelations.getKey() + " "
+//                                          + codeRelations.getValue().stream()
+//                                                         .map( ConceptAggregateRelation::getTarget )
+//                                                         .map( CrConceptAggregate::getUri )
+//                                                         .collect( Collectors.joining(", ") ) + "\n");
+//         NeoplasmSummaryCreator.addDebug( "AbstractAttributeNormalizer.createIntCodeConfidenceMap " +
+//                                          codeRelations.getKey() + " "
+//                                          + codeRelations.getValue().stream()
+//                                                         .map( ConceptAggregateRelation::getConfidence )
+//                                                         .map( c -> c+"" )
+//                                                         .collect( Collectors.joining(", ") ) + "\n");
+//         final double confidence = codeRelations.getValue()
+//                                                .stream()
+//                                                .mapToDouble( LateralityNormalizer::getMentionsConfidence )
+//                                                .sum();
+//         confidenceMap.put( codeRelations.getKey(), confidence );
+//      }
+//      return confidenceMap;
+//   }
+//
+//   static private double getMentionsConfidence( final ConceptAggregateRelation relation ) {
+//      final CrConceptAggregate target = relation.getTarget();
+//      final Map<String,Mention> idMentions = target.getMentions()
+//                                                 .stream()
+//                                                 .collect( Collectors.toMap( Mention::getId, Function.identity() ) );
+//      final Collection<MentionRelation> mentionRelations = relation.getMentionRelations();
+//      final Collection<MentionRelation> sideRelations = new ArrayList<>();
+//      for ( MentionRelation mentionRelation : mentionRelations ) {
+//         final Mention mention = idMentions.get( mentionRelation.getTargetId() );
+//         if ( mention != null
+//              && CustomUriRelations.getInstance().getLateralityUris().contains( mention.getClassUri() ) ) {
+//            sideRelations.add( mentionRelation );
+//         }
+//      }
+//      if ( sideRelations.isEmpty() ) {
+//         return 0;
+//      }
+//      return ConfidenceCalculator.calculateAggregateRelation( sideRelations );
+//   }
 
 
 }

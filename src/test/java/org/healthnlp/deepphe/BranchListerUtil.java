@@ -17,10 +17,8 @@ final public class BranchListerUtil {
       EmbeddedConnection.getInstance().connectToGraph();
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
 
-      final String ROOT_URI  = "Lung";
+      final String ROOT_URI  = "Brain_Ventricle";
 
-      // INSERT INTO DPHE_URI VALUES(934571,'Left_Lower_Lung_Zone')  To Left_Lower_Lung_Lobe
-      // INSERT INTO DPHE_URI VALUES(929214,'Right_Lower_Lung_Zone') To Right_Lower_Lung_Lobe
       final Collection<String> rootUris = SearchUtil.getRootUris( graphDb, ROOT_URI );
       System.out.println( "Root Uris for " + ROOT_URI );
       for ( String uri : rootUris ) {

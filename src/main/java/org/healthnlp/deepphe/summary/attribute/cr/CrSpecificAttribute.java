@@ -40,7 +40,7 @@ public interface CrSpecificAttribute {
                                              final Collection<Mention> indirectEvidence,
                                              final Collection<Mention> notEvidence,
                                              final List<Double> features ) {
-      NeoplasmSummaryCreator.addDebug( name + "=" + value + ":" + uri + "\n" );
+      NeoplasmSummaryCreator.addDebug( name + " = " + value + " : " + uri + "\n" );
       final NeoplasmAttribute attribute = new NeoplasmAttribute();
       attribute.setName( name );
       attribute.setValue( value );

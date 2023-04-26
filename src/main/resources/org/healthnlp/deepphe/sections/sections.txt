@@ -24,7 +24,7 @@ Assay,ASSAY DESCRIPTION
 Assessment,ASSESSMENT
 Assessment and Plan,ASSESSMENT AND PLAN,A/P,A\+P,Assessment / Plan
 Basic Information,Basic Information
-Biopsy Results,Biopsy Results
+Biopsy Results,FROZEN SECTION DIAGNOSIS
 CPT,CPT CODE
 CT Abdomen and Pelvis,CT ABDOMEN AND PELVIS,CT ABDOMEN AND PELVIS WITH CONTRAST,CT ABDOMEN AND PELVIS WITH IV CONTRAST
 CT Brain,CT BRAIN,CT BRAIN WITHOUT AND WITH IV CONTRAST
@@ -50,7 +50,7 @@ Current Treatment,CURRENT TREATMENT
 Description of Specimen,DESCRIPTION OF SPECIMEN
 Discharge Diagnosis,DISCHARGE DIAGNOSES,DISCHARGE DIAGNOSIS
 Discussion,DISCUSSION
-Divider,\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\* FINAL \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+Divider,\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\* FINAL \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*,\n\n\n\n,\r\n\r\n\r\n\r\n
 End of Impression,END OF IMPRESSION
 Examination,EXAMINATION PERFORMED,EXAMINATION,EXAMS,Physical Examination,PHYSICAL EXAMINATION,Physical Exam
 External Beam Radiation Therapy,External Beam Radiation Therapy
@@ -82,8 +82,8 @@ Intraop Dx,INTRAOPERATIVE DX,INTRAOPERATIVE CONSULTATION DIAGNOSIS,Intraoperativ
 Intraop Report,INTRAOPERATIVE REPORT
 Laboratory Studies,Laboratory Studies,Labs,LABORATORY DATA
 Medications,Inpatient Medications,MEDICATIONS
-Microscopic,MICROSCOPIC
-Microscopic Desc,MICROSCOPIC DESCRIPTION,MICROSCOPIC DESCRIPTION/COMMENT,Microscopic Description,MicroscopicDescription,MICROSCOPIC DESC
+# Microscopic,MICROSCOPIC
+Microscopic Description,MICROSCOPIC DESCRIPTION,MICROSCOPIC DESCRIPTION/COMMENT,Microscopic Desc,MicroscopicDescription,MICROSCOPIC DESC,MICROSCOPIC EXAMINATION
 Microscopic Path,Micro Pathology,Microscopic Pathology
 Nature of Specimen,Nature of Specimen
 # Note,NOTE
@@ -125,7 +125,8 @@ SNOMED,SNOMED CODES
 Signature,\*\*\*Electronically Signed Out\*\*\*,Electronically authenticated at end of document.,REPORT SIGNED,Electronically Signed Out By,\*\* Report Electronically Signed Out \*\*,Dictated By
 Site of Origin,site of origin
 Slide/Block Desc,SLIDE/BLOCK DESCRIPTION
-Specimen,SPECIMEN INFORMATION,SPECIMEN LABELED,SPECIMEN REMOVED,SPECIMEN SOURCE,SPECIMEN,Specimen\(s\) Received,NATURE OF SPECIMENS,SPECIMEN INFO
+# Specimen,SPECIMEN INFORMATION,SPECIMEN LABELED,SPECIMEN REMOVED,SPECIMEN SOURCE,SPECIMEN,Specimen\(s\) Received,NATURE OF SPECIMENS,SPECIMEN INFO,SPECIMEN AND SOURCE
+SPECIMEN INFORMATION,SPECIMEN LABELED,SPECIMEN REMOVED,SPECIMEN SOURCE,Specimen\(s\) Received,NATURE OF SPECIMENS,SPECIMEN INFO,SPECIMEN AND SOURCE
 Staging,STAGING PARAMS
 Subjective,S:
 Technique,TECHNIQUE

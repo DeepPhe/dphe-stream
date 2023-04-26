@@ -2,16 +2,6 @@ package org.healthnlp.deepphe.summary.attribute.cr.topo_minor.crc;
 
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
-import org.healthnlp.deepphe.summary.concept.ConfidenceGroup;
-import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
@@ -20,86 +10,82 @@ import java.util.stream.Collectors;
 public class ColonNormalizer extends AbstractAttributeNormalizer {
 
 
-   public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
-      super.init( infoCollector, dependencies );
-      NeoplasmSummaryCreator.addDebug( "Colon best = " + getBestCode() + " counts= " + getUniqueCodeCount() + "\n" );
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
+      return getBestIntCode( infoCollector.getAllRelations() );
    }
 
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
-      if ( aggregates.isEmpty() ) {
-         // The Cancer Registry default is 9.
-         return "9";
-      }
-      int bestIntCode = -1;
-      long bestCount = 0;
-      int uniqueCount = 0;
-      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
-      final Map<Integer,Long> bestCountMap = confidenceGroup.getBest()
-                            .stream()
-                           .map( CrConceptAggregate::getUri )
-                            .map( ColonNormalizer::getUriColonNumber )
-                              .filter( c -> c >= 0 )
-                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-      if ( !bestCountMap.isEmpty() ) {
-         final List<Integer> bestCodes = getBestIntCodes( bestCountMap );
-         bestCodes.sort( Comparator.reverseOrder() );
-         bestIntCode = bestCodes.get( 0 );
-         bestCount = bestCountMap.get( bestIntCode );
-         uniqueCount += bestCountMap.size();
-      }
-      final Map<Integer,Long> otherCountMap = confidenceGroup.getBest()
-                                                            .stream()
-                                                            .map( CrConceptAggregate::getUri )
-                                                            .map( ColonNormalizer::getOtherUriColonNumber )
-                                                            .filter( c -> c >= 0 )
-                                                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-      if ( !otherCountMap.isEmpty() ) {
-         if ( bestIntCode < 0 ) {
-            final List<Integer> bestCodes = getBestIntCodes( otherCountMap );
-            bestCodes.sort( Comparator.reverseOrder() );
-            bestIntCode = bestCodes.get( 0 );
-            bestCount = otherCountMap.get( bestIntCode );
-         }
-         uniqueCount += otherCountMap.size();
-      }
-      final Map<Integer,Long> finalCountMap = confidenceGroup.getBest()
-                                                             .stream()
-                                                             .map( CrConceptAggregate::getUri )
-                                                             .map( ColonNormalizer::getFinalUriColonNumber )
-                                                             .filter( c -> c >= 0 )
-                                                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
-      if ( !finalCountMap.isEmpty() ) {
-         if ( bestIntCode < 0 ) {
-            final List<Integer> bestCodes = getBestIntCodes( finalCountMap );
-            bestCodes.sort( Comparator.reverseOrder() );
-            bestIntCode = bestCodes.get( 0 );
-            bestCount = finalCountMap.get( bestIntCode );
-         }
-         uniqueCount += finalCountMap.size();
-      }
-      setBestCodesCount( (int)bestCount );
-      setAllCodesCount( aggregates.size() );
-      setUniqueCodeCount( uniqueCount );
-      NeoplasmSummaryCreator.addDebug( "ColonNormalizer "
-                                       + bestCountMap.entrySet().stream()
-                                                    .map( e -> e.getKey() + ":" + e.getValue() )
-                                                    .collect( Collectors.joining(",") ) + " ; "
-                                       + otherCountMap.entrySet().stream()
-                                                     .map( e -> e.getKey() + ":" + e.getValue() )
-                                                     .collect( Collectors.joining(",") ) + " ; "
-                                       + finalCountMap.entrySet().stream()
-                                                     .map( e -> e.getKey() + ":" + e.getValue() )
-                                                     .collect( Collectors.joining(",") ) + " ; "
-                                       + bestIntCode +"\n" );
-      return bestIntCode < 0 ? "9" : bestIntCode+"";
-   }
+//   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+//      if ( aggregates.isEmpty() ) {
+//         // The Cancer Registry default is 9.
+//         return "9";
+//      }
+//      int bestIntCode = -1;
+//      long bestCount = 0;
+//      int uniqueCount = 0;
+//      final ConfidenceGroup<CrConceptAggregate> confidenceGroup = new ConfidenceGroup<>( aggregates );
+//      final Map<Integer,Long> bestCountMap = confidenceGroup.getBest()
+//                            .stream()
+//                           .map( CrConceptAggregate::getUri )
+//                            .map( ColonNormalizer::getUriColonNumber )
+//                              .filter( c -> c >= 0 )
+//                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//      if ( !bestCountMap.isEmpty() ) {
+//         final List<Integer> bestCodes = getBestIntCodes( bestCountMap );
+//         bestCodes.sort( Comparator.reverseOrder() );
+//         bestIntCode = bestCodes.get( 0 );
+//         bestCount = bestCountMap.get( bestIntCode );
+//         uniqueCount += bestCountMap.size();
+//      }
+//      final Map<Integer,Long> otherCountMap = confidenceGroup.getBest()
+//                                                            .stream()
+//                                                            .map( CrConceptAggregate::getUri )
+//                                                            .map( ColonNormalizer::getOtherUriColonNumber )
+//                                                            .filter( c -> c >= 0 )
+//                                                            .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//      if ( !otherCountMap.isEmpty() ) {
+//         if ( bestIntCode < 0 ) {
+//            final List<Integer> bestCodes = getBestIntCodes( otherCountMap );
+//            bestCodes.sort( Comparator.reverseOrder() );
+//            bestIntCode = bestCodes.get( 0 );
+//            bestCount = otherCountMap.get( bestIntCode );
+//         }
+//         uniqueCount += otherCountMap.size();
+//      }
+//      final Map<Integer,Long> finalCountMap = confidenceGroup.getBest()
+//                                                             .stream()
+//                                                             .map( CrConceptAggregate::getUri )
+//                                                             .map( ColonNormalizer::getFinalUriColonNumber )
+//                                                             .filter( c -> c >= 0 )
+//                                                             .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ) );
+//      if ( !finalCountMap.isEmpty() ) {
+//         if ( bestIntCode < 0 ) {
+//            final List<Integer> bestCodes = getBestIntCodes( finalCountMap );
+//            bestCodes.sort( Comparator.reverseOrder() );
+//            bestIntCode = bestCodes.get( 0 );
+//            bestCount = finalCountMap.get( bestIntCode );
+//         }
+//         uniqueCount += finalCountMap.size();
+//      }
+//      setBestCodesCount( (int)bestCount );
+//      setAllCodesCount( aggregates.size() );
+//      setUniqueCodeCount( uniqueCount );
+//      NeoplasmSummaryCreator.addDebug( "ColonNormalizer "
+//                                       + bestCountMap.entrySet().stream()
+//                                                    .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                    .collect( Collectors.joining(",") ) + " ; "
+//                                       + otherCountMap.entrySet().stream()
+//                                                     .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                     .collect( Collectors.joining(",") ) + " ; "
+//                                       + finalCountMap.entrySet().stream()
+//                                                     .map( e -> e.getKey() + ":" + e.getValue() )
+//                                                     .collect( Collectors.joining(",") ) + " ; "
+//                                       + bestIntCode +"\n" );
+//      return bestIntCode < 0 ? "9" : bestIntCode+"";
+//   }
 
-   public String getCode( final String uri ) {
-      final int code = getIntCode( uri );
-      return code < 0 ? "9" : code+"";
-   }
 
-   protected int getIntCode( final String uri ) {
+
+   public int getIntCode( final String uri ) {
       int colonNumber = getUriColonNumber( uri );
       if ( colonNumber >= 0 ) {
          return colonNumber;

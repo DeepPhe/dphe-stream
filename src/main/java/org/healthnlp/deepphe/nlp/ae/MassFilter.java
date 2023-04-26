@@ -52,6 +52,11 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
                   removals.add( annotation );
                }
             }
+            case "cancer": {
+               if ( end < docText.length() - 20 && docText.substring( end + 1, end + 20 ).contains( "protocol" ) ) {
+                  removals.add( annotation );
+               }
+            }
             case "local": {
                if ( end < docText.length() - 15 && docText.substring( end + 1, end + 15 ).contains( "esthesia" ) ) {
                   removals.add( annotation );
@@ -73,6 +78,11 @@ final public class MassFilter extends JCasAnnotator_ImplBase {
                if ( begin > 3 && docText.substring( begin - 3, begin - 1 ).contains( "by" ) ) {
                   removals.add( annotation );
                }
+            }
+         }
+         if ( text.startsWith( "grade" ) ) {
+            if ( begin > 10 && docText.substring( begin - 10, begin - 1 ).contains( "nuclear" ) ) {
+               removals.add( annotation );
             }
          }
       }

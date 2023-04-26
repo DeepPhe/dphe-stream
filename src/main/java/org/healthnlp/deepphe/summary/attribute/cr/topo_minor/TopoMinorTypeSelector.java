@@ -145,16 +145,17 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
       return _bestCode;
    }
 
-   @Override
-   public String getBestCode( final Collection<CrConceptAggregate> aggregates ) {
+   public String getBestCode( final AttributeInfoCollector infoCollector ) {
       return _bestCode;
    }
 
+   /**
+    * @return between 0 and 1
+    */
    @Override
-   public String getCode( final String uri ) {
-      return "";
+   public double getConfidence() {
+      return 0.1;
    }
-
 
    //   C18.0	Cecum
 //C18.1	Appendix
