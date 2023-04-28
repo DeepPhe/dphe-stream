@@ -7,14 +7,12 @@ import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author SPF , chip-nlp
@@ -48,41 +46,42 @@ public class TopoMajorNormalizer extends AbstractAttributeNormalizer {
 
 
    public Map<String,Double> createTextCodeConfidenceMap( final Collection<ConceptAggregateRelation> relations ) {
-      final Map<String,Double>  confidenceMap = new HashMap<>();
-      for ( ConceptAggregateRelation relation : relations ) {
-         final Collection<String> codes = getTextCodes( relation.getTarget().getUri() );
-         for ( String code : codes ) {
-            final double confidence = confidenceMap.getOrDefault( code, 0d );
-            confidenceMap.put( code, confidence + relation.getConfidence() );
-         }
-         NeoplasmSummaryCreator.addDebug( "TopoMajorNormalizer.createTextCodeConfidenceMap 1 "
-                                          + relation.getTarget().getUri() + " "
-                                          + relation.getConfidence() + " " + String.join( ",", codes )
-                                          + "\n" );
-      }
+//      final Map<String,Double>  confidenceMap = new HashMap<>();
+//      for ( ConceptAggregateRelation relation : relations ) {
+//         final Collection<String> codes = getTextCodes( relation.getTarget().getUri() );
+//         for ( String code : codes ) {
+//            final double confidence = confidenceMap.getOrDefault( code, 0d );
+//            confidenceMap.put( code, confidence + relation.getConfidence() );
+//         }
+//         NeoplasmSummaryCreator.addDebug( "TopoMajorNormalizer.createTextCodeConfidenceMap 1 "
+//                                          + relation.getTarget().getUri() + " "
+//                                          + relation.getConfidence() + " " + String.join( ",", codes )
+//                                          + "\n" );
+//      }
+      final Map<String,Double>  confidenceMap = super.createTextCodeConfidenceMap( relations );
       if ( !confidenceMap.isEmpty() && haveSpecificCodes( confidenceMap ) ) {
          return getSpecificCodes( confidenceMap );
       }
-      confidenceMap.clear();
-      for ( ConceptAggregateRelation relation : relations ) {
-         final Collection<String> codes = relation.getTarget()
-                                                  .getAllUris()
-                                                  .stream()
-                                                  .map( this::getTextCodes )
-                                                  .flatMap( Collection::stream )
-                                                  .collect( Collectors.toSet() );
-         for ( String code : codes ) {
-            final double confidence = confidenceMap.getOrDefault( code, 0d );
-            confidenceMap.put( code, confidence + relation.getConfidence() );
-         }
-         NeoplasmSummaryCreator.addDebug( "TopoMajorNormalizer.createTextCodeConfidenceMap 2 "
-                                          + relation.getTarget().getUri() + " "
-                                          + relation.getConfidence() + " " + String.join( ",", codes )
-                                          + "\n" );
-      }
-      if ( !confidenceMap.isEmpty() && haveSpecificCodes( confidenceMap ) ) {
-         return getSpecificCodes( confidenceMap );
-      }
+//      confidenceMap.clear();
+//      for ( ConceptAggregateRelation relation : relations ) {
+//         final Collection<String> codes = relation.getTarget()
+//                                                  .getAllUris()
+//                                                  .stream()
+//                                                  .map( this::getTextCodes )
+//                                                  .flatMap( Collection::stream )
+//                                                  .collect( Collectors.toSet() );
+//         for ( String code : codes ) {
+//            final double confidence = confidenceMap.getOrDefault( code, 0d );
+//            confidenceMap.put( code, confidence + relation.getConfidence() );
+//         }
+//         NeoplasmSummaryCreator.addDebug( "TopoMajorNormalizer.createTextCodeConfidenceMap 2 "
+//                                          + relation.getTarget().getUri() + " "
+//                                          + relation.getConfidence() + " " + String.join( ",", codes )
+//                                          + "\n" );
+//      }
+//      if ( !confidenceMap.isEmpty() && haveSpecificCodes( confidenceMap ) ) {
+//         return getSpecificCodes( confidenceMap );
+//      }
       confidenceMap.clear();
       confidenceMap.put( UNDETERMINED, 0.1 );
       return confidenceMap;

@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public class GradeNormalizer extends AbstractAttributeNormalizer {
 
+   // TODO ---> Some KCR Lung notes use "MD" to indicate "Moderately Differentiated"
+
    public String getBestCode( final AttributeInfoCollector infoCollector ) {
       return getBestIntCode( infoCollector.getAllRelations() );
    }

@@ -80,11 +80,12 @@ static private final double CONFIDENCE_CUTOFF = 1.5;
       double unspecifiedConfidence = intConfidenceMap.getOrDefault( 9, -1d );
 
       if ( bilateralConfidence > 0 && leftConfidence > 0 && rightConfidence > 0 ) {
-         if ( bilateralConfidence > 0
-              && Math.min( leftConfidence, rightConfidence ) / Math.max( leftConfidence, rightConfidence ) > 0.8 ) {
+         if ( Math.min( leftConfidence, rightConfidence ) / Math.max( leftConfidence, rightConfidence ) > 0.8
+              && bilateralConfidence / (leftConfidence + rightConfidence) > 0.2 ) {
             NeoplasmSummaryCreator.addDebug( "LateralityNormalizer Bilateral "
                                              + (Math.min( leftConfidence, rightConfidence ) / Math.max( leftConfidence,
-                                                                                                        rightConfidence ) )+ "\n" );
+                                                                                                        rightConfidence ) )
+                                             + (bilateralConfidence / (leftConfidence + rightConfidence)) +"\n" );
             return 4+"";
          }
          if ( bilateralConfidence > leftConfidence || bilateralConfidence > rightConfidence ) {

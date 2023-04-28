@@ -102,9 +102,12 @@ public class IcdoEvaluator {
 
    static private void scoreSplitsOneColumn( final String outFileName, final File goldFile, final File systemFile,
                                              final String splitDir ) {
-      final File trainSplit = new File( splitDir, "id_train.csv" );
-      final File devSplit = new File( splitDir, "id_dev.csv" );
-      final File testSplit = new File( splitDir, "id_test.csv" );
+//      final File trainSplit = new File( splitDir, "id_train.csv" );
+//      final File devSplit = new File( splitDir, "id_dev.csv" );
+//      final File testSplit = new File( splitDir, "id_test.csv" );
+      final File trainSplit = new File( splitDir, "id_train.txt" );
+      final File devSplit = new File( splitDir, "id_dev.txt" );
+      final File testSplit = new File( splitDir, "id_test.txt" );
       final Collection<String> trainees = getPatientNames( trainSplit );
       final Collection<String> devees = getPatientNames( devSplit );
       final Collection<String> testees = getPatientNames( testSplit );
@@ -178,9 +181,12 @@ public class IcdoEvaluator {
    static private void scoreSplitsOneColumn( final String outFileName, final File goldFile, final File systemFile,
                                              final String splitDir, final Collection<String> cancerPatients,
                                              final String cancerType ) {
-      final File trainSplit = new File( splitDir, "id_train.csv" );
-      final File devSplit = new File( splitDir, "id_dev.csv" );
-      final File testSplit = new File( splitDir, "id_test.csv" );
+//      final File trainSplit = new File( splitDir, "id_train.csv" );
+//      final File devSplit = new File( splitDir, "id_dev.csv" );
+//      final File testSplit = new File( splitDir, "id_test.csv" );
+      final File trainSplit = new File( splitDir, "id_train.txt" );
+      final File devSplit = new File( splitDir, "id_dev.txt" );
+      final File testSplit = new File( splitDir, "id_test.txt" );
       final Collection<String> trainees = getPatientNames( trainSplit );
       final Collection<String> devees = getPatientNames( devSplit );
       final Collection<String> testees = getPatientNames( testSplit );
@@ -206,7 +212,7 @@ public class IcdoEvaluator {
       try ( BufferedReader reader = new BufferedReader( new FileReader( splitFile ) ) ) {
          String line = reader.readLine().trim();
          while ( line != null ) {
-            if ( !line.isEmpty() && !line.equals("patient ID") ) {
+            if ( !line.isEmpty() && !line.equals("patient ID") && !line.startsWith( "//" )) {
                patients.add(line );
             }
             line = reader.readLine();

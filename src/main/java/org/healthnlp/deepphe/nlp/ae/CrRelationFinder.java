@@ -70,9 +70,11 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    static private final double MASS_PENALTY = 20;
    static private final double NODE_PENALTY = 25;
 
+   // 4/27/2023 TEST_PENALTY from 40 to 20
    static private final double TEST_PENALTY = 40;
 
-   static private final double NEARBY_PENALTY = 10;
+   // 4/27/2023 NEARBY_PENALTY from 10 to 30
+   static private final double NEARBY_PENALTY = 30;
 
    static private final double PREFERRED_SECTION_BUMP = -30;
    static private final double LESSER_SECTION_PENALTY = 20;
@@ -533,15 +535,21 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          "between ",
 //         "in "
          // Often "metastasis to the"
+         "from ",
          "to the ",
          "adjacent to ",
-         "adj to",
+         "adj to ",
          "anterior to ",
          "superior to "
                                                                                                   ) );
 
    static private boolean isIndirectSite( final String precedingText ) {
-      return UNWANTED_SITE_PRECEDENTS.stream().anyMatch( precedingText::contains );
+      for ( String word : UNWANTED_SITE_PRECEDENTS ) {
+         if ( precedingText.endsWith( word ) || precedingText.endsWith( word + "the " ) ) {
+            return true;
+         }
+      }
+      return false;
    }
 
    static private final Collection<String> FAMILY_HISTORY_PRECEDENTS = new HashSet<>( Arrays.asList(
@@ -584,6 +592,9 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          " mri",
          " pet ",
          " pet:",
+         "radio",
+         "imaging",
+         "ultrasound",
          "scan",
          " pe ",
          " pe:",
@@ -631,6 +642,7 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          "metastas",
          "mets",
          "infiltrate",
+         "infiltration",
          "implant",
          "cyst ",
          "polyp",

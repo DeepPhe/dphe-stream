@@ -67,12 +67,15 @@ public enum BrainUriCollection {
       _parietalLobe = Neo4jOntologyConceptUtil.getBranchUris( "Parietal_Lobe" );
       _occipitalLobe = Neo4jOntologyConceptUtil.getBranchUris( "Occipital_Lobe" );
       _ventricle = Neo4jOntologyConceptUtil.getBranchUris( "Brain_Ventricle" );
+      final Collection<String> fourthVentricle = Neo4jOntologyConceptUtil.getBranchUris( "Fourth_Ventricle" );
+      _ventricle.removeAll( fourthVentricle );
       _brain_6 = Neo4jOntologyConceptUtil.getBranchUris( "Cerebellum" );
       _brain_7 = Neo4jOntologyConceptUtil.getBranchUris( "Brain_Stem" );
       _brain_8 = Neo4jOntologyConceptUtil.getBranchUris( "Corpus_Callosum" );
       _brain_9 = Neo4jOntologyConceptUtil.getBranchUris( "Intracranial" );
       _brain_9.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Cranial_Fossa__NOS" ) );
       _brain_9.addAll( Neo4jOntologyConceptUtil.getBranchUris( "Suprasellar_Region" ) );
+      _brain_7.addAll( fourthVentricle );
 
       _spinalCord = Neo4jOntologyConceptUtil.getBranchUris( "Spinal_Cord" );
       _caudaEquina = Neo4jOntologyConceptUtil.getBranchUris( "Cauda_Equina" );

@@ -105,7 +105,7 @@ public class BiomarkerNormalizer extends AbstractAttributeNormalizer {
       if ( note == null ) {
          return "";
       }
-      return NORMAL.getNormal( note.getText().substring( mention.getBegin(), mention.getEnd() ) );
+      return NORMAL.getNormal( note.getText().substring( mention.getBegin(), mention.getEnd() ).toLowerCase() );
    }
 
 //   public List<String> getCodes( final CrConceptAggregate aggregate ) {

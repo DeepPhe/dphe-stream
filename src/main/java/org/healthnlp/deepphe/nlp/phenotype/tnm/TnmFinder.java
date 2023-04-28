@@ -38,6 +38,7 @@ public enum TnmFinder {
 //   static private final String N_REGEX = "N=? {0,2}\\t?(?:x|(?: ?n\\/a)|(?:[I]{1,3})|(?:[0-3][a-z]?))";
 //   static private final String M_REGEX = "M=? {0,2}\\t?(?:x|I|(?: ?n\\/a)|(?:[0-1][a-z]?))";
    // v6
+   // TODO add for T1c3 : (?:[0-4](?:(?:[a-d][1-3]?|mi)?)  ? Test
    static private final String T_REGEX
          = "T=? {0,2}\\t?(?:x|is|a|(?: ?n\\/a)|(?:[I]{1,3}V?)|(?:[0-4](?:[a-d]|mi)?))(?![- ](?:weighted|axial))(?:\\("
            + "(?:m|\\d+)?,?(?:is)?\\))?";

@@ -21,6 +21,18 @@ import java.util.stream.Collectors;
  */
 public class HistologyNormalizer extends AbstractAttributeNormalizer {
 
+
+   // TODO - When uri strengths are tied, got through all of them for codes and select the best code.  e.g.
+//   CrConceptAggregate Paget_Disease uriScore: Malignant_Neoplasm,0.6;Carcinoma,0.7;Low_Grade_DCIS,0.8;
+//   Paget_Disease,0.8;Ductal_Carcinoma,0.8 = 0.8
+   // TODO Best code is for Ductal Carcinoma (8500), but it may look for paget's instead.
+//CrConceptAggregate Bronchogenic_Carcinoma uriScore: Primary_Neoplasm,0.1;Carcinoma,0.2;Lung_Carcinoma,0.3;
+// Squamous_Cell_Carcinoma,0.6;Bronchogenic_Carcinoma,0.6 = 0.6
+//  -->  Squamous Cell is 8070, Bronchogenic has none (8010)
+
+   // TODO There are goofy rules e.g. 8240 vs. 8246  https://seer.cancer.gov/seer-inquiry/inquiry-detail/20140026/
+
+
    private Map<String,Integer> _uriStrengths;
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {

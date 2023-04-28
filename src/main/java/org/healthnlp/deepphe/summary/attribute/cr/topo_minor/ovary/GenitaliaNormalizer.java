@@ -79,7 +79,9 @@ final public class GenitaliaNormalizer extends AbstractAttributeNormalizer {
       if ( OvaryUriCollection.getInstance().getOtherGenitalUris().contains( uri ) ) {
          return 7;
       }
-      // No overlapping for 8
+      if ( OvaryUriCollection.getInstance().getOverlappingGenitalUris().contains( uri ) ) {
+         return 8;
+      }
 //      if ( OvaryUriCollection.getInstance().getAllGenitalUris().contains( uri ) ) {
 //         return 9;
 //      }

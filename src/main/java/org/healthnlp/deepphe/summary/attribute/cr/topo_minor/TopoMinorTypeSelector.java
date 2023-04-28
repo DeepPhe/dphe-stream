@@ -137,8 +137,9 @@ public class TopoMinorTypeSelector implements AttributeInfoCollector, AttributeN
 
 
    public void init( final AttributeInfoCollector infoCollector, final Map<String,String> dependencies ) {
-      final String topoMajor = getTopoMajor( dependencies );
-      _bestCode = topoMajor.equals( "C80" ) ? "3" : "9";
+//      final String topoMajor = getTopoMajor( dependencies );
+//      _bestCode = topoMajor.equals( "C80" ) ? "3" : "9";
+      _bestCode = "9";
    }
 
    public String getBestCode() {

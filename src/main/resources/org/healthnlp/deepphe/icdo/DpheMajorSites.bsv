@@ -294,6 +294,7 @@ C549|Corpus_Uteri
 
 C559|Uterus
 
+C56*|Corpus_Luteum
 C560|Ovary
 C569|Ovary
 

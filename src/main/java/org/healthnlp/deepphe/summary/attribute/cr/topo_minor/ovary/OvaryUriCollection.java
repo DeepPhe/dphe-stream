@@ -31,7 +31,7 @@ public enum OvaryUriCollection {
    // Appendage_Of_The_Uterus   contains Fallopian Tube, Ligaments, Parametrium, Tract
    private Collection<String> _uterineAdnexaUris;
    private Collection<String> _otherGenitalUris;
-//   private Collection<String> _overlappingGenitalUris;
+   private Collection<String> _overlappingGenitalUris;
    private Collection<String> _genitalTractUris;  // Female_Genitourinary_Tract__NOS   Entire_Upper_Genitourinary_Tract
 
 
@@ -56,11 +56,13 @@ public enum OvaryUriCollection {
       _roundLigamentUris = Neo4jOntologyConceptUtil.getBranchUris( "Round_Ligament" );
       _allGenitalUris.addAll( _roundLigamentUris );
       _parametriumUris = Neo4jOntologyConceptUtil.getBranchUris( "Parametrium" );
+      _overlappingGenitalUris = Neo4jOntologyConceptUtil.getBranchUris( "Entire_Tubal_End_Of_Ovary" );
       _uterineAdnexaUris = Neo4jOntologyConceptUtil.getBranchUris( "Appendage_Of_The_Uterus" );
       _uterineAdnexaUris.removeAll( _fallopianTubeUris );
       _uterineAdnexaUris.removeAll( _broadLigamentUris );
       _uterineAdnexaUris.removeAll( _roundLigamentUris );
       _uterineAdnexaUris.removeAll( _parametriumUris );
+      _uterineAdnexaUris.removeAll( _overlappingGenitalUris );
       _uterineAdnexaUris.remove( "Placenta_Part" );
       _uterineAdnexaUris.remove( "Female_Genitourinary_Tract__NOS" );
       _otherGenitalUris = Neo4jOntologyConceptUtil.getBranchUris( "Female_Genitalia" );
@@ -68,6 +70,7 @@ public enum OvaryUriCollection {
       _otherGenitalUris.removeAll( _broadLigamentUris );
       _otherGenitalUris.removeAll( _roundLigamentUris );
       _otherGenitalUris.removeAll( _parametriumUris );
+      _otherGenitalUris.removeAll( _overlappingGenitalUris );
       _otherGenitalUris.remove( "Placenta_Part" );
       _otherGenitalUris.remove( "Female_Genitourinary_Tract__NOS" );
       // Tract NOS contains a ton of stuff, including male.  Just use the exact uri.
@@ -117,7 +120,7 @@ public enum OvaryUriCollection {
    }
 
    Collection<String> getOverlappingGenitalUris() {
-      return Collections.emptyList();
+      return _overlappingGenitalUris;
    }
 
    Collection<String> getGenitalTractUris() {

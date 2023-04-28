@@ -134,6 +134,6 @@ add CrRelationFinder
 //add CrNonGraphedRelationFinder
 
 add JsonNodeCreator
-//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_25_2023\kcr_corpora SubDirectory=HTML
-//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_25_2023\kcr_corpora SubDirectory=TEXT
+//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_27_2023\kcr2_corpora SubDirectory=HTML
+//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_27_2023\kcr2_corpora SubDirectory=TEXT
 

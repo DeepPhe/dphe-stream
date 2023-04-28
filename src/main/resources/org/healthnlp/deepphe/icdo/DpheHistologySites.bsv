@@ -3525,7 +3525,7 @@ C260,C268-C269|Entire_Digestive_Organ|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tu
 C260,C268-C269|Entire_Digestive_Organ|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9080/3|Immature_Teratoma
 C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9082/3|Immature_Teratoma
+C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9084/3|Teratoma
 C260,C268-C269|Entire_Digestive_Organ|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -5104,7 +5104,7 @@ C381-C383, C388|Mediastinum|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tumor
 C381-C383, C388|Mediastinum|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C381-C383, C388|Mediastinum|908|Teratoma|9080/3|Immature_Teratoma
 C381-C383, C388|Mediastinum|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C381-C383, C388|Mediastinum|908|Teratoma|9082/3|Immature_Teratoma
+C381-C383, C388|Mediastinum|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C381-C383, C388|Mediastinum|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C381-C383, C388|Mediastinum|908|Teratoma|9084/3|Teratoma
 C381-C383, C388|Mediastinum|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -5411,7 +5411,7 @@ C390,C398-C399|Respiratory_System|899|Malignant_Mesenchymoma|8990/3|Malignant_Me
 C390,C398-C399|Respiratory_System|899|Malignant_Mesenchymoma|8991/3|Undifferentiated__Embryonal__Sarcoma
 C390,C398-C399|Respiratory_System|908|Teratoma|9080/3|Immature_Teratoma
 C390,C398-C399|Respiratory_System|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C390,C398-C399|Respiratory_System|908|Teratoma|9082/3|Immature_Teratoma
+C390,C398-C399|Respiratory_System|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C390,C398-C399|Respiratory_System|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C390,C398-C399|Respiratory_System|908|Teratoma|9084/3|Teratoma
 C390,C398-C399|Respiratory_System|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -6278,7 +6278,7 @@ C470-C476,C478-C479|Peripheral_Nerve|904|Synovial_Sarcoma|9043/3|Biphasic_Synovi
 C470-C476,C478-C479|Peripheral_Nerve|904|Synovial_Sarcoma|9044/3|Clear_Cell_Sarcoma_Of_Soft_Tissue_C0206651
 C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9080/3|Immature_Teratoma
 C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9082/3|Immature_Teratoma
+C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9084/3|Teratoma
 C470-C476,C478-C479|Peripheral_Nerve|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -6443,7 +6443,7 @@ C480-C482,C488|Retroperitoneal_Space|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tum
 C480-C482,C488|Retroperitoneal_Space|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9080/3|Immature_Teratoma
 C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9082/3|Immature_Teratoma
+C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9084/3|Teratoma
 C480-C482,C488|Retroperitoneal_Space|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -7454,6 +7454,7 @@ C540-C543,C548-C549|Corpus_Uteri|838|Carcinoma__Endometrioid|8381/3|Endometrioid
 C540-C543,C548-C549|Corpus_Uteri|838|Carcinoma__Endometrioid|8382/3|Carcinoma__Endometrioid
 C540-C543,C548-C549|Corpus_Uteri|838|Carcinoma__Endometrioid|8383/3|Carcinoma__Endometrioid
 C540-C543,C548-C549|Corpus_Uteri|844|Cystadenocarcinoma|8440/3|Cystadenocarcinoma
+C540-C543,C548-C549|Corpus_Uteri|844|Cystadenocarcinoma|8441/1|Serous_Adenocarcinoma
 C540-C543,C548-C549|Corpus_Uteri|844|Cystadenocarcinoma|8441/2|Serous_Tubal_Intraepithelial_Carcinoma
 C540-C543,C548-C549|Corpus_Uteri|844|Cystadenocarcinoma|8441/3|Serous_Cystadenocarcinoma
 C540-C543,C548-C549|Corpus_Uteri|846|Papillary_Serous_Cystadenocarcinoma|8460/3|Papillary_Serous_Cystadenocarcinoma
@@ -7648,6 +7649,7 @@ C559|Uterus|832|Granular_Cell_Carcinoma|8320/3|Granular_Cell_Carcinoma
 C559|Uterus|832|Granular_Cell_Carcinoma|8323/3|Mixed_Cell_Adenocarcinoma
 C559|Uterus|843|Mucoepidermoid_Carcinoma|8430/3|Mucoepidermoid_Carcinoma
 C559|Uterus|844|Cystadenocarcinoma|8440/3|Cystadenocarcinoma
+C559|Uterus|844|Cystadenocarcinoma|8441/1|Serous_Adenocarcinoma
 C559|Uterus|844|Cystadenocarcinoma|8441/2|Serous_Tubal_Intraepithelial_Carcinoma
 C559|Uterus|844|Cystadenocarcinoma|8441/3|Serous_Cystadenocarcinoma
 C559|Uterus|846|Papillary_Serous_Cystadenocarcinoma|8460/3|Papillary_Serous_Cystadenocarcinoma
@@ -7813,6 +7815,7 @@ C569|Ovary|814|Adenocarcinoma|8147/3|Adenocarcinoma__Basal_Cell
 C569|Ovary|823|Solid_Carcinoma|8230/2|In_Situ_Cancer
 C569|Ovary|823|Solid_Carcinoma|8230/3|Solid_Carcinoma
 C569|Ovary|823|Solid_Carcinoma|8231/3|Carcinoma_Simplex
+C569|Ovary|824|Atypical_Carcinoid_Tumor|8240/2|Ovarian_Carcinoid_Tumor
 C569|Ovary|824|Atypical_Carcinoid_Tumor|8240/3|Atypical_Carcinoid_Tumor
 C569|Ovary|824|Atypical_Carcinoid_Tumor|8241/3|EC_Cell_Carcinoid
 C569|Ovary|824|Atypical_Carcinoid_Tumor|8242/3|Enterochromaffin_like_Cell_Carcinoid
@@ -7843,6 +7846,7 @@ C569|Ovary|844|Cystadenocarcinoma|8441/3|Serous_Cystadenocarcinoma
 C569|Ovary|844|Cystadenocarcinoma|8442/1|Serous_Cystadenoma
 C569|Ovary|845|Papillary_Cystadenocarcinoma|8450/3|Papillary_Cystadenocarcinoma
 C569|Ovary|845|Papillary_Cystadenocarcinoma|8451/1|Papillary_Cystadenoma
+C569|Ovary|846|Papillary_Serous_Cystadenocarcinoma|8460/1|Serous_Adenocarcinoma
 C569|Ovary|846|Papillary_Serous_Cystadenocarcinoma|8460/2|Serous_Cystadenocarcinoma
 C569|Ovary|846|Papillary_Serous_Cystadenocarcinoma|8460/3|Papillary_Serous_Cystadenocarcinoma
 C569|Ovary|846|Papillary_Serous_Cystadenocarcinoma|8461/3|Serous_Surface_Papillary_Carcinoma
@@ -7910,7 +7914,7 @@ C569|Ovary|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tumor
 C569|Ovary|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C569|Ovary|908|Teratoma|9080/3|Immature_Teratoma
 C569|Ovary|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C569|Ovary|908|Teratoma|9082/3|Immature_Teratoma
+C569|Ovary|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C569|Ovary|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C569|Ovary|908|Teratoma|9084/3|Teratoma
 C569|Ovary|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -8039,6 +8043,7 @@ C570|Fallopian_Tube|838|Carcinoma__Endometrioid|8380/3|Carcinoma__Endometrioid
 C570|Fallopian_Tube|838|Carcinoma__Endometrioid|8382/3|Carcinoma__Endometrioid
 C570|Fallopian_Tube|838|Carcinoma__Endometrioid|8383/3|Carcinoma__Endometrioid
 C570|Fallopian_Tube|844|Cystadenocarcinoma|8440/3|Cystadenocarcinoma
+C570|Fallopian_Tube|844|Cystadenocarcinoma|8441/1|Serous_Adenocarcinoma
 C570|Fallopian_Tube|844|Cystadenocarcinoma|8441/2|Serous_Tubal_Intraepithelial_Carcinoma
 C570|Fallopian_Tube|844|Cystadenocarcinoma|8441/3|Serous_Cystadenocarcinoma
 C570|Fallopian_Tube|846|Papillary_Serous_Cystadenocarcinoma|8460/3|Papillary_Serous_Cystadenocarcinoma
@@ -8643,7 +8648,7 @@ C620-C621,C629|Testis|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tumor
 C620-C621,C629|Testis|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C620-C621,C629|Testis|908|Teratoma|9080/3|Immature_Teratoma
 C620-C621,C629|Testis|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C620-C621,C629|Testis|908|Teratoma|9082/3|Immature_Teratoma
+C620-C621,C629|Testis|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C620-C621,C629|Testis|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C620-C621,C629|Testis|908|Teratoma|9084/3|Teratoma
 C620-C621,C629|Testis|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -9630,7 +9635,7 @@ C680-C681,C688-C689|Genitourinary_System|907|Embryonal_Carcinoma|9071/3|Yolk_Sac
 C680-C681,C688-C689|Genitourinary_System|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9080/3|Immature_Teratoma
 C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9082/3|Immature_Teratoma
+C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9084/3|Teratoma
 C680-C681,C688-C689|Genitourinary_System|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -10881,7 +10886,7 @@ C728-C729|Central_Nervous_System|892|Alveolar_Rhabdomyosarcoma|8920/3|Alveolar_R
 C728-C729|Central_Nervous_System|906|Germ_Cell_Tumor|9064/3|Germinoma
 C728-C729|Central_Nervous_System|908|Teratoma|9080/1|Teratoma
 C728-C729|Central_Nervous_System|908|Teratoma|9080/3|Immature_Teratoma
-C728-C729|Central_Nervous_System|908|Teratoma|9082/3|Immature_Teratoma
+C728-C729|Central_Nervous_System|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C728-C729|Central_Nervous_System|908|Teratoma|9084/0|Dermoid_Cyst
 C728-C729|Central_Nervous_System|908|Teratoma|9084/3|Teratoma
 C728-C729|Central_Nervous_System|912|Neoplasms__Vascular_Tissue|9120/0|Hemangioma
@@ -11172,7 +11177,7 @@ C740-C741,C749|Adrenal_Gland|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tumor
 C740-C741,C749|Adrenal_Gland|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C740-C741,C749|Adrenal_Gland|908|Teratoma|9080/3|Immature_Teratoma
 C740-C741,C749|Adrenal_Gland|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C740-C741,C749|Adrenal_Gland|908|Teratoma|9082/3|Immature_Teratoma
+C740-C741,C749|Adrenal_Gland|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C740-C741,C749|Adrenal_Gland|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C740-C741,C749|Adrenal_Gland|908|Teratoma|9084/3|Teratoma
 C740-C741,C749|Adrenal_Gland|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -11219,7 +11224,7 @@ C750|Parathyroid_Gland|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tumor
 C750|Parathyroid_Gland|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C750|Parathyroid_Gland|908|Teratoma|9080/3|Immature_Teratoma
 C750|Parathyroid_Gland|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C750|Parathyroid_Gland|908|Teratoma|9082/3|Immature_Teratoma
+C750|Parathyroid_Gland|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C750|Parathyroid_Gland|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C750|Parathyroid_Gland|908|Teratoma|9084/3|Teratoma
 C750|Parathyroid_Gland|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -11274,7 +11279,7 @@ C751|Pituitary_Gland|908|Teratoma|9080/0|Mature_Teratoma
 C751|Pituitary_Gland|908|Teratoma|9080/1|Teratoma
 C751|Pituitary_Gland|908|Teratoma|9080/3|Immature_Teratoma
 C751|Pituitary_Gland|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C751|Pituitary_Gland|908|Teratoma|9082/3|Immature_Teratoma
+C751|Pituitary_Gland|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C751|Pituitary_Gland|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C751|Pituitary_Gland|908|Teratoma|9084/3|Teratoma
 C751|Pituitary_Gland|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -11332,7 +11337,7 @@ C752|Craniopharyngeal_Duct|908|Teratoma|9080/0|Mature_Teratoma
 C752|Craniopharyngeal_Duct|908|Teratoma|9080/1|Teratoma
 C752|Craniopharyngeal_Duct|908|Teratoma|9080/3|Immature_Teratoma
 C752|Craniopharyngeal_Duct|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C752|Craniopharyngeal_Duct|908|Teratoma|9082/3|Immature_Teratoma
+C752|Craniopharyngeal_Duct|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C752|Craniopharyngeal_Duct|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C752|Craniopharyngeal_Duct|908|Teratoma|9084/3|Teratoma
 C752|Craniopharyngeal_Duct|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
@@ -11360,7 +11365,7 @@ C753|Pineal_Gland|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C753|Pineal_Gland|908|Teratoma|9080/0|Mature_Teratoma
 C753|Pineal_Gland|908|Teratoma|9080/3|Immature_Teratoma
 C753|Pineal_Gland|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C753|Pineal_Gland|908|Teratoma|9082/3|Immature_Teratoma
+C753|Pineal_Gland|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C753|Pineal_Gland|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C753|Pineal_Gland|908|Teratoma|9084/0|Dermoid_Cyst
 C753|Pineal_Gland|908|Teratoma|9084/3|Teratoma
@@ -11419,7 +11424,7 @@ C754-C755,C758-C759|Endocrine_Gland|907|Embryonal_Carcinoma|9071/3|Yolk_Sac_Tumo
 C754-C755,C758-C759|Endocrine_Gland|907|Embryonal_Carcinoma|9072/3|Polyembryoma
 C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9080/3|Immature_Teratoma
 C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9081/3|Mixed_Embryonal_Carcinoma_And_Teratoma
-C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9082/3|Immature_Teratoma
+C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9082/3|Undifferentiated_Immature_Teratoma
 C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9083/3|Intermediate_Immature_Teratoma
 C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9084/3|Teratoma
 C754-C755,C758-C759|Endocrine_Gland|908|Teratoma|9085/3|Mixed_Germ_Cell_Tumor
