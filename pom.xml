@@ -10,6 +10,7 @@
    <description>Cancer Deep Phenotype Extraction (DeepPhe) single-stream NLP and summarization module</description>
    <packaging>jar</packaging>
    <properties>
+      <deepphe.version>latest</deepphe.version>
       <ctakes.version>4.0.1-SNAPSHOT</ctakes.version>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
@@ -19,7 +20,7 @@
       <dependency>
          <groupId>org.healthnlp</groupId>
          <artifactId>deepphe-core</artifactId>
-         <version>${project.version}</version>
+         <version>${deepphe.version}</version>
       </dependency>
 
       <dependency>
@@ -212,6 +213,7 @@
    </repositories>
 
    <build>
+      <finalName>deepphe-stream</finalName>
       <!-- It's good practice to explicitly declare versions for all plugins -->
          <plugins>
             <!-- TODO Move Topic to ctakes, get rid of this as a dphe plugin -->
@@ -248,7 +250,7 @@
                            <artifactItem>
                               <groupId>org.healthnlp</groupId>
                               <artifactId>deepphe-onto-db</artifactId>
-                              <version>${project.version}</version>
+                              <version>${deepphe.version}</version>
                               <type>jar</type>
                               <overWrite>true</overWrite>
                               <outputDirectory>${basedir}/resources</outputDirectory>
@@ -314,6 +316,38 @@
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-site-plugin</artifactId>
                <version>3.7.1</version>
+            </plugin>
+
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-install-plugin</artifactId>
+               <version>2.4</version>
+               <executions>
+<!--                  <execution>-->
+<!--                     <id>default-install</id>-->
+<!--                     <goals>-->
+<!--                        <goal>install</goal>-->
+<!--                     </goals>-->
+<!--                     <phase>install</phase>-->
+<!--                     <configuration>-->
+<!--                        <skip>true</skip>-->
+<!--                     </configuration>-->
+<!--                  </execution>-->
+
+                  <execution>
+                     <id>latest-install</id>
+                     <goals>
+                        <goal>install-file</goal>
+                     </goals>
+                     <phase>install</phase>
+                     <configuration>
+                        <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                        <generatePom>false</generatePom>
+                        <pomFile>pom.xml</pomFile>
+                        <version>${deepphe.version}</version>
+                     </configuration>
+                  </execution>
+               </executions>
             </plugin>
 
          </plugins>
