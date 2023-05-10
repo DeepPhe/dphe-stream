@@ -7,7 +7,7 @@ package org.healthnlp.deepphe.core.ae
 // Connect to local ontology graph embedded db.
 add Neo4jEmbeddedConnectAe
 
-//  Discover sections.
+//  Discover sections.   TODO try CrSectionizer instead, which will trim any "REFERENCES:" from the report.
 package org.healthnlp.deepphe.nlp.ae.section
 add Sectionizer
 
@@ -20,6 +20,7 @@ add MrsDrSentenceJoiner
 //  Use the DeepPhe paragraph expressions for paragraph discovery.
 set PARAGRAPH_TYPES_PATH=org/healthnlp/deepphe/paragraph/ParagraphRegex.bsv
 //  Discover paragraphs.
+//add ParagraphAnnotator
 add ParagraphFinder
 
 add WtfSectionFixer
@@ -34,11 +35,18 @@ add ListAnnotator
 //  Fix sentences so that no sentence spans across two or more list entries.
 add ListSentenceFixer
 
+
 //  Tokenize by penn treebank rules.
 add TokenizerAnnotatorPTB
 
+// Tokenize multi-token types such as dates, fractions and measurements.  Don't use this!
+//add ContextDependentTokenizerAnnotator
+
 //  Tag word part of speech.
 addDescription POSTagger
+
+//  Add phrase chunkers.
+//load ChunkerSubPipe
 
 // GleasonFinder removes existing annotations, so put it in front of dictionary lookup.
 add GleasonFinder
@@ -54,6 +62,9 @@ add DefaultJCasTermAnnotator
 
 //  Filter various concepts using context.
 add MassFilter
+
+//  Assign such as negation and uncertainty using machine-learning models.
+//load WindowedAttributeCleartkSubPipe
 
 // Add the cleartk package for cleartk class lookups
 package org.apache.ctakes.assertion.medfacts.cleartk
@@ -75,8 +86,20 @@ add DiseaseAttributeFinder
 // Adjust attributes by text
 add CancerAttributeAdjuster
 
+// Negate any cancers that are alone in a paragraph and any 1 is negated --> Good?
+//add LonerNegator
+
 //  Fix the Subject type (patient, family member) by section type.
 add SubjectSectionFixer
+
+//  Find phenotype attributes not declared in the ontology by special means.
+//add PhenotypeFinder
+
+//add PsaFinder
+
+//add GleasonFinder
+
+//add Ki67Finder
 
 // Formerly used in NonGraphedRelationFinder
 add TnmFinderAe
@@ -86,6 +109,11 @@ add ClockFaceFinder
 
 // Don't need biomarkers for dphe-cr, but testing with them anyway.
 add BiomarkerFinder
+//add division.BiomarkerFinder
+
+// GradeFinder looks like it is removing things ?  Dictionary lookup should be enough.
+//add GradeFinder
+//add division.GradeFinder
 
 // Adjust Subjects for entities
 add SubjectAdjuster
@@ -94,7 +122,18 @@ add SubjectAdjuster
 add SectionIdSetter
 
 //  Find relations declared in the ontology.
+//add InDocUriRelationFinder
+//add GraphRelationFinder DeepPheCR=yes
 add CrRelationFinder
 
+//  Find relations not declared in the ontology by special means.
+//  Modified this to make "v5" faster.
+//add NonGraphedRelationFinder
+// Moved all non-graphrelation things to annotation finders and added relations in CustomUriRelations.
+// CrRelationFinder should be able to make the relations.
+//add CrNonGraphedRelationFinder
+
 add JsonNodeCreator
+//add html.HtmlTextWriter OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_27_2023\kcr2_corpora SubDirectory=HTML
+//add pretty.plaintext.PrettyTextWriterFit OutputDirectory=C:\Spiffy\output\dphe_output\dphe_cr\test_04_27_2023\kcr2_corpora SubDirectory=TEXT
 
