@@ -67,6 +67,8 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    static private final double PERSONAL_HISTORY_PENALTY = 5;
 
    // 4/24/2023 MASS_PENALTY from 40 to 20, NODE_PENALTY from 50 to 25 since the sentence splitter may not split.
+   static private final double MASS_BUMP = -40;
+   static private final double AFFIRM_BUMP = -20;
    static private final double MASS_PENALTY = 20;
    static private final double NODE_PENALTY = 25;
 
@@ -78,6 +80,10 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final double PREFERRED_SECTION_BUMP = -30;
    static private final double LESSER_SECTION_PENALTY = 20;
+
+   static private final double SMALL_LENGTH_PENALTY = 20;
+//   static private final double SMALL_LENGTH_PENALTY = 0;
+
 
    //   static private final double MIN_RELATION_CONFIDENCE = 1;
    static private final double MIN_RELATION_CONFIDENCE = 1;
@@ -507,7 +513,7 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
    static private double getMassPenalty( final String precedingText, final String sentenceText ) {
       if ( MASS_BUMPS.stream().anyMatch( precedingText::contains ) ) {
          // boost
-         return -40;
+         return MASS_BUMP;
       }
       if ( sentenceText.contains( "node" ) || sentenceText.contains( "nodul" ) ) {
          return NODE_PENALTY;
@@ -582,6 +588,7 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
 
    static private final Collection<String> TEST_PRECEDENTS = new HashSet<>( Arrays.asList(
          "specimen",
+         "tissue",
          "biopsy",
          "biopsies",
          "bx",
@@ -710,6 +717,13 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       return 0;
    }
 
+   static private double getLengthPenalty( final IdentifiedAnnotation annotation ) {
+      if ( annotation.getCoveredText().length() <= 3 ) {
+         return SMALL_LENGTH_PENALTY;
+      }
+      return 0;
+   }
+
    static private double getNeoplasmSectionPenalty( final IdentifiedAnnotation annotation ) {
       final SectionType sectionType = getSectionType( annotation );
       if ( PREFERRED_SECTIONS.contains( sectionType ) ) {
@@ -819,6 +833,7 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
       private final double _procedurePenalty;
       private final double _massPenalty;
       private final double _nearbyPenalty;
+      private final double _lengthPenalty;
       private LocationAnnotationPenalties( final IdentifiedAnnotation annotation,
                                    final Map<String,Sentence> sentences,
                                    final Map<Integer,Integer> tokenBeginToTokenNums,
@@ -829,16 +844,18 @@ final public class CrRelationFinder extends JCasAnnotator_ImplBase {
          _procedurePenalty = getTestPenalty( sentenceText.getValue1(), sentenceText.getValue2() );
          _massPenalty = getMassPenalty( sentenceText.getValue1(), sentenceText.getValue2() );
          _nearbyPenalty = getNearbyPenalty( sentenceText.getValue1() );
+         _lengthPenalty = getLengthPenalty( annotation );
       }
       protected double getMySectionPenalty( final IdentifiedAnnotation annotation ) {
          return getLocationSectionPenalty( annotation );
       }
       protected double getTotalPenalty() {
-         return super.getTotalPenalty() + _procedurePenalty + _massPenalty + _nearbyPenalty;
+         return super.getTotalPenalty() + _procedurePenalty + _massPenalty + _nearbyPenalty + _lengthPenalty;
       }
       public String toString() {
          return super.toString() + " Proc " + _procedurePenalty + " Mass "
-                + _massPenalty + " Near " + _nearbyPenalty;
+                + _massPenalty + " Near " + _nearbyPenalty
+                 + " Length " + _lengthPenalty;
       }
    }
 
