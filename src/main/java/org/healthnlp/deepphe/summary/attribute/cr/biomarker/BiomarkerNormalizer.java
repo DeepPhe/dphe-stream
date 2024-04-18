@@ -2,8 +2,6 @@ package org.healthnlp.deepphe.summary.attribute.cr.biomarker;
 
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.MentionRelation;
-import org.healthnlp.deepphe.neo4j.node.Note;
-import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AbstractAttributeNormalizer;
 import org.healthnlp.deepphe.summary.attribute.cr.newInfoStore.AttributeInfoCollector;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregateRelation;
@@ -101,11 +99,12 @@ public class BiomarkerNormalizer extends AbstractAttributeNormalizer {
 //   }
 
    public String getTextCode( final Mention mention ) {
-      final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
-      if ( note == null ) {
-         return "";
-      }
-      return NORMAL.getNormal( note.getText().substring( mention.getBegin(), mention.getEnd() ).toLowerCase() );
+//      final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
+//      if ( note == null ) {
+//         return "";
+//      }
+//      return NORMAL.getNormal( note.getText().substring( mention.getBegin(), mention.getEnd() ).toLowerCase() );
+      return "";
    }
 
 //   public List<String> getCodes( final CrConceptAggregate aggregate ) {

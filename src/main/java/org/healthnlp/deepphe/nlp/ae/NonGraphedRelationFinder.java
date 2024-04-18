@@ -14,6 +14,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.document.SectionType;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.relation.RelationUtil;
@@ -99,7 +100,7 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
       if ( MASS_URIS == null ) {
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                 .getGraph();
-         MASS_URIS = UriConstants.getMassUris( graphDb );
+         MASS_URIS = OldUriConstants.getMassUris( graphDb );
       }
    }
 
@@ -146,14 +147,14 @@ final public class NonGraphedRelationFinder extends JCasAnnotator_ImplBase {
 
       LOGGER.info( "Finding Relations not defined in the Ontology ..." );
       // Get all hasBodySite relations in the document.
-      final Collection<String> massUris = UriConstants.getMassUris( graphDb );
+      final Collection<String> massUris = OldUriConstants.getMassUris( graphDb );
 //      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
 //      final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
       // v6
-      final Collection<String> neoplasmUris = UriConstants.getCancerUris( graphDb );
+      final Collection<String> neoplasmUris = OldUriConstants.getCancerUris( graphDb );
       final Collection<String> massNeoplasmUris = new HashSet<>( massUris ) ;
       massNeoplasmUris.addAll( neoplasmUris );
-      final Collection<String> metastasisUris = UriConstants.getMetastasisUris( graphDb );
+      final Collection<String> metastasisUris = OldUriConstants.getMetastasisUris( graphDb );
 
       final Collection<BinaryTextRelation> hasBodySites
             = JCasUtil.select( jCas, BinaryTextRelation.class )

@@ -1,6 +1,6 @@
 package org.healthnlp.deepphe.summary.neoplasm.casino;
 
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -51,11 +51,11 @@ public class DpheXnCancerTumorSplitter {
 
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
 //      final Collection<String> cancerUris = UriConstants.getNeoplasmUris( graphDb );
-      final Collection<String> cancerUris = UriConstants.getCancerUris( graphDb );
-      final Collection<String> primaryUris = UriConstants.getPrimaryUris( graphDb );
+      final Collection<String> cancerUris = OldUriConstants.getCancerUris( graphDb );
+      final Collection<String> primaryUris = OldUriConstants.getPrimaryUris( graphDb );
 
-      final Collection<String> secondaryUris = UriConstants.getMetastasisUris( graphDb );
-      final Collection<String> massUris = UriConstants.getMassUris( graphDb );
+      final Collection<String> secondaryUris = OldUriConstants.getMetastasisUris( graphDb );
+      final Collection<String> massUris = OldUriConstants.getMassUris( graphDb );
 
       final Collection<Collection<String>> cancerSearchUris = Arrays.asList( cancerUris, primaryUris );
       final Collection<Collection<String>> tumorSearchUris = Arrays.asList( secondaryUris, massUris );

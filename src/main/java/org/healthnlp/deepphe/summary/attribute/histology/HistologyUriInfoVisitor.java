@@ -1,13 +1,10 @@
 package org.healthnlp.deepphe.summary.attribute.histology;
 
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
-import org.healthnlp.deepphe.neo4j.node.Note;
-import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.healthnlp.deepphe.util.KeyValue;
 import org.healthnlp.deepphe.util.UriScoreUtil;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -31,7 +28,7 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                 .getGraph();
 //         final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
-         final Collection<String> neoplasmUris = UriConstants.getCancerUris( graphDb );
+         final Collection<String> neoplasmUris = OldUriConstants.getCancerUris( graphDb );
          final Collection<ConceptAggregate> certainNeoplasm = neoplasms.stream()
 //                                                                         .filter( c -> !c.isNegated() )
                                                                          .filter( c -> c.getAllUris()
@@ -64,38 +61,38 @@ final public class HistologyUriInfoVisitor implements UriInfoVisitor {
 
          //  Added 3/31/2022
          //  If text contains "histologic type: [type]" for any detected aggregates only those are returned.
-         final Collection<ConceptAggregate> histologies = new HashSet<>();
-         for ( ConceptAggregate aggregate : _histologyConcepts ) {
-            for ( Mention mention : aggregate.getMentions() ) {
-               final int mentionBegin = mention.getBegin();
-               if ( mentionBegin <= HISTOLOGY_WINDOW ) {
-                  continue;
-               }
-               final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
-               if ( note == null ) {
-//                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
-                  continue;
-               }
-               final String preText = note.getText()
-                                          .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
-                                          .toLowerCase();
-//               NeoplasmSummaryCreator.addDebug( "Histology Candidate and pretext "
-//                                                       + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
-//                                                       + "\n" );
-               //  "Preop diagnosis"?   "positive for"?
-               if ( preText.contains( "histologic type:" )
-                    || preText.contains( "diagnosis:" )
-                    || preText.contains( "consistent with" ) ) {
-                  NeoplasmSummaryCreator.addDebug( "Trimming to histology candidate "
-                                                          + aggregate.getCoveredText() + "\n" );
-                  histologies.add( aggregate );
-                  _exactHistologyUris.add( mention.getClassUri() );
-               }
-            }
-         }
-         if ( !histologies.isEmpty() ) {
-            _histologyConcepts.retainAll( histologies );
-         }
+//         final Collection<ConceptAggregate> histologies = new HashSet<>();
+//         for ( ConceptAggregate aggregate : _histologyConcepts ) {
+//            for ( Mention mention : aggregate.getMentions() ) {
+//               final int mentionBegin = mention.getBegin();
+//               if ( mentionBegin <= HISTOLOGY_WINDOW ) {
+//                  continue;
+//               }
+//               final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
+//               if ( note == null ) {
+////                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
+//                  continue;
+//               }
+//               final String preText = note.getText()
+//                                          .substring( mentionBegin-HISTOLOGY_WINDOW, mentionBegin )
+//                                          .toLowerCase();
+////               NeoplasmSummaryCreator.addDebug( "Histology Candidate and pretext "
+////                                                       + note.getText().substring( mentionBegin-HISTOLOGY_WINDOW, mention.getEnd() )
+////                                                       + "\n" );
+//               //  "Preop diagnosis"?   "positive for"?
+//               if ( preText.contains( "histologic type:" )
+//                    || preText.contains( "diagnosis:" )
+//                    || preText.contains( "consistent with" ) ) {
+//                  NeoplasmSummaryCreator.addDebug( "Trimming to histology candidate "
+//                                                          + aggregate.getCoveredText() + "\n" );
+//                  histologies.add( aggregate );
+//                  _exactHistologyUris.add( mention.getClassUri() );
+//               }
+//            }
+//         }
+//         if ( !histologies.isEmpty() ) {
+//            _histologyConcepts.retainAll( histologies );
+//         }
       }
       return _histologyConcepts;
    }

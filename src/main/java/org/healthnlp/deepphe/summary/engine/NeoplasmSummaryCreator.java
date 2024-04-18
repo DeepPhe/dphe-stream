@@ -4,6 +4,7 @@ package org.healthnlp.deepphe.summary.engine;
 import org.apache.ctakes.core.resource.FileLocator;
 import org.apache.ctakes.core.util.StringUtil;
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
@@ -115,7 +116,7 @@ final public class NeoplasmSummaryCreator {
                                                              .getGraph();
 //      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
       // v6
-      final Collection<String> massNeoplasmUris = UriConstants.getCancerUris( graphDb );
+      final Collection<String> massNeoplasmUris = OldUriConstants.getCancerUris( graphDb );
       final Predicate<ConceptAggregate> isNeoplasm = c -> c.getAllUris()
                                                            .stream()
                                                            .anyMatch( massNeoplasmUris::contains );
@@ -208,7 +209,7 @@ final public class NeoplasmSummaryCreator {
                                                              .getGraph();
 //      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
       // v6
-      final Collection<String> massNeoplasmUris = UriConstants.getCancerUris( graphDb );
+      final Collection<String> massNeoplasmUris = OldUriConstants.getCancerUris( graphDb );
       final Predicate<ConceptAggregate> isNeoplasm = c -> c.getAllUris()
                                                            .stream()
                                                            .anyMatch( massNeoplasmUris::contains );

@@ -38,12 +38,11 @@ final public class MentionCreator {
                                          final int count ) {
       final Mention mention = new Mention();
       mention.setClassUri( Neo4jOntologyConceptUtil.getUri( annotation ) );
-      mention.setBegin( annotation.getBegin() );
-      mention.setEnd( annotation.getEnd() );
+      mention.setSpan( annotation.getBegin(), annotation.getEnd() );
       mention.setNegated( IdentifiedAnnotationUtil.isNegated( annotation ) );
       mention.setUncertain( IdentifiedAnnotationUtil.isUncertain( annotation ) );
-      mention.setGeneric( IdentifiedAnnotationUtil.isGeneric( annotation ) );
-      mention.setConditional( IdentifiedAnnotationUtil.isConditional( annotation ) );
+//      mention.setGeneric( IdentifiedAnnotationUtil.isGeneric( annotation ) );
+//      mention.setConditional( IdentifiedAnnotationUtil.isConditional( annotation ) );
       mention.setHistoric( IdentifiedAnnotationUtil.isHistoric( annotation ) );
       String temporality = "";
       if ( annotation instanceof EventMention ) {
@@ -58,8 +57,13 @@ final public class MentionCreator {
             }
          }
       }
-      mention.setTemporality( temporality );
-      mention.setNoteId( fullDocId );
+//      mention.setTemporality( temporality );
+      float confidence = annotation.getConfidence();
+      if ( Float.isNaN( confidence ) || confidence <= 0 ) {
+         confidence = 1f;
+      }
+      mention.setdConfidence( confidence );
+//      mention.setNoteId( fullDocId );
       mention.setId( fullDocId + "_M_" + count );
       return mention;
    }

@@ -1,13 +1,10 @@
 package org.healthnlp.deepphe.summary.attribute.behavior;
 
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
-import org.healthnlp.deepphe.neo4j.node.Note;
-import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
-import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
 import org.healthnlp.deepphe.util.KeyValue;
 import org.healthnlp.deepphe.util.UriScoreUtil;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -32,7 +29,7 @@ final public class BehaviorUriInfoVisitor implements UriInfoVisitor {
                                                                 .getGraph();
 //         final Collection<String> malignantUris = new HashSet<>( UriConstants.getMalignantTumorUris( graphDb ) );
          // v6
-         final Collection<String> malignantUris = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
+         final Collection<String> malignantUris = new HashSet<>( OldUriConstants.getCancerUris( graphDb ) );
          // The registry (KY) uses carcinoma as proof of invasion
          malignantUris.add( "Carcinoma" );
          malignantUris.add( "Adenocarcinoma" );
@@ -42,7 +39,7 @@ final public class BehaviorUriInfoVisitor implements UriInfoVisitor {
                                                                                          .stream()
                                                                                          .anyMatch( malignantUris::contains ) )
                                                                           .collect( Collectors.toSet() );
-         final Collection<String> metastasisUris = new HashSet<>( UriConstants.getMetastasisUris( graphDb ) );
+         final Collection<String> metastasisUris = new HashSet<>( OldUriConstants.getMetastasisUris( graphDb ) );
          metastasisUris.add( "Metastasis" );
          final Collection<ConceptAggregate> metastasisConcepts = neoplasms.stream()
 //                                                                          .filter( c -> !c.isNegated() )
@@ -52,31 +49,31 @@ final public class BehaviorUriInfoVisitor implements UriInfoVisitor {
                           .collect( Collectors.toSet() );
          //  Added 4/12/2022
          //  If preceding text contains "lymph node" for metastases then collect the uri for strength discount.
-         for ( ConceptAggregate concept : metastasisConcepts ) {
-            for ( Mention mention : concept.getMentions() ) {
-               final int mentionBegin = mention.getBegin();
-               if ( mentionBegin <= BEHAVIOR_WINDOW ) {
-                  continue;
-               }
-               final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
-               if ( note == null ) {
-//                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
-                  continue;
-               }
-               final String preText = note.getText()
-                                          .substring( mentionBegin-BEHAVIOR_WINDOW, mentionBegin )
-                                          .toLowerCase();
-               NeoplasmSummaryCreator.addDebug( "Behavior Candidate and pretext "
-                                                       + note.getText().substring( mentionBegin-BEHAVIOR_WINDOW,
-                                                                                   mention.getEnd() )
-                                                       + "\n" );
-               if ( preText.contains( "lymph node" ) ) {
-                  NeoplasmSummaryCreator.addDebug( "Tracking Behavior uri "
-                                                          + mention.getClassUri()+ "\n" );
-                  _lymphBehaviorUris.add( mention.getClassUri() );
-               }
-            }
-         }
+//         for ( ConceptAggregate concept : metastasisConcepts ) {
+//            for ( Mention mention : concept.getMentions() ) {
+//               final int mentionBegin = mention.getBegin();
+//               if ( mentionBegin <= BEHAVIOR_WINDOW ) {
+//                  continue;
+//               }
+//               final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
+//               if ( note == null ) {
+////                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
+//                  continue;
+//               }
+//               final String preText = note.getText()
+//                                          .substring( mentionBegin-BEHAVIOR_WINDOW, mentionBegin )
+//                                          .toLowerCase();
+//               NeoplasmSummaryCreator.addDebug( "Behavior Candidate and pretext "
+//                                                       + note.getText().substring( mentionBegin-BEHAVIOR_WINDOW,
+//                                                                                   mention.getEnd() )
+//                                                       + "\n" );
+//               if ( preText.contains( "lymph node" ) ) {
+//                  NeoplasmSummaryCreator.addDebug( "Tracking Behavior uri "
+//                                                          + mention.getClassUri()+ "\n" );
+//                  _lymphBehaviorUris.add( mention.getClassUri() );
+//               }
+//            }
+//         }
 
          final Collection<ConceptAggregate> behaviorConcepts = neoplasms.stream()
                                       .map( c -> c.getRelated( DISEASE_HAS_FINDING ) )

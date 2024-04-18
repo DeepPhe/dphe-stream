@@ -10,8 +10,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -44,8 +44,8 @@ final public class LonerNegator extends JCasAnnotator_ImplBase {
                                                              .getGraph();
 //      final Collection<String> massNeoplasmUris = new ArrayList<>( UriConstants.getMassNeoplasmUris( graphDb ) );
       // v6
-      final Collection<String> massNeoplasmUris = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
-      massNeoplasmUris.addAll( UriConstants.getMassUris( graphDb ) );
+      final Collection<String> massNeoplasmUris = new HashSet<>( OldUriConstants.getCancerUris( graphDb ) );
+      massNeoplasmUris.addAll( OldUriConstants.getMassUris( graphDb ) );
       final Map<Paragraph, Collection<IdentifiedAnnotation>> mentionMap
             = JCasUtil.indexCovered( jCas, Paragraph.class, IdentifiedAnnotation.class );
 

@@ -55,7 +55,7 @@ final public class MentionRelationCreator {
       mentionRelation.setType( relation.getCategory() );
       mentionRelation.setSourceId( source.getId() );
       mentionRelation.setTargetId( target.getId() );
-      mentionRelation.setConfidence( relation.getConfidence() );
+      mentionRelation.setdConfidence( relation.getConfidence() );
       return mentionRelation;
    }
 

@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -24,6 +25,18 @@ import java.util.stream.Collectors;
  * @since {3/29/2021}
  */
 public class NaaccrXmlToText {
+
+   /**
+    * hl7 separates segments with newline \r and/or \r\n.  It uses a long code to represent newlines within fields.
+    */
+   static private final Pattern CR_PATTERN = Pattern.compile( "\\\\X0D\\\\ *" );
+   static private final Pattern LF_PATTERN = Pattern.compile( "\\\\X0A\\\\ *" );
+   static private final Pattern TAB_PATTERN = Pattern.compile( "\\\\X09\\\\ *" );
+   static private final Pattern ALT_TAB_PATTERN = Pattern.compile( "\\\\F\\\\ *" );
+   /**
+    * In some places 5 spaces are used to denote newline
+    */
+   static private final Pattern ALT_LF_PATTERN = Pattern.compile( "(?<!:) {2,}" );
 
 
    private enum TextSection {
@@ -84,6 +97,7 @@ public class NaaccrXmlToText {
    }
 
    static private String readXmlFile( final File xmlFile ) {
+      System.out.println( "Parsing " + xmlFile.getPath() );
       final NaaccrXmlHandler handler = new NaaccrXmlHandler();
       try {
          final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -101,6 +115,7 @@ public class NaaccrXmlToText {
          }
          // The first byte of the xml may be a code character and not xml text, which will throw an error in sax.
          xml = xml.trim().replaceFirst( "^([\\W]+)<", "<" );
+         xml = normalizeText( xml );
          // sax parse requires an inputstream.
          final InputStream targetStream = new ByteArrayInputStream( xml.getBytes() );
          saxParser.parse( targetStream, handler );
@@ -109,6 +124,24 @@ public class NaaccrXmlToText {
          System.exit( 1 );
       }
       return handler.getText();
+   }
+
+   /**
+    * @param text element text
+    * @return text with hl7 newline representations replaced with standard newline characters
+    */
+   static private String normalizeText( final String text ) {
+      if ( text.isEmpty() ) {
+         return "";
+      }
+      final String crFixed = String.join("\r", CR_PATTERN.split(text));
+      final String lfFixed = String.join("\n", LF_PATTERN.split(crFixed));
+      final String altFixed = String.join("\n", ALT_LF_PATTERN.split(lfFixed));
+      final String tabFixed = String.join("\t", TAB_PATTERN.split(altFixed));
+      final String tab2Fixed = String.join("\t", ALT_TAB_PATTERN.split(tabFixed));
+      final String ampFixed = tab2Fixed.replace( "&amp;amp;", "&amp;" );
+      final String lesserFixed = ampFixed.replace( "&amp;lt;", "[" );
+      return lesserFixed.replace( "&amp;gt;", "]" );
    }
 
    static private String getPatientName( final File xmlFile ) {
@@ -124,7 +157,8 @@ public class NaaccrXmlToText {
       final String patientName = getPatientName( xmlFile );
       final File patientDir = new File( outputDir, patientName );
       patientDir.mkdirs();
-      final File outFile = new File( patientDir, patientName + ".txt" );
+//      final File outFile = new File( patientDir, patientName + ".txt" );
+      final File outFile = new File( outputDir, patientName + ".txt" );
       try ( final Writer writer = new FileWriter( outFile, true ) ) {
          writer.write( text + "\n\n" );
       } catch ( IOException ioE ) {
@@ -152,7 +186,9 @@ public class NaaccrXmlToText {
       final private StringBuilder _sb = new StringBuilder();
 
       private String getText() {
-         return _sb.toString();
+         final String quoteFixed = _sb.toString().replace( "&quot;", "" );
+         return quoteFixed.replace( "\"", "" );
+//         return _sb.toString();
       }
 
       /**

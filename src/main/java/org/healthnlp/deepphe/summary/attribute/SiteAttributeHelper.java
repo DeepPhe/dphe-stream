@@ -2,8 +2,8 @@ package org.healthnlp.deepphe.summary.attribute;
 
 import org.apache.ctakes.core.util.Pair;
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -326,7 +326,7 @@ public class SiteAttributeHelper extends AbstractAttributeHelper {
    private Collection<ConceptAggregate> collectPatientSites( final Collection<ConceptAggregate> allConcepts ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> siteUris = UriConstants.getLocationUris( graphDb );
+      final Collection<String> siteUris = OldUriConstants.getLocationUris( graphDb );
       return allConcepts.stream()
                          .filter( c -> siteUris.contains( c.getUri() ) )
                          .collect( Collectors.toSet() );

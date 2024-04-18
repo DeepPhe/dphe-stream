@@ -3,15 +3,14 @@ package org.healthnlp.deepphe.summary.attribute.topography;
 import org.apache.ctakes.core.resource.FileLocator;
 import org.apache.ctakes.core.util.StringUtil;
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.uri.UriUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
 import org.healthnlp.deepphe.neo4j.node.Note;
-import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.SpecificAttribute;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -1030,8 +1029,8 @@ static private String toConceptText( final ConceptAggregate concept ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
       return allConcepts.stream()
-                        .filter( c -> UriConstants.getLocationUris( graphDb )
-                                                  .contains( c.getUri() ) )
+                        .filter( c -> OldUriConstants.getLocationUris( graphDb )
+                                                     .contains( c.getUri() ) )
                         .collect( Collectors.toSet() );
    }
 
@@ -1302,41 +1301,41 @@ static private String toConceptText( final ConceptAggregate concept ) {
          }
          //  Added 4/07/2022
          //  If text contains "tumor site: [site]" for any detected aggregates only those are returned.
-         for ( ConceptAggregate concept : relatedConcepts ) {
-            for ( Mention mention : concept.getMentions() ) {
-               final Note note = NoteNodeStore.getInstance()
-                                              .get( mention.getNoteId() );
-               if ( note == null ) {
-//                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
-                  continue;
-               }
-//               if ( isHeaderText( note, mention ) ) {
-//                  NeoplasmSummaryCreator.addDebug( "Header topography "
-//                                                          + concept.getCoveredText() + "\n" );
-//                  headerTumorSites.add( concept );
-//                  _headerSiteUris.add( mention.getClassUri() );
+//         for ( ConceptAggregate concept : relatedConcepts ) {
+//            for ( Mention mention : concept.getMentions() ) {
+//               final Note note = NoteNodeStore.getInstance()
+//                                              .get( mention.getNoteId() );
+//               if ( note == null ) {
+////                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
+//                  continue;
 //               }
-               if ( hasExactPreText( note, mention ) ) {
-                  NeoplasmSummaryCreator.addDebug( "Exact topography "
-                                                          + concept.getCoveredText() + "\n" );
-                  exactTumorSites.add( concept );
-                  _exactSiteUris.add( mention.getClassUri() );
-               }
-               if ( hasOriginPostText( note, mention ) ) {
-                  NeoplasmSummaryCreator.addDebug( "Origin topography "
-                                                          + concept.getCoveredText() + "\n" );
-                  originTumorSites.add( concept );
-                  _originSiteUris.add( mention.getClassUri() );
-               }
-
-               if ( hasSupportPreText( note, mention ) ) {
-                  NeoplasmSummaryCreator.addDebug( "Support topography "
-                                                          + concept.getCoveredText() + "\n" );
-                  supportTumorSites.add( concept );
-                  _supportSiteUris.add( mention.getClassUri() );
-               }
-            }
-         }
+////               if ( isHeaderText( note, mention ) ) {
+////                  NeoplasmSummaryCreator.addDebug( "Header topography "
+////                                                          + concept.getCoveredText() + "\n" );
+////                  headerTumorSites.add( concept );
+////                  _headerSiteUris.add( mention.getClassUri() );
+////               }
+//               if ( hasExactPreText( note, mention ) ) {
+//                  NeoplasmSummaryCreator.addDebug( "Exact topography "
+//                                                          + concept.getCoveredText() + "\n" );
+//                  exactTumorSites.add( concept );
+//                  _exactSiteUris.add( mention.getClassUri() );
+//               }
+//               if ( hasOriginPostText( note, mention ) ) {
+//                  NeoplasmSummaryCreator.addDebug( "Origin topography "
+//                                                          + concept.getCoveredText() + "\n" );
+//                  originTumorSites.add( concept );
+//                  _originSiteUris.add( mention.getClassUri() );
+//               }
+//
+//               if ( hasSupportPreText( note, mention ) ) {
+//                  NeoplasmSummaryCreator.addDebug( "Support topography "
+//                                                          + concept.getCoveredText() + "\n" );
+//                  supportTumorSites.add( concept );
+//                  _supportSiteUris.add( mention.getClassUri() );
+//               }
+//            }
+//         }
          if ( onSecondType ) {
             if ( haveEnoughToDetermine( bestSites )
                  || doesFirstOutweigh( bestSites, relatedConcepts ) ) {

@@ -17,13 +17,13 @@ final public class ConfidenceCalculator {
 
    static public double calculateAggregateRelation( final Collection<MentionRelation> mentionRelations ) {
       final List<Double> confidences = mentionRelations.stream()
-                                                             .map( MentionRelation::getConfidence )
+                                                             .map( MentionRelation::getdConfidence )
 //                                                         .map( ConfidenceCalculator::getBumpedPerfection )
                                                           .collect( Collectors.toList() );
       NeoplasmSummaryCreator.addDebug( "ConfidenceCalculator.calculateAggregateRelation:  " +
                                        mentionRelations
                                              .stream()
-                                             .map( MentionRelation::getConfidence )
+                                             .map( MentionRelation::getdConfidence )
 //                                             .map( ConfidenceCalculator::getBumpedPerfection )
                                              .sorted()
                                              .map( d -> ""+d )
@@ -89,7 +89,7 @@ final public class ConfidenceCalculator {
     * @return mention relation confidence OR mention relation confidence + 10 if mention relation confidence >= 100.
     */
    static private double getBumpedPerfection( final MentionRelation relation ) {
-      return relation.getConfidence() >= 100 ? relation.getConfidence() + 10 : relation.getConfidence();
+      return relation.getdConfidence() >= 100 ? relation.getdConfidence() + 10 : relation.getdConfidence();
    }
 
 }

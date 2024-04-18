@@ -2,7 +2,7 @@ package org.healthnlp.deepphe.summary.engine;
 
 
 import org.apache.log4j.Logger;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Fact;
 import org.healthnlp.deepphe.neo4j.node.NeoplasmAttribute;
@@ -58,8 +58,8 @@ final public class TumorCreator {
                                                              .getGraph();
 //      final Collection<String> massNeoplasmUris = UriConstants.getMassNeoplasmUris( graphDb );
       // v6
-      final Collection<String> massNeoplasmUris = UriConstants.getCancerUris( graphDb );
-      massNeoplasmUris.addAll( UriConstants.getMassUris( graphDb ) );
+      final Collection<String> massNeoplasmUris = OldUriConstants.getCancerUris( graphDb );
+      massNeoplasmUris.addAll( OldUriConstants.getMassUris( graphDb ) );
       final Predicate<ConceptAggregate> isNeoplasm = c -> c.getAllUris()
                                                            .stream()
                                                            .anyMatch( massNeoplasmUris::contains );

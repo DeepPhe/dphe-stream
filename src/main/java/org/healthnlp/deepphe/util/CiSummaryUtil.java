@@ -3,7 +3,7 @@ package org.healthnlp.deepphe.util;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.apache.log4j.Logger;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -32,7 +32,7 @@ final public class CiSummaryUtil {
    static public String getHistology( final String uri ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      for ( Map.Entry<String, Collection<String>> histologies : UriConstants.getHistologyMap( graphDb ).entrySet() ) {
+      for ( Map.Entry<String, Collection<String>> histologies : OldUriConstants.getHistologyMap( graphDb ).entrySet() ) {
          if ( histologies.getValue().contains( uri ) ) {
             return histologies.getKey();
          }
@@ -50,7 +50,7 @@ final public class CiSummaryUtil {
    static public String getCancerType( final String uri ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                                  .getGraph();
-      for ( Map.Entry<String, Collection<String>> cancerTypes : UriConstants.getCancerTypeMap( graphDb ).entrySet() ) {
+      for ( Map.Entry<String, Collection<String>> cancerTypes : OldUriConstants.getCancerTypeMap( graphDb ).entrySet() ) {
          if ( cancerTypes.getValue().contains( uri ) ) {
             return cancerTypes.getKey();
          }

@@ -1,6 +1,6 @@
 package org.healthnlp.deepphe.summary.attribute.behavior;
 
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.nlp.uri.CustomUriRelations;
 import org.healthnlp.deepphe.summary.attribute.infostore.CodeInfoStore;
@@ -67,7 +67,7 @@ final public class BehaviorCodeInfoStore implements CodeInfoStore {
 //      }
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance()
                                                              .getGraph();
-      final Collection<String> metastasisUris = UriConstants.getMetastasisUris( graphDb );
+      final Collection<String> metastasisUris = OldUriConstants.getMetastasisUris( graphDb );
       if ( metastasisUris.contains( uri ) ) {
          return 6;
       }

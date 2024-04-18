@@ -2,7 +2,6 @@ package org.healthnlp.deepphe.summary.attribute.topography.minor;
 
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.neo4j.node.Note;
-import org.healthnlp.deepphe.node.NoteNodeStore;
 import org.healthnlp.deepphe.summary.attribute.infostore.UriInfoVisitor;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
 import org.healthnlp.deepphe.summary.engine.NeoplasmSummaryCreator;
@@ -30,28 +29,28 @@ final public class TopoMinorUriInfoVisitor implements UriInfoVisitor {
          if ( _topoMinorConcepts.isEmpty() ) {
             return _topoMinorConcepts;
          }
-         final Collection<ConceptAggregate> minors = new HashSet<>();
-         for ( ConceptAggregate concept : _topoMinorConcepts ) {
-            for ( Mention mention : concept.getMentions() ) {
-               final int mentionBegin = mention.getBegin();
-               if ( mentionBegin <= SITE_LEFT_WINDOW ) {
-                  continue;
-               }
-               final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
-               if ( note == null ) {
-//                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
-                  continue;
-               }
-               if ( hasExactPreText( note, mention ) || hasExactPostText( note, mention ) ) {
-                  NeoplasmSummaryCreator.addDebug( "Trimming to minor candidate "
-                                                          + concept.getCoveredText() + "\n" );
-                  minors.add( concept );
-               }
-            }
-         }
-         if ( !minors.isEmpty() ) {
-            _topoMinorConcepts.retainAll( minors );
-         }
+//         final Collection<ConceptAggregate> minors = new HashSet<>();
+//         for ( ConceptAggregate concept : _topoMinorConcepts ) {
+//            for ( Mention mention : concept.getMentions() ) {
+//               final int mentionBegin = mention.getBegin();
+//               if ( mentionBegin <= SITE_LEFT_WINDOW ) {
+//                  continue;
+//               }
+//               final Note note = NoteNodeStore.getInstance().get( mention.getNoteId() );
+//               if ( note == null ) {
+////                  LOGGER.warn( "No Note stored for Note ID " + mention.getNoteId() );
+//                  continue;
+//               }
+//               if ( hasExactPreText( note, mention ) || hasExactPostText( note, mention ) ) {
+//                  NeoplasmSummaryCreator.addDebug( "Trimming to minor candidate "
+//                                                          + concept.getCoveredText() + "\n" );
+//                  minors.add( concept );
+//               }
+//            }
+//         }
+//         if ( !minors.isEmpty() ) {
+//            _topoMinorConcepts.retainAll( minors );
+//         }
       }
       return _topoMinorConcepts;
    }

@@ -1,7 +1,7 @@
 package org.healthnlp.deepphe.summary.engine;
 
 import org.apache.log4j.Logger;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.*;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -91,8 +91,8 @@ final public class SummaryEngine {
                                                              .getGraph();
 //      final Collection<String> massNeoplasms = UriConstants.getMassNeoplasmUris( graphDb );
       // v6
-      final Collection<String> massNeoplasms = new HashSet<>( UriConstants.getCancerUris( graphDb ) );
-      massNeoplasms.addAll( UriConstants.getMassUris( graphDb ) );
+      final Collection<String> massNeoplasms = new HashSet<>( OldUriConstants.getCancerUris( graphDb ) );
+      massNeoplasms.addAll( OldUriConstants.getMassUris( graphDb ) );
 
 
 //      LOGGER.info( "\n====================== Summarizing " + patientId + " ======================" );

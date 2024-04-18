@@ -1,9 +1,9 @@
 package org.healthnlp.deepphe.summary.concept.bin;
 
 import org.apache.log4j.Logger;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.uri.UriUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.node.Mention;
 import org.healthnlp.deepphe.summary.concept.ConceptAggregate;
@@ -442,7 +442,7 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                final String relationType = relation.getKey();
                if ( relationType.endsWith( "Region" ) || relationType.endsWith( "Cavity" ) ) {
                   for ( Mention region : relation.getValue() ) {
-                     if ( !UriConstants.getLocationUris( graphDb ).contains( region.getClassUri() ) ) {
+                     if ( !OldUriConstants.getLocationUris( graphDb ).contains( region.getClassUri() ) ) {
                         continue;
                      }
                      regionUriNeoplasmMentions.computeIfAbsent( region.getClassUri(), u -> new HashSet<>() )
@@ -450,7 +450,7 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                   }
                } else {
                   for ( Mention site : relation.getValue() ) {
-                     if ( !UriConstants.getLocationUris( graphDb ).contains( site.getClassUri() ) ) {
+                     if ( !OldUriConstants.getLocationUris( graphDb ).contains( site.getClassUri() ) ) {
                         continue;
                      }
                      siteUriNeoplasmMentions.computeIfAbsent( site.getClassUri(), u -> new HashSet<>() )
@@ -505,7 +505,7 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
               && !acceptableSiteUris.contains( siteUri ) ) {
             continue;
          }
-         if ( !UriConstants.getLocationUris( graphDb ).contains( site.getClassUri() ) ) {
+         if ( !OldUriConstants.getLocationUris( graphDb ).contains( site.getClassUri() ) ) {
             continue;
 //         neoplasmSiteRelations.computeIfAbsent( neoplasmMention, m -> new HashMap<>()
          }
@@ -862,8 +862,8 @@ private final Map<LateralityType, LateralityTypeBin> _lateralityBins = new EnumM
                                                              .getGraph();
 //      final Collection<String> neoplasmUris = UriConstants.getNeoplasmUris( graphDb );
       // v6
-      final Collection<String> neoplasmUris = UriConstants.getCancerUris( graphDb );
-      final Collection<String> massUris = UriConstants.getMassUris( graphDb );
+      final Collection<String> neoplasmUris = OldUriConstants.getCancerUris( graphDb );
+      final Collection<String> massUris = OldUriConstants.getMassUris( graphDb );
       for ( Mention mention : mentions ) {
          final String uri = mention.getClassUri();
          // Some uris are both mass and neoplasm because of the meaning of "tumor".

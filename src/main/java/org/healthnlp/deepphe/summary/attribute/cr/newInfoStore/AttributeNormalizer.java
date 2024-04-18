@@ -96,12 +96,12 @@ public interface AttributeNormalizer {
          NeoplasmSummaryCreator.addDebug( "AttributeNormalizer.createIntCodeConfidenceMap " +
                                           codeRelations.getKey() + " "
                                           + codeRelations.getValue().stream()
-                                                         .map( MentionRelation::getConfidence )
+                                                         .map( MentionRelation::getdConfidence )
                                                          .map( c -> c+"" )
                                                          .collect( Collectors.joining(", ") ) + "\n");
          final double confidence = codeRelations.getValue()
                                                 .stream()
-                                                .mapToDouble( MentionRelation::getConfidence )
+                                                .mapToDouble( MentionRelation::getdConfidence )
                                                 .sum();
          confidenceMap.put( codeRelations.getKey(), confidence );
       }
@@ -142,12 +142,12 @@ public interface AttributeNormalizer {
          NeoplasmSummaryCreator.addDebug( "AttributeNormalizer.createIntCodeConfidenceMap " +
                                           codeRelations.getKey() + " "
                                           + codeRelations.getValue().stream()
-                                                         .map( MentionRelation::getConfidence )
+                                                         .map( MentionRelation::getdConfidence )
                                                          .map( c -> c+"" )
                                                          .collect( Collectors.joining(", ") ) + "\n");
          final double confidence = codeRelations.getValue()
                                                 .stream()
-                                                .mapToDouble( MentionRelation::getConfidence )
+                                                .mapToDouble( MentionRelation::getdConfidence )
                                                 .sum();
          confidenceMap.put( codeRelations.getKey(), confidence );
       }

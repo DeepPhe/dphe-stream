@@ -17,7 +17,7 @@ final public class BranchListerUtil {
       EmbeddedConnection.getInstance().connectToGraph();
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
 
-      final String ROOT_URI  = "Corpus_Luteum";
+      final String ROOT_URI  = "DeepPhe";
 
       final Collection<String> rootUris = SearchUtil.getRootUris( graphDb, ROOT_URI );
       System.out.println( "Root Uris for " + ROOT_URI );
@@ -42,9 +42,9 @@ final public class BranchListerUtil {
          } catch ( org.neo4j.graphdb.NotFoundException nfE ) {
             level = -100;
          }
-//         if ( level > 1 ) {
-//            continue;
-//         }
+         if ( level > 1 ) {
+            continue;
+         }
          System.out.println( uri + " " + level );
       }
 

@@ -1,9 +1,9 @@
 package org.healthnlp.deepphe.nlp.uri;
 
 import org.apache.ctakes.core.util.annotation.SemanticTui;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
-import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
 import org.healthnlp.deepphe.neo4j.util.Neo4jRelationUtil;
 import org.healthnlp.deepphe.summary.concept.CrConceptAggregate;
@@ -128,17 +128,17 @@ public enum UriInfoCache {
          final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
          SemanticTui semantic = FINDING;
          // We don't want mass or Metastasis to be "Neoplastic Process"
-         if ( UriConstants.getMassUris( graphDb ).contains( uri )
-              || UriConstants.getMetastasisUris( graphDb ).contains( uri ) ) {
-            // UriConstants.getCancerUris(..)  DOES  contain metastases, so assign this first.
+         if ( OldUriConstants.getMassUris( graphDb ).contains( uri )
+              || OldUriConstants.getMetastasisUris( graphDb ).contains( uri ) ) {
+            // OldUriConstants.getCancerUris(..)  DOES  contain metastases, so assign this first.
             semantic = TUMOR;
-         } else if ( UriConstants.getCancerUris( graphDb ).contains( uri ) ) {
+         } else if ( OldUriConstants.getCancerUris( graphDb ).contains( uri ) ) {
             semantic = CANCER;
          } else if ( LATERALITY_URIS.contains( uri )
                      || CustomUriRelations.getInstance().getQuadrantUris().contains( uri )
-                     || getUriRoots( uri ).contains( UriConstants.CLOCKFACE ) ) {
+                     || getUriRoots( uri ).contains( OldUriConstants.CLOCKFACE ) ) {
             return SPATIAL_CONCEPT;
-         } else if ( UriConstants.getLocationUris( graphDb ).contains( uri ) ) {
+         } else if ( OldUriConstants.getLocationUris( graphDb ).contains( uri ) ) {
             semantic = LOCATION;
          } else if ( CustomUriRelations.getInstance().getStageUris().contains( uri )
                      || CustomUriRelations.getInstance().getGradeUris().contains( uri )
@@ -146,11 +146,11 @@ public enum UriInfoCache {
                      || getUriBranch( "Generic_TNM" ).contains( uri )
                      || getUriBranch( "Pathologic_TNM" ).contains( uri ) ) {
             return STAGING;
-         } else if ( UriConstants.getPositiveValueUris( graphDb ).contains( uri )
-                     || UriConstants.getRegaultValueUris( graphDb ).contains( uri )
-                     || UriConstants.getNormalValueUris( graphDb ).contains( uri )
-                     || UriConstants.getStableValueUris( graphDb ).contains( uri )
-                     || UriConstants.getHighValueUris( graphDb ).contains( uri ) ) {
+         } else if ( OldUriConstants.getPositiveValueUris( graphDb ).contains( uri )
+                     || OldUriConstants.getRegaultValueUris( graphDb ).contains( uri )
+                     || OldUriConstants.getNormalValueUris( graphDb ).contains( uri )
+                     || OldUriConstants.getStableValueUris( graphDb ).contains( uri )
+                     || OldUriConstants.getHighValueUris( graphDb ).contains( uri ) ) {
             return LAB_RESULT;
          }
          _timeMap.put( uri, millis );

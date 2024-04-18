@@ -1,5 +1,6 @@
 package org.healthnlp.deepphe.summary.concept.bin;
 
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
 import org.healthnlp.deepphe.neo4j.embedded.EmbeddedConnection;
@@ -56,7 +57,7 @@ enum SiteType {
 
    Collection<String> getMatchingSiteUris( final Map<String,Collection<Mention>> relations ) {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
-      final Collection<String> validLocations = new HashSet<>( UriConstants.getLocationUris( graphDb ) );
+      final Collection<String> validLocations = new HashSet<>( OldUriConstants.getLocationUris( graphDb ) );
       // TODO - Move this to URI Constants.
       validLocations.removeAll( Neo4jOntologyConceptUtil.getBranchUris( UriConstants.QUADRANT ) );
       return relations.entrySet()

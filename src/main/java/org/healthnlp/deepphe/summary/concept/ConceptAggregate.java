@@ -2,6 +2,7 @@ package org.healthnlp.deepphe.summary.concept;
 
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.neo4j.constant.RelationConstants;
 import org.healthnlp.deepphe.neo4j.constant.UriConstants;
@@ -176,14 +177,16 @@ public interface ConceptAggregate {
     * @return true if the instance is hypothetical "testing may indicate stage 2"
     */
    default boolean isGeneric() {
-      return getMentions().stream().anyMatch( Mention::isGeneric );
+//      return getMentions().stream().anyMatch( Mention::isGeneric );
+      return false;
    }
 
    /**
     * @return true if the instance is conditional "if positive then stage 2"
     */
    default boolean isConditional() {
-      return getMentions().stream().anyMatch( Mention::isConditional );
+//      return getMentions().stream().anyMatch( Mention::isConditional );
+      return false;
    }
 
    /**
@@ -208,11 +211,12 @@ public interface ConceptAggregate {
     * @return Before, Before/Overlap, Overlap, After
     */
    default String getDocTimeRel() {
-      return getMentions().stream()
-                          .map( Mention::getTemporality )
-                          .filter( Objects::nonNull )
-                          .min( DtrComparator.INSTANCE )
-                          .orElse( "" );
+//      return getMentions().stream()
+//                          .map( Mention::getTemporality )
+//                          .filter( Objects::nonNull )
+//                          .min( DtrComparator.INSTANCE )
+//                          .orElse( "" );
+      return "";
    }
 
 //   /**
@@ -424,21 +428,21 @@ public interface ConceptAggregate {
       getRelated( HAS_DIAGNOSIS ).stream()
               .map( ConceptAggregate::getUri )
               .forEach( diagnoses::add );
-      final boolean benignUri = UriConstants.getBenignTumorUris( graphDb ).stream()
-                                            .anyMatch( diagnoses::contains );
+      final boolean benignUri = OldUriConstants.getBenignTumorUris( graphDb ).stream()
+                                               .anyMatch( diagnoses::contains );
       if ( benignUri ) {
 //         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Not a Cancer by being or having a Benign Tumor URI according to Ontology in a Diagnosis" );
          return ConceptAggregate.NeoplasmType.NON_CANCER;
       }
       // Check metastases first so that we don't get something like historic In_Situ in a lymph node
-      final boolean metastasisUri = UriConstants.getMetastasisUris( graphDb ).stream()
+      final boolean metastasisUri = OldUriConstants.getMetastasisUris( graphDb ).stream()
                                                 .anyMatch( diagnoses::contains );
       if ( metastasisUri ) {
 //         LOGGER.info( "neoplasm " + getUri() + " " + getId() +  " is Secondary by being or having a Secondary Tumor URI according to Ontology in a Diagnosis." );
          return SECONDARY;
       }
       // TODO - check for no diagnosis ?  diagnoses size > 1.  If no diagnosis maybe hold off on being primary?
-      final boolean primaryUri = UriConstants.getPrimaryUris( graphDb ).stream()
+      final boolean primaryUri = OldUriConstants.getPrimaryUris( graphDb ).stream()
                                              .anyMatch( diagnoses::contains );
       if ( primaryUri ) {
 //         LOGGER.info( "neoplasm " + getUri() + " " + getId() + " is Primary by being or having a Primary URI according to Ontology in a Diagnosis." );

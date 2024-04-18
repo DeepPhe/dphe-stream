@@ -20,6 +20,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.healthnlp.deepphe.constant.OldUriConstants;
 import org.healthnlp.deepphe.core.document.SectionType;
 import org.healthnlp.deepphe.core.neo4j.Neo4jOntologyConceptUtil;
 import org.healthnlp.deepphe.core.relation.RelationUtil;
@@ -241,7 +242,7 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
                                            final Map<Paragraph,Map<String,Collection<IdentifiedAnnotation>>> paragraphUriAnnotationsMap ) {
       LOGGER.info( "Finding Locations ..." );
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
-      final Collection<String> allLocationUris = new HashSet<>( UriConstants.getLocationUris( graphDb ) );
+      final Collection<String> allLocationUris = new HashSet<>( OldUriConstants.getLocationUris( graphDb ) );
 //      allLocationUris.removeAll( QUADRANT_URIS );
       final Collection<BinaryTextRelation> locations = new HashSet<>();
       final Map<IdentifiedAnnotation, Collection<String>> relationsDone = new HashMap<>();
@@ -347,7 +348,7 @@ final public class InDocUriRelationFinder extends JCasAnnotator_ImplBase {
       final GraphDatabaseService graphDb = EmbeddedConnection.getInstance().getGraph();
       // getRelatableUris(..) does not handle all site Uris, so handle specifically
       final Collection<String> allSiteUris = new HashSet<>( uriAnnotationMap.keySet() );
-      allSiteUris.retainAll( UriConstants.getLocationUris( graphDb ) );
+      allSiteUris.retainAll( OldUriConstants.getLocationUris( graphDb ) );
 
       if ( allSiteUris.isEmpty() ) {
          return Collections.emptyList();
