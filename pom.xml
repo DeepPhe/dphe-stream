@@ -11,7 +11,7 @@
    <packaging>jar</packaging>
    <properties>
       <deepphe.version>latest</deepphe.version>
-      <ctakes.version>4.0.1-SNAPSHOT</ctakes.version>
+      <ctakes.version>5.1.0</ctakes.version>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -56,10 +56,10 @@
          <artifactId>ctakes-core</artifactId>
          <version>${ctakes.version}</version>
          <exclusions>
-            <exclusion>
-               <groupId>org.apache.ctakes</groupId>
-               <artifactId>ctakes-core-res</artifactId>
-            </exclusion>
+<!--            <exclusion>-->
+<!--               <groupId>org.apache.ctakes</groupId>-->
+<!--               <artifactId>ctakes-core-res</artifactId>-->
+<!--            </exclusion>-->
             <exclusion>
                <groupId>xerces</groupId>
                <artifactId>xercesImpl</artifactId>
@@ -117,9 +117,13 @@
          <version>${ctakes.version}</version>
          <exclusions>
             <!--  We do not want the standard ctakes dictionary  -->
+<!--            <exclusion>-->
+<!--               <groupId>org.apache.ctakes</groupId>-->
+<!--               <artifactId>ctakes-dictionary-lookup-fast-res</artifactId>-->
+<!--            </exclusion>-->
             <exclusion>
-               <groupId>org.apache.ctakes</groupId>
-               <artifactId>ctakes-dictionary-lookup-fast-res</artifactId>
+               <groupId>net.sourceforge.ctakesresources</groupId>
+               <artifactId>ctakes-resources-sno_rx</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -134,12 +138,12 @@
          <groupId>org.apache.ctakes</groupId>
          <artifactId>ctakes-dependency-parser</artifactId>
          <version>${ctakes.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>org.apache.ctakes</groupId>
-               <artifactId>ctakes-dependency-parser-res-clear</artifactId>
-            </exclusion>
-         </exclusions>
+<!--         <exclusions>-->
+<!--            <exclusion>-->
+<!--               <groupId>org.apache.ctakes</groupId>-->
+<!--               <artifactId>ctakes-dependency-parser-res-clear</artifactId>-->
+<!--            </exclusion>-->
+<!--         </exclusions>-->
       </dependency>
       <dependency>
          <groupId>org.apache.ctakes</groupId>
@@ -164,6 +168,116 @@
                <artifactId>spring-context</artifactId>
             </exclusion>
          </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.ctakes</groupId>
+         <artifactId>ctakes-user-resources</artifactId>
+         <version>${ctakes.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-assertion-zoner</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-chunker</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-clinical-pipeline</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-coreference</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-dictionary-lookup</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-distribution</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-dockhand</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-drug-ner</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-examples</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-fhir</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-lvg</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-pbj</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-preprocessor</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-regression-test</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-relation-extractor</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-side-effect</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-smoking-status</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-template-filler</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-temporal</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-tiny-rest</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-web-rest</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-ytex</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-ytex-uima</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.ctakes</groupId>
+               <artifactId>ctakes-ytex-web</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-1.2-api</artifactId>
+         <version>2.23.1</version>
       </dependency>
 
       <!--  libsvm for temporal and episodes  -->
